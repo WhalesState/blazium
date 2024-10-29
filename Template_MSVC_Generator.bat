@@ -1,0 +1,1 @@
+scons platform=windows target=template_release arch=x86_64 vsproj=yes

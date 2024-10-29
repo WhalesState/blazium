@@ -353,7 +353,7 @@ void ProjectDialog::_install_path_changed() {
 void ProjectDialog::_browse_project_path() {
 	String path = project_path->get_text();
 	if (path.is_empty()) {
-		path = EDITOR_GET("filesystem/directories/default_project_path");
+		path = OS::get_singleton()->get_executable_path().get_base_dir().path_join("project_data");
 	}
 	if (mode == MODE_IMPORT && install_path->is_visible_in_tree()) {
 		// Select last ZIP file.
@@ -727,7 +727,7 @@ void ProjectDialog::show_dialog(bool p_reset_name) {
 		}
 		project_path->set_editable(true);
 
-		String fav_dir = EDITOR_GET("filesystem/directories/default_project_path");
+		String fav_dir = OS::get_singleton()->get_executable_path().get_base_dir().path_join("project_data");
 		if (!fav_dir.is_empty()) {
 			project_path->set_text(fav_dir);
 			install_path->set_text(fav_dir);

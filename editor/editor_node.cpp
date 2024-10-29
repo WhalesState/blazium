@@ -306,7 +306,7 @@ void EditorNode::_update_title() {
 		// Display the "modified" mark before anything else so that it can always be seen in the OS task bar.
 		title = vformat("(*) %s", title);
 	}
-	DisplayServer::get_singleton()->window_set_title(title + String(" - ") + VERSION_NAME);
+	DisplayServer::get_singleton()->window_set_title(title + String(" - ") + VERSION_NAME + " :: Jenove Edition");
 	if (project_title) {
 		project_title->set_text(title);
 	}

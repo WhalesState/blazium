@@ -1727,11 +1727,9 @@ uint64_t OS_Windows::get_embedded_pck_offset() const {
 	return off;
 }
 
-String OS_Windows::get_config_path() const {
-	if (has_environment("APPDATA")) {
-		return get_environment("APPDATA").replace("\\", "/");
-	}
-	return ".";
+String OS_Windows::get_config_path() const
+{
+	return OS::get_singleton()->get_executable_path().get_base_dir().path_join("editor_data").path_join("cache").path_join("config");
 }
 
 String OS_Windows::get_data_path() const {
@@ -1739,19 +1737,7 @@ String OS_Windows::get_data_path() const {
 }
 
 String OS_Windows::get_cache_path() const {
-	static String cache_path_cache;
-	if (cache_path_cache.is_empty()) {
-		if (has_environment("LOCALAPPDATA")) {
-			cache_path_cache = get_environment("LOCALAPPDATA").replace("\\", "/");
-		}
-		if (cache_path_cache.is_empty() && has_environment("TEMP")) {
-			cache_path_cache = get_environment("TEMP").replace("\\", "/");
-		}
-		if (cache_path_cache.is_empty()) {
-			cache_path_cache = get_config_path();
-		}
-	}
-	return cache_path_cache;
+	return OS::get_singleton()->get_executable_path().get_base_dir().path_join("editor_data").path_join("cache");
 }
 
 // Get properly capitalized engine name for system paths
@@ -1797,7 +1783,8 @@ String OS_Windows::get_system_dir(SystemDir p_dir, bool p_shared_storage) const 
 	return path;
 }
 
-String OS_Windows::get_user_data_dir() const {
+String OS_Windows::get_user_data_dir() const
+{
 	String appname = get_safe_dir_name(GLOBAL_GET("application/config/name"));
 	if (!appname.is_empty()) {
 		bool use_custom_dir = GLOBAL_GET("application/config/use_custom_user_dir");
@@ -1814,6 +1801,18 @@ String OS_Windows::get_user_data_dir() const {
 
 	return get_data_path().path_join(get_godot_dir_name()).path_join("app_userdata").path_join("[unnamed project]");
 }
+
+//String OS_Windows::get_user_data_dir() const
+//{
+//	String app_userdata = OS::get_singleton()->get_executable_path().get_base_dir().path_join("editor_data").path_join("app_userdata");
+//	MessageBoxA(0, app_userdata.utf8().get_data(), 0, 0);
+//
+//	String appname = get_safe_dir_name(GLOBAL_GET("application/config/name"));
+//	if (!appname.is_empty()) {
+//		return app_userdata.path_join(appname).replace("\\", "/");
+//	}
+//	return app_userdata.path_join("[Dummy Project]");
+//}
 
 String OS_Windows::get_unique_id() const {
 	HW_PROFILE_INFOA HwProfInfo;

@@ -24,7 +24,7 @@ def run_closure_compiler(target, source, env, for_signature):
 def get_build_version():
     import version
 
-    name = "custom_build"
+    name = "jenova"
     if os.getenv("BUILD_NAME") is not None:
         name = os.getenv("BUILD_NAME")
     v = "%d.%d" % (version.major, version.minor)

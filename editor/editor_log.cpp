@@ -552,8 +552,9 @@ EditorLog::EditorLog() {
 	vb_right->add_child(editor_filter->toggle_button);
 	type_filter_map.insert(MSG_TYPE_EDITOR, editor_filter);
 
-	add_message(VERSION_FULL_NAME " (c) 2007-present Juan Linietsky, Ariel Manzur & Godot Contributors.");
-
+	add_message(VERSION_FULL_NAME " (c) 2007-present Hamid.Memar, Juan Linietsky, Ariel Manzur & Godot Contributors.");
+	add_message("-- Godot Jenova Edition Designed for C++ Scripting --");
+	
 	eh.errfunc = _error_handler;
 	eh.userdata = this;
 	add_error_handler(&eh);

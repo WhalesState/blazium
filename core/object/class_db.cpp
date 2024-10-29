@@ -516,12 +516,12 @@ Object *ClassDB::_instantiate_internal(const StringName &p_class, bool p_require
 		ERR_FAIL_COND_V_MSG(ti->disabled, nullptr, "Class '" + String(p_class) + "' is disabled.");
 		ERR_FAIL_NULL_V_MSG(ti->creation_func, nullptr, "Class '" + String(p_class) + "' or its base class cannot be instantiated.");
 	}
-#ifdef TOOLS_ENABLED
+/* #ifdef TOOLS_ENABLED
 	if ((ti->api == API_EDITOR || ti->api == API_EDITOR_EXTENSION) && !Engine::get_singleton()->is_editor_hint()) {
 		ERR_PRINT("Class '" + String(p_class) + "' can only be instantiated by editor.");
 		return nullptr;
 	}
-#endif
+#endif*/
 	if (ti->gdextension && ti->gdextension->create_instance) {
 		ObjectGDExtension *extension = ti->gdextension;
 #ifdef TOOLS_ENABLED

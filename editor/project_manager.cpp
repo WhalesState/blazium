@@ -28,6 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#define _OPEN_STATIC_PROJECT
+
 #include "project_manager.h"
 
 #include "core/config/project_settings.h"
@@ -70,6 +72,9 @@
 #include "servers/display_server.h"
 #include "servers/navigation_server_3d.h"
 #include "servers/physics_server_2d.h"
+
+#include <Windows.h>
+#include <filesystem>
 
 constexpr int GODOT4_CONFIG_VERSION = 5;
 
@@ -1046,6 +1051,28 @@ ProjectManager::ProjectManager() {
 	PhysicsServer3D::get_singleton()->set_active(false);
 	PhysicsServer2D::get_singleton()->set_active(false);
 
+	// Default Project
+	#ifdef _OPEN_STATIC_PROJECT
+		List<String> args;
+		String defaultProjectPath = OS::get_singleton()->get_executable_path().get_base_dir().path_join("project_data");
+		for (const String &a : Main::get_forwardable_cli_arguments(Main::CLI_SCOPE_TOOL)) args.push_back(a);
+		args.push_back("--path");
+		args.push_back(defaultProjectPath);
+		args.push_back("--editor");
+		if (!std::filesystem::exists(std::string(defaultProjectPath.utf8().get_data()) + std::string("\\project.godot")))
+		{
+			MessageBoxA(0, "Game Project Missing or Corrupted, Update or Repair to fix the Issue.", "Fatal Error", MB_ICONERROR);
+			quick_exit(0);
+		}
+		Error err = OS::get_singleton()->create_instance(args);
+		if (err != OK)
+		{
+			MessageBoxA(0, "Game Project Missing or Corrupted, Update or Repair to fix the Issue.", "Fatal Error", MB_ICONERROR);
+			quick_exit(0);
+		}
+		quick_exit(0);
+	#endif // _OPEN_STATIC_PROJECT
+
 	// Initialize settings.
 	{
 		if (!EditorSettings::get_singleton()) {
@@ -1448,7 +1475,7 @@ ProjectManager::ProjectManager() {
 		scan_dir->set_access(EditorFileDialog::ACCESS_FILESYSTEM);
 		scan_dir->set_file_mode(EditorFileDialog::FILE_MODE_OPEN_DIR);
 		scan_dir->set_title(TTR("Select a Folder to Scan")); // must be after mode or it's overridden
-		scan_dir->set_current_dir(EDITOR_GET("filesystem/directories/default_project_path"));
+		scan_dir->set_current_dir(OS::get_singleton()->get_executable_path().get_base_dir().path_join("project_data"));
 		add_child(scan_dir);
 		scan_dir->connect("dir_selected", callable_mp(project_list, &ProjectList::find_projects));
 
@@ -1585,7 +1612,7 @@ ProjectManager::ProjectManager() {
 
 		Ref<DirAccess> dir_access = DirAccess::create(DirAccess::AccessType::ACCESS_FILESYSTEM);
 
-		String default_project_path = EDITOR_GET("filesystem/directories/default_project_path");
+		String default_project_path = OS::get_singleton()->get_executable_path().get_base_dir().path_join("project_data");
 		if (!default_project_path.is_empty() && !dir_access->dir_exists(default_project_path)) {
 			Error error = dir_access->make_dir_recursive(default_project_path);
 			if (error != OK) {
@@ -1593,7 +1620,7 @@ ProjectManager::ProjectManager() {
 			}
 		}
 
-		String autoscan_path = EDITOR_GET("filesystem/directories/autoscan_project_path");
+		String autoscan_path = OS::get_singleton()->get_executable_path().get_base_dir().path_join("project_data");
 		if (!autoscan_path.is_empty()) {
 			if (dir_access->dir_exists(autoscan_path)) {
 				project_list->find_projects(autoscan_path);
