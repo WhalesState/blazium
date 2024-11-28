@@ -175,8 +175,8 @@ void GPUParticlesCollision3DGizmoPlugin::redraw(EditorNode3DGizmo *p_gizmo) {
 		for (int i = 0; i <= 360; i++) {
 			float ra = Math::deg_to_rad((float)i);
 			float rb = Math::deg_to_rad((float)i + 1);
-			Point2 a = Vector2(Math::sin(ra), Math::cos(ra)) * r;
-			Point2 b = Vector2(Math::sin(rb), Math::cos(rb)) * r;
+			Point2 a = Point2(Math::sin(ra), Math::cos(ra)) * r;
+			Point2 b = Point2(Math::sin(rb), Math::cos(rb)) * r;
 
 			points.push_back(Vector3(a.x, 0, a.y));
 			points.push_back(Vector3(b.x, 0, b.y));
@@ -191,8 +191,8 @@ void GPUParticlesCollision3DGizmoPlugin::redraw(EditorNode3DGizmo *p_gizmo) {
 		for (int i = 0; i < 64; i++) {
 			float ra = i * (Math_TAU / 64.0);
 			float rb = (i + 1) * (Math_TAU / 64.0);
-			Point2 a = Vector2(Math::sin(ra), Math::cos(ra)) * r;
-			Point2 b = Vector2(Math::sin(rb), Math::cos(rb)) * r;
+			Point2 a = Point2(Math::sin(ra), Math::cos(ra)) * r;
+			Point2 b = Point2(Math::sin(rb), Math::cos(rb)) * r;
 
 			collision_segments.push_back(Vector3(a.x, 0, a.y));
 			collision_segments.push_back(Vector3(b.x, 0, b.y));

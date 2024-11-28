@@ -219,17 +219,17 @@ void SplitContainer::_resort() {
 
 	// Move the children, including the dragger.
 	if (vertical) {
-		fit_child_in_rect(first, Rect2(Point2(0, 0), Size2(get_size().width, middle_sep)));
+		fit_child_in_rect(first, Rect2(Point2(), Size2(get_size().width, middle_sep)));
 		int sofs = middle_sep + sep;
 		fit_child_in_rect(second, Rect2(Point2(0, sofs), Size2(get_size().width, get_size().height - sofs)));
 	} else {
 		if (is_layout_rtl()) {
 			middle_sep = get_size().width - middle_sep - sep;
-			fit_child_in_rect(second, Rect2(Point2(0, 0), Size2(middle_sep, get_size().height)));
+			fit_child_in_rect(second, Rect2(Point2(), Size2(middle_sep, get_size().height)));
 			int sofs = middle_sep + sep;
 			fit_child_in_rect(first, Rect2(Point2(sofs, 0), Size2(get_size().width - sofs, get_size().height)));
 		} else {
-			fit_child_in_rect(first, Rect2(Point2(0, 0), Size2(middle_sep, get_size().height)));
+			fit_child_in_rect(first, Rect2(Point2(), Size2(middle_sep, get_size().height)));
 			int sofs = middle_sep + sep;
 			fit_child_in_rect(second, Rect2(Point2(sofs, 0), Size2(get_size().width - sofs, get_size().height)));
 		}

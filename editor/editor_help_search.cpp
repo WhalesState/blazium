@@ -312,7 +312,7 @@ EditorHelpSearch::EditorHelpSearch() {
 	vbox->add_child(hbox);
 
 	search_box = memnew(LineEdit);
-	search_box->set_custom_minimum_size(Size2(200, 0) * EDSCALE);
+	search_box->set_custom_minimum_size(Size2(200 * EDSCALE, 0));
 	search_box->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	search_box->set_clear_button_enabled(true);
 	search_box->connect(SceneStringName(gui_input), callable_mp(this, &EditorHelpSearch::_search_box_gui_input));
@@ -338,7 +338,7 @@ EditorHelpSearch::EditorHelpSearch() {
 	hbox->add_child(hierarchy_button);
 
 	filter_combo = memnew(OptionButton);
-	filter_combo->set_custom_minimum_size(Size2(200, 0) * EDSCALE);
+	filter_combo->set_custom_minimum_size(Size2(200 * EDSCALE, 0));
 	filter_combo->set_stretch_ratio(0); // Fixed width.
 	filter_combo->add_item(TTR("Display All"), SEARCH_ALL);
 	filter_combo->add_separator();
@@ -365,7 +365,7 @@ EditorHelpSearch::EditorHelpSearch() {
 	results_tree->set_column_expand(1, false);
 	results_tree->set_column_custom_minimum_width(1, 150 * EDSCALE);
 	results_tree->set_column_clip_content(1, true);
-	results_tree->set_custom_minimum_size(Size2(0, 100) * EDSCALE);
+	results_tree->set_custom_minimum_size(Size2(0, 100 * EDSCALE));
 	results_tree->set_hide_root(true);
 	results_tree->set_select_mode(Tree::SELECT_ROW);
 	results_tree->connect("item_activated", callable_mp(this, &EditorHelpSearch::_confirmed));

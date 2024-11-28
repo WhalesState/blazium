@@ -849,8 +849,8 @@ void NavigationAgent2D::_transition_to_navigation_finished() {
 
 	if (avoidance_enabled) {
 		NavigationServer2D::get_singleton()->agent_set_position(agent, agent_parent->get_global_position());
-		NavigationServer2D::get_singleton()->agent_set_velocity(agent, Vector2(0.0, 0.0));
-		NavigationServer2D::get_singleton()->agent_set_velocity_forced(agent, Vector2(0.0, 0.0));
+		NavigationServer2D::get_singleton()->agent_set_velocity(agent, Vector2());
+		NavigationServer2D::get_singleton()->agent_set_velocity_forced(agent, Vector2());
 	}
 
 	emit_signal(SNAME("navigation_finished"));

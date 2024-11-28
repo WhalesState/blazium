@@ -5460,7 +5460,7 @@ bool EditorNode::immediate_confirmation_dialog(const String &p_text, const Strin
 	cd->set_cancel_button_text(p_cancel_text);
 	if (p_wrap_width > 0) {
 		cd->set_autowrap(true);
-		cd->get_label()->set_custom_minimum_size(Size2(p_wrap_width, 0) * EDSCALE);
+		cd->get_label()->set_custom_minimum_size(Size2(p_wrap_width * EDSCALE, 0));
 	}
 
 	cd->connect(SceneStringName(confirmed), callable_mp(singleton, &EditorNode::_immediate_dialog_confirmed));
@@ -5746,7 +5746,7 @@ Dictionary EditorNode::drag_files_and_dirs(const Vector<String> &p_paths, Contro
 			icon->set_texture(theme->get_icon(SNAME("File"), EditorStringName(EditorIcons)));
 		}
 		icon->set_stretch_mode(TextureRect::STRETCH_KEEP_CENTERED);
-		icon->set_size(Size2(16, 16));
+		icon->set_size(Size2(16));
 		hbox->add_child(icon);
 		hbox->add_child(label);
 		vbox->add_child(hbox);
@@ -6953,7 +6953,7 @@ EditorNode::EditorNode() {
 	gui_base->set_anchors_and_offsets_preset(Control::PRESET_FULL_RECT);
 	gui_base->set_anchor(SIDE_RIGHT, Control::ANCHOR_END);
 	gui_base->set_anchor(SIDE_BOTTOM, Control::ANCHOR_END);
-	gui_base->set_end(Point2(0, 0));
+	gui_base->set_end(Point2());
 
 	main_vbox = memnew(VBoxContainer);
 	gui_base->add_child(main_vbox);
@@ -7559,7 +7559,7 @@ EditorNode::EditorNode() {
 	save_confirmation = memnew(ConfirmationDialog);
 	save_confirmation->add_button(TTR("Don't Save"), DisplayServer::get_singleton()->get_swap_cancel_ok(), "discard");
 	gui_base->add_child(save_confirmation);
-	save_confirmation->set_min_size(Vector2(450.0 * EDSCALE, 0));
+	save_confirmation->set_min_size(Size2(450 * EDSCALE, 0));
 	save_confirmation->connect(SceneStringName(confirmed), callable_mp(this, &EditorNode::_menu_confirm_current));
 	save_confirmation->connect("custom_action", callable_mp(this, &EditorNode::_discard_changes));
 	save_confirmation->connect("canceled", callable_mp(this, &EditorNode::_cancel_close_scene_tab));
@@ -7594,7 +7594,7 @@ EditorNode::EditorNode() {
 		install_android_build_template->set_ok_button_text(TTR("Install"));
 		install_android_build_template->connect(SceneStringName(confirmed), callable_mp(this, &EditorNode::_menu_confirm_current));
 		install_android_build_template->add_child(vbox);
-		install_android_build_template->set_min_size(Vector2(500.0 * EDSCALE, 0));
+		install_android_build_template->set_min_size(Size2(500 * EDSCALE, 0));
 		gui_base->add_child(install_android_build_template);
 	}
 

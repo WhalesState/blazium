@@ -773,7 +773,7 @@ void TileSetEditor::add_expanded_editor(Control *p_editor) {
 	expanded_editor->set_meta("reparented", true);
 	expanded_editor->reparent(expanded_area);
 	expanded_area->show();
-	expanded_area->set_size(Vector2(parent_container->get_global_rect().get_end().x - expanded_area->get_global_position().x, expanded_area->get_size().y));
+	expanded_area->set_size(Size2(parent_container->get_global_rect().get_end().x - expanded_area->get_global_position().x, expanded_area->get_size().y));
 
 	for (SplitContainer *split : disable_on_expand) {
 		split->set_dragger_visibility(SplitContainer::DRAGGER_HIDDEN);
@@ -840,7 +840,7 @@ TileSetEditor::TileSetEditor() {
 	split_container_left_side->set_h_size_flags(SIZE_EXPAND_FILL);
 	split_container_left_side->set_v_size_flags(SIZE_EXPAND_FILL);
 	split_container_left_side->set_stretch_ratio(0.25);
-	split_container_left_side->set_custom_minimum_size(Size2(70, 0) * EDSCALE);
+	split_container_left_side->set_custom_minimum_size(Size2(70 * EDSCALE, 0));
 	split_container->add_child(split_container_left_side);
 
 	source_sort_button = memnew(MenuButton);
@@ -858,7 +858,7 @@ TileSetEditor::TileSetEditor() {
 
 	sources_list = memnew(ItemList);
 	sources_list->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);
-	sources_list->set_fixed_icon_size(Size2(60, 60) * EDSCALE);
+	sources_list->set_fixed_icon_size(Size2(60 * EDSCALE));
 	sources_list->set_h_size_flags(SIZE_EXPAND_FILL);
 	sources_list->set_v_size_flags(SIZE_EXPAND_FILL);
 	sources_list->connect(SceneStringName(item_selected), callable_mp(this, &TileSetEditor::_source_selected));
@@ -944,7 +944,7 @@ TileSetEditor::TileSetEditor() {
 	patterns_item_list->set_icon_mode(ItemList::ICON_MODE_TOP);
 	patterns_item_list->set_fixed_column_width(thumbnail_size * 3 / 2);
 	patterns_item_list->set_max_text_lines(2);
-	patterns_item_list->set_fixed_icon_size(Size2(thumbnail_size, thumbnail_size));
+	patterns_item_list->set_fixed_icon_size(Size2(thumbnail_size));
 	patterns_item_list->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 	patterns_item_list->connect(SceneStringName(gui_input), callable_mp(this, &TileSetEditor::_patterns_item_list_gui_input));
 	main_vb->add_child(patterns_item_list);
@@ -987,7 +987,7 @@ void TileSourceInspectorPlugin::_show_id_edit_dialog(Object *p_for_source) {
 	}
 	edited_source = p_for_source;
 	id_input->set_value(p_for_source->get("id"));
-	id_edit_dialog->popup_centered(Vector2i(400, 0) * EDSCALE);
+	id_edit_dialog->popup_centered(Vector2i(400 * EDSCALE, 0));
 	callable_mp((Control *)id_input->get_line_edit(), &Control::grab_focus).call_deferred();
 }
 

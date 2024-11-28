@@ -1329,7 +1329,7 @@ Variant SceneTreeEditor::get_drag_data_fw(const Point2 &p_point, Control *p_from
 			HBoxContainer *hb = memnew(HBoxContainer);
 			TextureRect *tf = memnew(TextureRect);
 			int icon_size = get_theme_constant(SNAME("class_icon_size"), EditorStringName(Editor));
-			tf->set_custom_minimum_size(Size2(icon_size, icon_size));
+			tf->set_custom_minimum_size(Size2(icon_size));
 			tf->set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT_CENTERED);
 			tf->set_expand_mode(TextureRect::EXPAND_IGNORE_SIZE);
 			tf->set_texture(icons[i]);
@@ -1582,7 +1582,7 @@ SceneTreeEditor::SceneTreeEditor(bool p_label, bool p_can_rename, bool p_can_ope
 	tree->set_anchor(SIDE_RIGHT, ANCHOR_END);
 	tree->set_anchor(SIDE_BOTTOM, ANCHOR_END);
 	tree->set_begin(Point2(0, p_label ? 18 : 0));
-	tree->set_end(Point2(0, 0));
+	tree->set_end(Point2());
 	tree->set_allow_reselect(true);
 	tree->add_theme_constant_override("button_margin", 0);
 
@@ -1716,7 +1716,7 @@ void SceneTreeDialog::_notification(int p_what) {
 		case NOTIFICATION_THEME_CHANGED: {
 			filter->set_right_icon(get_editor_theme_icon(SNAME("Search")));
 			for (TextureRect *trect : valid_type_icons) {
-				trect->set_custom_minimum_size(Vector2(get_theme_constant(SNAME("class_icon_size"), EditorStringName(Editor)), 0));
+				trect->set_custom_minimum_size(Size2(get_theme_constant(SNAME("class_icon_size"), EditorStringName(Editor)), 0));
 				trect->set_texture(trect->get_meta("icon"));
 			}
 		} break;

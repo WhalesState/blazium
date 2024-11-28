@@ -466,7 +466,7 @@ bool EditorInspectorPluginControl::parse_property(Object *p_object, const Varian
 // Toolbars controls.
 
 Size2 ControlEditorPopupButton::get_minimum_size() const {
-	Vector2 base_size = Vector2(26, 26) * EDSCALE;
+	Vector2 base_size = Vector2(26 * EDSCALE);
 
 	if (arrow_icon.is_null()) {
 		return base_size;
@@ -510,7 +510,7 @@ void ControlEditorPopupButton::_notification(int p_what) {
 
 		case NOTIFICATION_DRAW: {
 			if (arrow_icon.is_valid()) {
-				Vector2 arrow_pos = Point2(26, 0) * EDSCALE;
+				Vector2 arrow_pos = Point2(26 * EDSCALE, 0);
 				arrow_pos.y = get_size().y / 2 - arrow_icon->get_height() / 2;
 				draw_texture(arrow_icon, arrow_pos);
 			}
@@ -547,7 +547,7 @@ void ControlEditorPresetPicker::_add_row_button(HBoxContainer *p_row, const int 
 	ERR_FAIL_COND(preset_buttons.has(p_preset));
 
 	Button *b = memnew(Button);
-	b->set_custom_minimum_size(Size2i(36, 36) * EDSCALE);
+	b->set_custom_minimum_size(Size2i(36 * EDSCALE));
 	b->set_icon_alignment(HORIZONTAL_ALIGNMENT_CENTER);
 	b->set_tooltip_text(p_name);
 	b->set_flat(true);
@@ -559,7 +559,7 @@ void ControlEditorPresetPicker::_add_row_button(HBoxContainer *p_row, const int 
 
 void ControlEditorPresetPicker::_add_separator(BoxContainer *p_box, Separator *p_separator) {
 	p_separator->add_theme_constant_override("separation", grid_separation);
-	p_separator->set_custom_minimum_size(Size2i(1, 1));
+	p_separator->set_custom_minimum_size(Size2i(1));
 	p_box->add_child(p_separator);
 }
 

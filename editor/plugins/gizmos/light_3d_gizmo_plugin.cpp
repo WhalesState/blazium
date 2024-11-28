@@ -213,8 +213,8 @@ void Light3DGizmoPlugin::redraw(EditorNode3DGizmo *p_gizmo) {
 				// Create a circle
 				const float ra = Math::deg_to_rad((float)(i * 3));
 				const float rb = Math::deg_to_rad((float)((i + 1) * 3));
-				const Point2 a = Vector2(Math::sin(ra), Math::cos(ra)) * r;
-				const Point2 b = Vector2(Math::sin(rb), Math::cos(rb)) * r;
+				const Point2 a = Point2(Math::sin(ra), Math::cos(ra)) * r;
+				const Point2 b = Point2(Math::sin(rb), Math::cos(rb)) * r;
 
 				// Draw axis-aligned circles
 				points.push_back(Vector3(a.x, 0, a.y));
@@ -258,8 +258,8 @@ void Light3DGizmoPlugin::redraw(EditorNode3DGizmo *p_gizmo) {
 				// Draw a circle
 				const float ra = Math::deg_to_rad((float)(i * 3));
 				const float rb = Math::deg_to_rad((float)((i + 1) * 3));
-				const Point2 a = Vector2(Math::sin(ra), Math::cos(ra)) * w;
-				const Point2 b = Vector2(Math::sin(rb), Math::cos(rb)) * w;
+				const Point2 a = Point2(Math::sin(ra), Math::cos(ra)) * w;
+				const Point2 b = Point2(Math::sin(rb), Math::cos(rb)) * w;
 
 				points_primary.push_back(Vector3(a.x, a.y, -d));
 				points_primary.push_back(Vector3(b.x, b.y, -d));

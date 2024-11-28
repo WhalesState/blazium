@@ -216,7 +216,7 @@ void OpenXRInteractionProfileEditor::_add_io_path(VBoxContainer *p_container, co
 			type_label->set_text(TTR("Unknown"));
 		} break;
 	}
-	type_label->set_custom_minimum_size(Size2(50.0, 0.0));
+	type_label->set_custom_minimum_size(Size2(50, 0));
 	path_hb->add_child(type_label);
 
 	Button *path_add = memnew(Button);
@@ -238,7 +238,7 @@ void OpenXRInteractionProfileEditor::_add_io_path(VBoxContainer *p_container, co
 				p_container->add_child(action_hb);
 
 				Control *indent_node = memnew(Control);
-				indent_node->set_custom_minimum_size(Size2(10.0, 0.0));
+				indent_node->set_custom_minimum_size(Size2(10, 0));
 				action_hb->add_child(indent_node);
 
 				Label *action_label = memnew(Label);

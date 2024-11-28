@@ -101,7 +101,7 @@ Vector2 OpenXRCompositionLayerQuad::intersects_ray(const Vector3 &p_origin, cons
 		Vector3 vector = quad_transform.origin - p_origin;
 		float t = vector.dot(quad_normal) / denom;
 		if (t < 0.0) {
-			return Vector2(-1.0, -1.0);
+			return Vector2(-1);
 		}
 		Vector3 intersection = p_origin + p_direction * t;
 
@@ -110,10 +110,10 @@ Vector2 OpenXRCompositionLayerQuad::intersects_ray(const Vector3 &p_origin, cons
 				relative_point.dot(quad_transform.basis.get_column(0)),
 				relative_point.dot(quad_transform.basis.get_column(1)));
 		if (Math::abs(projected_point.x) > quad_size.x / 2.0) {
-			return Vector2(-1.0, -1.0);
+			return Vector2(-1);
 		}
 		if (Math::abs(projected_point.y) > quad_size.y / 2.0) {
-			return Vector2(-1.0, -1.0);
+			return Vector2(-1);
 		}
 
 		float u = 0.5 + (projected_point.x / quad_size.x);
@@ -122,5 +122,5 @@ Vector2 OpenXRCompositionLayerQuad::intersects_ray(const Vector3 &p_origin, cons
 		return Vector2(u, v);
 	}
 
-	return Vector2(-1.0, -1.0);
+	return Vector2(-1);
 }

@@ -2272,8 +2272,7 @@ void BaseMaterial3D::set_texture(TextureParam p_param, const Ref<Texture2D> &p_t
 	RS::get_singleton()->material_set_param(_get_material(), shader_names->texture_names[p_param], rid);
 
 	if (p_texture.is_valid() && p_param == TEXTURE_ALBEDO) {
-		RS::get_singleton()->material_set_param(_get_material(), shader_names->albedo_texture_size,
-				Vector2i(p_texture->get_width(), p_texture->get_height()));
+		RS::get_singleton()->material_set_param(_get_material(), shader_names->albedo_texture_size, p_texture->get_size());
 	}
 
 	notify_property_list_changed();

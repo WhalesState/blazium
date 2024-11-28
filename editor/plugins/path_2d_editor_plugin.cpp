@@ -195,7 +195,7 @@ bool Path2DEditor::forward_gui_input(const Ref<InputEvent> &p_event) {
 			}
 
 			const Vector2 new_point = xform.affine_inverse().xform(gpoint2);
-			curve->add_point(new_point, Vector2(0, 0), Vector2(0, 0), insertion_point + 1);
+			curve->add_point(new_point, Vector2(), Vector2(), insertion_point + 1);
 
 			action = ACTION_MOVING_NEW_POINT_FROM_SPLIT;
 			action_point = insertion_point + 1;

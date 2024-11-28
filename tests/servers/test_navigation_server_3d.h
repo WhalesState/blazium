@@ -536,7 +536,7 @@ TEST_SUITE("[Navigation]") {
 		Node3D *node_3d = memnew(Node3D);
 		SceneTree::get_singleton()->get_root()->add_child(node_3d);
 		Ref<PlaneMesh> plane_mesh = memnew(PlaneMesh);
-		plane_mesh->set_size(Size2(10.0, 10.0));
+		plane_mesh->set_size(Size2(10));
 		MeshInstance3D *mesh_instance = memnew(MeshInstance3D);
 		mesh_instance->set_mesh(plane_mesh);
 		node_3d->add_child(mesh_instance);
@@ -585,7 +585,7 @@ TEST_SUITE("[Navigation]") {
 		Node3D *node_3d = memnew(Node3D);
 		SceneTree::get_singleton()->get_root()->add_child(node_3d);
 		Ref<PlaneMesh> plane_mesh = memnew(PlaneMesh);
-		plane_mesh->set_size(Size2(10.0, 10.0));
+		plane_mesh->set_size(Size2(10));
 		MeshInstance3D *mesh_instance = memnew(MeshInstance3D);
 		mesh_instance->set_mesh(plane_mesh);
 		node_3d->add_child(mesh_instance);
@@ -631,7 +631,7 @@ TEST_SUITE("[Navigation]") {
 		Node3D *node_3d = memnew(Node3D);
 		SceneTree::get_singleton()->get_root()->add_child(node_3d);
 		Ref<PlaneMesh> plane_mesh = memnew(PlaneMesh);
-		plane_mesh->set_size(Size2(10.0, 10.0));
+		plane_mesh->set_size(Size2(10));
 		MeshInstance3D *mesh_instance = memnew(MeshInstance3D);
 		mesh_instance->set_mesh(plane_mesh);
 		node_3d->add_child(mesh_instance);

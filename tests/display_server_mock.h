@@ -41,7 +41,7 @@ class DisplayServerMock : public DisplayServerHeadless {
 private:
 	friend class DisplayServer;
 
-	Point2i mouse_position = Point2i(-1, -1); // Outside of Window.
+	Point2i mouse_position = Point2i(-1); // Outside of Window.
 	CursorShape cursor_shape = CursorShape::CURSOR_ARROW;
 	bool window_over = false;
 	Callable event_callback;
@@ -66,7 +66,7 @@ private:
 			return;
 		}
 		mouse_position = p_position;
-		_set_window_over(Rect2i(Point2i(0, 0), window_get_size()).has_point(p_position));
+		_set_window_over(Rect2i(Point2i(), window_get_size()).has_point(p_position));
 	}
 
 	void _set_window_over(bool p_over) {

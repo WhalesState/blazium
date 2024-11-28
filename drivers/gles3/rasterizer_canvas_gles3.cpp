@@ -1035,7 +1035,7 @@ void RasterizerCanvasGLES3::_record_item_commands(const Item *p_item, RID p_rend
 				Rect2 dst_rect(np->rect.position.x, np->rect.position.y, np->rect.size.x, np->rect.size.y);
 
 				if (np->texture == RID()) {
-					texpixel_size = Size2(1, 1);
+					texpixel_size = Size2(1);
 					src_rect = Rect2(0, 0, 1, 1);
 
 				} else {
@@ -1890,7 +1890,7 @@ void RasterizerCanvasGLES3::render_sdf(RID p_render_target, LightOccluderInstanc
 	Transform2D to_clip;
 	to_clip.columns[0] *= 2.0;
 	to_clip.columns[1] *= 2.0;
-	to_clip.columns[2] = -Vector2(1.0, 1.0);
+	to_clip.columns[2] = Vector2(-1);
 
 	to_clip = to_clip * to_sdf.affine_inverse();
 
@@ -2340,7 +2340,7 @@ void RasterizerCanvasGLES3::_prepare_canvas_texture(RID p_texture, RS::CanvasIte
 	}
 
 	// Enforce a 1x1 size if default white texture.
-	size_cache = ct->diffuse == default_texture_id ? Size2i(1, 1) : Size2i(texture->width, texture->height);
+	size_cache = ct->diffuse == default_texture_id ? Size2i(1) : Size2i(texture->width, texture->height);
 
 	GLES3::Texture *normal_map = texture_storage->get_texture(ct->normal_map);
 

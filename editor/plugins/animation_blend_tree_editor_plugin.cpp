@@ -257,7 +257,7 @@ void AnimationNodeBlendTreeEditor::update_graph() {
 			}
 
 			pb->set_show_percentage(false);
-			pb->set_custom_minimum_size(Vector2(0, 14) * EDSCALE);
+			pb->set_custom_minimum_size(Size2(0, 14 * EDSCALE));
 			animations[E] = pb;
 			node->add_child(pb);
 
@@ -921,7 +921,7 @@ void AnimationNodeBlendTreeEditor::_inspect_filters(const String &p_which) {
 		return;
 	}
 
-	filter_dialog->popup_centered(Size2(500, 500) * EDSCALE);
+	filter_dialog->popup_centered(Size2(500 * EDSCALE));
 }
 
 void AnimationNodeBlendTreeEditor::_update_editor_settings() {

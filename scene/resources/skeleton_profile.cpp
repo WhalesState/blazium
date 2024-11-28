@@ -479,7 +479,7 @@ SkeletonProfileHumanoid::SkeletonProfileHumanoid() {
 	bones.write[1].tail_direction = TAIL_DIRECTION_SPECIFIC_CHILD;
 	bones.write[1].bone_tail = "Spine";
 	bones.write[1].reference_pose = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0);
-	bones.write[1].handle_offset = Vector2(0.5, 0.5);
+	bones.write[1].handle_offset = Vector2(0.5);
 	bones.write[1].group = "Body";
 	bones.write[1].required = true;
 

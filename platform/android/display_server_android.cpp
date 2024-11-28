@@ -225,7 +225,7 @@ int DisplayServerAndroid::get_primary_screen() const {
 }
 
 Point2i DisplayServerAndroid::screen_get_position(int p_screen) const {
-	return Point2i(0, 0);
+	return Point2i();
 }
 
 Size2i DisplayServerAndroid::screen_get_size(int p_screen) const {

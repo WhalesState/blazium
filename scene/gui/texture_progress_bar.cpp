@@ -91,7 +91,7 @@ Size2 TextureProgressBar::get_minimum_size() const {
 		return progress->get_size();
 	}
 
-	return Size2(1, 1);
+	return Size2(1);
 }
 
 void TextureProgressBar::set_progress_texture(const Ref<Texture2D> &p_texture) {

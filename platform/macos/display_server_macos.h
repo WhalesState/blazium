@@ -93,7 +93,7 @@ public:
 		Size2i min_size;
 		Size2i max_size;
 		Size2i size;
-		Vector2i wb_offset = Vector2i(14, 14);
+		Vector2i wb_offset = Vector2i(14);
 
 		NSRect last_frame_rect;
 

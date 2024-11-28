@@ -115,7 +115,7 @@ EditorLayoutsDialog::EditorLayoutsDialog() {
 	layout_names = memnew(ItemList);
 	layout_names->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);
 	layout_names->set_auto_height(true);
-	layout_names->set_custom_minimum_size(Size2(300 * EDSCALE, 50 * EDSCALE));
+	layout_names->set_custom_minimum_size(Size2(300, 50) * EDSCALE);
 	layout_names->set_visible(true);
 	layout_names->set_offset(SIDE_TOP, 5);
 	layout_names->set_v_size_flags(Control::SIZE_EXPAND_FILL);

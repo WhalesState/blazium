@@ -1445,7 +1445,7 @@ void AnimationTimelineEdit::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_RESIZED: {
-			len_hb->set_position(Vector2(get_size().width - get_buttons_width(), 0));
+			len_hb->set_position(Point2(get_size().width - get_buttons_width(), 0));
 			len_hb->set_size(Size2(get_buttons_width(), get_size().height));
 		} break;
 
@@ -1618,7 +1618,7 @@ void AnimationTimelineEdit::_notification(int p_what) {
 				}
 			}
 
-			draw_line(Vector2(0, get_size().height), get_size(), linecolor, Math::round(EDSCALE));
+			draw_line(Point2(0, get_size().height), get_size(), linecolor, Math::round(EDSCALE));
 			update_values();
 		} break;
 	}
@@ -1922,7 +1922,7 @@ AnimationTimelineEdit::AnimationTimelineEdit() {
 	play_position->connect(SceneStringName(draw), callable_mp(this, &AnimationTimelineEdit::_play_position_draw));
 
 	add_track = memnew(MenuButton);
-	add_track->set_position(Vector2(0, 0));
+	add_track->set_position(Point2());
 	add_child(add_track);
 	add_track->set_text(TTR("Add Track"));
 
@@ -1940,7 +1940,7 @@ AnimationTimelineEdit::AnimationTimelineEdit() {
 	length->set_max(36000);
 	length->set_step(SECOND_DECIMAL);
 	length->set_allow_greater(true);
-	length->set_custom_minimum_size(Vector2(70 * EDSCALE, 0));
+	length->set_custom_minimum_size(Size2(70 * EDSCALE, 0));
 	length->set_hide_slider(true);
 	length->set_tooltip_text(TTR("Animation length (seconds)"));
 	length->connect(SceneStringName(value_changed), callable_mp(this, &AnimationTimelineEdit::_anim_length_changed));
@@ -2053,7 +2053,7 @@ void AnimationTrackEdit::_notification(int p_what) {
 					text_color.a *= 0.7;
 				} else if (node) {
 					Ref<Texture2D> icon = EditorNode::get_singleton()->get_object_icon(node, "Node");
-					const Vector2 icon_size = Vector2(1, 1) * get_theme_constant(SNAME("class_icon_size"), EditorStringName(Editor));
+					const Size2 icon_size = Size2(get_theme_constant(SNAME("class_icon_size"), EditorStringName(Editor)));
 
 					draw_texture_rect(icon, Rect2(Point2(ofs, int(get_size().height - icon_size.y) / 2), icon_size));
 					icon_cache = icon;
@@ -2174,7 +2174,7 @@ void AnimationTrackEdit::_notification(int p_what) {
 
 					if (!read_only) {
 						if (animation->track_get_type(track) == Animation::TYPE_VALUE || animation->track_get_type(track) == Animation::TYPE_AUDIO) {
-							draw_texture(down_icon, Vector2(ofs, int(get_size().height - down_icon->get_height()) / 2));
+							draw_texture(down_icon, Point2(ofs, int(get_size().height - down_icon->get_height()) / 2));
 							update_mode_rect.size.x += down_icon->get_width();
 						} else if (animation->track_get_type(track) == Animation::TYPE_BEZIER) {
 							update_mode_rect.size.x += down_icon->get_width();
@@ -2213,7 +2213,7 @@ void AnimationTrackEdit::_notification(int p_what) {
 					interp_mode_rect.size.x += hsep / 2;
 
 					if (!read_only && !animation->track_is_compressed(track) && (animation->track_get_type(track) == Animation::TYPE_VALUE || animation->track_get_type(track) == Animation::TYPE_BLEND_SHAPE || animation->track_get_type(track) == Animation::TYPE_POSITION_3D || animation->track_get_type(track) == Animation::TYPE_SCALE_3D || animation->track_get_type(track) == Animation::TYPE_ROTATION_3D)) {
-						draw_texture(down_icon, Vector2(ofs, int(get_size().height - down_icon->get_height()) / 2));
+						draw_texture(down_icon, Point2(ofs, int(get_size().height - down_icon->get_height()) / 2));
 						interp_mode_rect.size.x += down_icon->get_width();
 					} else {
 						interp_mode_rect = Rect2();
@@ -2246,7 +2246,7 @@ void AnimationTrackEdit::_notification(int p_what) {
 					loop_wrap_rect.size.x += hsep / 2;
 
 					if (!read_only && !animation->track_is_compressed(track) && (animation->track_get_type(track) == Animation::TYPE_VALUE || animation->track_get_type(track) == Animation::TYPE_BLEND_SHAPE || animation->track_get_type(track) == Animation::TYPE_POSITION_3D || animation->track_get_type(track) == Animation::TYPE_SCALE_3D || animation->track_get_type(track) == Animation::TYPE_ROTATION_3D)) {
-						draw_texture(down_icon, Vector2(ofs, int(get_size().height - down_icon->get_height()) / 2));
+						draw_texture(down_icon, Point2(ofs, int(get_size().height - down_icon->get_height()) / 2));
 						loop_wrap_rect.size.x += down_icon->get_width();
 					} else {
 						loop_wrap_rect = Rect2();
@@ -2275,17 +2275,17 @@ void AnimationTrackEdit::_notification(int p_what) {
 			}
 
 			if (in_group) {
-				draw_line(Vector2(timeline->get_name_limit(), get_size().height), get_size(), linecolor, Math::round(EDSCALE));
+				draw_line(Point2(timeline->get_name_limit(), get_size().height), get_size(), linecolor, Math::round(EDSCALE));
 			} else {
-				draw_line(Vector2(0, get_size().height), get_size(), linecolor, Math::round(EDSCALE));
+				draw_line(Point2(0, get_size().height), get_size(), linecolor, Math::round(EDSCALE));
 			}
 
 			if (dropping_at != 0) {
 				Color drop_color = get_theme_color(SNAME("accent_color"), EditorStringName(Editor));
 				if (dropping_at < 0) {
-					draw_line(Vector2(0, 0), Vector2(get_size().width, 0), drop_color, Math::round(EDSCALE));
+					draw_line(Point2(), Point2(get_size().width, 0), drop_color, Math::round(EDSCALE));
 				} else {
-					draw_line(Vector2(0, get_size().height), get_size(), drop_color, Math::round(EDSCALE));
+					draw_line(Point2(0, get_size().height), get_size(), drop_color, Math::round(EDSCALE));
 				}
 			}
 		} break;
@@ -2407,7 +2407,7 @@ void AnimationTrackEdit::draw_key(int p_index, float p_pixels_sec, int p_x, bool
 
 		int limit = MAX(0, p_clip_right - p_x - icon_to_draw->get_width());
 		if (limit > 0) {
-			draw_string(font, Vector2(p_x + icon_to_draw->get_width(), int(get_size().height - font->get_height(font_size)) / 2 + font->get_ascent(font_size)), text, HORIZONTAL_ALIGNMENT_LEFT, limit, font_size, color);
+			draw_string(font, Point2(p_x + icon_to_draw->get_width(), int(get_size().height - font->get_height(font_size)) / 2 + font->get_ascent(font_size)), text, HORIZONTAL_ALIGNMENT_LEFT, limit, font_size, color);
 		}
 	}
 
@@ -2513,7 +2513,7 @@ Size2 AnimationTrackEdit::get_minimum_size() const {
 	int max_h = MAX(texture->get_height(), font->get_height(font_size));
 	max_h = MAX(max_h, get_key_height());
 
-	return Vector2(1, max_h + separation);
+	return Size2(1, max_h + separation);
 }
 
 void AnimationTrackEdit::set_timeline(AnimationTimelineEdit *p_timeline) {
@@ -2850,7 +2850,7 @@ void AnimationTrackEdit::gui_input(const Ref<InputEvent> &p_event) {
 				moving_selection_attempt = false;
 				moving_selection = false;
 
-				Vector2 popup_pos = get_screen_position() + update_mode_rect.position + Vector2(0, update_mode_rect.size.height);
+				Point2 popup_pos = get_screen_position() + update_mode_rect.position + Point2(0, update_mode_rect.size.height);
 				menu->set_position(popup_pos);
 				menu->popup();
 				accept_event();
@@ -2899,7 +2899,7 @@ void AnimationTrackEdit::gui_input(const Ref<InputEvent> &p_event) {
 				moving_selection_attempt = false;
 				moving_selection = false;
 
-				Vector2 popup_pos = get_screen_position() + interp_mode_rect.position + Vector2(0, interp_mode_rect.size.height);
+				Point2 popup_pos = get_screen_position() + interp_mode_rect.position + Point2(0, interp_mode_rect.size.height);
 				menu->set_position(popup_pos);
 				menu->popup();
 				accept_event();
@@ -2919,7 +2919,7 @@ void AnimationTrackEdit::gui_input(const Ref<InputEvent> &p_event) {
 				moving_selection_attempt = false;
 				moving_selection = false;
 
-				Vector2 popup_pos = get_screen_position() + loop_wrap_rect.position + Vector2(0, loop_wrap_rect.size.height);
+				Point2 popup_pos = get_screen_position() + loop_wrap_rect.position + Point2(0, loop_wrap_rect.size.height);
 				menu->set_position(popup_pos);
 				menu->popup();
 				accept_event();
@@ -3435,7 +3435,7 @@ AnimationTrackEdit *AnimationTrackEditPlugin::create_animation_track_edit(Object
 void AnimationTrackEditGroup::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_THEME_CHANGED: {
-			icon_size = Vector2(1, 1) * get_theme_constant(SNAME("class_icon_size"), EditorStringName(Editor));
+			icon_size = Size2(get_theme_constant(SNAME("class_icon_size"), EditorStringName(Editor)));
 		} break;
 
 		case NOTIFICATION_DRAW: {
@@ -3508,7 +3508,7 @@ Size2 AnimationTrackEditGroup::get_minimum_size() const {
 	int font_size = get_theme_font_size(SceneStringName(font_size), SNAME("Label"));
 	int separation = get_theme_constant(SNAME("v_separation"), SNAME("ItemList"));
 
-	return Vector2(0, MAX(font->get_height(font_size), icon_size.y) + separation);
+	return Size2(0, MAX(font->get_height(font_size), icon_size.y) + separation);
 }
 
 void AnimationTrackEditGroup::set_timeline(AnimationTimelineEdit *p_timeline) {
@@ -6865,7 +6865,7 @@ void AnimationTrackEditor::_edit_menu_pressed(int p_option) {
 
 		} break;
 		case EDIT_CLEAN_UP_ANIMATION: {
-			cleanup_dialog->popup_centered(Size2(300, 0) * EDSCALE);
+			cleanup_dialog->popup_centered(Size2(300 * EDSCALE, 0));
 
 		} break;
 		case EDIT_CLEAN_UP_ANIMATION_CONFIRM: {
@@ -7249,7 +7249,7 @@ AnimationTrackEditor::AnimationTrackEditor() {
 	bezier_edit->hide();
 	bezier_edit->set_v_size_flags(SIZE_EXPAND_FILL);
 
-	timeline_vbox->set_custom_minimum_size(Size2(0, 150) * EDSCALE);
+	timeline_vbox->set_custom_minimum_size(Size2(0, 150 * EDSCALE));
 
 	hscroll = memnew(HScrollBar);
 	hscroll->share(timeline);
@@ -7329,7 +7329,7 @@ AnimationTrackEditor::AnimationTrackEditor() {
 	step->set_max(1000000);
 	step->set_step(SECOND_DECIMAL);
 	step->set_hide_slider(true);
-	step->set_custom_minimum_size(Size2(100, 0) * EDSCALE);
+	step->set_custom_minimum_size(Size2(100 * EDSCALE, 0));
 	step->set_tooltip_text(TTR("Animation step value."));
 	bottom_hb->add_child(step);
 	step->connect(SceneStringName(value_changed), callable_mp(this, &AnimationTrackEditor::_update_step));
@@ -7352,7 +7352,7 @@ AnimationTrackEditor::AnimationTrackEditor() {
 	zoom->set_min(0.0);
 	zoom->set_max(2.0);
 	zoom->set_value(1.0);
-	zoom->set_custom_minimum_size(Size2(200, 0) * EDSCALE);
+	zoom->set_custom_minimum_size(Size2(200 * EDSCALE, 0));
 	zoom->set_v_size_flags(SIZE_SHRINK_CENTER);
 	bottom_hb->add_child(zoom);
 	timeline->set_zoom(zoom);

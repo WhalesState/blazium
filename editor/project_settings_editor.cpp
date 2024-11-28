@@ -665,12 +665,12 @@ ProjectSettingsEditor::ProjectSettingsEditor(EditorData *p_data) {
 	custom_properties->add_child(property_box);
 
 	feature_box = memnew(OptionButton);
-	feature_box->set_custom_minimum_size(Size2(120, 0) * EDSCALE);
+	feature_box->set_custom_minimum_size(Size2(120 * EDSCALE, 0));
 	feature_box->connect(SceneStringName(item_selected), callable_mp(this, &ProjectSettingsEditor::_feature_selected));
 	custom_properties->add_child(feature_box);
 
 	type_box = memnew(OptionButton);
-	type_box->set_custom_minimum_size(Size2(120, 0) * EDSCALE);
+	type_box->set_custom_minimum_size(Size2(120 * EDSCALE, 0));
 	custom_properties->add_child(type_box);
 
 	add_button = memnew(Button);

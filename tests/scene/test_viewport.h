@@ -162,23 +162,23 @@ TEST_CASE("[SceneTree][Viewport] Controls and InputEvent handling") {
 	node_i->set_name(SNAME("NodeI"));
 	node_j->set_name(SNAME("NodeJ"));
 
-	node_a->set_position(Point2i(0, 0));
-	node_b->set_position(Point2i(10, 10));
-	node_c->set_position(Point2i(0, 0));
-	node_d->set_position(Point2i(10, 10));
+	node_a->set_position(Point2i());
+	node_b->set_position(Point2i(10));
+	node_c->set_position(Point2i());
+	node_d->set_position(Point2i(10));
 	node_e->set_position(Point2i(10, 100));
 	node_g->set_position(Point2i(10, 100));
 	node_h->set_position(Point2i(10, 120));
 	node_i->set_position(Point2i(2, 0));
 	node_j->set_position(Point2i(2, 0));
-	node_a->set_size(Point2i(30, 30));
-	node_b->set_size(Point2i(30, 30));
-	node_d->set_size(Point2i(30, 30));
-	node_e->set_size(Point2i(10, 10));
-	node_g->set_size(Point2i(10, 10));
-	node_h->set_size(Point2i(10, 10));
-	node_i->set_size(Point2i(10, 10));
-	node_j->set_size(Point2i(10, 10));
+	node_a->set_size(Point2i(30));
+	node_b->set_size(Point2i(30));
+	node_d->set_size(Point2i(30));
+	node_e->set_size(Point2i(10));
+	node_g->set_size(Point2i(10));
+	node_h->set_size(Point2i(10));
+	node_i->set_size(Point2i(10));
+	node_j->set_size(Point2i(10));
 	node_a->set_focus_mode(Control::FOCUS_CLICK);
 	node_b->set_focus_mode(Control::FOCUS_CLICK);
 	node_d->set_focus_mode(Control::FOCUS_CLICK);
@@ -213,15 +213,15 @@ TEST_CASE("[SceneTree][Viewport] Controls and InputEvent handling") {
 	node_h->add_child(node_i);
 	node_i->add_child(node_j);
 
-	Point2i on_a = Point2i(5, 5);
-	Point2i on_b = Point2i(15, 15);
-	Point2i on_d = Point2i(25, 25);
+	Point2i on_a = Point2i(5);
+	Point2i on_b = Point2i(15);
+	Point2i on_d = Point2i(25);
 	Point2i on_e = Point2i(15, 105);
 	Point2i on_g = Point2i(15, 105);
 	Point2i on_i = Point2i(13, 125);
 	Point2i on_j = Point2i(15, 125);
-	Point2i on_background = Point2i(500, 500);
-	Point2i on_outside = Point2i(-1, -1);
+	Point2i on_background = Point2i(500);
+	Point2i on_outside = Point2i(-1);
 
 	// Unit tests for Viewport::gui_find_control and Viewport::_gui_find_control_at_pos
 	SUBCASE("[VIEWPORT][GuiFindControl] Finding Controls at a Viewport-position") {
@@ -248,23 +248,23 @@ TEST_CASE("[SceneTree][Viewport] Controls and InputEvent handling") {
 
 		SUBCASE("[VIEWPORT][GuiFindControl] Root Control with CanvasItem as parent is affected by parent's transform.") {
 			node_b->remove_child(node_c);
-			node_c->set_position(Point2i(50, 50));
+			node_c->set_position(Point2i(50));
 			root->add_child(node_c);
-			CHECK(root->gui_find_control(Point2i(65, 65)) == node_d);
+			CHECK(root->gui_find_control(Point2i(65)) == node_d);
 		}
 
 		SUBCASE("[VIEWPORT][GuiFindControl] Control Contents Clipping clips accessible position of children.") {
 			CHECK_FALSE(node_b->is_clipping_contents());
-			CHECK(root->gui_find_control(on_d + Point2i(20, 20)) == node_d);
+			CHECK(root->gui_find_control(on_d + Point2i(20)) == node_d);
 			node_b->set_clip_contents(true);
 			CHECK(root->gui_find_control(on_d) == node_d);
-			CHECK_FALSE(root->gui_find_control(on_d + Point2i(20, 20)));
+			CHECK_FALSE(root->gui_find_control(on_d + Point2i(20)));
 		}
 
 		SUBCASE("[VIEWPORT][GuiFindControl] Top Level Control as descendant of CanvasItem isn't affected by parent's transform.") {
-			CHECK(root->gui_find_control(on_d + Point2i(20, 20)) == node_d);
+			CHECK(root->gui_find_control(on_d + Point2i(20)) == node_d);
 			node_d->set_as_top_level(true);
-			CHECK_FALSE(root->gui_find_control(on_d + Point2i(20, 20)));
+			CHECK_FALSE(root->gui_find_control(on_d + Point2i(20)));
 			CHECK(root->gui_find_control(on_b) == node_d);
 		}
 	}
@@ -415,9 +415,9 @@ TEST_CASE("[SceneTree][Viewport] Controls and InputEvent handling") {
 					node_d->set_focus_mode(Control::FOCUS_NONE);
 					node_d->set_mouse_filter(Control::MOUSE_FILTER_PASS);
 
-					SEND_GUI_MOUSE_BUTTON_EVENT(on_d + Point2i(20, 20), MouseButton::LEFT, MouseButtonMask::LEFT, Key::NONE);
+					SEND_GUI_MOUSE_BUTTON_EVENT(on_d + Point2i(20), MouseButton::LEFT, MouseButtonMask::LEFT, Key::NONE);
 					CHECK(node_b->has_focus());
-					SEND_GUI_MOUSE_BUTTON_RELEASED_EVENT(on_d + Point2i(20, 20), MouseButton::LEFT, MouseButtonMask::NONE, Key::NONE);
+					SEND_GUI_MOUSE_BUTTON_RELEASED_EVENT(on_d + Point2i(20), MouseButton::LEFT, MouseButtonMask::NONE, Key::NONE);
 
 					// Verify break condition for Root Control.
 					node_a->set_focus_mode(Control::FOCUS_NONE);
@@ -670,8 +670,8 @@ TEST_CASE("[SceneTree][Viewport] Controls and InputEvent handling") {
 
 			node_c->set_as_top_level(false);
 			node_i->set_as_top_level(false);
-			node_c->set_position(Point2i(0, 0));
-			node_i->set_position(Point2i(0, 0));
+			node_c->set_position(Point2i());
+			node_i->set_position(Point2i());
 			node_d->set_mouse_filter(Control::MOUSE_FILTER_STOP);
 			node_i->set_mouse_filter(Control::MOUSE_FILTER_STOP);
 			node_j->set_mouse_filter(Control::MOUSE_FILTER_STOP);
@@ -1214,9 +1214,9 @@ TEST_CASE("[SceneTree][Viewport] Controls and InputEvent handling") {
 				Control *node_aaa = memnew(Control);
 				Node2D *node_dd = memnew(Node2D);
 				Control *node_ddd = memnew(Control);
-				node_aaa->set_size(Size2i(10, 10));
+				node_aaa->set_size(Size2i(10));
 				node_aaa->set_position(Point2i(0, 5));
-				node_ddd->set_size(Size2i(10, 10));
+				node_ddd->set_size(Size2i(10));
 				node_ddd->set_position(Point2i(0, 5));
 				node_a->add_child(node_aa);
 				node_aa->add_child(node_aaa);
@@ -1362,11 +1362,11 @@ TEST_CASE("[SceneTree][Viewport] Control mouse cursor shape") {
 		node_a->set_name("SubViewportContainer");
 		node_b->set_name("SubViewport");
 		node_c->set_name("Control");
-		node_a->set_position(Point2i(0, 0));
-		node_c->set_position(Point2i(0, 0));
-		node_a->set_size(Point2i(100, 100));
-		node_b->set_size(Point2i(100, 100));
-		node_c->set_size(Point2i(100, 100));
+		node_a->set_position(Point2i());
+		node_c->set_position(Point2i());
+		node_a->set_size(Point2i(100));
+		node_b->set_size(Point2i(100));
+		node_c->set_size(Point2i(100));
 		node_a->set_default_cursor_shape(Control::CURSOR_ARROW);
 		node_c->set_default_cursor_shape(Control::CURSOR_FORBIDDEN);
 		Window *root = SceneTree::get_singleton()->get_root();
@@ -1382,7 +1382,7 @@ TEST_CASE("[SceneTree][Viewport] Control mouse cursor shape") {
 		node_a->add_child(node_b);
 		node_b->add_child(node_c);
 
-		Point2i on_c = Point2i(5, 5);
+		Point2i on_c = Point2i(5);
 
 		SEND_GUI_MOUSE_MOTION_EVENT(on_c, MouseButtonMask::NONE, Key::NONE);
 		CHECK(DS->get_cursor_shape() == DisplayServer::CURSOR_FORBIDDEN); // GH-74805
@@ -1442,8 +1442,8 @@ TEST_CASE("[SceneTree][Viewport] Physics Picking 2D") {
 	Window *root = tree->get_root();
 	root->set_physics_object_picking(true);
 
-	Point2i on_background = Point2i(800, 800);
-	Point2i on_outside = Point2i(-1, -1);
+	Point2i on_background = Point2i(800);
+	Point2i on_outside = Point2i(-1);
 	SEND_GUI_MOUSE_MOTION_EVENT(on_background, MouseButtonMask::NONE, Key::NONE);
 	tree->physics_process(1);
 
@@ -1453,7 +1453,7 @@ TEST_CASE("[SceneTree][Viewport] Physics Picking 2D") {
 		pc.a = memnew(TestArea2D);
 		pc.c = memnew(CollisionShape2D);
 		pc.r = Ref<RectangleShape2D>(memnew(RectangleShape2D));
-		pc.r->set_size(Size2(150, 150));
+		pc.r->set_size(Size2(150));
 		pc.c->set_shape(pc.r);
 		pc.a->add_child(pc.c);
 		pc.a->set_name("A" + itos(i));
@@ -1464,21 +1464,21 @@ TEST_CASE("[SceneTree][Viewport] Physics Picking 2D") {
 	}
 
 	Node2D *node_a = memnew(Node2D);
-	node_a->set_position(Point2i(0, 0));
-	v[0].a->set_position(Point2i(0, 0));
+	node_a->set_position(Point2i());
+	v[0].a->set_position(Point2i());
 	v[1].a->set_position(Point2i(0, 100));
 	node_a->add_child(v[0].a);
 	node_a->add_child(v[1].a);
 	Node2D *node_b = memnew(Node2D);
 	node_b->set_position(Point2i(100, 0));
-	v[2].a->set_position(Point2i(0, 0));
+	v[2].a->set_position(Point2i());
 	v[3].a->set_position(Point2i(0, 100));
 	node_b->add_child(v[2].a);
 	node_b->add_child(v[3].a);
 	root->add_child(node_a);
 	root->add_child(node_b);
-	Point2i on_all = Point2i(50, 50);
-	Point2i on_0 = Point2i(10, 10);
+	Point2i on_all = Point2i(50);
+	Point2i on_0 = Point2i(10);
 	Point2i on_01 = Point2i(10, 50);
 	Point2i on_02 = Point2i(50, 10);
 
@@ -1620,7 +1620,7 @@ TEST_CASE("[SceneTree][Viewport] Physics Picking 2D") {
 		}
 
 		SEND_GUI_MOUSE_MOTION_EVENT(on_background, MouseButtonMask::NONE, Key::NONE);
-		SEND_GUI_MOUSE_MOTION_EVENT(on_background + Point2i(10, 10), MouseButtonMask::NONE, Key::NONE);
+		SEND_GUI_MOUSE_MOTION_EVENT(on_background + Point2i(10), MouseButtonMask::NONE, Key::NONE);
 		tree->physics_process(1);
 
 		for (int i = 0; i < v.size(); i++) {
@@ -1654,7 +1654,7 @@ TEST_CASE("[SceneTree][Viewport] Physics Picking 2D") {
 	SUBCASE("[Viewport][Picking2D] CollisionObject in CanvasLayer") {
 		CanvasLayer *node_c = memnew(CanvasLayer);
 		node_c->set_rotation(Math_PI);
-		node_c->set_offset(Point2i(100, 100));
+		node_c->set_offset(Point2i(100));
 		root->add_child(node_c);
 
 		v[2].a->reparent(node_c, false);

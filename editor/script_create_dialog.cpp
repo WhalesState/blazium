@@ -854,7 +854,7 @@ ScriptCreateDialog::ScriptCreateDialog() {
 	/* Language */
 
 	language_menu = memnew(OptionButton);
-	language_menu->set_custom_minimum_size(Size2(350, 0) * EDSCALE);
+	language_menu->set_custom_minimum_size(Size2(350 * EDSCALE, 0));
 	language_menu->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	gc->add_child(memnew(Label(TTR("Language:"))));
 	gc->add_child(language_menu);

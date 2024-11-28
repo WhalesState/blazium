@@ -960,7 +960,7 @@ ExportTemplateManager::ExportTemplateManager() {
 	download_install_hb->add_child(mirrors_label);
 
 	mirrors_list = memnew(OptionButton);
-	mirrors_list->set_custom_minimum_size(Size2(280, 0) * EDSCALE);
+	mirrors_list->set_custom_minimum_size(Size2(280 * EDSCALE, 0));
 	if (downloads_available) {
 		mirrors_list->add_item(TTR("Best available mirror"), 0);
 	} else {
@@ -1047,7 +1047,7 @@ ExportTemplateManager::ExportTemplateManager() {
 	installed_table = memnew(Tree);
 	installed_table->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);
 	installed_table->set_hide_root(true);
-	installed_table->set_custom_minimum_size(Size2(0, 100) * EDSCALE);
+	installed_table->set_custom_minimum_size(Size2(0, 100 * EDSCALE));
 	installed_table->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 	main_vb->add_child(installed_table);
 	installed_table->connect("button_clicked", callable_mp(this, &ExportTemplateManager::_installed_table_button_cbk));

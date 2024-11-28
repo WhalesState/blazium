@@ -231,7 +231,7 @@ public:
 		if (Math::is_zero_approx(axis.x) &&
 				Math::is_zero_approx(axis.y)) {
 			// strange case, try an upwards separator
-			axis = Vector2(0.0, 1.0);
+			axis = Vector2(0, 1);
 		}
 
 		real_t min_A = 0.0, max_A = 0.0, min_B = 0.0, max_B = 0.0;
@@ -303,7 +303,7 @@ public:
 
 	_FORCE_INLINE_ void generate_contacts() {
 		// nothing to do, don't generate
-		if (best_axis == Vector2(0.0, 0.0)) {
+		if (best_axis == Vector2()) {
 			return;
 		}
 

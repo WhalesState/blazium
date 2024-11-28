@@ -126,7 +126,7 @@ void ProjectListItemControl::set_project_icon(const Ref<Texture2D> &p_icon) {
 	// The default project icon is 128×128 to look crisp on hiDPI displays,
 	// but we want the actual displayed size to be 64×64 on loDPI displays.
 	project_icon->set_expand_mode(TextureRect::EXPAND_IGNORE_SIZE);
-	project_icon->set_custom_minimum_size(Size2(64, 64) * EDSCALE);
+	project_icon->set_custom_minimum_size(Size2(64 * EDSCALE));
 	project_icon->set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT_CENTERED);
 
 	project_icon->set_texture(p_icon);
@@ -271,7 +271,7 @@ ProjectListItemControl::ProjectListItemControl() {
 		title_hb->add_child(tag_container);
 
 		Control *spacer = memnew(Control);
-		spacer->set_custom_minimum_size(Size2(10, 10));
+		spacer->set_custom_minimum_size(Size2(10));
 		title_hb->add_child(spacer);
 	}
 
@@ -314,7 +314,7 @@ ProjectListItemControl::ProjectListItemControl() {
 		path_hb->add_child(last_edited_info);
 
 		Control *spacer = memnew(Control);
-		spacer->set_custom_minimum_size(Size2(10, 10));
+		spacer->set_custom_minimum_size(Size2(10));
 		path_hb->add_child(spacer);
 	}
 }

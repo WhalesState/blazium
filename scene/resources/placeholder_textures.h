@@ -37,7 +37,7 @@ class PlaceholderTexture2D : public Texture2D {
 	GDCLASS(PlaceholderTexture2D, Texture2D)
 
 	mutable RID rid;
-	Size2 size = Size2(1, 1);
+	Size2 size = Size2(1);
 
 protected:
 	static void _bind_methods();
@@ -84,7 +84,7 @@ class PlaceholderTextureLayered : public TextureLayered {
 	GDCLASS(PlaceholderTextureLayered, TextureLayered)
 
 	mutable RID rid;
-	Size2i size = Size2i(1, 1);
+	Size2i size = Size2i(1);
 	int layers = 1;
 	LayeredType layered_type = LAYERED_TYPE_2D_ARRAY;
 

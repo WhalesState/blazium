@@ -73,11 +73,11 @@ private:
 
 	// Our render target represents our final destination that we display on screen.
 	RID render_target;
-	Size2i target_size = Size2i(0, 0);
+	Size2i target_size = Size2i();
 	uint32_t view_count = 1;
 
 	// The internal size of the textures we render 3D to in case we render at a lower resolution and upscale
-	Size2i internal_size = Size2i(0, 0);
+	Size2i internal_size = Size2i();
 	RS::ViewportScaling3DMode scaling_3d_mode = RS::VIEWPORT_SCALING_3D_MODE_OFF;
 	float fsr_sharpness = 0.2f;
 	float texture_mipmap_bias = 0.0f;
@@ -194,7 +194,7 @@ public:
 	// Named Textures
 
 	bool has_texture(const StringName &p_context, const StringName &p_texture_name) const;
-	RID create_texture(const StringName &p_context, const StringName &p_texture_name, const RD::DataFormat p_data_format, const uint32_t p_usage_bits, const RD::TextureSamples p_texture_samples = RD::TEXTURE_SAMPLES_1, const Size2i p_size = Size2i(0, 0), const uint32_t p_layers = 0, const uint32_t p_mipmaps = 1, bool p_unique = true);
+	RID create_texture(const StringName &p_context, const StringName &p_texture_name, const RD::DataFormat p_data_format, const uint32_t p_usage_bits, const RD::TextureSamples p_texture_samples = RD::TEXTURE_SAMPLES_1, const Size2i p_size = Size2i(), const uint32_t p_layers = 0, const uint32_t p_mipmaps = 1, bool p_unique = true);
 	RID create_texture_from_format(const StringName &p_context, const StringName &p_texture_name, const RD::TextureFormat &p_texture_format, RD::TextureView p_view = RD::TextureView(), bool p_unique = true);
 	RID create_texture_view(const StringName &p_context, const StringName &p_texture_name, const StringName &p_view_name, RD::TextureView p_view = RD::TextureView());
 	RID get_texture(const StringName &p_context, const StringName &p_texture_name) const;

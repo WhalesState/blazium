@@ -280,7 +280,7 @@ QuickSettingsDialog::QuickSettingsDialog() {
 
 			custom_theme_label = memnew(Label(TTR("Custom preset can be further configured in the editor.")));
 			custom_theme_label->set_horizontal_alignment(HORIZONTAL_ALIGNMENT_RIGHT);
-			custom_theme_label->set_custom_minimum_size(Size2(220, 0) * EDSCALE);
+			custom_theme_label->set_custom_minimum_size(Size2(220 * EDSCALE, 0));
 			custom_theme_label->set_autowrap_mode(TextServer::AUTOWRAP_WORD);
 			custom_theme_label->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 			custom_theme_label->set_stretch_ratio(2.0);
@@ -336,7 +336,7 @@ QuickSettingsDialog::QuickSettingsDialog() {
 	// Restart required panel.
 	{
 		restart_required_label = memnew(Label(TTR("Settings changed! The project manager must be restarted for changes to take effect.")));
-		restart_required_label->set_custom_minimum_size(Size2(560, 0) * EDSCALE);
+		restart_required_label->set_custom_minimum_size(Size2(560 * EDSCALE, 0));
 		restart_required_label->set_autowrap_mode(TextServer::AUTOWRAP_WORD);
 		restart_required_label->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 		restart_required_label->hide();

@@ -427,7 +427,7 @@ Vector2 Input::get_joy_vibration_strength(int p_device) {
 	if (joy_vibration.has(p_device)) {
 		return Vector2(joy_vibration[p_device].weak_magnitude, joy_vibration[p_device].strong_magnitude);
 	} else {
-		return Vector2(0, 0);
+		return Vector2();
 	}
 }
 

@@ -462,7 +462,7 @@ void AnimationNodeBlendSpace2DEditor::_blend_space_draw() {
 	blend_space_draw->draw_line(Point2(1, 0), Point2(1, s.height - 1), linecolor, Math::round(EDSCALE));
 	blend_space_draw->draw_line(Point2(1, s.height - 1), Point2(s.width - 1, s.height - 1), linecolor, Math::round(EDSCALE));
 
-	blend_space_draw->draw_line(Point2(0, 0), Point2(5 * EDSCALE, 0), linecolor, Math::round(EDSCALE));
+	blend_space_draw->draw_line(Point2(), Point2(5 * EDSCALE, 0), linecolor, Math::round(EDSCALE));
 	if (blend_space->get_min_space().y < 0) {
 		int y = (blend_space->get_max_space().y / (blend_space->get_max_space().y - blend_space->get_min_space().y)) * s.height;
 		blend_space_draw->draw_line(Point2(0, y), Point2(5 * EDSCALE, y), linecolor, Math::round(EDSCALE));
@@ -623,10 +623,10 @@ void AnimationNodeBlendSpace2DEditor::_blend_space_draw() {
 
 		float mind = 5 * EDSCALE;
 		float maxd = 15 * EDSCALE;
-		blend_space_draw->draw_line(point + Vector2(mind, 0), point + Vector2(maxd, 0), color, Math::round(2 * EDSCALE));
-		blend_space_draw->draw_line(point + Vector2(-mind, 0), point + Vector2(-maxd, 0), color, Math::round(2 * EDSCALE));
-		blend_space_draw->draw_line(point + Vector2(0, mind), point + Vector2(0, maxd), color, Math::round(2 * EDSCALE));
-		blend_space_draw->draw_line(point + Vector2(0, -mind), point + Vector2(0, -maxd), color, Math::round(2 * EDSCALE));
+		blend_space_draw->draw_line(point + Point2(mind, 0), point + Point2(maxd, 0), color, Math::round(2 * EDSCALE));
+		blend_space_draw->draw_line(point + Point2(-mind, 0), point + Point2(-maxd, 0), color, Math::round(2 * EDSCALE));
+		blend_space_draw->draw_line(point + Point2(0, mind), point + Point2(0, maxd), color, Math::round(2 * EDSCALE));
+		blend_space_draw->draw_line(point + Point2(0, -mind), point + Point2(0, -maxd), color, Math::round(2 * EDSCALE));
 	}
 }
 

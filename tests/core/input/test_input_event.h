@@ -102,7 +102,7 @@ TEST_CASE("[InputEvent] Test xformed_by") {
 	Ref<InputEventMouseMotion> iemm1;
 	iemm1.instantiate();
 
-	iemm1->set_position(Vector2(0.0f, 0.0f));
+	iemm1->set_position(Vector2());
 	Transform2D transform;
 	transform = transform.translated(Vector2(2.0f, 3.0f));
 

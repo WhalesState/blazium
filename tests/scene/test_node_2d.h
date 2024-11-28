@@ -46,13 +46,13 @@ TEST_CASE("[SceneTree][Node2D]") {
 		test_child->set_name("child");
 		test_node->add_child(test_child);
 
-		test_node->set_global_position(Point2(1, 1));
-		CHECK_EQ(test_node->get_global_position(), Point2(1, 1));
-		CHECK_EQ(test_child->get_global_position(), Point2(1, 1));
-		test_node->set_global_position(Point2(2, 2));
-		CHECK_EQ(test_node->get_global_position(), Point2(2, 2));
-		test_node->set_global_transform(Transform2D(0, Point2(3, 3)));
-		CHECK_EQ(test_node->get_global_position(), Point2(3, 3));
+		test_node->set_global_position(Point2(1));
+		CHECK_EQ(test_node->get_global_position(), Point2(1));
+		CHECK_EQ(test_child->get_global_position(), Point2(1));
+		test_node->set_global_position(Point2(2));
+		CHECK_EQ(test_node->get_global_position(), Point2(2));
+		test_node->set_global_transform(Transform2D(0, Point2(3)));
+		CHECK_EQ(test_node->get_global_position(), Point2(3));
 
 		memdelete(test_child);
 		memdelete(test_node);
@@ -64,21 +64,21 @@ TEST_CASE("[SceneTree][Node2D]") {
 		Node2D *inner = memnew(Node2D);
 		SceneTree::get_singleton()->get_root()->add_child(main);
 
-		main->set_position(Point2(100, 100));
+		main->set_position(Point2(100));
 		outer->set_position(Point2(10, 0));
 		inner->set_position(Point2(0, 10));
 
 		outer->add_child(inner);
 		// `inner` is still detached.
-		CHECK_EQ(inner->get_global_position(), Point2(10, 10));
+		CHECK_EQ(inner->get_global_position(), Point2(10));
 
 		main->add_child(outer);
 		// `inner` is in scene tree.
-		CHECK_EQ(inner->get_global_position(), Point2(110, 110));
+		CHECK_EQ(inner->get_global_position(), Point2(110));
 
 		main->remove_child(outer);
 		// `inner` is detached again.
-		CHECK_EQ(inner->get_global_position(), Point2(10, 10));
+		CHECK_EQ(inner->get_global_position(), Point2(10));
 
 		memdelete(inner);
 		memdelete(outer);

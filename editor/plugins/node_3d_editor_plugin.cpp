@@ -3119,7 +3119,7 @@ void Node3DEditorViewport::_notification(int p_what) {
 			// when numbers vary rapidly. This minimum width is set based on a
 			// GPU time of 999.99 ms in the current editor language.
 			const float min_width = get_theme_font(SNAME("main"), EditorStringName(EditorFonts))->get_string_size(vformat(TTR("GPU Time: %s ms"), 999.99)).x;
-			frame_time_panel->set_custom_minimum_size(Size2(min_width, 0) * EDSCALE);
+			frame_time_panel->set_custom_minimum_size(Size2(min_width * EDSCALE, 0));
 			frame_time_vbox->add_theme_constant_override("separation", Math::round(-1 * EDSCALE));
 
 			cinema_label->add_theme_style_override(CoreStringName(normal), information_3d_stylebox);
@@ -3153,13 +3153,13 @@ static void draw_indicator_bar(Control &p_surface, real_t p_fill, const Ref<Text
 	p_surface.draw_rect(Rect2(r.position.x, r.position.y + r.size.y - sy, r.size.x, sy), p_color * Color(1, 1, 1, 0.6));
 	p_surface.draw_rect(r.grow(1), Color(0, 0, 0, 0.7), false, Math::round(EDSCALE));
 
-	const Vector2 icon_size = p_icon->get_size();
-	const Vector2 icon_pos = Vector2(r.position.x - (icon_size.x - r.size.x) / 2, r.position.y + r.size.y + 2 * EDSCALE);
+	const Size2 icon_size = p_icon->get_size();
+	const Point2 icon_pos = Point2(r.position.x - (icon_size.x - r.size.x) / 2, r.position.y + r.size.y + 2 * EDSCALE);
 	p_surface.draw_texture(p_icon, icon_pos, p_color);
 
 	// Draw text below the bar (for speed/zoom information).
-	p_surface.draw_string_outline(p_font, Vector2(icon_pos.x, icon_pos.y + icon_size.y + 16 * EDSCALE), p_text, HORIZONTAL_ALIGNMENT_LEFT, -1.f, p_font_size, Math::round(2 * EDSCALE), Color(0, 0, 0));
-	p_surface.draw_string(p_font, Vector2(icon_pos.x, icon_pos.y + icon_size.y + 16 * EDSCALE), p_text, HORIZONTAL_ALIGNMENT_LEFT, -1.f, p_font_size, p_color);
+	p_surface.draw_string_outline(p_font, Point2(icon_pos.x, icon_pos.y + icon_size.y + 16 * EDSCALE), p_text, HORIZONTAL_ALIGNMENT_LEFT, -1.f, p_font_size, Math::round(2 * EDSCALE), Color(0, 0, 0));
+	p_surface.draw_string(p_font, Point2(icon_pos.x, icon_pos.y + icon_size.y + 16 * EDSCALE), p_text, HORIZONTAL_ALIGNMENT_LEFT, -1.f, p_font_size, p_color);
 }
 
 void Node3DEditorViewport::_draw() {
@@ -3199,9 +3199,9 @@ void Node3DEditorViewport::_draw() {
 		Ref<Font> font = get_theme_font(SceneStringName(font), SNAME("Label"));
 		int font_size = get_theme_font_size(SceneStringName(font_size), SNAME("Label"));
 		Point2 msgpos = Point2(5, get_size().y - 20);
-		font->draw_string(ci, msgpos + Point2(1, 1), message, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color(0, 0, 0, 0.8));
-		font->draw_string(ci, msgpos + Point2(-1, -1), message, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color(0, 0, 0, 0.8));
-		font->draw_string(ci, msgpos, message, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color(1, 1, 1, 1));
+		font->draw_string(ci, msgpos + Point2(1), message, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color(0, 0, 0, 0.8));
+		font->draw_string(ci, msgpos + Point2(-1), message, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color(0, 0, 0, 0.8));
+		font->draw_string(ci, msgpos, message, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color(1, 1, 1));
 	}
 
 	if (_edit.mode == TRANSFORM_ROTATE && _edit.show_rotation_line) {
@@ -3253,7 +3253,7 @@ void Node3DEditorViewport::_draw() {
 			} break;
 		}
 
-		draw_rect = Rect2(Vector2(), s).intersection(draw_rect);
+		draw_rect = Rect2(Point2(), s).intersection(draw_rect);
 
 		surface->draw_rect(draw_rect, Color(0.6, 0.6, 0.1, 0.5), false, Math::round(2 * EDSCALE));
 
@@ -5497,7 +5497,7 @@ Node3DEditorViewport::Node3DEditorViewport(Node3DEditor *p_spatial_editor, int p
 
 	position_control = memnew(ViewportNavigationControl);
 	position_control->set_navigation_mode(Node3DEditorViewport::NAVIGATION_MOVE);
-	position_control->set_custom_minimum_size(Size2(navigation_control_size, navigation_control_size) * EDSCALE);
+	position_control->set_custom_minimum_size(Size2(navigation_control_size * EDSCALE));
 	position_control->set_h_size_flags(SIZE_SHRINK_END);
 	position_control->set_anchor_and_offset(SIDE_LEFT, ANCHOR_BEGIN, 0);
 	position_control->set_anchor_and_offset(SIDE_TOP, ANCHOR_END, -navigation_control_size * EDSCALE);
@@ -5508,7 +5508,7 @@ Node3DEditorViewport::Node3DEditorViewport(Node3DEditor *p_spatial_editor, int p
 
 	look_control = memnew(ViewportNavigationControl);
 	look_control->set_navigation_mode(Node3DEditorViewport::NAVIGATION_LOOK);
-	look_control->set_custom_minimum_size(Size2(navigation_control_size, navigation_control_size) * EDSCALE);
+	look_control->set_custom_minimum_size(Size2(navigation_control_size * EDSCALE));
 	look_control->set_h_size_flags(SIZE_SHRINK_END);
 	look_control->set_anchor_and_offset(SIDE_LEFT, ANCHOR_END, -navigation_control_size * EDSCALE);
 	look_control->set_anchor_and_offset(SIDE_TOP, ANCHOR_END, -navigation_control_size * EDSCALE);
@@ -5518,7 +5518,7 @@ Node3DEditorViewport::Node3DEditorViewport(Node3DEditor *p_spatial_editor, int p
 	surface->add_child(look_control);
 
 	rotation_control = memnew(ViewportRotationControl);
-	rotation_control->set_custom_minimum_size(Size2(80, 80) * EDSCALE);
+	rotation_control->set_custom_minimum_size(Size2(80 * EDSCALE));
 	rotation_control->set_h_size_flags(SIZE_SHRINK_END);
 	rotation_control->set_viewport(this);
 	top_right_vbox->add_child(rotation_control);
@@ -5550,7 +5550,7 @@ Node3DEditorViewport::Node3DEditorViewport(Node3DEditor *p_spatial_editor, int p
 
 	selection_menu = memnew(PopupMenu);
 	add_child(selection_menu);
-	selection_menu->set_min_size(Size2(100, 0) * EDSCALE);
+	selection_menu->set_min_size(Size2(100 * EDSCALE, 0));
 	selection_menu->connect(SceneStringName(id_pressed), callable_mp(this, &Node3DEditorViewport::_selection_result_pressed));
 	selection_menu->connect("popup_hide", callable_mp(this, &Node3DEditorViewport::_selection_menu_hide));
 
@@ -5694,37 +5694,37 @@ void Node3DEditorViewportContainer::_notification(int p_what) {
 
 					} break;
 					case VIEW_USE_2_VIEWPORTS: {
-						draw_texture(v_grabber, Vector2((size.width - v_grabber->get_width()) / 2, mid_h - v_grabber->get_height() / 2));
+						draw_texture(v_grabber, Point2((size.width - v_grabber->get_width()) / 2, mid_h - v_grabber->get_height() / 2));
 						set_default_cursor_shape(CURSOR_VSPLIT);
 
 					} break;
 					case VIEW_USE_2_VIEWPORTS_ALT: {
-						draw_texture(h_grabber, Vector2(mid_w - h_grabber->get_width() / 2, (size.height - h_grabber->get_height()) / 2));
+						draw_texture(h_grabber, Point2(mid_w - h_grabber->get_width() / 2, (size.height - h_grabber->get_height()) / 2));
 						set_default_cursor_shape(CURSOR_HSPLIT);
 
 					} break;
 					case VIEW_USE_3_VIEWPORTS: {
 						if ((hovering_v && hovering_h && !dragging_v && !dragging_h) || (dragging_v && dragging_h)) {
-							draw_texture(hdiag_grabber, Vector2(mid_w - hdiag_grabber->get_width() / 2, mid_h - v_grabber->get_height() / 4));
+							draw_texture(hdiag_grabber, Point2(mid_w - hdiag_grabber->get_width() / 2, mid_h - v_grabber->get_height() / 4));
 							set_default_cursor_shape(CURSOR_DRAG);
 						} else if ((hovering_v && !dragging_h) || dragging_v) {
-							draw_texture(v_grabber, Vector2((size.width - v_grabber->get_width()) / 2, mid_h - v_grabber->get_height() / 2));
+							draw_texture(v_grabber, Point2((size.width - v_grabber->get_width()) / 2, mid_h - v_grabber->get_height() / 2));
 							set_default_cursor_shape(CURSOR_VSPLIT);
 						} else if (hovering_h || dragging_h) {
-							draw_texture(h_grabber, Vector2(mid_w - h_grabber->get_width() / 2, mid_h + v_grabber->get_height() / 2 + (size_bottom - h_grabber->get_height()) / 2));
+							draw_texture(h_grabber, Point2(mid_w - h_grabber->get_width() / 2, mid_h + v_grabber->get_height() / 2 + (size_bottom - h_grabber->get_height()) / 2));
 							set_default_cursor_shape(CURSOR_HSPLIT);
 						}
 
 					} break;
 					case VIEW_USE_3_VIEWPORTS_ALT: {
 						if ((hovering_v && hovering_h && !dragging_v && !dragging_h) || (dragging_v && dragging_h)) {
-							draw_texture(vdiag_grabber, Vector2(mid_w - vdiag_grabber->get_width() + v_grabber->get_height() / 4, mid_h - vdiag_grabber->get_height() / 2));
+							draw_texture(vdiag_grabber, Point2(mid_w - vdiag_grabber->get_width() + v_grabber->get_height() / 4, mid_h - vdiag_grabber->get_height() / 2));
 							set_default_cursor_shape(CURSOR_DRAG);
 						} else if ((hovering_v && !dragging_h) || dragging_v) {
-							draw_texture(v_grabber, Vector2((size_left - v_grabber->get_width()) / 2, mid_h - v_grabber->get_height() / 2));
+							draw_texture(v_grabber, Point2((size_left - v_grabber->get_width()) / 2, mid_h - v_grabber->get_height() / 2));
 							set_default_cursor_shape(CURSOR_VSPLIT);
 						} else if (hovering_h || dragging_h) {
-							draw_texture(h_grabber, Vector2(mid_w - h_grabber->get_width() / 2, (size.height - h_grabber->get_height()) / 2));
+							draw_texture(h_grabber, Point2(mid_w - h_grabber->get_width() / 2, (size.height - h_grabber->get_height()) / 2));
 							set_default_cursor_shape(CURSOR_HSPLIT);
 						}
 
@@ -5799,8 +5799,8 @@ void Node3DEditorViewportContainer::_notification(int p_what) {
 						}
 					}
 
-					fit_child_in_rect(viewports[0], Rect2(Vector2(), Vector2(size.width, size_top)));
-					fit_child_in_rect(viewports[2], Rect2(Vector2(0, mid_h + v_sep / 2), Vector2(size.width, size_bottom)));
+					fit_child_in_rect(viewports[0], Rect2(Point2(), Size2(size.width, size_top)));
+					fit_child_in_rect(viewports[2], Rect2(Point2(0, mid_h + v_sep / 2), Size2(size.width, size_bottom)));
 
 				} break;
 				case VIEW_USE_2_VIEWPORTS_ALT: {
@@ -5811,8 +5811,8 @@ void Node3DEditorViewportContainer::_notification(int p_what) {
 							viewports[i]->show();
 						}
 					}
-					fit_child_in_rect(viewports[0], Rect2(Vector2(), Vector2(size_left, size.height)));
-					fit_child_in_rect(viewports[2], Rect2(Vector2(mid_w + h_sep / 2, 0), Vector2(size_right, size.height)));
+					fit_child_in_rect(viewports[0], Rect2(Point2(), Size2(size_left, size.height)));
+					fit_child_in_rect(viewports[2], Rect2(Point2(mid_w + h_sep / 2, 0), Size2(size_right, size.height)));
 
 				} break;
 				case VIEW_USE_3_VIEWPORTS: {
@@ -5824,9 +5824,9 @@ void Node3DEditorViewportContainer::_notification(int p_what) {
 						}
 					}
 
-					fit_child_in_rect(viewports[0], Rect2(Vector2(), Vector2(size.width, size_top)));
-					fit_child_in_rect(viewports[2], Rect2(Vector2(0, mid_h + v_sep / 2), Vector2(size_left, size_bottom)));
-					fit_child_in_rect(viewports[3], Rect2(Vector2(mid_w + h_sep / 2, mid_h + v_sep / 2), Vector2(size_right, size_bottom)));
+					fit_child_in_rect(viewports[0], Rect2(Point2(), Size2(size.width, size_top)));
+					fit_child_in_rect(viewports[2], Rect2(Point2(0, mid_h + v_sep / 2), Size2(size_left, size_bottom)));
+					fit_child_in_rect(viewports[3], Rect2(Point2(mid_w + h_sep / 2, mid_h + v_sep / 2), Size2(size_right, size_bottom)));
 
 				} break;
 				case VIEW_USE_3_VIEWPORTS_ALT: {
@@ -5838,9 +5838,9 @@ void Node3DEditorViewportContainer::_notification(int p_what) {
 						}
 					}
 
-					fit_child_in_rect(viewports[0], Rect2(Vector2(), Vector2(size_left, size_top)));
-					fit_child_in_rect(viewports[2], Rect2(Vector2(0, mid_h + v_sep / 2), Vector2(size_left, size_bottom)));
-					fit_child_in_rect(viewports[3], Rect2(Vector2(mid_w + h_sep / 2, 0), Vector2(size_right, size.height)));
+					fit_child_in_rect(viewports[0], Rect2(Point2(), Size2(size_left, size_top)));
+					fit_child_in_rect(viewports[2], Rect2(Point2(0, mid_h + v_sep / 2), Size2(size_left, size_bottom)));
+					fit_child_in_rect(viewports[3], Rect2(Point2(mid_w + h_sep / 2, 0), Size2(size_right, size.height)));
 
 				} break;
 				case VIEW_USE_4_VIEWPORTS: {
@@ -5848,10 +5848,10 @@ void Node3DEditorViewportContainer::_notification(int p_what) {
 						viewports[i]->show();
 					}
 
-					fit_child_in_rect(viewports[0], Rect2(Vector2(), Vector2(size_left, size_top)));
-					fit_child_in_rect(viewports[1], Rect2(Vector2(mid_w + h_sep / 2, 0), Vector2(size_right, size_top)));
-					fit_child_in_rect(viewports[2], Rect2(Vector2(0, mid_h + v_sep / 2), Vector2(size_left, size_bottom)));
-					fit_child_in_rect(viewports[3], Rect2(Vector2(mid_w + h_sep / 2, mid_h + v_sep / 2), Vector2(size_right, size_bottom)));
+					fit_child_in_rect(viewports[0], Rect2(Point2(), Size2(size_left, size_top)));
+					fit_child_in_rect(viewports[1], Rect2(Point2(mid_w + h_sep / 2, 0), Size2(size_right, size_top)));
+					fit_child_in_rect(viewports[2], Rect2(Point2(0, mid_h + v_sep / 2), Size2(size_left, size_bottom)));
+					fit_child_in_rect(viewports[3], Rect2(Point2(mid_w + h_sep / 2, mid_h + v_sep / 2), Size2(size_right, size_bottom)));
 
 				} break;
 			}
@@ -6604,7 +6604,7 @@ void Node3DEditor::_menu_item_pressed(int p_option) {
 
 		} break;
 		case MENU_VIEW_CAMERA_SETTINGS: {
-			settings_dialog->popup_centered(settings_vbc->get_combined_minimum_size() + Size2(50, 50));
+			settings_dialog->popup_centered(settings_vbc->get_combined_minimum_size() + Size2(50));
 		} break;
 		case MENU_SNAP_TO_FLOOR: {
 			snap_selected_nodes_to_floor();
@@ -7791,7 +7791,7 @@ void Node3DEditor::shortcut_input(const Ref<InputEvent> &p_event) {
 
 void Node3DEditor::_sun_environ_settings_pressed() {
 	Vector2 pos = sun_environ_settings->get_screen_position() + sun_environ_settings->get_size();
-	sun_environ_popup->set_position(pos - Vector2(sun_environ_popup->get_contents_minimum_size().width / 2, 0));
+	sun_environ_popup->set_position(pos - Point2(sun_environ_popup->get_contents_minimum_size().width / 2, 0));
 	sun_environ_popup->reset_size();
 	sun_environ_popup->popup();
 	// Grabbing the focus is required for Shift modifier checking to be functional
@@ -8365,7 +8365,7 @@ void Node3DEditor::clear() {
 }
 
 void Node3DEditor::_sun_direction_draw() {
-	sun_direction->draw_rect(Rect2(Vector2(), sun_direction->get_size()), Color(1, 1, 1, 1));
+	sun_direction->draw_rect(Rect2(Point2(), sun_direction->get_size()), Color(1, 1, 1));
 	Vector3 z_axis = preview_sun->get_transform().basis.get_column(Vector3::AXIS_Z);
 	z_axis = get_editor_viewport(0)->camera->get_camera_transform().basis.xform_inv(z_axis);
 	sun_direction_material->set_shader_parameter("sun_direction", Vector3(z_axis.x, -z_axis.y, z_axis.z));
@@ -8833,7 +8833,7 @@ Node3DEditor::Node3DEditor() {
 	settings_dialog->set_title(TTR("Viewport Settings"));
 	add_child(settings_dialog);
 	settings_vbc = memnew(VBoxContainer);
-	settings_vbc->set_custom_minimum_size(Size2(200, 0) * EDSCALE);
+	settings_vbc->set_custom_minimum_size(Size2(200 * EDSCALE, 0));
 	settings_dialog->add_child(settings_vbc);
 
 	settings_fov = memnew(SpinBox);
@@ -8965,7 +8965,7 @@ Node3DEditor::Node3DEditor() {
 
 		CenterContainer *sun_direction_center = memnew(CenterContainer);
 		sun_direction = memnew(Control);
-		sun_direction->set_custom_minimum_size(Size2(128, 128) * EDSCALE);
+		sun_direction->set_custom_minimum_size(Size2(128 * EDSCALE));
 		sun_direction_center->add_child(sun_direction);
 		sun_vb->add_margin_child(TTR("Sun Direction"), sun_direction_center);
 		sun_direction->connect(SceneStringName(gui_input), callable_mp(this, &Node3DEditor::_sun_direction_input));
@@ -9008,7 +9008,7 @@ void fragment() {
 		sun_angle_altitude_vbox->add_child(sun_angle_altitude);
 		sun_angle_hbox->add_child(sun_angle_altitude_vbox);
 		VBoxContainer *sun_angle_azimuth_vbox = memnew(VBoxContainer);
-		sun_angle_azimuth_vbox->set_custom_minimum_size(Vector2(100, 0));
+		sun_angle_azimuth_vbox->set_custom_minimum_size(Size2(100, 0));
 		Label *sun_angle_azimuth_label = memnew(Label);
 		sun_angle_azimuth_label->set_text(TTR("Azimuth"));
 		sun_angle_azimuth_vbox->add_child(sun_angle_azimuth_label);

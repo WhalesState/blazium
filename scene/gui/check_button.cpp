@@ -55,7 +55,7 @@ Size2 CheckButton::get_icon_size() const {
 		}
 	}
 
-	Size2 tex_size = Size2(0, 0);
+	Size2 tex_size = Size2();
 	if (!on_tex.is_null()) {
 		tex_size = on_tex->get_size();
 	}

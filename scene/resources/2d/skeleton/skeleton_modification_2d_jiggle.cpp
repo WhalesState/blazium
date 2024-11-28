@@ -208,8 +208,8 @@ void SkeletonModification2DJiggle::_execute_jiggle_joint(int p_joint_idx, Node2D
 
 			if (ray_hit) {
 				jiggle_data_chain.write[p_joint_idx].dynamic_position = jiggle_data_chain[p_joint_idx].last_noncollision_position;
-				jiggle_data_chain.write[p_joint_idx].acceleration = Vector2(0, 0);
-				jiggle_data_chain.write[p_joint_idx].velocity = Vector2(0, 0);
+				jiggle_data_chain.write[p_joint_idx].acceleration = Vector2();
+				jiggle_data_chain.write[p_joint_idx].velocity = Vector2();
 			} else {
 				jiggle_data_chain.write[p_joint_idx].last_noncollision_position = jiggle_data_chain[p_joint_idx].dynamic_position;
 			}
@@ -504,7 +504,7 @@ void SkeletonModification2DJiggle::set_jiggle_joint_gravity(int p_joint_idx, Vec
 }
 
 Vector2 SkeletonModification2DJiggle::get_jiggle_joint_gravity(int p_joint_idx) const {
-	ERR_FAIL_INDEX_V(p_joint_idx, jiggle_data_chain.size(), Vector2(0, 0));
+	ERR_FAIL_INDEX_V(p_joint_idx, jiggle_data_chain.size(), Vector2());
 	return jiggle_data_chain[p_joint_idx].gravity;
 }
 

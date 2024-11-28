@@ -59,7 +59,7 @@ void EditorAtlasPacker::chart_pack(Vector<Chart> &charts, int &r_width, int &r_h
 
 		Ref<BitMap> src_bitmap;
 		src_bitmap.instantiate();
-		src_bitmap->create((aabb.size + Vector2(divide_by - 1, divide_by - 1)) / divide_by);
+		src_bitmap->create((aabb.size + Size2i(divide_by - 1)) / divide_by);
 
 		int w = src_bitmap->get_size().width;
 		int h = src_bitmap->get_size().height;
@@ -229,7 +229,7 @@ void EditorAtlasPacker::chart_pack(Vector<Chart> &charts, int &r_width, int &r_h
 				SWAP(offset.x, offset.y);
 			}
 
-			Vector2 final_pos = Vector2(best_height_offset * divide_by, best_height * divide_by) + Vector2(divide_by, divide_by) - offset;
+			Vector2 final_pos = Vector2(best_height_offset * divide_by, best_height * divide_by) + Vector2(divide_by) - offset;
 			charts.write[bitmaps[i].chart_index].final_offset = final_pos;
 			charts.write[bitmaps[i].chart_index].transposed = bitmaps[i].transposed;
 		}

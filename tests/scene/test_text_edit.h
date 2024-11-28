@@ -1662,7 +1662,7 @@ TEST_CASE("[SceneTree][TextEdit] text entry") {
 
 		SUBCASE("[TextEdit] mouse drag select") {
 			// Set size for mouse input.
-			text_edit->set_size(Size2(200, 200));
+			text_edit->set_size(Size2(200));
 
 			text_edit->set_text("this is some text\nfor selection");
 			text_edit->grab_focus();
@@ -1767,7 +1767,7 @@ TEST_CASE("[SceneTree][TextEdit] text entry") {
 
 		SUBCASE("[TextEdit] mouse word select") {
 			// Set size for mouse input.
-			text_edit->set_size(Size2(200, 200));
+			text_edit->set_size(Size2(200));
 
 			text_edit->set_text("this is some text\nfor selection\n");
 			MessageQueue::get_singleton()->flush();
@@ -1916,7 +1916,7 @@ TEST_CASE("[SceneTree][TextEdit] text entry") {
 
 		SUBCASE("[TextEdit] mouse line select") {
 			// Set size for mouse input.
-			text_edit->set_size(Size2(200, 200));
+			text_edit->set_size(Size2(200));
 
 			text_edit->set_text("this is some text\nfor selection\nwith 3 lines");
 			MessageQueue::get_singleton()->flush();
@@ -2066,7 +2066,7 @@ TEST_CASE("[SceneTree][TextEdit] text entry") {
 
 		SUBCASE("[TextEdit] mouse shift click select") {
 			// Set size for mouse input.
-			text_edit->set_size(Size2(200, 200));
+			text_edit->set_size(Size2(200));
 
 			text_edit->set_text("this is some text\nfor selection");
 			MessageQueue::get_singleton()->flush();
@@ -2324,7 +2324,7 @@ TEST_CASE("[SceneTree][TextEdit] text entry") {
 		}
 
 		SUBCASE("[TextEdit] text drag") {
-			text_edit->set_size(Size2(200, 200));
+			text_edit->set_size(Size2(200));
 			text_edit->set_text("drag test\ndrop here ''");
 			text_edit->grab_click_focus();
 			MessageQueue::get_singleton()->flush();
@@ -2508,10 +2508,10 @@ TEST_CASE("[SceneTree][TextEdit] text entry") {
 			TextEdit *target_text_edit = memnew(TextEdit);
 			SceneTree::get_singleton()->get_root()->add_child(target_text_edit);
 
-			target_text_edit->set_size(Size2(200, 200));
+			target_text_edit->set_size(Size2(200));
 			target_text_edit->set_position(Point2(400, 0));
 
-			text_edit->set_size(Size2(200, 200));
+			text_edit->set_size(Size2(200));
 
 			CHECK_FALSE(text_edit->is_mouse_over_selection());
 			text_edit->set_text("drag me");
@@ -3440,7 +3440,7 @@ TEST_CASE("[SceneTree][TextEdit] text entry") {
 
 		SUBCASE("[TextEdit] paste primary") {
 			// Set size for mouse input.
-			text_edit->set_size(Size2(200, 200));
+			text_edit->set_size(Size2(200));
 
 			text_edit->grab_focus();
 			DS->clipboard_set("");
@@ -6349,15 +6349,15 @@ TEST_CASE("[SceneTree][TextEdit] search") {
 	text_edit->set_text("hay needle, hay\nHAY NEEDLE, HAY\nwordword.word.word");
 	int length = text_edit->get_line(1).length();
 
-	CHECK(text_edit->search("test", 0, 0, 0) == Point2i(-1, -1));
-	CHECK(text_edit->search("test", TextEdit::SEARCH_MATCH_CASE, 0, 0) == Point2i(-1, -1));
-	CHECK(text_edit->search("test", TextEdit::SEARCH_WHOLE_WORDS, 0, 0) == Point2i(-1, -1));
-	CHECK(text_edit->search("test", TextEdit::SEARCH_BACKWARDS, 0, 0) == Point2i(-1, -1));
+	CHECK(text_edit->search("test", 0, 0, 0) == Point2i(-1));
+	CHECK(text_edit->search("test", TextEdit::SEARCH_MATCH_CASE, 0, 0) == Point2i(-1));
+	CHECK(text_edit->search("test", TextEdit::SEARCH_WHOLE_WORDS, 0, 0) == Point2i(-1));
+	CHECK(text_edit->search("test", TextEdit::SEARCH_BACKWARDS, 0, 0) == Point2i(-1));
 
-	CHECK(text_edit->search("test", 0, 1, length) == Point2i(-1, -1));
-	CHECK(text_edit->search("test", TextEdit::SEARCH_MATCH_CASE, 1, length) == Point2i(-1, -1));
-	CHECK(text_edit->search("test", TextEdit::SEARCH_WHOLE_WORDS, 1, length) == Point2i(-1, -1));
-	CHECK(text_edit->search("test", TextEdit::SEARCH_BACKWARDS, 1, length) == Point2i(-1, -1));
+	CHECK(text_edit->search("test", 0, 1, length) == Point2i(-1));
+	CHECK(text_edit->search("test", TextEdit::SEARCH_MATCH_CASE, 1, length) == Point2i(-1));
+	CHECK(text_edit->search("test", TextEdit::SEARCH_WHOLE_WORDS, 1, length) == Point2i(-1));
+	CHECK(text_edit->search("test", TextEdit::SEARCH_BACKWARDS, 1, length) == Point2i(-1));
 
 	CHECK(text_edit->search("needle", 0, 0, 0) == Point2i(4, 0));
 	CHECK(text_edit->search("needle", 0, 1, length) == Point2i(4, 0));
@@ -6375,8 +6375,8 @@ TEST_CASE("[SceneTree][TextEdit] search") {
 	CHECK(text_edit->search("need", TextEdit::SEARCH_MATCH_CASE, 0, 0) == Point2i(4, 0));
 	CHECK(text_edit->search("need", TextEdit::SEARCH_MATCH_CASE | TextEdit::SEARCH_BACKWARDS, 0, 0) == Point2i(4, 0));
 
-	CHECK(text_edit->search("need", TextEdit::SEARCH_WHOLE_WORDS | TextEdit::SEARCH_MATCH_CASE, 0, 0) == Point2i(-1, -1));
-	CHECK(text_edit->search("need", TextEdit::SEARCH_WHOLE_WORDS | TextEdit::SEARCH_MATCH_CASE | TextEdit::SEARCH_BACKWARDS, 0, 0) == Point2i(-1, -1));
+	CHECK(text_edit->search("need", TextEdit::SEARCH_WHOLE_WORDS | TextEdit::SEARCH_MATCH_CASE, 0, 0) == Point2i(-1));
+	CHECK(text_edit->search("need", TextEdit::SEARCH_WHOLE_WORDS | TextEdit::SEARCH_MATCH_CASE | TextEdit::SEARCH_BACKWARDS, 0, 0) == Point2i(-1));
 
 	CHECK(text_edit->search("word", TextEdit::SEARCH_WHOLE_WORDS, 2, 0) == Point2i(9, 2));
 	CHECK(text_edit->search("word", TextEdit::SEARCH_WHOLE_WORDS, 2, 10) == Point2i(14, 2));
@@ -6384,11 +6384,11 @@ TEST_CASE("[SceneTree][TextEdit] search") {
 	CHECK(text_edit->search("word.", TextEdit::SEARCH_WHOLE_WORDS, 2, 0) == Point2i(9, 2));
 
 	ERR_PRINT_OFF;
-	CHECK(text_edit->search("", 0, 0, 0) == Point2i(-1, -1));
-	CHECK(text_edit->search("needle", 0, -1, 0) == Point2i(-1, -1));
-	CHECK(text_edit->search("needle", 0, 0, -1) == Point2i(-1, -1));
-	CHECK(text_edit->search("needle", 0, 100, 0) == Point2i(-1, -1));
-	CHECK(text_edit->search("needle", 0, 0, 100) == Point2i(-1, -1));
+	CHECK(text_edit->search("", 0, 0, 0) == Point2i(-1));
+	CHECK(text_edit->search("needle", 0, -1, 0) == Point2i(-1));
+	CHECK(text_edit->search("needle", 0, 0, -1) == Point2i(-1));
+	CHECK(text_edit->search("needle", 0, 100, 0) == Point2i(-1));
+	CHECK(text_edit->search("needle", 0, 0, 100) == Point2i(-1));
 	ERR_PRINT_ON;
 
 	memdelete(text_edit);
@@ -6400,7 +6400,7 @@ TEST_CASE("[SceneTree][TextEdit] mouse") {
 
 	text_edit->set_size(Size2(800, 200));
 
-	CHECK(text_edit->get_rect_at_line_column(0, 0).get_position() == Point2i(0, 0));
+	CHECK(text_edit->get_rect_at_line_column(0, 0).get_position() == Point2i());
 
 	text_edit->set_line(0, "A");
 	MessageQueue::get_singleton()->flush();
@@ -6415,29 +6415,29 @@ TEST_CASE("[SceneTree][TextEdit] mouse") {
 	CHECK(text_edit->get_word_at_pos(text_edit->get_pos_at_line_column(0, 9)) == "ipsum");
 
 	ERR_PRINT_OFF;
-	CHECK(text_edit->get_pos_at_line_column(0, -1) == Point2i(-1, -1));
-	CHECK(text_edit->get_pos_at_line_column(-1, 0) == Point2i(-1, -1));
-	CHECK(text_edit->get_pos_at_line_column(-1, -1) == Point2i(-1, -1));
+	CHECK(text_edit->get_pos_at_line_column(0, -1) == Point2i(-1));
+	CHECK(text_edit->get_pos_at_line_column(-1, 0) == Point2i(-1));
+	CHECK(text_edit->get_pos_at_line_column(-1, -1) == Point2i(-1));
 
-	CHECK(text_edit->get_pos_at_line_column(0, 500) == Point2i(-1, -1));
-	CHECK(text_edit->get_pos_at_line_column(2, 0) == Point2i(-1, -1));
-	CHECK(text_edit->get_pos_at_line_column(2, 500) == Point2i(-1, -1));
+	CHECK(text_edit->get_pos_at_line_column(0, 500) == Point2i(-1));
+	CHECK(text_edit->get_pos_at_line_column(2, 0) == Point2i(-1));
+	CHECK(text_edit->get_pos_at_line_column(2, 500) == Point2i(-1));
 
 	// Out of view.
-	CHECK(text_edit->get_pos_at_line_column(0, text_edit->get_line(0).length() - 1) == Point2i(-1, -1));
+	CHECK(text_edit->get_pos_at_line_column(0, text_edit->get_line(0).length() - 1) == Point2i(-1));
 	ERR_PRINT_ON;
 
 	// Add method to get drawn column count?
 	Point2i start_pos = text_edit->get_pos_at_line_column(0, 0);
 	Point2i end_pos = text_edit->get_pos_at_line_column(0, 105);
 
-	CHECK(text_edit->get_line_column_at_pos(Point2i(start_pos.x, start_pos.y)) == Point2i(0, 0));
+	CHECK(text_edit->get_line_column_at_pos(Point2i(start_pos.x, start_pos.y)) == Point2i());
 	CHECK(text_edit->get_line_column_at_pos(Point2i(end_pos.x, end_pos.y)) == Point2i(104, 0));
 
-	// Should this return Point2i(-1, -1) if its also < 0 not just > vis_lines.
+	// Should this return Point2i(-1) if its also < 0 not just > vis_lines.
 	CHECK(text_edit->get_line_column_at_pos(Point2i(end_pos.x - 100, end_pos.y), false) == Point2i(90, 0));
-	CHECK(text_edit->get_line_column_at_pos(Point2i(end_pos.x, end_pos.y + 100), false) == Point2i(-1, -1));
-	CHECK(text_edit->get_line_column_at_pos(Point2i(end_pos.x - 100, end_pos.y + 100), false) == Point2i(-1, -1));
+	CHECK(text_edit->get_line_column_at_pos(Point2i(end_pos.x, end_pos.y + 100), false) == Point2i(-1));
+	CHECK(text_edit->get_line_column_at_pos(Point2i(end_pos.x - 100, end_pos.y + 100), false) == Point2i(-1));
 	CHECK(text_edit->get_line_column_at_pos(Point2i(end_pos.x, end_pos.y - 100), false) == Point2i(104, 0));
 	CHECK(text_edit->get_line_column_at_pos(Point2i(end_pos.x - 100, end_pos.y - 100), false) == Point2i(90, 0));
 
@@ -7579,28 +7579,28 @@ TEST_CASE("[SceneTree][TextEdit] viewport") {
 
 	// Scroll.
 	int v_scroll = text_edit->get_v_scroll();
-	SEND_GUI_MOUSE_BUTTON_EVENT(Point2i(10, 10), MouseButton::WHEEL_DOWN, 0, Key::NONE);
+	SEND_GUI_MOUSE_BUTTON_EVENT(Point2i(10), MouseButton::WHEEL_DOWN, 0, Key::NONE);
 	CHECK(text_edit->get_v_scroll() > v_scroll);
-	SEND_GUI_MOUSE_BUTTON_EVENT(Point2i(10, 10), MouseButton::WHEEL_UP, 0, Key::NONE);
+	SEND_GUI_MOUSE_BUTTON_EVENT(Point2i(10), MouseButton::WHEEL_UP, 0, Key::NONE);
 	CHECK(text_edit->get_v_scroll() == v_scroll);
 
 	// smooth scroll speed.
 	text_edit->set_smooth_scroll_enabled(true);
 
 	v_scroll = text_edit->get_v_scroll();
-	SEND_GUI_MOUSE_BUTTON_EVENT(Point2i(10, 10), MouseButton::WHEEL_DOWN, 0, Key::NONE);
+	SEND_GUI_MOUSE_BUTTON_EVENT(Point2i(10), MouseButton::WHEEL_DOWN, 0, Key::NONE);
 	text_edit->notification(TextEdit::NOTIFICATION_INTERNAL_PHYSICS_PROCESS);
 	CHECK(text_edit->get_v_scroll() >= v_scroll);
-	SEND_GUI_MOUSE_BUTTON_EVENT(Point2i(10, 10), MouseButton::WHEEL_UP, 0, Key::NONE);
+	SEND_GUI_MOUSE_BUTTON_EVENT(Point2i(10), MouseButton::WHEEL_UP, 0, Key::NONE);
 	text_edit->notification(TextEdit::NOTIFICATION_INTERNAL_PHYSICS_PROCESS);
 	CHECK(text_edit->get_v_scroll() == v_scroll);
 
 	v_scroll = text_edit->get_v_scroll();
 	text_edit->set_v_scroll_speed(10000);
-	SEND_GUI_MOUSE_BUTTON_EVENT(Point2i(10, 10), MouseButton::WHEEL_DOWN, 0, Key::NONE);
+	SEND_GUI_MOUSE_BUTTON_EVENT(Point2i(10), MouseButton::WHEEL_DOWN, 0, Key::NONE);
 	text_edit->notification(TextEdit::NOTIFICATION_INTERNAL_PHYSICS_PROCESS);
 	CHECK(text_edit->get_v_scroll() >= v_scroll);
-	SEND_GUI_MOUSE_BUTTON_EVENT(Point2i(10, 10), MouseButton::WHEEL_UP, 0, Key::NONE);
+	SEND_GUI_MOUSE_BUTTON_EVENT(Point2i(10), MouseButton::WHEEL_UP, 0, Key::NONE);
 	text_edit->notification(TextEdit::NOTIFICATION_INTERNAL_PHYSICS_PROCESS);
 	CHECK(text_edit->get_v_scroll() == v_scroll);
 

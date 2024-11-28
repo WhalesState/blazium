@@ -3469,7 +3469,7 @@ void VisualShaderNodeUVFunc::set_function(VisualShaderNodeUVFunc::Function p_fun
 	if (p_func == FUNC_PANNING) {
 		set_input_port_default_value(2, Vector2(), get_input_port_default_value(2)); // offset
 	} else { // FUNC_SCALING
-		set_input_port_default_value(2, Vector2(0.5, 0.5), get_input_port_default_value(2)); // pivot
+		set_input_port_default_value(2, Vector2(0.5), get_input_port_default_value(2)); // pivot
 	}
 	func = p_func;
 	emit_changed();
@@ -3497,7 +3497,7 @@ void VisualShaderNodeUVFunc::_bind_methods() {
 }
 
 VisualShaderNodeUVFunc::VisualShaderNodeUVFunc() {
-	set_input_port_default_value(1, Vector2(1.0, 1.0)); // scale
+	set_input_port_default_value(1, Vector2(1)); // scale
 	set_input_port_default_value(2, Vector2()); // offset
 }
 
@@ -3599,7 +3599,7 @@ String VisualShaderNodeUVPolarCoord::generate_code(Shader::Mode p_mode, VisualSh
 }
 
 VisualShaderNodeUVPolarCoord::VisualShaderNodeUVPolarCoord() {
-	set_input_port_default_value(1, Vector2(0.5, 0.5)); // center
+	set_input_port_default_value(1, Vector2(0.5)); // center
 	set_input_port_default_value(2, 1.0); // zoom
 	set_input_port_default_value(3, 1.0); // repeat
 
@@ -7024,8 +7024,8 @@ void VisualShaderNodeSwitch::set_op_type(OpType p_op_type) {
 			set_input_port_default_value(2, 0, get_input_port_default_value(2));
 			break;
 		case OP_TYPE_VECTOR_2D:
-			set_input_port_default_value(1, Vector2(1.0, 1.0), get_input_port_default_value(1));
-			set_input_port_default_value(2, Vector2(0.0, 0.0), get_input_port_default_value(2));
+			set_input_port_default_value(1, Vector2(1), get_input_port_default_value(1));
+			set_input_port_default_value(2, Vector2(), get_input_port_default_value(2));
 			break;
 		case OP_TYPE_VECTOR_3D:
 			set_input_port_default_value(1, Vector3(1.0, 1.0, 1.0), get_input_port_default_value(1));
@@ -7656,7 +7656,7 @@ void VisualShaderNodeMultiplyAdd::set_op_type(OpType p_op_type) {
 		} break;
 		case OP_TYPE_VECTOR_2D: {
 			set_input_port_default_value(0, Vector2(), get_input_port_default_value(0));
-			set_input_port_default_value(1, Vector2(1.0, 1.0), get_input_port_default_value(1));
+			set_input_port_default_value(1, Vector2(1), get_input_port_default_value(1));
 			set_input_port_default_value(2, Vector2(), get_input_port_default_value(2));
 		} break;
 		case OP_TYPE_VECTOR_3D: {

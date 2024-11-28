@@ -304,7 +304,7 @@ public:
 	int _get_screen_index(int p_screen) const {
 		switch (p_screen) {
 			case SCREEN_WITH_MOUSE_FOCUS: {
-				const Rect2i rect = Rect2i(mouse_get_position(), Vector2i(1, 1));
+				const Rect2i rect = Rect2i(mouse_get_position(), Vector2i(1));
 				return get_screen_from_rect(rect);
 			} break;
 			case SCREEN_WITH_KEYBOARD_FOCUS: {

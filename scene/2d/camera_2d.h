@@ -61,8 +61,8 @@ protected:
 	StringName canvas_group_name;
 	RID canvas;
 	Vector2 offset;
-	Vector2 zoom = Vector2(1, 1);
-	Vector2 zoom_scale = Vector2(1, 1);
+	Vector2 zoom = Vector2(1);
+	Vector2 zoom_scale = Vector2(1);
 	AnchorMode anchor_mode = ANCHOR_MODE_DRAG_CENTER;
 	bool ignore_rotation = true;
 	bool enabled = true;

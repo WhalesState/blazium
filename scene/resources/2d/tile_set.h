@@ -72,7 +72,7 @@ union TileMapCell {
 		return hash_one_uint64(p_hash._u64t);
 	}
 
-	TileMapCell(int p_source_id = -1, Vector2i p_atlas_coords = Vector2i(-1, -1), int p_alternative_tile = -1) { // default are INVALID_SOURCE, INVALID_ATLAS_COORDS, INVALID_TILE_ALTERNATIVE
+	TileMapCell(int p_source_id = -1, Vector2i p_atlas_coords = Vector2i(-1), int p_alternative_tile = -1) { // default are INVALID_SOURCE, INVALID_ATLAS_COORDS, INVALID_TILE_ALTERNATIVE
 		source_id = p_source_id;
 		set_atlas_coords(p_atlas_coords);
 		alternative_tile = p_alternative_tile;
@@ -170,7 +170,7 @@ private:
 		// Atlas or autotiles data
 		int autotile_bitmask_mode = 0;
 		Vector2 autotile_icon_coordinate;
-		Size2i autotile_tile_size = Size2i(16, 16);
+		Size2i autotile_tile_size = Size2i(16);
 
 		int autotile_spacing = 0;
 		HashMap<Vector2i, int> autotile_bitmask_flags;
@@ -309,7 +309,7 @@ private:
 	TileShape tile_shape = TILE_SHAPE_SQUARE;
 	TileLayout tile_layout = TILE_LAYOUT_STACKED;
 	TileOffsetAxis tile_offset_axis = TILE_OFFSET_AXIS_HORIZONTAL;
-	Size2i tile_size = Size2i(16, 16); //Size2(64, 64);
+	Size2i tile_size = Size2i(16); //Size2(64);
 
 	// Rendering.
 	bool uv_clipping = false;
@@ -565,7 +565,7 @@ protected:
 	static void _bind_methods();
 
 public:
-	static const Vector2i INVALID_ATLAS_COORDS; // Vector2i(-1, -1);
+	static const Vector2i INVALID_ATLAS_COORDS; // Vector2i(-1);
 	static const int INVALID_TILE_ALTERNATIVE; // -1;
 
 	// Not exposed.
@@ -623,7 +623,7 @@ public:
 
 private:
 	struct TileAlternativesData {
-		Vector2i size_in_atlas = Vector2i(1, 1);
+		Vector2i size_in_atlas = Vector2i(1);
 		Vector2i texture_offset;
 
 		// Animation
@@ -644,7 +644,7 @@ private:
 	Ref<Texture2D> texture;
 	Vector2i margins;
 	Vector2i separation;
-	Size2i texture_region_size = Size2i(16, 16);
+	Size2i texture_region_size = Size2i(16);
 
 	HashMap<Vector2i, TileAlternativesData> tiles;
 	Vector<Vector2i> tiles_ids;
@@ -714,10 +714,10 @@ public:
 	bool get_use_texture_padding() const;
 
 	// Base tiles.
-	void create_tile(const Vector2i p_atlas_coords, const Vector2i p_size = Vector2i(1, 1));
+	void create_tile(const Vector2i p_atlas_coords, const Vector2i p_size = Vector2i(1));
 	void remove_tile(Vector2i p_atlas_coords);
 	virtual bool has_tile(Vector2i p_atlas_coords) const override;
-	void move_tile_in_atlas(Vector2i p_atlas_coords, Vector2i p_new_atlas_coords = INVALID_ATLAS_COORDS, Vector2i p_new_size = Vector2i(-1, -1));
+	void move_tile_in_atlas(Vector2i p_atlas_coords, Vector2i p_new_atlas_coords = INVALID_ATLAS_COORDS, Vector2i p_new_size = Vector2i(-1));
 	Vector2i get_tile_size_in_atlas(Vector2i p_atlas_coords) const;
 
 	virtual int get_tiles_count() const override;

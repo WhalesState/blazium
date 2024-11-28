@@ -75,7 +75,7 @@ void ColorModeRGB::slider_draw(int p_which) {
 	const real_t margin = 16 * color_picker->theme_cache.base_scale;
 
 	if (p_which == ColorPicker::SLIDER_COUNT) {
-		slider->draw_texture_rect(color_picker->theme_cache.sample_bg, Rect2(Point2(0, 0), Size2(size.x, margin)), true);
+		slider->draw_texture_rect(color_picker->theme_cache.sample_bg, Rect2(Point2(), Size2(size.x, margin)), true);
 
 		left_color = color;
 		left_color.a = 0;
@@ -96,7 +96,7 @@ void ColorModeRGB::slider_draw(int p_which) {
 	col.set(1, right_color);
 	col.set(2, right_color);
 	col.set(3, left_color);
-	pos.set(0, Vector2(0, 0));
+	pos.set(0, Vector2());
 	pos.set(1, Vector2(size.x, 0));
 	pos.set(2, Vector2(size.x, margin));
 	pos.set(3, Vector2(0, margin));
@@ -170,7 +170,7 @@ void ColorModeHSV::slider_draw(int p_which) {
 	const real_t margin = 16 * color_picker->theme_cache.base_scale;
 
 	if (p_which == ColorPicker::SLIDER_COUNT) {
-		slider->draw_texture_rect(color_picker->theme_cache.sample_bg, Rect2(Point2(0, 0), Size2(size.x, margin)), true);
+		slider->draw_texture_rect(color_picker->theme_cache.sample_bg, Rect2(Point2(), Size2(size.x, margin)), true);
 
 		left_color = color;
 		left_color.a = 0;
@@ -195,7 +195,7 @@ void ColorModeHSV::slider_draw(int p_which) {
 	col.set(1, right_color);
 	col.set(2, right_color);
 	col.set(3, left_color);
-	pos.set(0, Vector2(0, 0));
+	pos.set(0, Vector2());
 	pos.set(1, Vector2(size.x, 0));
 	pos.set(2, Vector2(size.x, margin));
 	pos.set(3, Vector2(0, margin));
@@ -245,7 +245,7 @@ void ColorModeRAW::slider_draw(int p_which) {
 	const real_t margin = 16 * color_picker->theme_cache.base_scale;
 
 	if (p_which == ColorPicker::SLIDER_COUNT) {
-		slider->draw_texture_rect(color_picker->theme_cache.sample_bg, Rect2(Point2(0, 0), Size2(size.x, margin)), true);
+		slider->draw_texture_rect(color_picker->theme_cache.sample_bg, Rect2(Point2(), Size2(size.x, margin)), true);
 
 		left_color = color;
 		left_color.a = 0;
@@ -266,7 +266,7 @@ void ColorModeRAW::slider_draw(int p_which) {
 	col.set(1, right_color);
 	col.set(2, right_color);
 	col.set(3, left_color);
-	pos.set(0, Vector2(0, 0));
+	pos.set(0, Vector2());
 	pos.set(1, Vector2(size.x, 0));
 	pos.set(2, Vector2(size.x, margin));
 	pos.set(3, Vector2(0, margin));
@@ -355,7 +355,7 @@ void ColorModeOKHSL::slider_draw(int p_which) {
 		col.set(3, right_color);
 		col.set(4, middle_color);
 		col.set(5, left_color);
-		pos.set(0, Vector2(0, 0));
+		pos.set(0, Vector2());
 		pos.set(1, Vector2(size.x * 0.5, 0));
 		pos.set(2, Vector2(size.x, 0));
 		pos.set(3, Vector2(size.x, margin));
@@ -366,7 +366,7 @@ void ColorModeOKHSL::slider_draw(int p_which) {
 		col.resize(4);
 
 		if (p_which == ColorPicker::SLIDER_COUNT) {
-			slider->draw_texture_rect(color_picker->theme_cache.sample_bg, Rect2(Point2(0, 0), Size2(size.x, margin)), true);
+			slider->draw_texture_rect(color_picker->theme_cache.sample_bg, Rect2(Point2(), Size2(size.x, margin)), true);
 
 			left_color = color;
 			left_color.a = 0;
@@ -386,7 +386,7 @@ void ColorModeOKHSL::slider_draw(int p_which) {
 		col.set(1, right_color);
 		col.set(2, right_color);
 		col.set(3, left_color);
-		pos.set(0, Vector2(0, 0));
+		pos.set(0, Vector2());
 		pos.set(1, Vector2(size.x, 0));
 		pos.set(2, Vector2(size.x, margin));
 		pos.set(3, Vector2(0, margin));

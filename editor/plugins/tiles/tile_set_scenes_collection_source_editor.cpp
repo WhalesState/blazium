@@ -349,8 +349,7 @@ void TileSetScenesCollectionSourceEditor::_update_scenes_list() {
 	}
 
 	// Icon size update.
-	int int_size = int(EDITOR_GET("filesystem/file_dialog/thumbnail_size")) * EDSCALE;
-	scene_tiles_list->set_fixed_icon_size(Vector2(int_size, int_size));
+	scene_tiles_list->set_fixed_icon_size(Size2(int(EDITOR_GET("filesystem/file_dialog/thumbnail_size")) * EDSCALE));
 }
 
 void TileSetScenesCollectionSourceEditor::_notification(int p_what) {
@@ -516,7 +515,7 @@ TileSetScenesCollectionSourceEditor::TileSetScenesCollectionSourceEditor() {
 	// Middle panel.
 	ScrollContainer *middle_panel = memnew(ScrollContainer);
 	middle_panel->set_horizontal_scroll_mode(ScrollContainer::SCROLL_MODE_DISABLED);
-	middle_panel->set_custom_minimum_size(Size2(200, 0) * EDSCALE);
+	middle_panel->set_custom_minimum_size(Size2(200 * EDSCALE, 0));
 	split_container_right_side->add_child(middle_panel);
 
 	VBoxContainer *middle_vbox_container = memnew(VBoxContainer);

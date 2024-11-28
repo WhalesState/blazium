@@ -444,11 +444,11 @@ void EditorProfiler::_graph_tex_draw() {
 	if (seeking) {
 		int frame = cursor_metric_edit->get_value() - _get_frame_metric(0).frame_number;
 		int cur_x = (2 * frame + 1) * graph->get_size().x / (2 * frame_metrics.size()) + 1;
-		graph->draw_line(Vector2(cur_x, 0), Vector2(cur_x, graph->get_size().y), theme_cache.seek_line_color);
+		graph->draw_line(Point2(cur_x, 0), Point2(cur_x, graph->get_size().y), theme_cache.seek_line_color);
 	}
 	if (hover_metric > -1 && hover_metric < total_metrics) {
 		int cur_x = (2 * hover_metric + 1) * graph->get_size().x / (2 * frame_metrics.size()) + 1;
-		graph->draw_line(Vector2(cur_x, 0), Vector2(cur_x, graph->get_size().y), theme_cache.seek_line_hover_color);
+		graph->draw_line(Point2(cur_x, 0), Point2(cur_x, graph->get_size().y), theme_cache.seek_line_hover_color);
 	}
 }
 
@@ -681,7 +681,7 @@ EditorProfiler::EditorProfiler() {
 
 	variables = memnew(Tree);
 	variables->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);
-	variables->set_custom_minimum_size(Size2(320, 0) * EDSCALE);
+	variables->set_custom_minimum_size(Size2(320 * EDSCALE, 0));
 	variables->set_hide_folding(true);
 	h_split->add_child(variables);
 	variables->set_hide_root(true);

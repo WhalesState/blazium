@@ -819,7 +819,7 @@ Error RenderingDeviceDriverVulkan::_check_device_capabilities() {
 				vrs_capabilities.max_fragment_size.y = vrs_properties.maxFragmentSize.height; // generally the same as width
 
 				// We'll attempt to default to a texel size of 16x16.
-				vrs_capabilities.texel_size = Vector2i(16, 16).clamp(vrs_capabilities.min_texel_size, vrs_capabilities.max_texel_size);
+				vrs_capabilities.texel_size = Vector2i(16).clamp(vrs_capabilities.min_texel_size, vrs_capabilities.max_texel_size);
 
 				print_verbose(String("  Attachment fragment shading rate") + String(", min texel size: (") + itos(vrs_capabilities.min_texel_size.x) + String(", ") + itos(vrs_capabilities.min_texel_size.y) + String(")") + String(", max texel size: (") + itos(vrs_capabilities.max_texel_size.x) + String(", ") + itos(vrs_capabilities.max_texel_size.y) + String(")") + String(", max fragment size: (") + itos(vrs_capabilities.max_fragment_size.x) + String(", ") + itos(vrs_capabilities.max_fragment_size.y) + String(")"));
 			}

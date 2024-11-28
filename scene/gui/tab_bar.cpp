@@ -534,11 +534,11 @@ void TabBar::_draw_tab(Ref<StyleBox> &p_tab_style, Color &p_font_color, int p_in
 
 	Rect2 sb_rect = Rect2(p_x, 0, tabs[p_index].size_cache, get_size().height);
 	if (tab_style_v_flip) {
-		draw_set_transform(Point2(0.0, p_tab_style->get_draw_rect(sb_rect).size.y), 0.0, Size2(1.0, -1.0));
+		draw_set_transform(Point2(0.0, p_tab_style->get_draw_rect(sb_rect).size.y), 0.0, Size2(1, -1));
 	}
 	p_tab_style->draw(ci, sb_rect);
 	if (tab_style_v_flip) {
-		draw_set_transform(Point2(), 0.0, Size2(1.0, 1.0));
+		draw_set_transform(Point2(), 0.0, Size2(1));
 	}
 	if (p_focus) {
 		Ref<StyleBox> focus_style = theme_cache.tab_focus_style;

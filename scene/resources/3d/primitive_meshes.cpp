@@ -318,7 +318,7 @@ Vector2 PrimitiveMesh::get_uv2_scale(Vector2 p_margin_scale) const {
 	uv2_scale.y = p_margin_scale.y * uv2_padding / (lightmap_size.y == 0.0 ? PADDING_REF_SIZE : lightmap_size.y);
 
 	// Inverse it to turn our margin into a scale
-	uv2_scale = Vector2(1.0, 1.0) - uv2_scale;
+	uv2_scale = Vector2(1) - uv2_scale;
 
 	return uv2_scale;
 }
@@ -1095,7 +1095,7 @@ void CylinderMesh::create_mesh_array(Array &p_arr, float top_radius, float botto
 		points.push_back(Vector3(0.0, y, 0.0));
 		normals.push_back(Vector3(0.0, -1.0, 0.0));
 		ADD_TANGENT(1.0, 0.0, 0.0, 1.0)
-		uvs.push_back(Vector2(0.75, 0.75));
+		uvs.push_back(Vector2(0.75));
 		if (p_add_uv2) {
 			uv2s.push_back(Vector2(top_h + top_h + padding_h + bottom_h, height_v + padding_v + MAX(top_v, bottom_v)));
 		}
@@ -2387,7 +2387,7 @@ void TubeTrailMesh::_create_mesh_array(Array &p_arr) const {
 			points.push_back(Vector3(0.0, y, 0.0));
 			normals.push_back(Vector3(0.0, -1.0, 0.0));
 			ADD_TANGENT(1.0, 0.0, 0.0, 1.0)
-			uvs.push_back(Vector2(0.75, 0.75));
+			uvs.push_back(Vector2(0.75));
 			point++;
 
 			bone_indices.push_back(sections);
@@ -3011,8 +3011,8 @@ void TextMesh::_create_mesh_array(Array &p_arr) const {
 	Vector<Vector2> uvs;
 	Vector<int32_t> indices;
 
-	Vector2 min_p = Vector2(INFINITY, INFINITY);
-	Vector2 max_p = Vector2(-INFINITY, -INFINITY);
+	Vector2 min_p = Vector2(INFINITY);
+	Vector2 max_p = Vector2(-INFINITY);
 
 	int32_t p_size = 0;
 	int32_t i_size = 0;

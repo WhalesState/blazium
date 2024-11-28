@@ -233,7 +233,7 @@ Lightmapper::BakeError LightmapperRD::_blit_meshes_into_atlas(int p_max_texture_
 		MeshInstance &mi = mesh_instances.write[m_i];
 		Size2i s = Size2i(mi.data.albedo_on_uv2->get_width(), mi.data.albedo_on_uv2->get_height());
 		sizes.push_back(s);
-		atlas_size = atlas_size.max(s + Size2i(2, 2).maxi(p_denoiser_range));
+		atlas_size = atlas_size.max(s + Size2i(2).maxi(p_denoiser_range));
 	}
 
 	int max = nearest_power_of_2_templated(atlas_size.width);
@@ -247,7 +247,7 @@ Lightmapper::BakeError LightmapperRD::_blit_meshes_into_atlas(int p_max_texture_
 		p_step_function(0.1, RTR("Determining optimal atlas size"), p_bake_userdata, true);
 	}
 
-	atlas_size = Size2i(max, max);
+	atlas_size = Size2i(max);
 
 	Size2i best_atlas_size;
 	int best_atlas_slices = 0;
@@ -261,7 +261,7 @@ Lightmapper::BakeError LightmapperRD::_blit_meshes_into_atlas(int p_max_texture_
 		source_sizes.resize(sizes.size());
 		source_indices.resize(sizes.size());
 		for (int i = 0; i < source_indices.size(); i++) {
-			source_sizes.write[i] = sizes[i] + Vector2i(2, 2).maxi(p_denoiser_range); // Add padding between lightmaps.
+			source_sizes.write[i] = sizes[i] + Vector2i(2).maxi(p_denoiser_range); // Add padding between lightmaps.
 			source_indices.write[i] = i;
 		}
 		Vector<Vector3i> atlas_offsets;

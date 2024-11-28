@@ -1999,7 +1999,7 @@ void TextEdit::gui_input(const Ref<InputEvent> &p_gui_input) {
 		}
 
 		// Check if user is hovering a different gutter, and update if yes.
-		Vector2i current_hovered_gutter = Vector2i(-1, -1);
+		Vector2i current_hovered_gutter = Vector2i(-1);
 
 		int left_margin = theme_cache.style_normal->get_margin(SIDE_LEFT);
 		if (mpos.x <= left_margin + gutters_width + gutter_padding) {
@@ -4139,10 +4139,10 @@ void TextEdit::set_search_flags(uint32_t p_flags) {
 
 Point2i TextEdit::search(const String &p_key, uint32_t p_search_flags, int p_from_line, int p_from_column) const {
 	if (p_key.length() == 0) {
-		return Point2(-1, -1);
+		return Point2(-1);
 	}
-	ERR_FAIL_INDEX_V(p_from_line, text.size(), Point2i(-1, -1));
-	ERR_FAIL_INDEX_V(p_from_column, text[p_from_line].length() + 1, Point2i(-1, -1));
+	ERR_FAIL_INDEX_V(p_from_line, text.size(), Point2i(-1));
+	ERR_FAIL_INDEX_V(p_from_column, text[p_from_line].length() + 1, Point2i(-1));
 
 	// Search through the whole document, but start by current line.
 
@@ -4244,7 +4244,7 @@ Point2i TextEdit::search(const String &p_key, uint32_t p_search_flags, int p_fro
 			line++;
 		}
 	}
-	return (pos == -1) ? Point2i(-1, -1) : Point2i(pos, line);
+	return (pos == -1) ? Point2i(-1) : Point2i(pos, line);
 }
 
 /* Mouse */
@@ -4323,7 +4323,7 @@ Point2i TextEdit::get_line_column_at_pos(const Point2i &p_pos, bool p_allow_out_
 	int visible_lines = get_visible_line_count_in_range(first_vis_line, row);
 	if (rows > visible_lines) {
 		if (!p_allow_out_of_bounds) {
-			return Point2i(-1, -1);
+			return Point2i(-1);
 		}
 		return Point2i(text[row].length(), row);
 	}
@@ -4980,7 +4980,7 @@ bool TextEdit::is_caret_visible(int p_caret) const {
 }
 
 Point2 TextEdit::get_caret_draw_pos(int p_caret) const {
-	ERR_FAIL_INDEX_V(p_caret, carets.size(), Point2(0, 0));
+	ERR_FAIL_INDEX_V(p_caret, carets.size(), Point2());
 	return carets[p_caret].draw_pos;
 }
 
@@ -7121,7 +7121,7 @@ void TextEdit::_cut_internal(int p_caret) {
 	if (p_caret == -1) {
 		line_ranges = get_line_ranges_from_carets();
 	} else {
-		line_ranges.push_back(Point2i(get_caret_line(p_caret), get_caret_line(p_caret)));
+		line_ranges.push_back(Point2i(get_caret_line(p_caret)));
 	}
 	int line_offset = 0;
 	for (Point2i line_range : line_ranges) {
@@ -7151,7 +7151,7 @@ void TextEdit::_copy_internal(int p_caret) {
 		// When there are multiple carets on a line, only copy it once.
 		line_ranges = get_line_ranges_from_carets(false, true);
 	} else {
-		line_ranges.push_back(Point2i(get_caret_line(p_caret), get_caret_line(p_caret)));
+		line_ranges.push_back(Point2i(get_caret_line(p_caret)));
 	}
 	for (Point2i line_range : line_ranges) {
 		for (int i = line_range.x; i <= line_range.y; i++) {

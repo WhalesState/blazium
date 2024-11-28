@@ -124,7 +124,7 @@ void Container::fit_child_in_rect(Control *p_child, const Rect2 &p_rect) {
 
 	p_child->set_rect(r);
 	p_child->set_rotation(0);
-	p_child->set_scale(Vector2(1, 1));
+	p_child->set_scale(Size2(1));
 }
 
 void Container::queue_sort() {

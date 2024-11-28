@@ -208,7 +208,7 @@ void Bone2D::_notification(int p_what) {
 
 			// Undo scaling
 			Transform2D editor_gizmo_trans;
-			editor_gizmo_trans.set_scale(Vector2(1, 1) / get_global_scale());
+			editor_gizmo_trans.set_scale(Vector2(1) / get_global_scale());
 			RenderingServer::get_singleton()->canvas_item_set_transform(editor_gizmo_rid, editor_gizmo_trans);
 
 			Color bone_color1 = EDITOR_GET("editors/2d/bone_color1");
@@ -335,7 +335,7 @@ bool Bone2D::_editor_get_bone_shape(Vector<Vector2> *p_shape, Vector<Vector2> *p
 
 	if (p_shape) {
 		p_shape->clear();
-		p_shape->push_back(Vector2(0, 0));
+		p_shape->push_back(Vector2());
 		p_shape->push_back(rel * 0.2 + relt);
 		p_shape->push_back(rel);
 		p_shape->push_back(rel * 0.2 - relt);
@@ -495,7 +495,7 @@ Bone2D::Bone2D() {
 	set_hide_clip_children(true);
 	//this is a clever hack so the bone knows no rest has been set yet, allowing to show an error.
 	for (int i = 0; i < 3; i++) {
-		rest[i] = Vector2(0, 0);
+		rest[i] = Vector2();
 	}
 	copy_transform_to_cache = true;
 }

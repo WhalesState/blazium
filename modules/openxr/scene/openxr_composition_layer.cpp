@@ -265,7 +265,7 @@ bool OpenXRCompositionLayer::is_natively_supported() const {
 }
 
 Vector2 OpenXRCompositionLayer::intersects_ray(const Vector3 &p_origin, const Vector3 &p_direction) const {
-	return Vector2(-1.0, -1.0);
+	return Vector2(-1);
 }
 
 void OpenXRCompositionLayer::_reset_fallback_material() {

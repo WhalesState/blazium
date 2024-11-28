@@ -171,7 +171,7 @@ MaterialEditor::MaterialEditor() {
 
 	rect_instance = memnew(ColorRect);
 	layout_2d->add_child(rect_instance);
-	rect_instance->set_custom_minimum_size(Size2(150, 150) * EDSCALE);
+	rect_instance->set_custom_minimum_size(Size2(150 * EDSCALE));
 
 	layout_2d->set_visible(false);
 
@@ -228,7 +228,7 @@ MaterialEditor::MaterialEditor() {
 	box_mesh.instantiate();
 	box_instance->set_mesh(box_mesh);
 
-	set_custom_minimum_size(Size2(1, 150) * EDSCALE);
+	set_custom_minimum_size(Size2(1, 150 * EDSCALE));
 
 	layout_3d = memnew(HBoxContainer);
 	add_child(layout_3d);

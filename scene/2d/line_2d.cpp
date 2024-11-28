@@ -41,7 +41,7 @@ Rect2 Line2D::_edit_get_rect() const {
 	if (_points.size() == 0) {
 		return Rect2(0, 0, 0, 0);
 	}
-	Vector2 d = Vector2(_width, _width);
+	Vector2 d = Vector2(_width);
 	Rect2 bounding_rect = Rect2(_points[0] - d, 2 * d);
 	for (int i = 1; i < _points.size(); i++) {
 		bounding_rect.expand_to(_points[i] - d);

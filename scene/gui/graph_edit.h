@@ -70,10 +70,10 @@ class GraphEditMinimap : public Control {
 
 	Vector2 minimap_padding;
 	Vector2 minimap_offset;
-	Vector2 graph_proportions = Vector2(1, 1);
-	Vector2 graph_padding = Vector2(0, 0);
+	Vector2 graph_proportions = Vector2(1);
+	Vector2 graph_padding = Vector2();
 	Vector2 camera_position = Vector2(100, 50);
-	Vector2 camera_size = Vector2(200, 200);
+	Vector2 camera_size = Vector2(200);
 
 	bool is_pressing = false;
 	bool is_resizing = false;

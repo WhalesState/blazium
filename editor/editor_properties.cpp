@@ -214,7 +214,7 @@ void EditorPropertyMultilineText::_notification(int p_what) {
 				font = get_theme_font(SceneStringName(font), SNAME("TextEdit"));
 				font_size = get_theme_font_size(SceneStringName(font_size), SNAME("TextEdit"));
 			}
-			text->set_custom_minimum_size(Vector2(0, font->get_height(font_size) * 6));
+			text->set_custom_minimum_size(Size2(0, font->get_height(font_size) * 6));
 		} break;
 	}
 }
@@ -860,7 +860,7 @@ EditorPropertyLayersGrid::EditorPropertyLayersGrid() {
 Size2 EditorPropertyLayersGrid::get_grid_size() const {
 	Ref<Font> font = get_theme_font(SceneStringName(font), SNAME("Label"));
 	int font_size = get_theme_font_size(SceneStringName(font_size), SNAME("Label"));
-	return Vector2(0, font->get_height(font_size) * 3);
+	return Size2(0, font->get_height(font_size) * 3);
 }
 
 void EditorPropertyLayersGrid::set_read_only(bool p_read_only) {
@@ -1018,7 +1018,7 @@ void EditorPropertyLayersGrid::_notification(int p_what) {
 				for (int i = 0; i < 2; i++) {
 					for (int j = 0; j < layer_group_size; j++) {
 						const bool on = value & (1 << layer_index);
-						Rect2 rect2 = Rect2(ofs, Size2(bsize, bsize));
+						Rect2 rect2 = Rect2(ofs, Size2(bsize));
 
 						color.a = on ? 0.6 : 0.2;
 						if (layer_index == hovered_index) {
@@ -1255,7 +1255,7 @@ void EditorPropertyLayers::_button_pressed() {
 
 	Rect2 gp = button->get_screen_rect();
 	layers->reset_size();
-	Vector2 popup_pos = gp.position - Vector2(layers->get_contents_minimum_size().x, 0);
+	Point2 popup_pos = gp.position - Point2(layers->get_contents_minimum_size().x, 0);
 	layers->set_position(popup_pos);
 	layers->popup();
 }

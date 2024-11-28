@@ -102,15 +102,15 @@ bool FileSystemList::edit_selected() {
 
 	Rect2 rect;
 	Rect2 popup_rect;
-	Vector2 ofs;
+	Point2 ofs;
 
-	Vector2 icon_size = get_item_icon(s)->get_size();
+	Size2 icon_size = get_item_icon(s)->get_size();
 
 	// Handles the different icon modes (TOP/LEFT).
 	switch (get_icon_mode()) {
 		case ItemList::ICON_MODE_LEFT:
 			rect = get_item_rect(s, true);
-			ofs = Vector2(0, Math::floor((MAX(line_editor->get_minimum_size().height, rect.size.height) - rect.size.height) / 2));
+			ofs = Point2(0, Math::floor((MAX(line_editor->get_minimum_size().height, rect.size.height) - rect.size.height) / 2));
 			popup_rect.position = get_screen_position() + rect.position - ofs;
 			popup_rect.size = rect.size;
 
@@ -941,10 +941,10 @@ void FileSystemDock::_update_file_list(bool p_keep_selection) {
 		files->set_icon_mode(ItemList::ICON_MODE_TOP);
 		files->set_fixed_column_width(thumbnail_size * 3 / 2);
 		files->set_max_text_lines(2);
-		files->set_fixed_icon_size(Size2(thumbnail_size, thumbnail_size));
+		files->set_fixed_icon_size(Size2(thumbnail_size));
 
 		const int icon_size = get_theme_constant(SNAME("class_icon_size"), EditorStringName(Editor));
-		files->set_fixed_tag_icon_size(Size2(icon_size, icon_size));
+		files->set_fixed_tag_icon_size(Size2(icon_size));
 
 		if (thumbnail_size < 64) {
 			folder_thumbnail = get_editor_theme_icon(SNAME("FolderMediumThumb"));
@@ -962,7 +962,7 @@ void FileSystemDock::_update_file_list(bool p_keep_selection) {
 		files->set_max_text_lines(1);
 		files->set_fixed_column_width(0);
 		const int icon_size = get_theme_constant(SNAME("class_icon_size"), EditorStringName(Editor));
-		files->set_fixed_icon_size(Size2(icon_size, icon_size));
+		files->set_fixed_icon_size(Size2(icon_size));
 	}
 
 	Ref<Texture2D> folder_icon = (use_thumbnails) ? folder_thumbnail : get_theme_icon(SNAME("folder"), SNAME("FileDialog"));
@@ -3808,7 +3808,7 @@ void FileSystemDock::_set_dock_horizontal(bool p_enable) {
 
 		set_display_mode(new_display_mode);
 		set_file_list_display_mode(new_file_display_mode);
-		set_custom_minimum_size(Size2(0, 200) * EDSCALE);
+		set_custom_minimum_size(Size2(0, 200 * EDSCALE));
 	} else {
 		set_meta("_bottom_display_mode", get_display_mode());
 		set_meta("_bottom_file_display_mode", get_file_list_display_mode());
@@ -3821,7 +3821,7 @@ void FileSystemDock::_set_dock_horizontal(bool p_enable) {
 
 		set_display_mode(new_display_mode);
 		set_file_list_display_mode(new_file_display_mode);
-		set_custom_minimum_size(Size2(0, 0));
+		set_custom_minimum_size(Size2());
 	}
 
 	button_dock_placement->set_visible(p_enable);
@@ -4036,7 +4036,7 @@ FileSystemDock::FileSystemDock() {
 	SET_DRAG_FORWARDING_GCD(tree, FileSystemDock);
 	tree->set_allow_rmb_select(true);
 	tree->set_select_mode(Tree::SELECT_MULTI);
-	tree->set_custom_minimum_size(Size2(40 * EDSCALE, 15 * EDSCALE));
+	tree->set_custom_minimum_size(Size2(40, 15) * EDSCALE);
 	tree->set_column_clip_content(0, true);
 	split_box->add_child(tree);
 
@@ -4126,7 +4126,7 @@ FileSystemDock::FileSystemDock() {
 
 	overwrite_dialog_scroll = memnew(ScrollContainer);
 	overwrite_dialog_vb->add_child(overwrite_dialog_scroll);
-	overwrite_dialog_scroll->set_custom_minimum_size(Vector2(400, 600) * EDSCALE);
+	overwrite_dialog_scroll->set_custom_minimum_size(Size2(400, 600) * EDSCALE);
 
 	overwrite_dialog_file_list = memnew(Label);
 	overwrite_dialog_scroll->add_child(overwrite_dialog_file_list);

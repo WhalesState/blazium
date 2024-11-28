@@ -559,7 +559,7 @@ Projection RaycastOcclusionCull::_jitter_projection(const Projection &p_cam_proj
 		default:
 			break;
 		case 1: {
-			jitter = Vector2(-1, -1);
+			jitter = Vector2(-1);
 		} break;
 		case 2: {
 			jitter = Vector2(1, -1);
@@ -568,10 +568,10 @@ Projection RaycastOcclusionCull::_jitter_projection(const Projection &p_cam_proj
 			jitter = Vector2(-1, 1);
 		} break;
 		case 4: {
-			jitter = Vector2(1, 1);
+			jitter = Vector2(1);
 		} break;
 		case 5: {
-			jitter = Vector2(-0.5f, -0.5f);
+			jitter = Vector2(-0.5f);
 		} break;
 		case 6: {
 			jitter = Vector2(0.5f, -0.5f);
@@ -580,7 +580,7 @@ Projection RaycastOcclusionCull::_jitter_projection(const Projection &p_cam_proj
 			jitter = Vector2(-0.5f, 0.5f);
 		} break;
 		case 8: {
-			jitter = Vector2(0.5f, 0.5f);
+			jitter = Vector2(0.5f);
 		} break;
 	}
 

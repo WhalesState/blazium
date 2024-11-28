@@ -191,7 +191,7 @@ private:
 		GrowDirection v_grow = GROW_DIRECTION_END;
 
 		real_t rotation = 0.0;
-		Vector2 scale = Vector2(1, 1);
+		Vector2 scale = Vector2(1);
 		Vector2 pivot_offset;
 
 		Point2 pos_cache;

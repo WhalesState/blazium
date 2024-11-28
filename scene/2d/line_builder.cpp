@@ -551,7 +551,7 @@ void LineBuilder::new_arc(Vector2 center, Vector2 vbegin, float angle_delta, Col
 		colors.push_back(color);
 	}
 	if (texture_mode != Line2D::LINE_TEXTURE_NONE) {
-		uvs.push_back(interpolate(uv_rect, Vector2(0.5f, 0.5f)));
+		uvs.push_back(interpolate(uv_rect, Vector2(0.5)));
 	}
 
 	// Arc vertices
@@ -565,7 +565,7 @@ void LineBuilder::new_arc(Vector2 center, Vector2 vbegin, float angle_delta, Col
 		}
 		if (texture_mode != Line2D::LINE_TEXTURE_NONE) {
 			Vector2 tsc = Vector2(Math::cos(tt), Math::sin(tt));
-			uvs.push_back(interpolate(uv_rect, 0.5f * (tsc + Vector2(1.f, 1.f))));
+			uvs.push_back(interpolate(uv_rect, 0.5f * (tsc + Vector2(1))));
 			tt += angle_step;
 		}
 	}
@@ -580,7 +580,7 @@ void LineBuilder::new_arc(Vector2 center, Vector2 vbegin, float angle_delta, Col
 	if (texture_mode != Line2D::LINE_TEXTURE_NONE) {
 		tt = tt_begin + angle_delta;
 		Vector2 tsc = Vector2(Math::cos(tt), Math::sin(tt));
-		uvs.push_back(interpolate(uv_rect, 0.5f * (tsc + Vector2(1.f, 1.f))));
+		uvs.push_back(interpolate(uv_rect, 0.5f * (tsc + Vector2(1))));
 	}
 
 	// Make up triangles

@@ -40,7 +40,7 @@ class OpenXRCompositionLayerQuad : public OpenXRCompositionLayer {
 
 	XrCompositionLayerQuad composition_layer;
 
-	Size2 quad_size = Size2(1.0, 1.0);
+	Size2 quad_size = Size2(1);
 
 protected:
 	static void _bind_methods();

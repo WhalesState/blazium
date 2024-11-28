@@ -52,11 +52,11 @@ class CollisionShape2DEditor : public Control {
 
 	const Point2 RECT_HANDLES[8] = {
 		Point2(1, 0),
-		Point2(1, 1),
+		Point2(1),
 		Point2(0, 1),
 		Point2(-1, 1),
 		Point2(-1, 0),
-		Point2(-1, -1),
+		Point2(-1),
 		Point2(0, -1),
 		Point2(1, -1),
 	};

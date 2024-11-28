@@ -39,7 +39,7 @@ class CollisionObject2D;
 class CollisionShape2D : public Node2D {
 	GDCLASS(CollisionShape2D, Node2D);
 	Ref<Shape2D> shape;
-	Rect2 rect = Rect2(-Point2(10, 10), Point2(20, 20));
+	Rect2 rect = Rect2(Point2(-10), Point2(20));
 	uint32_t owner_id = 0;
 	CollisionObject2D *collision_object = nullptr;
 	bool disabled = false;

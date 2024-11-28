@@ -422,7 +422,7 @@ void EditorHelp::_add_type(const String &p_type, const String &p_enum, bool p_is
 
 void EditorHelp::_add_type_icon(const String &p_type, int p_size, const String &p_fallback) {
 	Ref<Texture2D> icon = EditorNode::get_singleton()->get_class_icon(p_type, p_fallback);
-	Vector2i size = Vector2i(icon->get_width(), icon->get_height());
+	Vector2i size = icon->get_size();
 	if (p_size > 0) {
 		// Ensures icon scales proportionally on both axes, based on icon height.
 		float ratio = p_size / float(size.height);
@@ -2687,7 +2687,7 @@ static void _add_text_to_rt(const String &p_bbcode, RichTextLabel *p_rt, const C
 			p_rt->push_cell();
 			p_rt->set_cell_row_background_color(code_bg_color, Color(code_bg_color, 0.99));
 			p_rt->set_cell_padding(Rect2(0, 10 * EDSCALE, 0, 10 * EDSCALE));
-			p_rt->set_cell_size_override(Vector2(1, 1), Vector2(10, 10) * EDSCALE);
+			p_rt->set_cell_size_override(Vector2(1), Vector2(10 * EDSCALE));
 			p_rt->push_meta("^" + codeblock_copy_text, RichTextLabel::META_UNDERLINE_ON_HOVER);
 			p_rt->add_image(p_owner_node->get_editor_theme_icon(SNAME("ActionCopy")), 24 * EDSCALE, 24 * EDSCALE, Color(link_property_color, 0.3), INLINE_ALIGNMENT_BOTTOM_TO, Rect2(), Variant(), false, TTR("Click to copy."));
 			p_rt->pop(); // meta
@@ -4072,7 +4072,7 @@ FindBar::FindBar() {
 
 	Control *space = memnew(Control);
 	add_child(space);
-	space->set_custom_minimum_size(Size2(4, 0) * EDSCALE);
+	space->set_custom_minimum_size(Size2(4 * EDSCALE, 0));
 
 	hide_button = memnew(TextureButton);
 	add_child(hide_button);

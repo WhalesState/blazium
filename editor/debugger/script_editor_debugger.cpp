@@ -900,7 +900,7 @@ void ScriptEditorDebugger::_notification(int p_what) {
 					Point2 offset = state["ofs"];
 					Transform2D transform;
 
-					transform.scale_basis(Size2(zoom, zoom));
+					transform.scale_basis(Size2(zoom));
 					transform.columns[2] = -offset * zoom;
 
 					Array msg;
@@ -1602,7 +1602,7 @@ void ScriptEditorDebugger::_breakpoints_item_rmb_selected(const Vector2 &p_pos, 
 	}
 
 	breakpoints_menu->clear();
-	breakpoints_menu->set_size(Size2(1, 1));
+	breakpoints_menu->set_size(Size2(1));
 
 	const TreeItem *selected = breakpoints_tree->get_selected();
 	String file = selected->get_text(0);
@@ -2033,7 +2033,7 @@ ScriptEditorDebugger::ScriptEditorDebugger() {
 		vmem_hb->add_child(memnew(Label(TTR("Total:") + " ")));
 		vmem_total = memnew(LineEdit);
 		vmem_total->set_editable(false);
-		vmem_total->set_custom_minimum_size(Size2(100, 0) * EDSCALE);
+		vmem_total->set_custom_minimum_size(Size2(100 * EDSCALE, 0));
 		vmem_hb->add_child(vmem_total);
 		vmem_refresh = memnew(Button);
 		vmem_refresh->set_theme_type_variation("FlatButton");

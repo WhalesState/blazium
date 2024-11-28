@@ -670,7 +670,7 @@ void AnimationBezierTrackEdit::set_animation_and_track(const Ref<Animation> &p_a
 }
 
 Size2 AnimationBezierTrackEdit::get_minimum_size() const {
-	return Vector2(1, 1);
+	return Size2(1);
 }
 
 void AnimationBezierTrackEdit::set_timeline(AnimationTimelineEdit *p_timeline) {

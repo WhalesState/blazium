@@ -1499,7 +1499,7 @@ void RasterizerSceneGLES3::_setup_environment(const RenderDataGLES3 *p_render_da
 	scene_state.ubo.viewport_size[0] = p_screen_size.x;
 	scene_state.ubo.viewport_size[1] = p_screen_size.y;
 
-	Size2 screen_pixel_size = Vector2(1.0, 1.0) / Size2(p_screen_size);
+	Size2 screen_pixel_size = Size2(1) / Size2(p_screen_size);
 	scene_state.ubo.screen_pixel_size[0] = screen_pixel_size.x;
 	scene_state.ubo.screen_pixel_size[1] = screen_pixel_size.y;
 
@@ -3639,7 +3639,7 @@ void RasterizerSceneGLES3::_render_uv2(const PagedArray<RenderGeometryInstance *
 
 	scene_state.ubo.emissive_exposure_normalization = -1.0; // Use default exposure normalization.
 
-	_setup_environment(&render_data, true, Vector2(1, 1), true, Color(), false);
+	_setup_environment(&render_data, true, Vector2(1), true, Color(), false);
 
 	PassMode pass_mode = PASS_MODE_MATERIAL;
 
@@ -3681,19 +3681,19 @@ void RasterizerSceneGLES3::_render_uv2(const PagedArray<RenderGeometryInstance *
 		base_spec_constant |= SceneShaderGLES3::DISABLE_LIGHT_SPOT;
 		base_spec_constant |= SceneShaderGLES3::DISABLE_LIGHTMAP;
 
-		RenderListParameters render_list_params(render_list[RENDER_LIST_SECONDARY].elements.ptr(), render_list[RENDER_LIST_SECONDARY].elements.size(), false, base_spec_constant, true, Vector2(0, 0));
+		RenderListParameters render_list_params(render_list[RENDER_LIST_SECONDARY].elements.ptr(), render_list[RENDER_LIST_SECONDARY].elements.size(), false, base_spec_constant, true, Vector2());
 
 		const int uv_offset_count = 9;
 		static const Vector2 uv_offsets[uv_offset_count] = {
 			Vector2(-1, 1),
-			Vector2(1, 1),
+			Vector2(1),
 			Vector2(1, -1),
-			Vector2(-1, -1),
+			Vector2(-1),
 			Vector2(-1, 0),
 			Vector2(1, 0),
 			Vector2(0, -1),
 			Vector2(0, 1),
-			Vector2(0, 0),
+			Vector2(),
 		};
 
 		for (int i = 0; i < uv_offset_count; i++) {
@@ -3704,7 +3704,7 @@ void RasterizerSceneGLES3::_render_uv2(const PagedArray<RenderGeometryInstance *
 			_render_list_template<PASS_MODE_MATERIAL>(&render_list_params, &render_data, 0, render_list[RENDER_LIST_SECONDARY].elements.size());
 		}
 
-		render_list_params.uv_offset = Vector2(0, 0);
+		render_list_params.uv_offset = Vector2();
 		render_list_params.force_wireframe = false;
 		_render_list_template<PASS_MODE_MATERIAL>(&render_list_params, &render_data, 0, render_list[RENDER_LIST_SECONDARY].elements.size());
 

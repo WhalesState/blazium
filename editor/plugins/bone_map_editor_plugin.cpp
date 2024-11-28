@@ -306,7 +306,7 @@ void BoneMapper::create_editor() {
 
 	bone_mapper_field = memnew(AspectRatioContainer);
 	bone_mapper_field->set_stretch_mode(AspectRatioContainer::STRETCH_FIT);
-	bone_mapper_field->set_custom_minimum_size(Vector2(0, 256.0) * EDSCALE);
+	bone_mapper_field->set_custom_minimum_size(Size2(0, 256 * EDSCALE));
 	bone_mapper_field->set_h_size_flags(Control::SIZE_FILL);
 	add_child(bone_mapper_field);
 
@@ -351,7 +351,7 @@ void BoneMapper::update_group_idx() {
 
 void BoneMapper::_pick_bone(const StringName &p_bone_name) {
 	picker_key_name = p_bone_name;
-	picker->popup_bones_tree(Size2(500, 500) * EDSCALE);
+	picker->popup_bones_tree(Size2(500 * EDSCALE));
 }
 
 void BoneMapper::_apply_picker_selection() {

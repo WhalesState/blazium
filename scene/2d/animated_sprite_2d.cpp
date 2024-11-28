@@ -103,8 +103,8 @@ Rect2 AnimatedSprite2D::_get_rect() const {
 		ofs -= s / 2;
 	}
 
-	if (s == Size2(0, 0)) {
-		s = Size2(1, 1);
+	if (s == Size2()) {
+		s = Size2(1);
 	}
 
 	return Rect2(ofs, s);
@@ -267,7 +267,7 @@ void AnimatedSprite2D::_notification(int p_what) {
 			}
 
 			if (get_viewport() && get_viewport()->is_snap_2d_transforms_to_pixel_enabled()) {
-				ofs = (ofs + Point2(0.5, 0.5)).floor();
+				ofs = (ofs + Point2(0.5)).floor();
 			}
 
 			Rect2 dst_rect(ofs, s);

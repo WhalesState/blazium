@@ -213,7 +213,7 @@ Vector2 OpenXRCompositionLayerEquirect::intersects_ray(const Vector3 &p_origin, 
 
 	float discriminant = b * b - 4.0 * a * c;
 	if (discriminant < 0.0) {
-		return Vector2(-1.0, -1.0);
+		return Vector2(-1);
 	}
 
 	float t0 = (-b - Math::sqrt(discriminant)) / (2.0 * a);
@@ -221,7 +221,7 @@ Vector2 OpenXRCompositionLayerEquirect::intersects_ray(const Vector3 &p_origin, 
 	float t = MAX(t0, t1);
 
 	if (t < 0.0) {
-		return Vector2(-1.0, -1.0);
+		return Vector2(-1);
 	}
 	Vector3 intersection = p_origin + p_direction * t;
 
@@ -231,16 +231,16 @@ Vector2 OpenXRCompositionLayerEquirect::intersects_ray(const Vector3 &p_origin, 
 
 	float horizontal_intersection_angle = Math::atan2(relative_point.z, relative_point.x);
 	if (Math::abs(horizontal_intersection_angle) > central_horizontal_angle / 2.0) {
-		return Vector2(-1.0, -1.0);
+		return Vector2(-1);
 	}
 
 	float vertical_intersection_angle = Math::acos(relative_point.y / radius) - (Math_PI / 2.0);
 	if (vertical_intersection_angle < 0) {
 		if (Math::abs(vertical_intersection_angle) > upper_vertical_angle) {
-			return Vector2(-1.0, -1.0);
+			return Vector2(-1);
 		}
 	} else if (vertical_intersection_angle > lower_vertical_angle) {
-		return Vector2(-1.0, -1.0);
+		return Vector2(-1);
 	}
 
 	// Re-center the intersection angle if the vertical angle is uneven between upper and lower.

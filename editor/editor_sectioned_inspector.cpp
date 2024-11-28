@@ -328,7 +328,7 @@ SectionedInspector::SectionedInspector() :
 	add_theme_constant_override("autohide", 1); // Fixes the dragger always showing up
 
 	VBoxContainer *left_vb = memnew(VBoxContainer);
-	left_vb->set_custom_minimum_size(Size2(190, 0) * EDSCALE);
+	left_vb->set_custom_minimum_size(Size2(190 * EDSCALE, 0));
 	add_child(left_vb);
 
 	sections->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);
@@ -338,7 +338,7 @@ SectionedInspector::SectionedInspector() :
 	left_vb->add_child(sections, true);
 
 	VBoxContainer *right_vb = memnew(VBoxContainer);
-	right_vb->set_custom_minimum_size(Size2(300, 0) * EDSCALE);
+	right_vb->set_custom_minimum_size(Size2(300 * EDSCALE, 0));
 	right_vb->set_h_size_flags(SIZE_EXPAND_FILL);
 	add_child(right_vb);
 

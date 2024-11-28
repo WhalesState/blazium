@@ -128,7 +128,7 @@ void EditorPerformanceProfiler::_monitor_draw() {
 
 	for (int i = 0; i < active.size(); i++) {
 		Monitor &current = monitors[active[i]];
-		Rect2i rect(Point2i(i % columns, i / columns) * cell_size + Point2i(MARGIN, MARGIN), cell_size - Point2i(MARGIN, MARGIN) * 2);
+		Rect2i rect(Point2i(i % columns, i / columns) * cell_size + Point2i(MARGIN), cell_size - Point2i(MARGIN) * 2);
 		monitor_draw->draw_style_box(graph_style_box, rect);
 
 		rect.position += graph_style_box->get_offset();
@@ -154,13 +154,13 @@ void EditorPerformanceProfiler::_monitor_draw() {
 		if (line_count > 0) {
 			Color horizontal_line_color;
 			horizontal_line_color.set_hsv(draw_color.get_h(), draw_color.get_s() * 0.5f, draw_color.get_v() * 0.5f, 0.3f);
-			monitor_draw->draw_line(rect.position, rect.position + Vector2(rect.size.width, 0), horizontal_line_color, Math::round(EDSCALE));
-			monitor_draw->draw_string(graph_font, rect.position + Vector2(0, graph_font->get_ascent(font_size)), _create_label(current.max, current.type), HORIZONTAL_ALIGNMENT_LEFT, rect.size.width, font_size, horizontal_line_color);
+			monitor_draw->draw_line(rect.position, rect.position + Point2(rect.size.width, 0), horizontal_line_color, Math::round(EDSCALE));
+			monitor_draw->draw_string(graph_font, rect.position + Point2(0, graph_font->get_ascent(font_size)), _create_label(current.max, current.type), HORIZONTAL_ALIGNMENT_LEFT, rect.size.width, font_size, horizontal_line_color);
 
 			for (int j = 0; j < line_count; j++) {
-				Vector2 y_offset = Vector2(0, rect.size.height * (1.0f - float(j) / float(line_count)));
-				monitor_draw->draw_line(rect.position + y_offset, rect.position + Vector2(rect.size.width, 0) + y_offset, horizontal_line_color, Math::round(EDSCALE));
-				monitor_draw->draw_string(graph_font, rect.position - Vector2(0, graph_font->get_descent(font_size)) + y_offset, _create_label(current.max * float(j) / float(line_count), current.type), HORIZONTAL_ALIGNMENT_LEFT, rect.size.width, font_size, horizontal_line_color);
+				Point2 y_offset = Point2(0, rect.size.height * (1.0f - float(j) / float(line_count)));
+				monitor_draw->draw_line(rect.position + y_offset, rect.position + Point2(rect.size.width, 0) + y_offset, horizontal_line_color, Math::round(EDSCALE));
+				monitor_draw->draw_string(graph_font, rect.position - Point2(0, graph_font->get_descent(font_size)) + y_offset, _create_label(current.max * float(j) / float(line_count), current.type), HORIZONTAL_ALIGNMENT_LEFT, rect.size.width, font_size, horizontal_line_color);
 			}
 		}
 
@@ -187,7 +187,7 @@ void EditorPerformanceProfiler::_monitor_draw() {
 
 				String label = _create_label(e->get(), current.type);
 				Size2 size = graph_font->get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size);
-				Vector2 text_top_left_position = Vector2(from, h2) - (size + Vector2(MARKER_MARGIN, MARKER_MARGIN));
+				Point2 text_top_left_position = Point2(from, h2) - (size + Point2(MARKER_MARGIN));
 				if (text_top_left_position.x < 0) {
 					text_top_left_position.x = from + MARKER_MARGIN;
 				}
@@ -270,7 +270,7 @@ void EditorPerformanceProfiler::_marker_input(const Ref<InputEvent> &p_event) {
 			}
 			Size2i cell_size = Size2i(monitor_draw->get_size()) / Size2i(columns, rows);
 			Vector2i index = mb->get_position() / cell_size;
-			Rect2i rect(index * cell_size + Point2i(MARGIN, MARGIN), cell_size - Point2i(MARGIN, MARGIN) * 2);
+			Rect2i rect(index * cell_size + Point2i(MARGIN), cell_size - Point2i(MARGIN) * 2);
 			if (rect.has_point(mb->get_position())) {
 				if (index.x + index.y * columns < active.size()) {
 					marker_key = active[index.x + index.y * columns];

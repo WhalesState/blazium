@@ -123,7 +123,7 @@ void TileMapLayerEditorTilesPlugin::_update_transform_buttons() {
 	if (has_scene_tile) {
 		_set_transform_buttons_state({}, { transform_button_rotate_left, transform_button_rotate_right, transform_button_flip_h, transform_button_flip_v },
 				TTR("Can't transform scene tiles."));
-	} else if (tile_set->get_tile_shape() != TileSet::TILE_SHAPE_SQUARE && selection_pattern->get_size() != Vector2i(1, 1)) {
+	} else if (tile_set->get_tile_shape() != TileSet::TILE_SHAPE_SQUARE && selection_pattern->get_size() != Vector2i(1)) {
 		_set_transform_buttons_state({ transform_button_flip_h, transform_button_flip_v }, { transform_button_rotate_left, transform_button_rotate_right },
 				TTR("Can't rotate patterns when using non-square tile grid."));
 	} else {
@@ -444,8 +444,7 @@ void TileMapLayerEditorTilesPlugin::_update_scenes_collection_view() {
 	}
 
 	// Icon size update.
-	int int_size = int(EDITOR_GET("filesystem/file_dialog/thumbnail_size")) * EDSCALE;
-	scene_tiles_list->set_fixed_icon_size(Vector2(int_size, int_size));
+	scene_tiles_list->set_fixed_icon_size(Size2(int(EDITOR_GET("filesystem/file_dialog/thumbnail_size")) * EDSCALE));
 }
 
 void TileMapLayerEditorTilesPlugin::_scene_thumbnail_done(const String &p_path, const Ref<Texture2D> &p_preview, const Ref<Texture2D> &p_small_preview, const Variant &p_ud) {
@@ -825,7 +824,7 @@ void TileMapLayerEditorTilesPlugin::forward_canvas_draw_over_viewport(Control *p
 		if (drag_type == DRAG_TYPE_PICK) {
 			// Draw the area being picked.
 			Rect2i rect = Rect2i(tile_set->local_to_map(drag_start_mouse_pos), tile_set->local_to_map(mpos) - tile_set->local_to_map(drag_start_mouse_pos)).abs();
-			rect.size += Vector2i(1, 1);
+			rect.size += Vector2i(1);
 			for (int x = rect.position.x; x < rect.get_end().x; x++) {
 				for (int y = rect.position.y; y < rect.get_end().y; y++) {
 					Vector2i coords = Vector2i(x, y);
@@ -838,7 +837,7 @@ void TileMapLayerEditorTilesPlugin::forward_canvas_draw_over_viewport(Control *p
 		} else if (drag_type == DRAG_TYPE_SELECT) {
 			// Draw the area being selected.
 			Rect2i rect = Rect2i(tile_set->local_to_map(drag_start_mouse_pos), tile_set->local_to_map(mpos) - tile_set->local_to_map(drag_start_mouse_pos)).abs();
-			rect.size += Vector2i(1, 1);
+			rect.size += Vector2i(1);
 			RBSet<Vector2i> to_draw;
 			for (int x = rect.position.x; x < rect.get_end().x; x++) {
 				for (int y = rect.position.y; y < rect.get_end().y; y++) {
@@ -872,7 +871,7 @@ void TileMapLayerEditorTilesPlugin::forward_canvas_draw_over_viewport(Control *p
 			}
 		} else if (drag_type == DRAG_TYPE_CLIPBOARD_PASTE) {
 			// Preview when pasting.
-			Vector2 mouse_offset = (Vector2(tile_map_clipboard->get_size()) / 2.0 - Vector2(0.5, 0.5)) * tile_set->get_tile_size();
+			Vector2 mouse_offset = (Vector2(tile_map_clipboard->get_size()) / 2.0 - Vector2(0.5)) * tile_set->get_tile_size();
 			TypedArray<Vector2i> clipboard_used_cells = tile_map_clipboard->get_used_cells();
 			for (int i = 0; i < clipboard_used_cells.size(); i++) {
 				Vector2i coords = tile_set->map_pattern(tile_set->local_to_map(mpos - mouse_offset), clipboard_used_cells[i], tile_map_clipboard);
@@ -909,7 +908,7 @@ void TileMapLayerEditorTilesPlugin::forward_canvas_draw_over_viewport(Control *p
 				for (const KeyValue<Vector2i, TileMapCell> &E : preview) {
 					drawn_grid_rect.expand_to(E.key);
 				}
-				drawn_grid_rect.size += Vector2i(1, 1);
+				drawn_grid_rect.size += Vector2i(1);
 			}
 		}
 
@@ -1012,9 +1011,9 @@ void TileMapLayerEditorTilesPlugin::forward_canvas_draw_over_viewport(Control *p
 			text += vformat(" %s (%dx%d)", TTR("Drawing Rect:"), ABS(size.x) + 1, ABS(size.y) + 1);
 		}
 
-		p_overlay->draw_string(font, msgpos + Point2(1, 1), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color(0, 0, 0, 0.8));
-		p_overlay->draw_string(font, msgpos + Point2(-1, -1), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color(0, 0, 0, 0.8));
-		p_overlay->draw_string(font, msgpos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color(1, 1, 1, 1));
+		p_overlay->draw_string(font, msgpos + Point2(1), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color(0, 0, 0, 0.8));
+		p_overlay->draw_string(font, msgpos + Point2(-1), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color(0, 0, 0, 0.8));
+		p_overlay->draw_string(font, msgpos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color(1, 1, 1));
 	}
 }
 
@@ -1101,7 +1100,7 @@ HashMap<Vector2i, TileMapCell> TileMapLayerEditorTilesPlugin::_draw_line(Vector2
 		} else {
 			// Paint the pattern.
 			// If we paint several tiles, we virtually move the mouse as if it was in the center of the "brush"
-			Vector2 mouse_offset = (Vector2(pattern->get_size()) / 2.0 - Vector2(0.5, 0.5)) * tile_set->get_tile_size();
+			Vector2 mouse_offset = (Vector2(pattern->get_size()) / 2.0 - Vector2(0.5)) * tile_set->get_tile_size();
 			Vector2i last_hovered_cell = tile_set->local_to_map(p_from_mouse_pos - mouse_offset);
 			Vector2i new_hovered_cell = tile_set->local_to_map(p_to_mouse_pos - mouse_offset);
 			Vector2i drag_start_cell = tile_set->local_to_map(p_start_drag_mouse_pos - mouse_offset);
@@ -1134,7 +1133,7 @@ HashMap<Vector2i, TileMapCell> TileMapLayerEditorTilesPlugin::_draw_rect(Vector2
 
 	// Create the rect to draw.
 	Rect2i rect = Rect2i(p_start_cell, p_end_cell - p_start_cell).abs();
-	rect.size += Vector2i(1, 1);
+	rect.size += Vector2i(1);
 
 	// Get or create the pattern.
 	Ref<TileMapPattern> pattern = p_erase ? erase_pattern : selection_pattern;
@@ -1245,7 +1244,7 @@ HashMap<Vector2i, TileMapCell> TileMapLayerEditorTilesPlugin::_draw_bucket_fill(
 			if (source_cell.source_id == TileSet::INVALID_SOURCE) {
 				Rect2i rect = edited_layer->get_used_rect();
 				if (!rect.has_area()) {
-					rect = Rect2i(p_coords, Vector2i(1, 1));
+					rect = Rect2i(p_coords, Vector2i(1));
 				}
 				for (int x = boundaries.position.x; x < boundaries.get_end().x; x++) {
 					for (int y = boundaries.position.y; y < boundaries.get_end().y; y++) {
@@ -1407,7 +1406,7 @@ void TileMapLayerEditorTilesPlugin::_stop_dragging() {
 		} break;
 		case DRAG_TYPE_PICK: {
 			Rect2i rect = Rect2i(tile_set->local_to_map(drag_start_mouse_pos), tile_set->local_to_map(mpos) - tile_set->local_to_map(drag_start_mouse_pos)).abs();
-			rect.size += Vector2i(1, 1);
+			rect.size += Vector2i(1);
 
 			int picked_source = -1;
 			TypedArray<Vector2i> coords_array;
@@ -1486,7 +1485,7 @@ void TileMapLayerEditorTilesPlugin::_stop_dragging() {
 			undo_redo->commit_action(false);
 		} break;
 		case DRAG_TYPE_CLIPBOARD_PASTE: {
-			Vector2 mouse_offset = (Vector2(tile_map_clipboard->get_size()) / 2.0 - Vector2(0.5, 0.5)) * tile_set->get_tile_size();
+			Vector2 mouse_offset = (Vector2(tile_map_clipboard->get_size()) / 2.0 - Vector2(0.5)) * tile_set->get_tile_size();
 			undo_redo->create_action(TTR("Paste tiles"));
 			TypedArray<Vector2i> used_cells = tile_map_clipboard->get_used_cells();
 			for (int i = 0; i < used_cells.size(); i++) {
@@ -1752,9 +1751,9 @@ void TileMapLayerEditorTilesPlugin::_update_selection_pattern_from_tileset_tiles
 			// Compute the encompassing rect for the organized pattern.
 			HashMap<Vector2i, const TileMapCell *>::Iterator E_cell = organized_pattern.begin();
 			if (E_cell) {
-				encompassing_rect_coords = Rect2i(E_cell->key, Vector2i(1, 1));
+				encompassing_rect_coords = Rect2i(E_cell->key, Vector2i(1));
 				for (; E_cell; ++E_cell) {
-					encompassing_rect_coords.expand_to(E_cell->key + Vector2i(1, 1));
+					encompassing_rect_coords.expand_to(E_cell->key + Vector2i(1));
 					encompassing_rect_coords.expand_to(E_cell->key);
 				}
 			}
@@ -1876,7 +1875,7 @@ void TileMapLayerEditorTilesPlugin::_tile_atlas_control_draw() {
 		Vector2i end_tile = tile_atlas_view->get_atlas_tile_coords_at_pos(tile_atlas_control->get_local_mouse_position(), true);
 
 		Rect2i region = Rect2i(start_tile, end_tile - start_tile).abs();
-		region.size += Vector2i(1, 1);
+		region.size += Vector2i(1);
 
 		RBSet<Vector2i> to_draw;
 		for (int x = region.position.x; x < region.get_end().x; x++) {
@@ -1972,7 +1971,7 @@ void TileMapLayerEditorTilesPlugin::_tile_atlas_control_gui_input(const Ref<Inpu
 				Vector2i end_tile = tile_atlas_view->get_atlas_tile_coords_at_pos(tile_atlas_control->get_local_mouse_position(), true);
 				if (start_tile != TileSetSource::INVALID_ATLAS_COORDS && end_tile != TileSetSource::INVALID_ATLAS_COORDS) {
 					Rect2i region = Rect2i(start_tile, end_tile - start_tile).abs();
-					region.size += Vector2i(1, 1);
+					region.size += Vector2i(1);
 
 					// To update the selection, we copy the selected/not selected status of the tiles we drag from.
 					Vector2i start_coords = atlas->get_tile_at_coords(start_tile);
@@ -2198,7 +2197,7 @@ TileMapLayerEditorTilesPlugin::TileMapLayerEditorTilesPlugin() {
 	selection_pattern.instantiate();
 
 	erase_pattern.instantiate();
-	erase_pattern->set_cell(Vector2i(0, 0), TileSet::INVALID_SOURCE, TileSetSource::INVALID_ATLAS_COORDS, TileSetSource::INVALID_TILE_ALTERNATIVE);
+	erase_pattern->set_cell(Vector2i(), TileSet::INVALID_SOURCE, TileSetSource::INVALID_ATLAS_COORDS, TileSetSource::INVALID_TILE_ALTERNATIVE);
 
 	// --- Toolbar ---
 	toolbar = memnew(HBoxContainer);
@@ -2387,7 +2386,7 @@ TileMapLayerEditorTilesPlugin::TileMapLayerEditorTilesPlugin() {
 	split_container_left_side->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	split_container_left_side->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 	split_container_left_side->set_stretch_ratio(0.25);
-	split_container_left_side->set_custom_minimum_size(Size2(70, 0) * EDSCALE);
+	split_container_left_side->set_custom_minimum_size(Size2(70 * EDSCALE, 0));
 	atlas_sources_split_container->add_child(split_container_left_side);
 
 	HBoxContainer *sources_bottom_actions = memnew(HBoxContainer);
@@ -2409,11 +2408,11 @@ TileMapLayerEditorTilesPlugin::TileMapLayerEditorTilesPlugin() {
 
 	sources_list = memnew(ItemList);
 	sources_list->set_auto_translate_mode(Node::AUTO_TRANSLATE_MODE_DISABLED);
-	sources_list->set_fixed_icon_size(Size2(60, 60) * EDSCALE);
+	sources_list->set_fixed_icon_size(Size2(60 * EDSCALE));
 	sources_list->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	sources_list->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 	sources_list->set_stretch_ratio(0.25);
-	sources_list->set_custom_minimum_size(Size2(70, 0) * EDSCALE);
+	sources_list->set_custom_minimum_size(Size2(70 * EDSCALE, 0));
 	sources_list->set_texture_filter(CanvasItem::TEXTURE_FILTER_NEAREST);
 	sources_list->connect(SceneStringName(item_selected), callable_mp(this, &TileMapLayerEditorTilesPlugin::_update_source_display).unbind(1));
 	sources_list->connect(SceneStringName(item_selected), callable_mp(TilesEditorUtils::get_singleton(), &TilesEditorUtils::set_sources_lists_current));
@@ -2478,7 +2477,7 @@ TileMapLayerEditorTilesPlugin::TileMapLayerEditorTilesPlugin() {
 	patterns_item_list->set_icon_mode(ItemList::ICON_MODE_TOP);
 	patterns_item_list->set_fixed_column_width(thumbnail_size * 3 / 2);
 	patterns_item_list->set_max_text_lines(2);
-	patterns_item_list->set_fixed_icon_size(Size2(thumbnail_size, thumbnail_size));
+	patterns_item_list->set_fixed_icon_size(Size2(thumbnail_size));
 	patterns_item_list->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 	patterns_item_list->connect(SceneStringName(gui_input), callable_mp(this, &TileMapLayerEditorTilesPlugin::_patterns_item_list_gui_input));
 	patterns_item_list->connect(SceneStringName(item_selected), callable_mp(this, &TileMapLayerEditorTilesPlugin::_update_selection_pattern_from_tileset_pattern_selection).unbind(1));
@@ -2764,7 +2763,7 @@ RBSet<Vector2i> TileMapLayerEditorTerrainsPlugin::_get_cells_for_bucket_fill(Vec
 		if (source_cell.source_id == TileSet::INVALID_SOURCE) {
 			Rect2i rect = edited_layer->get_used_rect();
 			if (!rect.has_area()) {
-				rect = Rect2i(p_coords, Vector2i(1, 1));
+				rect = Rect2i(p_coords, Vector2i(1));
 			}
 			for (int x = boundaries.position.x; x < boundaries.get_end().x; x++) {
 				for (int y = boundaries.position.y; y < boundaries.get_end().y; y++) {
@@ -3222,7 +3221,7 @@ void TileMapLayerEditorTerrainsPlugin::forward_canvas_draw_over_viewport(Control
 
 			// Expand the grid if needed
 			if (expand_grid && !preview.is_empty()) {
-				drawn_grid_rect = Rect2i(preview.front()->get(), Vector2i(1, 1));
+				drawn_grid_rect = Rect2i(preview.front()->get(), Vector2i(1));
 				for (const Vector2i &E : preview) {
 					drawn_grid_rect.expand_to(E);
 				}
@@ -3354,7 +3353,7 @@ void TileMapLayerEditorTerrainsPlugin::_update_terrains_tree() {
 	}
 
 	// Fill in the terrain list.
-	Vector<Vector<Ref<Texture2D>>> icons = tile_set->generate_terrains_icons(Size2(16, 16) * EDSCALE);
+	Vector<Vector<Ref<Texture2D>>> icons = tile_set->generate_terrains_icons(Size2(16 * EDSCALE));
 	for (int terrain_set_index = 0; terrain_set_index < tile_set->get_terrain_sets_count(); terrain_set_index++) {
 		// Add an item for the terrain set.
 		TreeItem *terrain_set_tree_item = terrains_tree->create_item();
@@ -3528,7 +3527,7 @@ TileMapLayerEditorTerrainsPlugin::TileMapLayerEditorTerrainsPlugin() {
 	terrains_tree = memnew(Tree);
 	terrains_tree->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	terrains_tree->set_stretch_ratio(0.25);
-	terrains_tree->set_custom_minimum_size(Size2(70, 0) * EDSCALE);
+	terrains_tree->set_custom_minimum_size(Size2(70 * EDSCALE, 0));
 	terrains_tree->set_texture_filter(CanvasItem::TEXTURE_FILTER_NEAREST);
 	terrains_tree->set_hide_root(true);
 	terrains_tree->connect(SceneStringName(item_selected), callable_mp(this, &TileMapLayerEditorTerrainsPlugin::_update_tiles_list));
@@ -3539,7 +3538,7 @@ TileMapLayerEditorTerrainsPlugin::TileMapLayerEditorTerrainsPlugin() {
 	terrains_tile_list->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	terrains_tile_list->set_max_columns(0);
 	terrains_tile_list->set_same_column_width(true);
-	terrains_tile_list->set_fixed_icon_size(Size2(32, 32) * EDSCALE);
+	terrains_tile_list->set_fixed_icon_size(Size2(32 * EDSCALE));
 	terrains_tile_list->set_texture_filter(CanvasItem::TEXTURE_FILTER_NEAREST);
 	tilemap_tab_terrains->add_child(terrains_tile_list);
 

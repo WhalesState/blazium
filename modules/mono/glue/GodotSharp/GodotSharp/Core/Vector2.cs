@@ -713,7 +713,7 @@ namespace Godot
         }
 
         // Constants
-        private static readonly Vector2 _zero = new Vector2(0, 0);
+        private static readonly Vector2 _zero = new Vector2();
         private static readonly Vector2 _one = new Vector2(1, 1);
         private static readonly Vector2 _inf = new Vector2(Mathf.Inf, Mathf.Inf);
 

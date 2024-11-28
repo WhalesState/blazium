@@ -256,7 +256,7 @@ void EditorProperty::_notification(int p_what) {
 				size.height = 0;
 			} else {
 				Ref<StyleBox> sb = get_theme_stylebox(selected ? SNAME("bg_selected") : SNAME("bg"));
-				draw_style_box(sb, Rect2(Vector2(), size));
+				draw_style_box(sb, Rect2(Point2(), size));
 			}
 
 			Ref<StyleBox> bg_stylebox = get_theme_stylebox(SNAME("child_bg"));
@@ -298,7 +298,7 @@ void EditorProperty::_notification(int p_what) {
 				}
 				check_rect = Rect2(ofs, ((size.height - checkbox->get_height()) / 2), checkbox->get_width(), checkbox->get_height());
 				if (rtl) {
-					draw_texture(checkbox, Vector2(size.width - check_rect.position.x - checkbox->get_width(), check_rect.position.y), color2);
+					draw_texture(checkbox, Point2(size.width - check_rect.position.x - checkbox->get_width(), check_rect.position.y), color2);
 				} else {
 					draw_texture(checkbox, check_rect.position, color2);
 				}
@@ -321,7 +321,7 @@ void EditorProperty::_notification(int p_what) {
 					color2.b *= 1.2;
 				}
 				if (rtl) {
-					draw_texture(reload_icon, Vector2(size.width - revert_rect.position.x - reload_icon->get_width(), revert_rect.position.y), color2);
+					draw_texture(reload_icon, Point2(size.width - revert_rect.position.x - reload_icon->get_width(), revert_rect.position.y), color2);
 				} else {
 					draw_texture(reload_icon, revert_rect.position, color2);
 				}
@@ -336,9 +336,9 @@ void EditorProperty::_notification(int p_what) {
 				int text_w = font->get_string_size(label, rtl ? HORIZONTAL_ALIGNMENT_RIGHT : HORIZONTAL_ALIGNMENT_LEFT, text_limit - total_icon_w, font_size).x;
 				int y = (size.height - pinned_icon->get_height()) / 2;
 				if (rtl) {
-					draw_texture(pinned_icon, Vector2(size.width - ofs - text_w - total_icon_w, y), color);
+					draw_texture(pinned_icon, Point2(size.width - ofs - text_w - total_icon_w, y), color);
 				} else {
-					draw_texture(pinned_icon, Vector2(ofs + text_w + margin_w, y), color);
+					draw_texture(pinned_icon, Point2(ofs + text_w + margin_w, y), color);
 				}
 				text_limit -= total_icon_w;
 			}
@@ -371,7 +371,7 @@ void EditorProperty::_notification(int p_what) {
 				}
 				keying_rect = Rect2(ofs, ((size.height - key->get_height()) / 2), key->get_width(), key->get_height());
 				if (rtl) {
-					draw_texture(key, Vector2(size.width - keying_rect.position.x - key->get_width(), keying_rect.position.y), color2);
+					draw_texture(key, Point2(size.width - keying_rect.position.x - key->get_width(), keying_rect.position.y), color2);
 				} else {
 					draw_texture(key, keying_rect.position, color2);
 				}
@@ -395,7 +395,7 @@ void EditorProperty::_notification(int p_what) {
 				}
 				delete_rect = Rect2(ofs, ((size.height - close->get_height()) / 2), close->get_width(), close->get_height());
 				if (rtl) {
-					draw_texture(close, Vector2(size.width - delete_rect.position.x - close->get_width(), delete_rect.position.y), color2);
+					draw_texture(close, Point2(size.width - delete_rect.position.x - close->get_width(), delete_rect.position.y), color2);
 				} else {
 					draw_texture(close, delete_rect.position, color2);
 				}
@@ -1223,7 +1223,7 @@ void EditorInspectorCategory::_notification(int p_what) {
 		case NOTIFICATION_DRAW: {
 			Ref<StyleBox> sb = get_theme_stylebox(SNAME("bg"));
 
-			draw_style_box(sb, Rect2(Vector2(), get_size()));
+			draw_style_box(sb, Rect2(Point2(), get_size()));
 
 			Ref<Font> font = get_theme_font(SNAME("bold"), EditorStringName(EditorFonts));
 			int font_size = get_theme_font_size(SNAME("bold_size"), EditorStringName(EditorFonts));
@@ -1242,7 +1242,7 @@ void EditorInspectorCategory::_notification(int p_what) {
 			float v_margin_offset = sb->get_content_margin(SIDE_TOP) - sb->get_content_margin(SIDE_BOTTOM);
 
 			if (icon.is_valid()) {
-				Size2 rect_size = Size2(icon_size, icon_size);
+				Size2 rect_size = Size2(icon_size);
 				Point2 rect_pos = Point2(ofs, (get_size().height - icon_size) / 2 + v_margin_offset).round();
 				if (is_layout_rtl()) {
 					rect_pos.x = get_size().width - rect_pos.x - icon_size;
@@ -1390,9 +1390,9 @@ void EditorInspectorSection::_notification(int p_what) {
 				inspector_margin += section_indent_style->get_margin(SIDE_LEFT) + section_indent_style->get_margin(SIDE_RIGHT);
 			}
 
-			Size2 size = get_size() - Vector2(inspector_margin, 0);
+			Size2 size = get_size() - Size2(inspector_margin, 0);
 			int header_height = _get_header_height();
-			Vector2 offset = Vector2(is_layout_rtl() ? 0 : inspector_margin, header_height);
+			Point2 offset = Point2(is_layout_rtl() ? 0 : inspector_margin, header_height);
 			for (int i = 0; i < get_child_count(); i++) {
 				Control *c = as_sortable_control(get_child(i));
 				if (!c) {
@@ -1422,7 +1422,7 @@ void EditorInspectorSection::_notification(int p_what) {
 
 			// Draw header area.
 			int header_height = _get_header_height();
-			Rect2 header_rect = Rect2(Vector2(header_offset_x, 0.0), Vector2(header_width, header_height));
+			Rect2 header_rect = Rect2(Point2(header_offset_x, 0.0), Size2(header_width, header_height));
 			Color c = bg_color;
 			c.a *= 0.4;
 			if (foldable && header_rect.has_point(get_local_mouse_position())) {
@@ -1508,7 +1508,7 @@ void EditorInspectorSection::_notification(int p_what) {
 
 			// Draw section indentation.
 			if (section_indent_style.is_valid() && section_indent > 0) {
-				Rect2 indent_rect = Rect2(Vector2(), Vector2(indent_depth * section_indent_size, get_size().height));
+				Rect2 indent_rect = Rect2(Point2(), Size2(indent_depth * section_indent_size, get_size().height));
 				if (rtl) {
 					indent_rect.position.x = get_size().width - section_indent + section_indent_style->get_margin(SIDE_RIGHT);
 				} else {
@@ -1751,7 +1751,7 @@ void EditorInspectorArray::_rmb_popup_id_pressed(int p_id) {
 		case OPTION_RESIZE_ARRAY:
 			new_size_spin_box->set_value(count);
 			resize_dialog->get_ok_button()->set_disabled(true);
-			resize_dialog->popup_centered(Size2(250, 0) * EDSCALE);
+			resize_dialog->popup_centered(Size2(250 * EDSCALE, 0));
 			new_size_spin_box->get_line_edit()->grab_focus();
 			new_size_spin_box->get_line_edit()->select_all();
 			break;
@@ -1793,7 +1793,7 @@ void EditorInspectorArray::_panel_draw(int p_index) {
 		return;
 	}
 	if (array_elements[p_index].panel->has_focus()) {
-		array_elements[p_index].panel->draw_style_box(style, Rect2(Vector2(), array_elements[p_index].panel->get_size()));
+		array_elements[p_index].panel->draw_style_box(style, Rect2(Point2(), array_elements[p_index].panel->get_size()));
 	}
 }
 
@@ -2137,7 +2137,7 @@ int EditorInspectorArray::_drop_position() const {
 		Size2 size = ae.panel->get_size();
 		Vector2 mp = ae.panel->get_local_mouse_position();
 
-		if (Rect2(Vector2(), size).has_point(mp)) {
+		if (Rect2(Point2(), size).has_point(mp)) {
 			if (mp.y < size.y / 2) {
 				return i;
 			} else {
@@ -3510,7 +3510,7 @@ void EditorInspector::update_tree() {
 	if (!hide_metadata && !object->call("_hide_metadata_from_inspector")) {
 		// Add 4px of spacing between the "Add Metadata" button and the content above it.
 		Control *spacer = memnew(Control);
-		spacer->set_custom_minimum_size(Size2(0, 4) * EDSCALE);
+		spacer->set_custom_minimum_size(Size2(0, 4 * EDSCALE));
 		main_vbox->add_child(spacer);
 
 		Button *add_md = EditorInspector::create_inspector_action_button(TTR("Add Metadata"));

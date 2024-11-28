@@ -317,10 +317,10 @@ void AnimationNodeBlendSpace1DEditor::_blend_space_draw() {
 
 		float mind = 5 * EDSCALE;
 		float maxd = 15 * EDSCALE;
-		blend_space_draw->draw_line(gui_point + Vector2(mind, 0), gui_point + Vector2(maxd, 0), color, Math::round(2 * EDSCALE));
-		blend_space_draw->draw_line(gui_point + Vector2(-mind, 0), gui_point + Vector2(-maxd, 0), color, Math::round(2 * EDSCALE));
-		blend_space_draw->draw_line(gui_point + Vector2(0, mind), gui_point + Vector2(0, maxd), color, Math::round(2 * EDSCALE));
-		blend_space_draw->draw_line(gui_point + Vector2(0, -mind), gui_point + Vector2(0, -maxd), color, Math::round(2 * EDSCALE));
+		blend_space_draw->draw_line(gui_point + Point2(mind, 0), gui_point + Point2(maxd, 0), color, Math::round(2 * EDSCALE));
+		blend_space_draw->draw_line(gui_point + Point2(-mind, 0), gui_point + Point2(-maxd, 0), color, Math::round(2 * EDSCALE));
+		blend_space_draw->draw_line(gui_point + Point2(0, mind), gui_point + Point2(0, maxd), color, Math::round(2 * EDSCALE));
+		blend_space_draw->draw_line(gui_point + Point2(0, -mind), gui_point + Point2(0, -maxd), color, Math::round(2 * EDSCALE));
 	}
 }
 

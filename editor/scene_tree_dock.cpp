@@ -2829,7 +2829,7 @@ void SceneTreeDock::_post_do_create(Node *p_child) {
 			ms.height = 40;
 		}
 		if (control->is_layout_rtl()) {
-			control->set_position(control->get_position() - Vector2(ms.x, 0));
+			control->set_position(control->get_position() - Point2(ms.x, 0));
 		}
 		control->set_size(ms);
 	}

@@ -135,7 +135,7 @@ EditorAssetLibraryItem::EditorAssetLibraryItem(bool p_clickable) {
 	add_child(hb);
 
 	icon = memnew(TextureButton);
-	icon->set_custom_minimum_size(Size2(64, 64) * EDSCALE);
+	icon->set_custom_minimum_size(Size2(64 * EDSCALE));
 	hb->add_child(icon);
 
 	VBoxContainer *vb = memnew(VBoxContainer);
@@ -324,7 +324,7 @@ EditorAssetLibraryItemDescription::EditorAssetLibraryItemDescription() {
 	item = memnew(EditorAssetLibraryItem);
 
 	desc_vbox->add_child(item);
-	desc_vbox->set_custom_minimum_size(Size2(440 * EDSCALE, 440 * EDSCALE));
+	desc_vbox->set_custom_minimum_size(Size2(440 * EDSCALE));
 
 	description = memnew(RichTextLabel);
 	desc_vbox->add_child(description);
@@ -344,13 +344,13 @@ EditorAssetLibraryItemDescription::EditorAssetLibraryItemDescription() {
 	previews_vbox->add_child(preview);
 	preview->set_expand_mode(TextureRect::EXPAND_IGNORE_SIZE);
 	preview->set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT_CENTERED);
-	preview->set_custom_minimum_size(Size2(640 * EDSCALE, 345 * EDSCALE));
+	preview->set_custom_minimum_size(Size2(640, 345) * EDSCALE);
 	preview->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 	preview->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 
 	previews_bg = memnew(PanelContainer);
 	previews_vbox->add_child(previews_bg);
-	previews_bg->set_custom_minimum_size(Size2(640 * EDSCALE, 101 * EDSCALE));
+	previews_bg->set_custom_minimum_size(Size2(640, 101) * EDSCALE);
 
 	previews = memnew(ScrollContainer);
 	previews_bg->add_child(previews);
@@ -607,7 +607,7 @@ EditorAssetLibraryItemDownload::EditorAssetLibraryItemDownload() {
 
 	hb2->add_child(retry_button);
 	hb2->add_child(install_button);
-	set_custom_minimum_size(Size2(310, 0) * EDSCALE);
+	set_custom_minimum_size(Size2(310 * EDSCALE, 0));
 
 	download = memnew(HTTPRequest);
 	panel->add_child(download);

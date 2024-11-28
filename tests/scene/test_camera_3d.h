@@ -232,7 +232,7 @@ TEST_CASE("[SceneTree][Camera3D] Project/Unproject position") {
 			// Center.
 			CHECK(test_camera->project_position(Vector2(200, 100), 0.5f).is_equal_approx(Vector3(0, 0, -0.5f)));
 			// Top left.
-			CHECK(test_camera->project_position(Vector2(0, 0), 1.5f).is_equal_approx(Vector3(-5.0f, 2.5f, -1.5f)));
+			CHECK(test_camera->project_position(Vector2(), 1.5f).is_equal_approx(Vector3(-5.0f, 2.5f, -1.5f)));
 			// Bottom right.
 			CHECK(test_camera->project_position(Vector2(400, 200), 5.0f).is_equal_approx(Vector3(5.0f, -2.5f, -5.0f)));
 		}
@@ -258,7 +258,7 @@ TEST_CASE("[SceneTree][Camera3D] Project/Unproject position") {
 			// Center
 			CHECK(test_camera->unproject_position(Vector3(0, 0, -0.5f)).is_equal_approx(Vector2(200, 100)));
 			// Top left
-			CHECK(test_camera->unproject_position(Vector3(-5.0f, 2.5f, -1.5f)).is_equal_approx(Vector2(0, 0)));
+			CHECK(test_camera->unproject_position(Vector3(-5.0f, 2.5f, -1.5f)).is_equal_approx(Vector2()));
 			// Bottom right
 			CHECK(test_camera->unproject_position(Vector3(5.0f, -2.5f, -5.0f)).is_equal_approx(Vector2(400, 200)));
 		}
@@ -299,7 +299,7 @@ TEST_CASE("[SceneTree][Camera3D] Project ray") {
 			// Center.
 			CHECK(test_camera->project_ray_origin(Vector2(200, 100)).is_equal_approx(Vector3(0, 0, -0.5f)));
 			// Top left.
-			CHECK(test_camera->project_ray_origin(Vector2(0, 0)).is_equal_approx(Vector3(-5.0f, 2.5f, -0.5f)));
+			CHECK(test_camera->project_ray_origin(Vector2()).is_equal_approx(Vector3(-5.0f, 2.5f, -0.5f)));
 			// Bottom right.
 			CHECK(test_camera->project_ray_origin(Vector2(400, 200)).is_equal_approx(Vector3(5.0f, -2.5f, -0.5f)));
 		}
@@ -309,7 +309,7 @@ TEST_CASE("[SceneTree][Camera3D] Project ray") {
 			// Center.
 			CHECK(test_camera->project_ray_origin(Vector2(200, 100)).is_equal_approx(Vector3(0, 0, 0)));
 			// Top left.
-			CHECK(test_camera->project_ray_origin(Vector2(0, 0)).is_equal_approx(Vector3(0, 0, 0)));
+			CHECK(test_camera->project_ray_origin(Vector2()).is_equal_approx(Vector3(0, 0, 0)));
 			// Bottom right.
 			CHECK(test_camera->project_ray_origin(Vector2(400, 200)).is_equal_approx(Vector3(0, 0, 0)));
 		}
@@ -321,7 +321,7 @@ TEST_CASE("[SceneTree][Camera3D] Project ray") {
 			// Center.
 			CHECK(test_camera->project_ray_normal(Vector2(200, 100)).is_equal_approx(Vector3(0, 0, -1)));
 			// Top left.
-			CHECK(test_camera->project_ray_normal(Vector2(0, 0)).is_equal_approx(Vector3(0, 0, -1)));
+			CHECK(test_camera->project_ray_normal(Vector2()).is_equal_approx(Vector3(0, 0, -1)));
 			// Bottom right.
 			CHECK(test_camera->project_ray_normal(Vector2(400, 200)).is_equal_approx(Vector3(0, 0, -1)));
 		}
@@ -331,7 +331,7 @@ TEST_CASE("[SceneTree][Camera3D] Project ray") {
 			// Center.
 			CHECK(test_camera->project_ray_normal(Vector2(200, 100)).is_equal_approx(Vector3(0, 0, -1)));
 			// Top left.
-			CHECK(test_camera->project_ray_normal(Vector2(0, 0)).is_equal_approx(Vector3(-SQRT3, SQRT3 / 2, -0.5f).normalized()));
+			CHECK(test_camera->project_ray_normal(Vector2()).is_equal_approx(Vector3(-SQRT3, SQRT3 / 2, -0.5f).normalized()));
 			// Bottom right.
 			CHECK(test_camera->project_ray_normal(Vector2(400, 200)).is_equal_approx(Vector3(SQRT3, -SQRT3 / 2, -0.5f).normalized()));
 		}
@@ -345,7 +345,7 @@ TEST_CASE("[SceneTree][Camera3D] Project ray") {
 			// Center.
 			CHECK(test_camera->project_local_ray_normal(Vector2(200, 100)).is_equal_approx(Vector3(0, 0, -1)));
 			// Top left.
-			CHECK(test_camera->project_local_ray_normal(Vector2(0, 0)).is_equal_approx(Vector3(0, 0, -1)));
+			CHECK(test_camera->project_local_ray_normal(Vector2()).is_equal_approx(Vector3(0, 0, -1)));
 			// Bottom right.
 			CHECK(test_camera->project_local_ray_normal(Vector2(400, 200)).is_equal_approx(Vector3(0, 0, -1)));
 		}
@@ -355,7 +355,7 @@ TEST_CASE("[SceneTree][Camera3D] Project ray") {
 			// Center.
 			CHECK(test_camera->project_local_ray_normal(Vector2(200, 100)).is_equal_approx(Vector3(0, 0, -1)));
 			// Top left.
-			CHECK(test_camera->project_local_ray_normal(Vector2(0, 0)).is_equal_approx(Vector3(-SQRT3, SQRT3 / 2, -0.5f).normalized()));
+			CHECK(test_camera->project_local_ray_normal(Vector2()).is_equal_approx(Vector3(-SQRT3, SQRT3 / 2, -0.5f).normalized()));
 			// Bottom right.
 			CHECK(test_camera->project_local_ray_normal(Vector2(400, 200)).is_equal_approx(Vector3(SQRT3, -SQRT3 / 2, -0.5f).normalized()));
 		}

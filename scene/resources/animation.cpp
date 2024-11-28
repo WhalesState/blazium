@@ -3359,8 +3359,8 @@ void Animation::bezier_track_set_key_handle_mode(int p_track, int p_index, Handl
 
 	switch (p_mode) {
 		case HANDLE_MODE_LINEAR: {
-			bt->values.write[p_index].value.in_handle = Vector2(0, 0);
-			bt->values.write[p_index].value.out_handle = Vector2(0, 0);
+			bt->values.write[p_index].value.in_handle = Vector2();
+			bt->values.write[p_index].value.out_handle = Vector2();
 		} break;
 		case HANDLE_MODE_BALANCED:
 		case HANDLE_MODE_MIRRORED: {

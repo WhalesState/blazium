@@ -39,9 +39,9 @@
 namespace TestCurve2D {
 
 void add_sample_curve_points(Ref<Curve2D> &curve) {
-	Vector2 p0 = Vector2(0, 0);
+	Vector2 p0 = Vector2();
 	Vector2 p1 = Vector2(50, 0);
-	Vector2 p2 = Vector2(50, 50);
+	Vector2 p2 = Vector2(50);
 	Vector2 p3 = Vector2(0, 50);
 
 	Vector2 control0 = p1 - p0;
@@ -74,9 +74,9 @@ TEST_CASE("[Curve2D] Point management") {
 	}
 
 	SUBCASE("Functions for changing single point properties should behave as expected") {
-		Vector2 new_in = Vector2(1, 1);
-		Vector2 new_out = Vector2(1, 1);
-		Vector2 new_pos = Vector2(1, 1);
+		Vector2 new_in = Vector2(1);
+		Vector2 new_out = Vector2(1);
+		Vector2 new_pos = Vector2(1);
 
 		curve->add_point(Vector2());
 
@@ -136,25 +136,25 @@ TEST_CASE("[Curve2D] Sampling") {
 	curve->add_point(Vector2(0, 50));
 
 	SUBCASE("sample") {
-		CHECK(curve->sample(0, 0) == Vector2(0, 0));
+		CHECK(curve->sample(0, 0) == Vector2());
 		CHECK(curve->sample(0, 0.5) == Vector2(0, 25));
 		CHECK(curve->sample(0, 1) == Vector2(0, 50));
 	}
 
 	SUBCASE("samplef") {
-		CHECK(curve->samplef(0) == Vector2(0, 0));
+		CHECK(curve->samplef(0) == Vector2());
 		CHECK(curve->samplef(0.5) == Vector2(0, 25));
 		CHECK(curve->samplef(1) == Vector2(0, 50));
 	}
 
 	SUBCASE("sample_baked, cubic = false") {
-		CHECK(curve->sample_baked(curve->get_closest_offset(Vector2(0, 0))) == Vector2(0, 0));
+		CHECK(curve->sample_baked(curve->get_closest_offset(Vector2())) == Vector2());
 		CHECK(curve->sample_baked(curve->get_closest_offset(Vector2(0, 25))) == Vector2(0, 25));
 		CHECK(curve->sample_baked(curve->get_closest_offset(Vector2(0, 50))) == Vector2(0, 50));
 	}
 
 	SUBCASE("sample_baked, cubic = true") {
-		CHECK(curve->sample_baked(curve->get_closest_offset(Vector2(0, 0)), true) == Vector2(0, 0));
+		CHECK(curve->sample_baked(curve->get_closest_offset(Vector2()), true) == Vector2());
 		CHECK(curve->sample_baked(curve->get_closest_offset(Vector2(0, 25)), true) == Vector2(0, 25));
 		CHECK(curve->sample_baked(curve->get_closest_offset(Vector2(0, 50)), true) == Vector2(0, 50));
 	}
@@ -230,7 +230,7 @@ TEST_CASE("[Curve2D] Sampling") {
 	}
 
 	SUBCASE("get_closest_point") {
-		CHECK(curve->get_closest_point(Vector2(0, 0)) == Vector2(0, 0));
+		CHECK(curve->get_closest_point(Vector2()) == Vector2());
 		CHECK(curve->get_closest_point(Vector2(0, 25)) == Vector2(0, 25));
 		CHECK(curve->get_closest_point(Vector2(50, 25)) == Vector2(0, 25));
 		CHECK(curve->get_closest_point(Vector2(0, 50)) == Vector2(0, 50));

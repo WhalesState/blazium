@@ -688,7 +688,7 @@ bool TextureStorage::canvas_texture_get_uniform_set(RID p_texture, RS::CanvasIte
 			t = get_texture(ct->diffuse);
 			if (!t) {
 				u.append_id(texture_rd_get_default(DEFAULT_RD_TEXTURE_WHITE));
-				ct->size_cache = Size2i(1, 1);
+				ct->size_cache = Size2i(1);
 			} else {
 				u.append_id(t->rd_texture_srgb.is_valid() && p_use_srgb && !p_texture_is_data ? t->rd_texture_srgb : t->rd_texture);
 				ct->size_cache = Size2i(t->width_2d, t->height_2d);
@@ -2659,7 +2659,7 @@ void TextureStorage::update_decal_atlas() {
 
 		for (int i = 0; i < item_count; i++) {
 			DecalAtlas::Texture *t = decal_atlas.textures.getptr(items[i].texture);
-			t->uv_rect.position = items[i].pos * border + Vector2i(border / 2, border / 2);
+			t->uv_rect.position = items[i].pos * border + Vector2i(border / 2);
 			t->uv_rect.size = items[i].pixel_size;
 
 			t->uv_rect.position /= Size2(decal_atlas.size);

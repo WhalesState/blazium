@@ -1441,9 +1441,9 @@ CSGBrush *CSGCylinder3D::_build_brush() {
 				facesw[face * 3 + 1] = face_points[0] * vertex_mul;
 				facesw[face * 3 + 2] = Vector3(0, -1, 0) * vertex_mul;
 
-				uvsw[face * 3 + 0] = Vector2(face_points[1].x, face_points[1].y) * 0.5 + Vector2(0.5, 0.5);
-				uvsw[face * 3 + 1] = Vector2(face_points[0].x, face_points[0].y) * 0.5 + Vector2(0.5, 0.5);
-				uvsw[face * 3 + 2] = Vector2(0.5, 0.5);
+				uvsw[face * 3 + 0] = Vector2(face_points[1].x, face_points[1].y) * 0.5 + Vector2(0.5);
+				uvsw[face * 3 + 1] = Vector2(face_points[0].x, face_points[0].y) * 0.5 + Vector2(0.5);
+				uvsw[face * 3 + 2] = Vector2(0.5);
 
 				smoothw[face] = false;
 				invertw[face] = invert_val;
@@ -1456,9 +1456,9 @@ CSGBrush *CSGCylinder3D::_build_brush() {
 					facesw[face * 3 + 1] = face_points[2] * vertex_mul;
 					facesw[face * 3 + 2] = Vector3(0, 1, 0) * vertex_mul;
 
-					uvsw[face * 3 + 0] = Vector2(face_points[1].x, face_points[1].y) * 0.5 + Vector2(0.5, 0.5);
-					uvsw[face * 3 + 1] = Vector2(face_points[0].x, face_points[0].y) * 0.5 + Vector2(0.5, 0.5);
-					uvsw[face * 3 + 2] = Vector2(0.5, 0.5);
+					uvsw[face * 3 + 0] = Vector2(face_points[1].x, face_points[1].y) * 0.5 + Vector2(0.5);
+					uvsw[face * 3 + 1] = Vector2(face_points[0].x, face_points[0].y) * 0.5 + Vector2(0.5);
+					uvsw[face * 3 + 2] = Vector2(0.5);
 
 					smoothw[face] = false;
 					invertw[face] = invert_val;
@@ -2426,9 +2426,9 @@ bool CSGPolygon3D::_has_editable_3d_polygon_no_depth() const {
 CSGPolygon3D::CSGPolygon3D() {
 	// defaults
 	mode = MODE_DEPTH;
-	polygon.push_back(Vector2(0, 0));
+	polygon.push_back(Vector2());
 	polygon.push_back(Vector2(0, 1));
-	polygon.push_back(Vector2(1, 1));
+	polygon.push_back(Vector2(1));
 	polygon.push_back(Vector2(1, 0));
 	depth = 1.0;
 	spin_degrees = 360;

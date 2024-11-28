@@ -58,7 +58,7 @@ TEST_CASE("[Curve] Default curve") {
 TEST_CASE("[Curve] Custom curve with free tangents") {
 	Ref<Curve> curve = memnew(Curve);
 	// "Sawtooth" curve with an open ending towards the 1.0 offset.
-	curve->add_point(Vector2(0, 0));
+	curve->add_point(Vector2());
 	curve->add_point(Vector2(0.25, 1));
 	curve->add_point(Vector2(0.5, 0));
 	curve->add_point(Vector2(0.75, 1));
@@ -139,7 +139,7 @@ TEST_CASE("[Curve] Custom curve with free tangents") {
 TEST_CASE("[Curve] Custom curve with linear tangents") {
 	Ref<Curve> curve = memnew(Curve);
 	// "Sawtooth" curve with an open ending towards the 1.0 offset.
-	curve->add_point(Vector2(0, 0), 0, 0, Curve::TangentMode::TANGENT_LINEAR, Curve::TangentMode::TANGENT_LINEAR);
+	curve->add_point(Vector2(), 0, 0, Curve::TangentMode::TANGENT_LINEAR, Curve::TangentMode::TANGENT_LINEAR);
 	curve->add_point(Vector2(0.25, 1), 0, 0, Curve::TangentMode::TANGENT_LINEAR, Curve::TangentMode::TANGENT_LINEAR);
 	curve->add_point(Vector2(0.5, 0), 0, 0, Curve::TangentMode::TANGENT_LINEAR, Curve::TangentMode::TANGENT_LINEAR);
 	curve->add_point(Vector2(0.75, 1), 0, 0, Curve::TangentMode::TANGENT_LINEAR, Curve::TangentMode::TANGENT_LINEAR);
@@ -221,8 +221,8 @@ TEST_CASE("[Curve] Custom curve with linear tangents") {
 
 TEST_CASE("[Curve] Straight line offset test") {
 	Ref<Curve> curve = memnew(Curve);
-	curve->add_point(Vector2(0, 0));
-	curve->add_point(Vector2(1, 1));
+	curve->add_point(Vector2());
+	curve->add_point(Vector2(1));
 
 	CHECK_MESSAGE(
 			curve->sample_baked(1.0 - (0.5 / curve->get_bake_resolution())) != curve->sample_baked(1),
@@ -233,7 +233,7 @@ TEST_CASE("[Curve2D] Linear sampling should return exact value") {
 	Ref<Curve2D> curve = memnew(Curve2D);
 	real_t len = 2048.0;
 
-	curve->add_point(Vector2(0, 0));
+	curve->add_point(Vector2());
 	curve->add_point(Vector2(len, 0));
 
 	real_t baked_length = curve->get_baked_length();

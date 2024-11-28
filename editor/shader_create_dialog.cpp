@@ -571,7 +571,7 @@ ShaderCreateDialog::ShaderCreateDialog() {
 	// Type.
 
 	type_menu = memnew(OptionButton);
-	type_menu->set_custom_minimum_size(Size2(250, 0) * EDSCALE);
+	type_menu->set_custom_minimum_size(Size2(250 * EDSCALE, 0));
 	type_menu->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	gc->add_child(memnew(Label(TTR("Type:"))));
 	gc->add_child(type_menu);

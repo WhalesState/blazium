@@ -277,12 +277,12 @@ EditorNetworkProfiler::EditorNetworkProfiler() {
 
 	incoming_bandwidth_text = memnew(LineEdit);
 	incoming_bandwidth_text->set_editable(false);
-	incoming_bandwidth_text->set_custom_minimum_size(Size2(120, 0) * EDSCALE);
+	incoming_bandwidth_text->set_custom_minimum_size(Size2(120 * EDSCALE, 0));
 	incoming_bandwidth_text->set_horizontal_alignment(HORIZONTAL_ALIGNMENT_RIGHT);
 	hb->add_child(incoming_bandwidth_text);
 
 	Control *down_up_spacer = memnew(Control);
-	down_up_spacer->set_custom_minimum_size(Size2(30, 0) * EDSCALE);
+	down_up_spacer->set_custom_minimum_size(Size2(30 * EDSCALE, 0));
 	hb->add_child(down_up_spacer);
 
 	lb = memnew(Label);
@@ -292,7 +292,7 @@ EditorNetworkProfiler::EditorNetworkProfiler() {
 
 	outgoing_bandwidth_text = memnew(LineEdit);
 	outgoing_bandwidth_text->set_editable(false);
-	outgoing_bandwidth_text->set_custom_minimum_size(Size2(120, 0) * EDSCALE);
+	outgoing_bandwidth_text->set_custom_minimum_size(Size2(120 * EDSCALE, 0));
 	outgoing_bandwidth_text->set_horizontal_alignment(HORIZONTAL_ALIGNMENT_RIGHT);
 	hb->add_child(outgoing_bandwidth_text);
 
@@ -307,7 +307,7 @@ EditorNetworkProfiler::EditorNetworkProfiler() {
 
 	// RPC
 	counters_display = memnew(Tree);
-	counters_display->set_custom_minimum_size(Size2(320, 0) * EDSCALE);
+	counters_display->set_custom_minimum_size(Size2(320 * EDSCALE, 0));
 	counters_display->set_v_size_flags(SIZE_EXPAND_FILL);
 	counters_display->set_h_size_flags(SIZE_EXPAND_FILL);
 	counters_display->set_hide_folding(true);
@@ -330,7 +330,7 @@ EditorNetworkProfiler::EditorNetworkProfiler() {
 
 	// Replication
 	replication_display = memnew(Tree);
-	replication_display->set_custom_minimum_size(Size2(320, 0) * EDSCALE);
+	replication_display->set_custom_minimum_size(Size2(320 * EDSCALE, 0));
 	replication_display->set_v_size_flags(SIZE_EXPAND_FILL);
 	replication_display->set_h_size_flags(SIZE_EXPAND_FILL);
 	replication_display->set_hide_folding(true);

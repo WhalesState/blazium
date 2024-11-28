@@ -52,7 +52,7 @@ Rect2 NavigationPolygon::_edit_get_rect() const {
 			const Vector2 *p = outline.ptr();
 			for (int j = 0; j < outline_size; j++) {
 				if (first) {
-					item_rect = Rect2(p[j], Vector2(0, 0));
+					item_rect = Rect2(p[j], Vector2());
 					first = false;
 				} else {
 					item_rect.expand_to(p[j]);

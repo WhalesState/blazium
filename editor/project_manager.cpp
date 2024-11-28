@@ -768,7 +768,7 @@ void ProjectManager::_manage_project_tags() {
 	}
 
 	tag_edit_error->hide();
-	tag_manage_dialog->popup_centered(Vector2i(500, 0) * EDSCALE);
+	tag_manage_dialog->popup_centered(Vector2i(500 * EDSCALE, 0));
 }
 
 void ProjectManager::_add_project_tag(const String &p_tag) {
@@ -1336,7 +1336,7 @@ ProjectManager::ProjectManager() {
 
 				empty_list_online_warning = memnew(Label);
 				empty_list_online_warning->set_horizontal_alignment(HorizontalAlignment::HORIZONTAL_ALIGNMENT_CENTER);
-				empty_list_online_warning->set_custom_minimum_size(Size2(220, 0) * EDSCALE);
+				empty_list_online_warning->set_custom_minimum_size(Size2(220 * EDSCALE, 0));
 				empty_list_online_warning->set_autowrap_mode(TextServer::AUTOWRAP_WORD);
 				empty_list_online_warning->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 				empty_list_online_warning->set_text(TTR("Note: The Asset Library requires an online connection and involves sending data over the internet."));
@@ -1345,7 +1345,7 @@ ProjectManager::ProjectManager() {
 
 			// The side bar with the edit, run, rename, etc. buttons.
 			VBoxContainer *project_list_sidebar = memnew(VBoxContainer);
-			project_list_sidebar->set_custom_minimum_size(Size2(120, 120));
+			project_list_sidebar->set_custom_minimum_size(Size2(120));
 			project_list_hbox->add_child(project_list_sidebar);
 
 			project_list_sidebar->add_child(memnew(HSeparator));
@@ -1532,7 +1532,7 @@ ProjectManager::ProjectManager() {
 
 		project_tags = memnew(HFlowContainer);
 		tag_vb->add_child(project_tags);
-		project_tags->set_custom_minimum_size(Vector2(0, 100) * EDSCALE);
+		project_tags->set_custom_minimum_size(Size2(0, 100 * EDSCALE));
 
 		tag_vb->add_child(memnew(HSeparator));
 
@@ -1547,7 +1547,7 @@ ProjectManager::ProjectManager() {
 
 		all_tags = memnew(HFlowContainer);
 		tag_vb->add_child(all_tags);
-		all_tags->set_custom_minimum_size(Vector2(0, 100) * EDSCALE);
+		all_tags->set_custom_minimum_size(Size2(0, 100 * EDSCALE));
 
 		tag_edit_error = memnew(Label);
 		tag_vb->add_child(tag_edit_error);
@@ -1576,7 +1576,7 @@ ProjectManager::ProjectManager() {
 
 		create_tag_btn = memnew(Button);
 		all_tags->add_child(create_tag_btn);
-		create_tag_btn->connect(SceneStringName(pressed), callable_mp((Window *)create_tag_dialog, &Window::popup_centered).bind(Vector2i(500, 0) * EDSCALE));
+		create_tag_btn->connect(SceneStringName(pressed), callable_mp((Window *)create_tag_dialog, &Window::popup_centered).bind(Vector2i(500 * EDSCALE, 0)));
 	}
 
 	// Initialize project list.

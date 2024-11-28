@@ -80,7 +80,7 @@ TEST_SUITE("Validate tests") {
 		Vector3i vec3i(1, 2, 3);
 		INFO(vec3i);
 
-		Transform2D trans2d(0.5, Vector2(100, 100));
+		Transform2D trans2d(0.5, Vector2(100));
 		INFO(trans2d);
 
 		Plane plane(Vector3(1, 1, 1), 1.0);
@@ -164,9 +164,9 @@ TEST_SUITE("Validate tests") {
 		INFO(str_arr);
 
 		PackedVector2Array vec2_arr;
-		vec2_arr.push_back(Vector2(0, 0));
-		vec2_arr.push_back(Vector2(1, 1));
-		vec2_arr.push_back(Vector2(2, 2));
+		vec2_arr.push_back(Vector2());
+		vec2_arr.push_back(Vector2(1));
+		vec2_arr.push_back(Vector2(2));
 		INFO(vec2_arr);
 
 		PackedVector3Array vec3_arr;

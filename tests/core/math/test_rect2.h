@@ -82,19 +82,19 @@ TEST_CASE("[Rect2] Basic getters") {
 
 TEST_CASE("[Rect2] Basic setters") {
 	Rect2 rect = Rect2(0, 100, 1280, 720);
-	rect.set_end(Vector2(4000, 4000));
+	rect.set_end(Vector2(4000));
 	CHECK_MESSAGE(
 			rect.is_equal_approx(Rect2(0, 100, 4000, 3900)),
 			"set_end() should result in the expected Rect2.");
 
 	rect = Rect2(0, 100, 1280, 720);
-	rect.set_position(Vector2(4000, 4000));
+	rect.set_position(Vector2(4000));
 	CHECK_MESSAGE(
 			rect.is_equal_approx(Rect2(4000, 4000, 1280, 720)),
 			"set_position() should result in the expected Rect2.");
 
 	rect = Rect2(0, 100, 1280, 720);
-	rect.set_size(Vector2(4000, 4000));
+	rect.set_size(Vector2(4000));
 	CHECK_MESSAGE(
 			rect.is_equal_approx(Rect2(0, 100, 4000, 4000)),
 			"set_size() should result in the expected Rect2.");
@@ -176,7 +176,7 @@ TEST_CASE("[Rect2] Expanding") {
 			Rect2(0, 100, 1280, 720).expand(Vector2(500, 600)).is_equal_approx(Rect2(0, 100, 1280, 720)),
 			"expand() with contained Vector2 should return the expected result.");
 	CHECK_MESSAGE(
-			Rect2(0, 100, 1280, 720).expand(Vector2(0, 0)).is_equal_approx(Rect2(0, 0, 1280, 820)),
+			Rect2(0, 100, 1280, 720).expand(Vector2()).is_equal_approx(Rect2(0, 0, 1280, 820)),
 			"expand() with non-contained Vector2 should return the expected result.");
 }
 
@@ -212,14 +212,14 @@ TEST_CASE("[Rect2] Has point") {
 			rect.has_point(Vector2(500, 600)),
 			"has_point() with contained Vector2 should return the expected result.");
 	CHECK_MESSAGE(
-			!rect.has_point(Vector2(0, 0)),
+			!rect.has_point(Vector2()),
 			"has_point() with non-contained Vector2 should return the expected result.");
 
 	CHECK_MESSAGE(
 			rect.has_point(rect.position),
 			"has_point() with positive size should include `position`.");
 	CHECK_MESSAGE(
-			rect.has_point(rect.position + Vector2(1, 1)),
+			rect.has_point(rect.position + Vector2(1)),
 			"has_point() with positive size should include `position + (1, 1)`.");
 	CHECK_MESSAGE(
 			!rect.has_point(rect.position + Vector2(1, -1)),
@@ -228,10 +228,10 @@ TEST_CASE("[Rect2] Has point") {
 			!rect.has_point(rect.position + rect.size),
 			"has_point() with positive size should not include `position + size`.");
 	CHECK_MESSAGE(
-			!rect.has_point(rect.position + rect.size + Vector2(1, 1)),
+			!rect.has_point(rect.position + rect.size + Vector2(1)),
 			"has_point() with positive size should not include `position + size + (1, 1)`.");
 	CHECK_MESSAGE(
-			rect.has_point(rect.position + rect.size + Vector2(-1, -1)),
+			rect.has_point(rect.position + rect.size + Vector2(-1)),
 			"has_point() with positive size should include `position + size + (-1, -1)`.");
 	CHECK_MESSAGE(
 			!rect.has_point(rect.position + rect.size + Vector2(-1, 1)),

@@ -386,8 +386,8 @@ float EditorAudioBus::_scaled_db_to_normalized_volume(float db) {
 			 * results of the positive db range in order to get the desired numerical
 			 * value on the negative side. */
 			float positive_x = Math::pow(Math::abs(db) / 45.0f, 1.0f / 3.0f) + 1.0f;
-			Vector2 translation = Vector2(1.0f, 0.0f) - Vector2(positive_x, Math::abs(db));
-			Vector2 reflected_position = Vector2(1.0, 0.0f) + translation;
+			Vector2 translation = Vector2(1, 0) - Vector2(positive_x, Math::abs(db));
+			Vector2 reflected_position = Vector2(1, 0) + translation;
 			return reflected_position.x;
 		} else {
 			return Math::pow(db / 45.0f, 1.0f / 3.0f) + 1.0f;
@@ -930,7 +930,7 @@ EditorAudioBus::EditorAudioBus(EditorAudioBuses *p_buses, bool p_is_master) {
 
 	effects = memnew(Tree);
 	effects->set_hide_root(true);
-	effects->set_custom_minimum_size(Size2(0, 80) * EDSCALE);
+	effects->set_custom_minimum_size(Size2(0, 80 * EDSCALE));
 	effects->set_hide_folding(true);
 	effects->set_v_size_flags(SIZE_EXPAND_FILL);
 	vb->add_child(effects);
@@ -992,7 +992,7 @@ EditorAudioBus::EditorAudioBus(EditorAudioBuses *p_buses, bool p_is_master) {
 void EditorAudioBusDrop::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_DRAW: {
-			draw_style_box(get_theme_stylebox(CoreStringName(normal), SNAME("Button")), Rect2(Vector2(), get_size()));
+			draw_style_box(get_theme_stylebox(CoreStringName(normal), SNAME("Button")), Rect2(Point2(), get_size()));
 
 			if (hovering_drop) {
 				Color accent = get_theme_color(SNAME("accent_color"), EditorStringName(Editor));
@@ -1473,14 +1473,14 @@ void EditorAudioMeterNotches::_draw_audio_notches() {
 	float font_height = theme_cache.font->get_height(theme_cache.font_size);
 
 	for (const AudioNotch &n : notches) {
-		draw_line(Vector2(0, (1.0f - n.relative_position) * (get_size().y - btm_padding - top_padding) + top_padding),
-				Vector2(line_length * EDSCALE, (1.0f - n.relative_position) * (get_size().y - btm_padding - top_padding) + top_padding),
+		draw_line(Point2(0, (1.0f - n.relative_position) * (get_size().y - btm_padding - top_padding) + top_padding),
+				Point2(line_length * EDSCALE, (1.0f - n.relative_position) * (get_size().y - btm_padding - top_padding) + top_padding),
 				theme_cache.notch_color,
 				Math::round(EDSCALE));
 
 		if (n.render_db_value) {
 			draw_string(theme_cache.font,
-					Vector2((line_length + label_space) * EDSCALE,
+					Point2((line_length + label_space) * EDSCALE,
 							(1.0f - n.relative_position) * (get_size().y - btm_padding - top_padding) + (font_height / 4) + top_padding),
 					String::num(Math::abs(n.db_value)) + "dB",
 					HORIZONTAL_ALIGNMENT_LEFT, -1, theme_cache.font_size,

@@ -188,7 +188,7 @@ void RendererCanvasCull::_attach_canvas_item_for_draw(RendererCanvasCull::Item *
 				ci->clear();
 
 				if (rect_accum == Rect2()) {
-					rect_accum.size = Size2(1, 1);
+					rect_accum.size = Size2(1);
 				}
 
 				rect_accum = rect_accum.grow(ci->canvas_group->fit_margin);

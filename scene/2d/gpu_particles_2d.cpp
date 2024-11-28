@@ -555,7 +555,7 @@ void GPUParticles2D::_notification(int p_what) {
 				texture_rid = texture->get_rid();
 				size = texture->get_size();
 			} else {
-				size = Size2(1, 1);
+				size = Size2(1);
 			}
 
 			if (trail_enabled) {
@@ -652,9 +652,9 @@ void GPUParticles2D::_notification(int p_what) {
 					uvs.push_back(Vector2((region_rect.position.x + region_rect.size.x) / atlas_size.x, (region_rect.position.y + region_rect.size.y) / atlas_size.y));
 					uvs.push_back(Vector2(region_rect.position.x / atlas_size.x, (region_rect.position.y + region_rect.size.y) / atlas_size.y));
 				} else {
-					uvs.push_back(Vector2(0, 0));
+					uvs.push_back(Vector2());
 					uvs.push_back(Vector2(1, 0));
-					uvs.push_back(Vector2(1, 1));
+					uvs.push_back(Vector2(1));
 					uvs.push_back(Vector2(0, 1));
 				}
 
@@ -877,7 +877,7 @@ GPUParticles2D::GPUParticles2D() {
 	set_pre_process_time(0);
 	set_explosiveness_ratio(0);
 	set_randomness_ratio(0);
-	set_visibility_rect(Rect2(Vector2(-100, -100), Vector2(200, 200)));
+	set_visibility_rect(Rect2(Point2(-100), Size2(200)));
 	set_use_local_coordinates(false);
 	set_draw_order(DRAW_ORDER_LIFETIME);
 	set_speed_scale(1);

@@ -39,13 +39,13 @@ class Parallax2D : public Node2D {
 	static constexpr real_t DEFAULT_LIMIT = 10000000;
 
 	String group_name;
-	Size2 scroll_scale = Size2(1, 1);
+	Size2 scroll_scale = Size2(1);
 	Point2 scroll_offset;
 	Point2 screen_offset;
 	Vector2 repeat_size;
 	int repeat_times = 1;
-	Point2 limit_begin = Point2(-DEFAULT_LIMIT, -DEFAULT_LIMIT);
-	Point2 limit_end = Point2(DEFAULT_LIMIT, DEFAULT_LIMIT);
+	Point2 limit_begin = Point2(-DEFAULT_LIMIT);
+	Point2 limit_end = Point2(DEFAULT_LIMIT);
 	Point2 autoscroll;
 	Point2 autoscroll_offset;
 	bool follow_viewport = true;

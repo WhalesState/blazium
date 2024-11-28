@@ -1336,7 +1336,7 @@ DynamicFontImportSettingsDialog::DynamicFontImportSettingsDialog() {
 
 	inspector_general = memnew(EditorInspector);
 	inspector_general->set_v_size_flags(Control::SIZE_EXPAND_FILL);
-	inspector_general->set_custom_minimum_size(Size2(300 * EDSCALE, 250 * EDSCALE));
+	inspector_general->set_custom_minimum_size(Size2(300, 250) * EDSCALE);
 	page1_hb->add_child(inspector_general);
 	inspector_general->connect("property_edited", callable_mp(this, &DynamicFontImportSettingsDialog::_main_prop_changed));
 
@@ -1468,7 +1468,7 @@ DynamicFontImportSettingsDialog::DynamicFontImportSettingsDialog() {
 	inspector_text = memnew(EditorInspector);
 
 	inspector_text->set_v_size_flags(Control::SIZE_EXPAND_FILL);
-	inspector_text->set_custom_minimum_size(Size2(300 * EDSCALE, 250 * EDSCALE));
+	inspector_text->set_custom_minimum_size(Size2(300, 250) * EDSCALE);
 	page2_1_hb->add_child(inspector_text);
 	inspector_text->connect("property_edited", callable_mp(this, &DynamicFontImportSettingsDialog::_change_text_opts));
 

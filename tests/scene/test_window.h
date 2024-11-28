@@ -65,14 +65,14 @@ TEST_CASE("[SceneTree][Window]") {
 		Window *w = memnew(Window);
 		root->add_child(w);
 		w->set_size(Size2i(400, 200));
-		w->set_position(Size2i(0, 0));
-		w->set_content_scale_size(Size2i(200, 200));
+		w->set_position(Size2i());
+		w->set_content_scale_size(Size2i(200));
 		w->set_content_scale_mode(Window::CONTENT_SCALE_MODE_CANVAS_ITEMS);
 		w->set_content_scale_aspect(Window::CONTENT_SCALE_ASPECT_KEEP);
 		NotificationControlWindow *c = memnew(NotificationControlWindow);
 		w->add_child(c);
-		c->set_size(Size2i(100, 100));
-		c->set_position(Size2i(-50, -50));
+		c->set_size(Size2i(100));
+		c->set_position(Size2i(-50));
 
 		CHECK_FALSE(c->mouse_over);
 		SEND_GUI_MOUSE_MOTION_EVENT(Point2i(110, 10), MouseButtonMask::NONE, Key::NONE);

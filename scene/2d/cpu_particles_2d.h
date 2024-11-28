@@ -164,7 +164,7 @@ private:
 
 	EmissionShape emission_shape = EMISSION_SHAPE_POINT;
 	real_t emission_sphere_radius = 1.0;
-	Vector2 emission_rect_extents = Vector2(1, 1);
+	Vector2 emission_rect_extents = Vector2(1);
 	Vector<Vector2> emission_points;
 	Vector<Vector2> emission_normals;
 	Vector<Color> emission_colors;

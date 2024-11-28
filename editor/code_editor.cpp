@@ -255,7 +255,7 @@ void FindReplaceBar::_replace_all() {
 	text_editor->disconnect(SceneStringName(text_changed), callable_mp(this, &FindReplaceBar::_editor_text_changed));
 	// Line as x so it gets priority in comparison, column as y.
 	Point2i orig_cursor(text_editor->get_caret_line(0), text_editor->get_caret_column(0));
-	Point2i prev_match = Point2(-1, -1);
+	Point2i prev_match = Point2(-1);
 
 	bool selection_enabled = text_editor->has_selection(0);
 	if (!is_selection_only()) {

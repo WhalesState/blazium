@@ -56,7 +56,7 @@ static Transform2D _canvas_get_transform(RendererViewport::Viewport *p_viewport,
 		Transform2D xfpivot;
 		xfpivot.set_origin(pivot);
 		Transform2D xfscale;
-		xfscale.scale(Vector2(scale, scale));
+		xfscale.scale(Size2(scale));
 
 		xf = xfpivot.affine_inverse() * xf;
 		xf = xfscale * xf;
@@ -503,8 +503,8 @@ void RendererViewport::_draw_viewport(Viewport *p_viewport) {
 				int point_count = 0;
 
 				for (int j = 0; j < 4; j++) {
-					static const Vector2 signs[4] = { Vector2(1, 1), Vector2(1, 0), Vector2(0, 0), Vector2(0, 1) };
-					Vector2 sign_cmp = signs[j] * 2.0 - Vector2(1.0, 1.0);
+					static const Vector2 signs[4] = { Vector2(1), Vector2(1, 0), Vector2(), Vector2(0, 1) };
+					Vector2 sign_cmp = signs[j] * 2.0 - Vector2(1);
 					Vector2 point = clip_rect.position + clip_rect.size * signs[j];
 
 					if (sign_cmp == light_dir_sign) {
@@ -512,7 +512,7 @@ void RendererViewport::_draw_viewport(Viewport *p_viewport) {
 						points[point_count++] = point + light_dir * cull_distance;
 					} else if (sign_cmp.x == light_dir_sign.x || sign_cmp.y == light_dir_sign.y) {
 						int next_j = (j + 1) % 4;
-						Vector2 next_sign_cmp = signs[next_j] * 2.0 - Vector2(1.0, 1.0);
+						Vector2 next_sign_cmp = signs[next_j] * 2.0 - Vector2(1);
 
 						//one point in the same direction, plot segment
 

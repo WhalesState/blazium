@@ -124,7 +124,7 @@ void ThemeEditorPreview::_draw_picker_overlay() {
 		return;
 	}
 
-	picker_overlay->draw_rect(Rect2(Vector2(0.0, 0.0), picker_overlay->get_size()), theme_cache.preview_picker_overlay_color);
+	picker_overlay->draw_rect(Rect2(Point2(), picker_overlay->get_size()), theme_cache.preview_picker_overlay_color);
 	if (hovered_control) {
 		Rect2 highlight_rect = hovered_control->get_global_rect();
 		highlight_rect.position = picker_overlay->get_global_transform().affine_inverse().xform(highlight_rect.position);
@@ -145,7 +145,7 @@ void ThemeEditorPreview::_draw_picker_overlay() {
 		highlight_label_rect.size.x += margin_left + margin_right;
 		highlight_label_rect.size.y += margin_top + margin_bottom;
 
-		highlight_label_rect.position = highlight_label_rect.position.clamp(Vector2(), picker_overlay->get_size());
+		highlight_label_rect.position = highlight_label_rect.position.clamp(Point2(), picker_overlay->get_size());
 
 		picker_overlay->draw_style_box(theme_cache.preview_picker_label, highlight_label_rect);
 
@@ -246,7 +246,7 @@ ThemeEditorPreview::ThemeEditorPreview() {
 	picker_button->connect(SceneStringName(pressed), callable_mp(this, &ThemeEditorPreview::_picker_button_cbk));
 
 	MarginContainer *preview_body = memnew(MarginContainer);
-	preview_body->set_custom_minimum_size(Size2(480, 0) * EDSCALE);
+	preview_body->set_custom_minimum_size(Size2(480 * EDSCALE, 0));
 	preview_body->set_v_size_flags(SIZE_EXPAND_FILL);
 	add_child(preview_body);
 
@@ -256,7 +256,7 @@ ThemeEditorPreview::ThemeEditorPreview() {
 	preview_root = memnew(MarginContainer);
 	preview_container->add_child(preview_root);
 	preview_root->set_clip_contents(true);
-	preview_root->set_custom_minimum_size(Size2(450, 0) * EDSCALE);
+	preview_root->set_custom_minimum_size(Size2(450 * EDSCALE, 0));
 	preview_root->set_v_size_flags(SIZE_EXPAND_FILL);
 	preview_root->set_h_size_flags(SIZE_EXPAND_FILL);
 
@@ -381,13 +381,13 @@ DefaultThemeEditorPreview::DefaultThemeEditorPreview() {
 	second_vb->add_child(le);
 	TextEdit *te = memnew(TextEdit);
 	te->set_text("TextEdit");
-	te->set_custom_minimum_size(Size2(0, 100) * EDSCALE);
+	te->set_custom_minimum_size(Size2(0, 100 * EDSCALE));
 	second_vb->add_child(te);
 	second_vb->add_child(memnew(SpinBox));
 
 	HBoxContainer *vhb = memnew(HBoxContainer);
 	second_vb->add_child(vhb);
-	vhb->set_custom_minimum_size(Size2(0, 100) * EDSCALE);
+	vhb->set_custom_minimum_size(Size2(0, 100 * EDSCALE));
 	vhb->add_child(memnew(VSlider));
 	VScrollBar *vsb = memnew(VScrollBar);
 	vsb->set_page(25);
@@ -416,7 +416,7 @@ DefaultThemeEditorPreview::DefaultThemeEditorPreview() {
 
 	TabContainer *tc = memnew(TabContainer);
 	third_vb->add_child(tc);
-	tc->set_custom_minimum_size(Size2(0, 135) * EDSCALE);
+	tc->set_custom_minimum_size(Size2(0, 135 * EDSCALE));
 	Control *tcc = memnew(Control);
 	tcc->set_name(TTR("Tab 1"));
 	tc->add_child(tcc);
@@ -430,7 +430,7 @@ DefaultThemeEditorPreview::DefaultThemeEditorPreview() {
 
 	Tree *test_tree = memnew(Tree);
 	third_vb->add_child(test_tree);
-	test_tree->set_custom_minimum_size(Size2(0, 175) * EDSCALE);
+	test_tree->set_custom_minimum_size(Size2(0, 175 * EDSCALE));
 
 	TreeItem *item = test_tree->create_item();
 	item->set_text(0, "Tree");

@@ -925,7 +925,7 @@ void EditorFileDialog::update_file_list() {
 		item_list->set_fixed_column_width(thumbnail_size * 3 / 2);
 		item_list->set_max_text_lines(2);
 		item_list->set_text_overrun_behavior(TextServer::OVERRUN_TRIM_ELLIPSIS);
-		item_list->set_fixed_icon_size(Size2(thumbnail_size, thumbnail_size));
+		item_list->set_fixed_icon_size(Size2(thumbnail_size));
 
 		if (thumbnail_size < 64) {
 			folder_thumbnail = theme_cache.folder_medium_thumbnail;
@@ -2243,7 +2243,7 @@ EditorFileDialog::EditorFileDialog() {
 
 	VBoxContainer *item_vb = memnew(VBoxContainer);
 	list_hb->add_child(item_vb);
-	item_vb->set_custom_minimum_size(Size2(320, 0) * EDSCALE);
+	item_vb->set_custom_minimum_size(Size2(320 * EDSCALE, 0));
 
 	HBoxContainer *preview_hb = memnew(HBoxContainer);
 	preview_hb->set_v_size_flags(Control::SIZE_EXPAND_FILL);

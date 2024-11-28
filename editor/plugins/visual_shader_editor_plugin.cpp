@@ -115,7 +115,7 @@ void VSGraphNode::_draw_port(int p_slot_index, Point2i p_pos, bool p_left, const
 	icon_offset = -port_icon->get_size() * 0.5;
 
 	// Draw "shadow"/outline in the connection rim color.
-	draw_texture_rect(port_icon, Rect2(p_pos + (icon_offset - Size2(2, 2)) * EDSCALE, (port_icon->get_size() + Size2(4, 4)) * EDSCALE), false, p_rim_color);
+	draw_texture_rect(port_icon, Rect2(p_pos + (icon_offset - Size2(2)) * EDSCALE, (port_icon->get_size() + Size2(4)) * EDSCALE), false, p_rim_color);
 	draw_texture_rect(port_icon, Rect2(p_pos + icon_offset * EDSCALE, port_icon->get_size() * EDSCALE), false, p_color);
 }
 
@@ -153,7 +153,7 @@ VSRerouteNode::VSRerouteNode() {
 	Label *title_lbl = Object::cast_to<Label>(get_titlebar_hbox()->get_child(0));
 	title_lbl->hide();
 
-	const Size2 size = Size2(32, 32) * EDSCALE;
+	const Size2 size = Size2(32 * EDSCALE);
 
 	Control *slot_area = memnew(Control);
 	slot_area->set_custom_minimum_size(size);
@@ -288,7 +288,7 @@ void VisualShaderGraphPlugin::set_input_port_default_value(VisualShader::Type p_
 
 	switch (p_value.get_type()) {
 		case Variant::COLOR: {
-			button->set_custom_minimum_size(Size2(30, 0) * EDSCALE);
+			button->set_custom_minimum_size(Size2(30 * EDSCALE, 0));
 
 			Callable ce = callable_mp(editor, &VisualShaderEditor::_draw_color_over_button);
 			if (!button->is_connected(SceneStringName(draw), ce)) {
@@ -646,7 +646,7 @@ void VisualShaderGraphPlugin::add_node(VisualShader::Type p_type, int p_id, bool
 
 	Ref<VisualShaderNodeResizableBase> resizable_node = vsnode;
 	bool is_resizable = resizable_node.is_valid();
-	Size2 size = Size2(0, 0);
+	Size2 size = Size2();
 
 	Ref<VisualShaderNodeGroupBase> group_node = vsnode;
 	bool is_group = group_node.is_valid();
@@ -2821,7 +2821,7 @@ void VisualShaderEditor::_set_node_size(int p_type, int p_node, const Vector2 &p
 		if (!expression_node.is_null()) {
 			text_box = expression_node->is_ctrl_pressed(0);
 			if (text_box) {
-				text_box->set_custom_minimum_size(Size2(0, 0));
+				text_box->set_custom_minimum_size(Size2());
 			}
 		}
 
@@ -3140,7 +3140,7 @@ void VisualShaderEditor::_edit_port_default_input(Object *p_button, int p_node, 
 
 	Button *button = Object::cast_to<Button>(p_button);
 	if (button) {
-		property_editor_popup->set_position(button->get_screen_position() + Vector2(0, button->get_size().height) * graph->get_zoom());
+		property_editor_popup->set_position(button->get_screen_position() + Point2(0, button->get_size().height) * graph->get_zoom());
 	}
 	property_editor_popup->reset_size();
 	if (button) {
@@ -3586,12 +3586,12 @@ void VisualShaderEditor::_add_node(int p_idx, const Vector<Variant> &p_ops, cons
 
 	VisualShaderNodeExpression *expr = Object::cast_to<VisualShaderNodeExpression>(vsnode.ptr());
 	if (expr) {
-		expr->set_size(Size2(250 * EDSCALE, 150 * EDSCALE));
+		expr->set_size(Size2(250, 150) * EDSCALE);
 	}
 
 	Ref<VisualShaderNodeFrame> frame = vsnode;
 	if (frame.is_valid()) {
-		frame->set_size(Size2(320 * EDSCALE, 180 * EDSCALE));
+		frame->set_size(Size2(320, 180) * EDSCALE);
 	}
 
 	Ref<VisualShaderNodeReroute> reroute = vsnode;
@@ -3702,7 +3702,7 @@ void VisualShaderEditor::_add_node(int p_idx, const Vector<Variant> &p_ops, cons
 			}
 
 			expr->set_expression(initial_expression_code);
-			expr->set_size(Size2(500 * EDSCALE, 200 * EDSCALE));
+			expr->set_size(Size2(500, 200) * EDSCALE);
 			created_expression_port = true;
 		}
 		if (vsnode->get_output_port_count() > 0 || created_expression_port) {
@@ -4793,7 +4793,7 @@ void VisualShaderEditor::_show_members_dialog(bool at_mouse_pos, VisualShaderNod
 		members_dialog->set_position(gpos);
 	} else {
 		saved_node_pos_dirty = false;
-		members_dialog->set_position(graph->get_screen_position() + Point2(5 * EDSCALE, 65 * EDSCALE));
+		members_dialog->set_position(graph->get_screen_position() + Point2(5, 65) * EDSCALE);
 	}
 
 	if (members_dialog->is_visible()) {
@@ -4829,7 +4829,7 @@ void VisualShaderEditor::_varying_menu_id_pressed(int p_idx) {
 void VisualShaderEditor::_show_add_varying_dialog() {
 	_varying_name_changed(varying_name->get_text());
 
-	add_varying_dialog->set_position(graph->get_screen_position() + varying_button->get_position() + Point2(5 * EDSCALE, 65 * EDSCALE));
+	add_varying_dialog->set_position(graph->get_screen_position() + varying_button->get_position() + Point2(5, 65) * EDSCALE);
 	add_varying_dialog->popup();
 
 	// Keep dialog within window bounds.
@@ -4840,7 +4840,7 @@ void VisualShaderEditor::_show_add_varying_dialog() {
 }
 
 void VisualShaderEditor::_show_remove_varying_dialog() {
-	remove_varying_dialog->set_position(graph->get_screen_position() + varying_button->get_position() + Point2(5 * EDSCALE, 65 * EDSCALE));
+	remove_varying_dialog->set_position(graph->get_screen_position() + varying_button->get_position() + Point2(5, 65) * EDSCALE);
 	remove_varying_dialog->popup();
 
 	// Keep dialog within window bounds.
@@ -5210,7 +5210,7 @@ void VisualShaderEditor::_duplicate_nodes() {
 		return;
 	}
 
-	_dup_paste_nodes(type, items, node_connections, Vector2(10, 10) * EDSCALE, true);
+	_dup_paste_nodes(type, items, node_connections, Vector2(10 * EDSCALE), true);
 }
 
 void VisualShaderEditor::_copy_nodes(bool p_cut) {
@@ -5767,7 +5767,7 @@ void VisualShaderEditor::_connection_menu_id_pressed(int p_idx) {
 			to_slot = clicked_connection->to_port;
 
 			// Manual offset to place the port exactly at the mouse position.
-			saved_node_pos -= Vector2(11 * EDSCALE * graph->get_zoom(), 50 * EDSCALE * graph->get_zoom());
+			saved_node_pos -= Vector2(11, 50) * EDSCALE * graph->get_zoom();
 
 			// Find reroute addoptions.
 			int idx = -1;
@@ -5896,7 +5896,7 @@ void VisualShaderEditor::_show_preview_text() {
 	preview_showed = !preview_showed;
 	if (preview_showed) {
 		if (preview_first) {
-			preview_window->set_size(Size2(400 * EDSCALE, 600 * EDSCALE));
+			preview_window->set_size(Size2(400, 600) * EDSCALE);
 			preview_window->popup_centered();
 			preview_first = false;
 		} else {
@@ -6310,7 +6310,7 @@ VisualShaderEditor::VisualShaderEditor() {
 	members->set_hide_root(true);
 	members->set_allow_reselect(true);
 	members->set_hide_folding(false);
-	members->set_custom_minimum_size(Size2(180 * EDSCALE, 200 * EDSCALE));
+	members->set_custom_minimum_size(Size2(180, 200) * EDSCALE);
 	members->connect("item_activated", callable_mp(this, &VisualShaderEditor::_member_create));
 	members->connect(SceneStringName(item_selected), callable_mp(this, &VisualShaderEditor::_member_selected));
 	members->connect("nothing_selected", callable_mp(this, &VisualShaderEditor::_member_unselected));
@@ -6413,7 +6413,7 @@ VisualShaderEditor::VisualShaderEditor() {
 		varyings->set_hide_root(true);
 		varyings->set_allow_reselect(true);
 		varyings->set_hide_folding(false);
-		varyings->set_custom_minimum_size(Size2(180 * EDSCALE, 200 * EDSCALE));
+		varyings->set_custom_minimum_size(Size2(180, 200) * EDSCALE);
 		varyings->connect("item_activated", callable_mp(this, &VisualShaderEditor::_varying_deleted));
 		varyings->connect(SceneStringName(item_selected), callable_mp(this, &VisualShaderEditor::_varying_selected));
 		varyings->connect("nothing_selected", callable_mp(this, &VisualShaderEditor::_varying_unselected));
@@ -7129,7 +7129,7 @@ VisualShaderEditor::VisualShaderEditor() {
 	graph_plugin->set_editor(this);
 
 	property_editor_popup = memnew(PopupPanel);
-	property_editor_popup->set_min_size(Size2(360, 0) * EDSCALE);
+	property_editor_popup->set_min_size(Size2(360 * EDSCALE, 0));
 	add_child(property_editor_popup);
 
 	edited_property_holder.instantiate();
@@ -7744,7 +7744,7 @@ void VisualShaderNodePortPreview::setup(const Ref<VisualShader> &p_shader, Visua
 
 Size2 VisualShaderNodePortPreview::get_minimum_size() const {
 	int port_preview_size = EDITOR_GET("editors/visual_editors/visual_shader/port_preview_size");
-	return Size2(port_preview_size, port_preview_size) * EDSCALE;
+	return Size2(port_preview_size * EDSCALE);
 }
 
 void VisualShaderNodePortPreview::_notification(int p_what) {
@@ -7758,26 +7758,26 @@ void VisualShaderNodePortPreview::_notification(int p_what) {
 			};
 
 			Vector<Vector2> uvs = {
-				Vector2(0, 0),
+				Vector2(),
 				Vector2(1, 0),
-				Vector2(1, 1),
+				Vector2(1),
 				Vector2(0, 1)
 			};
 
 			if (is_valid) {
 				Vector<Color> colors = {
-					Color(1, 1, 1, 1),
-					Color(1, 1, 1, 1),
-					Color(1, 1, 1, 1),
-					Color(1, 1, 1, 1)
+					Color(1, 1, 1),
+					Color(1, 1, 1),
+					Color(1, 1, 1),
+					Color(1, 1, 1)
 				};
 				draw_primitive(points, colors, uvs);
 			} else {
 				Vector<Color> colors = {
-					Color(0, 0, 0, 1),
-					Color(0, 0, 0, 1),
-					Color(0, 0, 0, 1),
-					Color(0, 0, 0, 1)
+					Color(0, 0, 0),
+					Color(0, 0, 0),
+					Color(0, 0, 0),
+					Color(0, 0, 0)
 				};
 				draw_primitive(points, colors, uvs);
 			}

@@ -232,7 +232,7 @@ Control *EditorDockManager::_close_window(WindowWrapper *p_wrapper) {
 void EditorDockManager::_open_dock_in_window(Control *p_dock, bool p_show_window, bool p_reset_size) {
 	ERR_FAIL_NULL(p_dock);
 
-	Size2 borders = Size2(4, 4) * EDSCALE;
+	Size2 borders = Size2(4 * EDSCALE);
 	// Remember size and position before removing it from the main window.
 	Size2 dock_size = p_dock->get_size() + borders * 2;
 	Point2 dock_screen_pos = p_dock->get_screen_position();
@@ -812,7 +812,7 @@ void EditorDockManager::register_dock_slot(DockSlot p_dock_slot, TabContainer *p
 
 	dock_slot[p_dock_slot] = p_tab_container;
 
-	p_tab_container->set_custom_minimum_size(Size2(170, 0) * EDSCALE);
+	p_tab_container->set_custom_minimum_size(Size2(170 * EDSCALE, 0));
 	p_tab_container->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 	p_tab_container->set_popup(dock_context_popup);
 	p_tab_container->connect("pre_popup_pressed", callable_mp(dock_context_popup, &DockContextPopup::select_current_dock_in_dock_slot).bind(p_dock_slot));

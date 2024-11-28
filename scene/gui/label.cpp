@@ -438,7 +438,7 @@ void Label::_notification(int p_what) {
 			bool rtl = (TS->shaped_text_get_inferred_direction(text_rid) == TextServer::DIRECTION_RTL);
 			bool rtl_layout = is_layout_rtl();
 
-			style->draw(ci, Rect2(Point2(0, 0), get_size()));
+			style->draw(ci, Rect2(Point2(), get_size()));
 
 			float total_h = 0.0;
 			int lines_visible = 0;

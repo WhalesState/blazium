@@ -4236,8 +4236,8 @@ LRESULT DisplayServerWindows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 
 				mm->set_position(c);
 				mm->set_global_position(c);
-				mm->set_velocity(Vector2(0, 0));
-				mm->set_screen_velocity(Vector2(0, 0));
+				mm->set_velocity(Vector2());
+				mm->set_screen_velocity(Vector2());
 
 				if (raw->data.mouse.usFlags == MOUSE_MOVE_RELATIVE) {
 					mm->set_relative(Vector2(raw->data.mouse.lLastX, raw->data.mouse.lLastY));

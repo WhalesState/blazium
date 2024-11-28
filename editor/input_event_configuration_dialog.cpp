@@ -622,7 +622,7 @@ void InputEventConfigurationDialog::popup_and_configure(const Ref<InputEvent> &p
 		set_title(TTR("Event Configuration"));
 	}
 
-	popup_centered(Size2(0, 400) * EDSCALE);
+	popup_centered(Size2(0, 400 * EDSCALE));
 }
 
 Ref<InputEvent> InputEventConfigurationDialog::get_event() const {
@@ -637,13 +637,13 @@ void InputEventConfigurationDialog::set_allowed_input_types(int p_type_masks) {
 InputEventConfigurationDialog::InputEventConfigurationDialog() {
 	allowed_input_types = INPUT_KEY | INPUT_MOUSE_BUTTON | INPUT_JOY_BUTTON | INPUT_JOY_MOTION;
 
-	set_min_size(Size2i(550, 0) * EDSCALE);
+	set_min_size(Size2i(550 * EDSCALE, 0));
 
 	VBoxContainer *main_vbox = memnew(VBoxContainer);
 	add_child(main_vbox);
 
 	event_as_text = memnew(Label);
-	event_as_text->set_custom_minimum_size(Size2(500, 0) * EDSCALE);
+	event_as_text->set_custom_minimum_size(Size2(500 * EDSCALE, 0));
 	event_as_text->set_autowrap_mode(TextServer::AUTOWRAP_WORD_SMART);
 	event_as_text->set_horizontal_alignment(HORIZONTAL_ALIGNMENT_CENTER);
 	event_as_text->add_theme_font_size_override(SceneStringName(font_size), 18 * EDSCALE);

@@ -885,7 +885,7 @@ void RenderForwardMobile::_render_scene(RenderDataRD *p_render_data, const Color
 				correction.set_depth_correction(true);
 				Projection projection = correction * p_render_data->scene_data->cam_projection;
 
-				sky.setup_sky(p_render_data->environment, p_render_data->render_buffers, *p_render_data->lights, p_render_data->camera_attributes, 1, &projection, &eye_offset, p_render_data->scene_data->cam_transform, projection, screen_size, Vector2(0.0f, 0.0f), this);
+				sky.setup_sky(p_render_data->environment, p_render_data->render_buffers, *p_render_data->lights, p_render_data->camera_attributes, 1, &projection, &eye_offset, p_render_data->scene_data->cam_transform, projection, screen_size, Vector2(), this);
 			} else {
 				sky.setup_sky(p_render_data->environment, p_render_data->render_buffers, *p_render_data->lights, p_render_data->camera_attributes, p_render_data->scene_data->view_count, p_render_data->scene_data->view_projection, p_render_data->scene_data->view_eye_offset, p_render_data->scene_data->cam_transform, p_render_data->scene_data->cam_projection, screen_size, p_render_data->scene_data->taa_jitter, this);
 			}
@@ -1328,7 +1328,7 @@ void RenderForwardMobile::_render_shadow_append(RID p_framebuffer, const PagedAr
 	render_data.instances = &p_instances;
 	render_data.render_info = p_render_info;
 
-	_setup_environment(&render_data, true, Vector2(1, 1), Color(), false, p_use_pancake, shadow_pass_index);
+	_setup_environment(&render_data, true, Vector2(1), Color(), false, p_use_pancake, shadow_pass_index);
 
 	if (get_debug_draw_mode() == RS::VIEWPORT_DEBUG_DRAW_DISABLE_LOD) {
 		scene_data.screen_mesh_lod_threshold = 0.0;
@@ -1416,7 +1416,7 @@ void RenderForwardMobile::_render_material(const Transform3D &p_cam_transform, c
 	render_data.scene_data = &scene_data;
 	render_data.instances = &p_instances;
 
-	_setup_environment(&render_data, true, Vector2(1, 1), Color());
+	_setup_environment(&render_data, true, Vector2(1), Color());
 
 	PassMode pass_mode = PASS_MODE_DEPTH_MATERIAL;
 	_fill_render_list(RENDER_LIST_SECONDARY, &render_data, pass_mode);
@@ -1461,7 +1461,7 @@ void RenderForwardMobile::_render_uv2(const PagedArray<RenderGeometryInstance *>
 	render_data.scene_data = &scene_data;
 	render_data.instances = &p_instances;
 
-	_setup_environment(&render_data, true, Vector2(1, 1), Color());
+	_setup_environment(&render_data, true, Vector2(1), Color());
 
 	PassMode pass_mode = PASS_MODE_DEPTH_MATERIAL;
 	_fill_render_list(RENDER_LIST_SECONDARY, &render_data, pass_mode);
@@ -1488,14 +1488,14 @@ void RenderForwardMobile::_render_uv2(const PagedArray<RenderGeometryInstance *>
 		const int uv_offset_count = 9;
 		static const Vector2 uv_offsets[uv_offset_count] = {
 			Vector2(-1, 1),
-			Vector2(1, 1),
+			Vector2(1),
 			Vector2(1, -1),
-			Vector2(-1, -1),
+			Vector2(-1),
 			Vector2(-1, 0),
 			Vector2(1, 0),
 			Vector2(0, -1),
 			Vector2(0, 1),
-			Vector2(0, 0),
+			Vector2(),
 
 		};
 
@@ -1543,7 +1543,7 @@ void RenderForwardMobile::_render_particle_collider_heightfield(RID p_fb, const 
 	render_data.scene_data = &scene_data;
 	render_data.instances = &p_instances;
 
-	_setup_environment(&render_data, true, Vector2(1, 1), Color(), false, false);
+	_setup_environment(&render_data, true, Vector2(1), Color(), false, false);
 
 	PassMode pass_mode = PASS_MODE_SHADOW;
 

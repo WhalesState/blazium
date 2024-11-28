@@ -708,7 +708,7 @@ void ConnectDialog::_advanced_pressed() {
 }
 
 ConnectDialog::ConnectDialog() {
-	set_min_size(Size2(0, 500) * EDSCALE);
+	set_min_size(Size2(0, 500 * EDSCALE));
 
 	HBoxContainer *main_hb = memnew(HBoxContainer);
 	add_child(main_hb);
@@ -716,7 +716,7 @@ ConnectDialog::ConnectDialog() {
 	VBoxContainer *vbc_left = memnew(VBoxContainer);
 	main_hb->add_child(vbc_left);
 	vbc_left->set_h_size_flags(Control::SIZE_EXPAND_FILL);
-	vbc_left->set_custom_minimum_size(Vector2(400 * EDSCALE, 0));
+	vbc_left->set_custom_minimum_size(Size2(400 * EDSCALE, 0));
 
 	from_signal = memnew(LineEdit);
 	vbc_left->add_margin_child(TTR("From Signal:"), from_signal);
@@ -759,7 +759,7 @@ ConnectDialog::ConnectDialog() {
 
 	method_popup = memnew(AcceptDialog);
 	method_popup->set_title(TTR("Select Method"));
-	method_popup->set_min_size(Vector2(400, 600) * EDSCALE);
+	method_popup->set_min_size(Size2(400, 600) * EDSCALE);
 	add_child(method_popup);
 
 	VBoxContainer *method_vbc = memnew(VBoxContainer);
@@ -800,7 +800,7 @@ ConnectDialog::ConnectDialog() {
 	vbc_right = memnew(VBoxContainer);
 	main_hb->add_child(vbc_right);
 	vbc_right->set_h_size_flags(Control::SIZE_EXPAND_FILL);
-	vbc_right->set_custom_minimum_size(Vector2(150 * EDSCALE, 0));
+	vbc_right->set_custom_minimum_size(Size2(150 * EDSCALE, 0));
 	vbc_right->hide();
 
 	HBoxContainer *add_bind_hb = memnew(HBoxContainer);

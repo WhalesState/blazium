@@ -189,9 +189,9 @@ TEST_CASE("[Image] Resizing") {
 	// Crop
 	image->crop(4, 4);
 	CHECK_MESSAGE(
-			image->get_size() == Vector2(4, 4),
+			image->get_size() == Vector2(4),
 			"get_size() should return the correct size after cropping.");
-	image->set_pixel(0, 0, Color(1, 1, 1, 1));
+	image->set_pixel(0, 0, Color(1, 1, 1));
 
 	// Resize
 	for (int i = 0; i < 5; i++) {
@@ -200,7 +200,7 @@ TEST_CASE("[Image] Resizing") {
 		Image::Interpolation interpolation = static_cast<Image::Interpolation>(i);
 		image_resized->resize(8, 8, interpolation);
 		CHECK_MESSAGE(
-				image_resized->get_size() == Vector2(8, 8),
+				image_resized->get_size() == Vector2(8),
 				"get_size() should return the correct size after resizing.");
 		CHECK_MESSAGE(
 				image_resized->get_pixel(1, 1).a > 0,
@@ -210,7 +210,7 @@ TEST_CASE("[Image] Resizing") {
 	// shrink_x2()
 	image->shrink_x2();
 	CHECK_MESSAGE(
-			image->get_size() == Vector2(2, 2),
+			image->get_size() == Vector2(2),
 			"get_size() should return the correct size after shrink_x2().");
 
 	// resize_to_po2()
@@ -228,13 +228,13 @@ TEST_CASE("[Image] Modifying pixels of an image") {
 			!image->is_invisible(),
 			"Image should not be invisible after drawing on it.");
 	CHECK_MESSAGE(
-			image->get_pixelv(Vector2(0, 0)).is_equal_approx(Color(1, 1, 1, 1)),
+			image->get_pixelv(Vector2()).is_equal_approx(Color(1, 1, 1)),
 			"Image's get_pixel() should return the same color value as the one being set with set_pixel() in the same position.");
 	CHECK_MESSAGE(
 			image->get_used_rect() == Rect2i(0, 0, 1, 1),
 			"Image's get_used_rect should return the expected value, larger than Rect2i(0, 0, 0, 0) if it's visible.");
 
-	image->set_pixelv(Vector2(0, 0), Color(0.5, 0.5, 0.5, 0.5));
+	image->set_pixelv(Vector2(), Color(0.5, 0.5, 0.5, 0.5));
 	Ref<Image> image2 = memnew(Image(3, 3, false, Image::FORMAT_RGBA8));
 
 	// Fill image with color
@@ -283,7 +283,7 @@ TEST_CASE("[Image] Modifying pixels of an image") {
 	}
 
 	// Blend two images together
-	image->blend_rect(image2, Rect2i(Vector2i(0, 0), image2->get_size()), Vector2i(0, 0));
+	image->blend_rect(image2, Rect2i(Point2i(), image2->get_size()), Point2i());
 	CHECK_MESSAGE(
 			image->get_pixel(0, 0).a > 0.7,
 			"blend_rect() should blend the alpha values of the two images.");
@@ -292,10 +292,10 @@ TEST_CASE("[Image] Modifying pixels of an image") {
 			"get_used_rect() should return the expected value, its Rect size should be the same as get_size() if there are no transparent pixels.");
 
 	Ref<Image> image3 = memnew(Image(2, 2, false, Image::FORMAT_RGBA8));
-	image3->set_pixel(0, 0, Color(0, 1, 0, 1));
+	image3->set_pixel(0, 0, Color(0, 1, 0));
 
 	//blit_rect() two images together
-	image->blit_rect(image3, Rect2i(Vector2i(0, 0), image3->get_size()), Vector2i(0, 0));
+	image->blit_rect(image3, Rect2i(Point2i(), image3->get_size()), Point2i());
 	CHECK_MESSAGE(
 			image->get_pixel(0, 0).is_equal_approx(Color(0, 1, 0, 1)),
 			"blit_rect() should replace old colors and not blend them.");

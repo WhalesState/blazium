@@ -111,7 +111,7 @@ void Camera2D::set_zoom(const Vector2 &p_zoom) {
 	ERR_FAIL_COND_MSG(Math::is_zero_approx(p_zoom.x) || Math::is_zero_approx(p_zoom.y), "Zoom level must be different from 0 (can be negative).");
 
 	zoom = p_zoom;
-	zoom_scale = Vector2(1, 1) / zoom;
+	zoom_scale = Vector2(1) / zoom;
 	Point2 old_smoothed_camera_pos = smoothed_camera_pos;
 	_update_scroll();
 	smoothed_camera_pos = old_smoothed_camera_pos;
@@ -381,9 +381,9 @@ void Camera2D::_notification(int p_what) {
 				Size2 screen_size = _get_camera_screen_size();
 
 				Vector2 screen_endpoints[4] = {
-					inv_camera_transform.xform(Vector2(0, 0)),
+					inv_camera_transform.xform(Vector2()),
 					inv_camera_transform.xform(Vector2(screen_size.width, 0)),
-					inv_camera_transform.xform(Vector2(screen_size.width, screen_size.height)),
+					inv_camera_transform.xform(screen_size),
 					inv_camera_transform.xform(Vector2(0, screen_size.height))
 				};
 

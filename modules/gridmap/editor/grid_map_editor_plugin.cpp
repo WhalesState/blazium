@@ -242,7 +242,7 @@ void GridMapEditor::_menu_option(int p_option) {
 
 		} break;
 		case MENU_OPTION_GRIDMAP_SETTINGS: {
-			settings_dialog->popup_centered(settings_vbc->get_combined_minimum_size() + Size2(50, 50) * EDSCALE);
+			settings_dialog->popup_centered(settings_vbc->get_combined_minimum_size() + Size2(50 * EDSCALE));
 		} break;
 	}
 }
@@ -860,7 +860,7 @@ void GridMapEditor::update_palette() {
 		mesh_library_palette->set_fixed_column_width(0);
 	}
 
-	mesh_library_palette->set_fixed_icon_size(Size2(min_size, min_size));
+	mesh_library_palette->set_fixed_icon_size(Size2(min_size));
 	mesh_library_palette->set_max_text_lines(2);
 
 	if (mesh_library.is_null()) {
@@ -1200,7 +1200,7 @@ GridMapEditor::GridMapEditor() {
 
 	int mw = EDITOR_DEF("editors/grid_map/palette_min_width", 230);
 	Control *ec = memnew(Control);
-	ec->set_custom_minimum_size(Size2(mw, 0) * EDSCALE);
+	ec->set_custom_minimum_size(Size2(mw * EDSCALE, 0));
 	add_child(ec);
 
 	spatial_editor_hb = memnew(HBoxContainer);
@@ -1261,7 +1261,7 @@ GridMapEditor::GridMapEditor() {
 	settings_dialog->set_title(TTR("GridMap Settings"));
 	add_child(settings_dialog);
 	settings_vbc = memnew(VBoxContainer);
-	settings_vbc->set_custom_minimum_size(Size2(200, 0) * EDSCALE);
+	settings_vbc->set_custom_minimum_size(Size2(200 * EDSCALE, 0));
 	settings_dialog->add_child(settings_vbc);
 
 	settings_pick_distance = memnew(SpinBox);

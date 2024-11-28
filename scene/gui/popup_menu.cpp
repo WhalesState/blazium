@@ -2850,7 +2850,7 @@ void PopupMenu::popup(const Rect2i &p_bounds) {
 			Size2 minsize = get_contents_minimum_size() * win_scale;
 			minsize.height = Math::ceil(minsize.height); // Ensures enough height at fractional content scales to prevent the v_scroll_bar from showing.
 			set_min_size(minsize); // `height` is truncated here by the cast to Size2i for Window.min_size.
-			set_size(Vector2(0, 0)); // Shrinkwraps to min size.
+			set_size(Vector2()); // Shrinkwraps to min size.
 		}
 		Popup::popup(p_bounds);
 	}

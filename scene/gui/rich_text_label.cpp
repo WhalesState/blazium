@@ -1063,13 +1063,13 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 							float y_off = upos;
 							float underline_width = MAX(1.0, uth * theme_cache.base_scale);
 							draw_line(ul_start + Vector2(0, y_off), p_ofs + Vector2(off_step.x, off_step.y + y_off), ul_color, underline_width);
-							ul_start = p_ofs + Vector2(off_step.x, off_step.y);
+							ul_start = p_ofs + off_step;
 							ul_color_prev = font_color;
 							ul_color = font_color;
 							ul_color.a *= 0.5;
 						} else if (!ul_started) {
 							ul_started = true;
-							ul_start = p_ofs + Vector2(off_step.x, off_step.y);
+							ul_start = p_ofs + off_step;
 							ul_color_prev = font_color;
 							ul_color = font_color;
 							ul_color.a *= 0.5;
@@ -1085,13 +1085,13 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 							float y_off = upos;
 							float underline_width = MAX(1.0, uth * theme_cache.base_scale);
 							draw_dashed_line(dot_ul_start + Vector2(0, y_off), p_ofs + Vector2(off_step.x, off_step.y + y_off), dot_ul_color, underline_width, MAX(2.0, underline_width * 2));
-							dot_ul_start = p_ofs + Vector2(off_step.x, off_step.y);
+							dot_ul_start = p_ofs + off_step;
 							dot_ul_color_prev = font_color;
 							dot_ul_color = font_color;
 							dot_ul_color.a *= 0.5;
 						} else if (!dot_ul_started) {
 							dot_ul_started = true;
-							dot_ul_start = p_ofs + Vector2(off_step.x, off_step.y);
+							dot_ul_start = p_ofs + off_step;
 							dot_ul_color_prev = font_color;
 							dot_ul_color = font_color;
 							dot_ul_color.a *= 0.5;
@@ -1107,13 +1107,13 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 							float y_off = -l_ascent + l_size.y / 2;
 							float underline_width = MAX(1.0, uth * theme_cache.base_scale);
 							draw_line(st_start + Vector2(0, y_off), p_ofs + Vector2(off_step.x, off_step.y + y_off), st_color, underline_width);
-							st_start = p_ofs + Vector2(off_step.x, off_step.y);
+							st_start = p_ofs + off_step;
 							st_color_prev = font_color;
 							st_color = font_color;
 							st_color.a *= 0.5;
 						} else if (!st_started) {
 							st_started = true;
-							st_start = p_ofs + Vector2(off_step.x, off_step.y);
+							st_start = p_ofs + off_step;
 							st_color_prev = font_color;
 							st_color = font_color;
 							st_color.a *= 0.5;
@@ -1226,7 +1226,7 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 
 							if (!cn) {
 								double value = Math::sin(item_wave->frequency * item_wave->elapsed_time + ((p_ofs.x + off_step.x) / 50)) * (item_wave->amplitude / 10.0f);
-								item_wave->prev_off = Point2(0, 1) * value;
+								item_wave->prev_off = Point2(0, 1 * value);
 							}
 							fx_offset += item_wave->prev_off;
 						} else if (item_fx->type == ITEM_TORNADO) {
@@ -1251,7 +1251,7 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 					}
 
 					if (is_inside_tree() && get_viewport()->is_snap_2d_transforms_to_pixel_enabled()) {
-						fx_offset = (fx_offset + Point2(0.5, 0.5)).floor();
+						fx_offset = (fx_offset + Point2(0.5)).floor();
 					}
 
 					Vector2 char_off = char_xform.get_origin();

@@ -631,7 +631,7 @@ void RendererCanvasRenderRD::_render_item(RD::DrawListID p_draw_list, RID p_rend
 				Rect2 dst_rect(np->rect.position.x, np->rect.position.y, np->rect.size.x, np->rect.size.y);
 
 				if (np->texture == RID()) {
-					texpixel_size = Size2(1, 1);
+					texpixel_size = Size2(1);
 					src_rect = Rect2(0, 0, 1, 1);
 
 				} else {
@@ -1907,7 +1907,7 @@ void RendererCanvasRenderRD::render_sdf(RID p_render_target, LightOccluderInstan
 	Transform2D to_clip;
 	to_clip.columns[0] *= 2.0;
 	to_clip.columns[1] *= 2.0;
-	to_clip.columns[2] = -Vector2(1.0, 1.0);
+	to_clip.columns[2] = Vector2(-1);
 
 	to_clip = to_clip * to_sdf.affine_inverse();
 

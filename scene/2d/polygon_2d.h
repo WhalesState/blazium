@@ -52,7 +52,7 @@ class Polygon2D : public Node2D {
 	Color color = Color(1, 1, 1);
 	Ref<Texture2D> texture;
 
-	Size2 tex_scale = Vector2(1, 1);
+	Size2 tex_scale = Vector2(1);
 	Vector2 tex_ofs;
 	bool tex_tile = true;
 	real_t tex_rot = 0.0;

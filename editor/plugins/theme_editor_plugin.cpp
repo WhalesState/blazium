@@ -940,7 +940,7 @@ ThemeItemImportTree::ThemeItemImportTree() {
 	import_items_tree->set_column_clip_content(2, true);
 
 	ScrollContainer *import_bulk_sc = memnew(ScrollContainer);
-	import_bulk_sc->set_custom_minimum_size(Size2(260.0, 0.0) * EDSCALE);
+	import_bulk_sc->set_custom_minimum_size(Size2(260 * EDSCALE, 0));
 	import_bulk_sc->set_horizontal_scroll_mode(ScrollContainer::SCROLL_MODE_DISABLED);
 	import_main_hb->add_child(import_bulk_sc);
 	VBoxContainer *import_bulk_vb = memnew(VBoxContainer);
@@ -1921,7 +1921,7 @@ ThemeItemEditorDialog::ThemeItemEditorDialog(ThemeTypeEditor *p_theme_type_edito
 	tc->set_tab_title(0, TTR("Edit Items"));
 
 	VBoxContainer *edit_dialog_side_vb = memnew(VBoxContainer);
-	edit_dialog_side_vb->set_custom_minimum_size(Size2(200.0, 0.0) * EDSCALE);
+	edit_dialog_side_vb->set_custom_minimum_size(Size2(200 * EDSCALE, 0));
 	edit_dialog_hs->add_child(edit_dialog_side_vb);
 
 	Label *edit_type_label = memnew(Label);
@@ -2274,7 +2274,7 @@ Control *ThemeItemLabel::make_custom_tooltip(const String &p_text) const {
 
 VBoxContainer *ThemeTypeEditor::_create_item_list(Theme::DataType p_data_type) {
 	VBoxContainer *items_tab = memnew(VBoxContainer);
-	items_tab->set_custom_minimum_size(Size2(0, 160) * EDSCALE);
+	items_tab->set_custom_minimum_size(Size2(0, 160 * EDSCALE));
 	data_type_tabs->add_child(items_tab);
 	data_type_tabs->set_tab_title(data_type_tabs->get_tab_count() - 1, "");
 
@@ -3481,7 +3481,7 @@ ThemeTypeEditor::ThemeTypeEditor() {
 	stylebox_items_list = _create_item_list(Theme::DATA_TYPE_STYLEBOX);
 
 	VBoxContainer *type_settings_tab = memnew(VBoxContainer);
-	type_settings_tab->set_custom_minimum_size(Size2(0, 160) * EDSCALE);
+	type_settings_tab->set_custom_minimum_size(Size2(0, 160 * EDSCALE));
 	data_type_tabs->add_child(type_settings_tab);
 	data_type_tabs->set_tab_title(data_type_tabs->get_tab_count() - 1, "");
 
@@ -3727,7 +3727,7 @@ ThemeEditor::ThemeEditor() {
 
 	VBoxContainer *preview_tabs_vb = memnew(VBoxContainer);
 	preview_tabs_vb->set_h_size_flags(SIZE_EXPAND_FILL);
-	preview_tabs_vb->set_custom_minimum_size(Size2(520, 0) * EDSCALE);
+	preview_tabs_vb->set_custom_minimum_size(Size2(520 * EDSCALE, 0));
 	preview_tabs_vb->add_theme_constant_override("separation", 2 * EDSCALE);
 	main_hs->add_child(preview_tabs_vb);
 	HBoxContainer *preview_tabbar_hb = memnew(HBoxContainer);
@@ -3767,7 +3767,7 @@ ThemeEditor::ThemeEditor() {
 	preview_scene_dialog->connect("file_selected", callable_mp(this, &ThemeEditor::_preview_scene_dialog_cbk));
 
 	main_hs->add_child(theme_type_editor);
-	theme_type_editor->set_custom_minimum_size(Size2(280, 0) * EDSCALE);
+	theme_type_editor->set_custom_minimum_size(Size2(280 * EDSCALE, 0));
 }
 
 ///////////////////////
@@ -3864,7 +3864,7 @@ bool ThemeEditorPlugin::can_auto_hide() const {
 ThemeEditorPlugin::ThemeEditorPlugin() {
 	theme_editor = memnew(ThemeEditor);
 	theme_editor->plugin = this;
-	theme_editor->set_custom_minimum_size(Size2(0, 200) * EDSCALE);
+	theme_editor->set_custom_minimum_size(Size2(0, 200 * EDSCALE));
 
 	button = EditorNode::get_bottom_panel()->add_item(TTR("Theme"), theme_editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_theme_bottom_panel", TTR("Toggle Theme Bottom Panel")));
 	button->hide();

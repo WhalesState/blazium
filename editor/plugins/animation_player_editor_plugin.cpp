@@ -688,7 +688,7 @@ void AnimationPlayerEditor::_edit_animation_blend() {
 		return;
 	}
 
-	blend_editor.dialog->popup_centered(Size2(400, 400) * EDSCALE);
+	blend_editor.dialog->popup_centered(Size2(400 * EDSCALE));
 	_update_animation_blend();
 }
 
@@ -1671,7 +1671,7 @@ void AnimationPlayerEditor::_prepare_onion_layers_2_prolog() {
 
 	// Tweak the root viewport to ensure it's rendered before our target.
 	RID root_vp = get_tree()->get_root()->get_viewport_rid();
-	onion.temp.screen_rect = Rect2(Vector2(), DisplayServer::get_singleton()->window_get_size(DisplayServer::MAIN_WINDOW_ID));
+	onion.temp.screen_rect = Rect2(Point2(), DisplayServer::get_singleton()->window_get_size(DisplayServer::MAIN_WINDOW_ID));
 	RS::get_singleton()->viewport_attach_to_screen(root_vp, Rect2(), DisplayServer::INVALID_WINDOW_ID);
 	RS::get_singleton()->viewport_set_update_mode(root_vp, RS::VIEWPORT_UPDATE_ALWAYS);
 
@@ -1941,7 +1941,7 @@ AnimationPlayerEditor::AnimationPlayerEditor(AnimationPlayerEditorPlugin *p_plug
 
 	frame = memnew(SpinBox);
 	hb->add_child(frame);
-	frame->set_custom_minimum_size(Size2(80, 0) * EDSCALE);
+	frame->set_custom_minimum_size(Size2(80 * EDSCALE, 0));
 	frame->set_stretch_ratio(2);
 	frame->set_step(0.0001);
 	frame->set_tooltip_text(TTR("Animation position (in seconds)."));

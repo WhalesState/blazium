@@ -125,13 +125,13 @@ TEST_CASE("[SceneTree][Camera2D] Getters and setters") {
 	}
 
 	SUBCASE("Zoom") {
-		const Vector2 zoom = Vector2(4, 4);
+		const Vector2 zoom = Vector2(4);
 		test_camera->set_zoom(zoom);
 		CHECK(test_camera->get_zoom() == zoom);
 	}
 
 	SUBCASE("Offset") {
-		const Vector2 offset = Vector2(100, 100);
+		const Vector2 offset = Vector2(100);
 		test_camera->set_offset(offset);
 		CHECK(test_camera->get_offset() == offset);
 	}
@@ -176,26 +176,26 @@ TEST_CASE("[SceneTree][Camera2D] Camera positioning") {
 
 	SUBCASE("Anchor mode") {
 		test_camera->set_anchor_mode(Camera2D::ANCHOR_MODE_DRAG_CENTER);
-		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2(0, 0)));
-		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2(0, 0)));
+		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2()));
+		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2()));
 
 		test_camera->set_anchor_mode(Camera2D::ANCHOR_MODE_FIXED_TOP_LEFT);
 		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2(200, 100)));
-		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2(0, 0)));
+		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2()));
 	}
 
 	SUBCASE("Offset") {
-		test_camera->set_offset(Vector2(100, 100));
-		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2(100, 100)));
-		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2(0, 0)));
+		test_camera->set_offset(Vector2(100));
+		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2(100)));
+		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2()));
 
 		test_camera->set_offset(Vector2(-100, 300));
 		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2(-100, 300)));
-		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2(0, 0)));
+		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2()));
 
-		test_camera->set_offset(Vector2(0, 0));
-		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2(0, 0)));
-		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2(0, 0)));
+		test_camera->set_offset(Vector2());
+		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2()));
+		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2()));
 	}
 
 	SUBCASE("Limits") {
@@ -203,23 +203,23 @@ TEST_CASE("[SceneTree][Camera2D] Camera positioning") {
 		test_camera->set_limit(SIDE_TOP, 50);
 
 		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2(300, 150)));
-		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2(0, 0)));
+		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2()));
 
 		test_camera->set_limit(SIDE_LEFT, 0);
 		test_camera->set_limit(SIDE_TOP, 0);
 
 		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2(200, 100)));
-		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2(0, 0)));
+		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2()));
 	}
 
 	SUBCASE("Drag") {
-		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2(0, 0)));
+		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2()));
 
 		// horizontal
 		test_camera->set_drag_horizontal_enabled(true);
 		test_camera->set_drag_margin(SIDE_RIGHT, 0.5);
 
-		test_camera->set_position(Vector2(100, 100));
+		test_camera->set_position(Vector2(100));
 		test_camera->force_update_scroll();
 		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2(0, 100)));
 		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2(0, 100)));
@@ -229,10 +229,10 @@ TEST_CASE("[SceneTree][Camera2D] Camera positioning") {
 		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2(1, 101)));
 
 		// test align
-		test_camera->set_position(Vector2(0, 0));
+		test_camera->set_position(Vector2());
 		test_camera->align();
-		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2(0, 0)));
-		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2(0, 0)));
+		CHECK(test_camera->get_camera_position().is_equal_approx(Vector2()));
+		CHECK(test_camera->get_camera_screen_center().is_equal_approx(Vector2()));
 
 		// vertical
 		test_camera->set_drag_vertical_enabled(true);
@@ -274,12 +274,12 @@ TEST_CASE("[SceneTree][Camera2D] Transforms") {
 		Transform2D test_xform = Transform2D(Vector2(0.5, 0), Vector2(0, 2), Vector2(200, 100));
 		CHECK(xform.is_equal_approx(test_xform));
 
-		test_camera->set_zoom(Vector2(10, 10));
+		test_camera->set_zoom(Vector2(10));
 		xform = mock_viewport->get_canvas_transform();
 		test_xform = Transform2D(Vector2(10, 0), Vector2(0, 10), Vector2(200, 100));
 		CHECK(xform.is_equal_approx(test_xform));
 
-		test_camera->set_zoom(Vector2(1, 1));
+		test_camera->set_zoom(Vector2(1));
 		xform = mock_viewport->get_canvas_transform();
 		test_xform = Transform2D(Vector2(1, 0), Vector2(0, 1), Vector2(200, 100));
 		CHECK(xform.is_equal_approx(test_xform));

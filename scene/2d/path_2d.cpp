@@ -43,7 +43,7 @@ Rect2 Path2D::_edit_get_rect() const {
 		return Rect2(0, 0, 0, 0);
 	}
 
-	Rect2 aabb = Rect2(curve->get_point_position(0), Vector2(0, 0));
+	Rect2 aabb = Rect2(curve->get_point_position(0), Vector2());
 
 	for (int i = 0; i < curve->get_point_count(); i++) {
 		for (int j = 0; j <= 8; j++) {

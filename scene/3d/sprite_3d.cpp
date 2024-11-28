@@ -712,8 +712,8 @@ SpriteBase3D::SpriteBase3D() {
 		mesh_tangents.write[i * 4 + 1] = 0.0;
 		mesh_tangents.write[i * 4 + 2] = 0.0;
 		mesh_tangents.write[i * 4 + 3] = 1.0;
-		mesh_colors.write[i] = Color(1.0, 1.0, 1.0, 1.0);
-		mesh_uvs.write[i] = Vector2(0.0, 0.0);
+		mesh_colors.write[i] = Color(1.0, 1.0, 1.0);
+		mesh_uvs.write[i] = Vector2();
 		mesh_vertices.write[i] = Vector3(0.0, 0.0, 0.0);
 	}
 
@@ -934,8 +934,8 @@ Rect2 Sprite3D::get_item_rect() const {
 		ofs -= s / 2;
 	}
 
-	if (s == Size2(0, 0)) {
-		s = Size2(1, 1);
+	if (s == Size2()) {
+		s = Size2(1);
 	}
 
 	return Rect2(ofs, s);
@@ -1288,8 +1288,8 @@ Rect2 AnimatedSprite3D::get_item_rect() const {
 		ofs -= s / 2;
 	}
 
-	if (s == Size2(0, 0)) {
-		s = Size2(1, 1);
+	if (s == Size2()) {
+		s = Size2(1);
 	}
 
 	return Rect2(ofs, s);

@@ -195,7 +195,7 @@ Vector2 OpenXRCompositionLayerCylinder::intersects_ray(const Vector3 &p_origin, 
 
 	float discriminant = b * b - 4.0 * a * c;
 	if (discriminant < 0.0) {
-		return Vector2(-1.0, -1.0);
+		return Vector2(-1);
 	}
 
 	float t0 = (-b - Math::sqrt(discriminant)) / (2.0 * a);
@@ -203,7 +203,7 @@ Vector2 OpenXRCompositionLayerCylinder::intersects_ray(const Vector3 &p_origin, 
 	float t = MAX(t0, t1);
 
 	if (t < 0.0) {
-		return Vector2(-1.0, -1.0);
+		return Vector2(-1);
 	}
 	Vector3 intersection = p_origin + p_direction * t;
 
@@ -214,13 +214,13 @@ Vector2 OpenXRCompositionLayerCylinder::intersects_ray(const Vector3 &p_origin, 
 	Vector2 projected_point = Vector2(relative_point.x, relative_point.z);
 	float intersection_angle = Math::atan2(projected_point.y, projected_point.x);
 	if (Math::abs(intersection_angle) > central_angle / 2.0) {
-		return Vector2(-1.0, -1.0);
+		return Vector2(-1);
 	}
 
 	float arc_length = radius * central_angle;
 	float height = aspect_ratio * arc_length;
 	if (Math::abs(relative_point.y) > height / 2.0) {
-		return Vector2(-1.0, -1.0);
+		return Vector2(-1);
 	}
 
 	float u = 0.5 + (intersection_angle / central_angle);

@@ -44,7 +44,7 @@ BitMapEditor::BitMapEditor() {
 	texture_rect = memnew(TextureRect);
 	texture_rect->set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT_CENTERED);
 	texture_rect->set_texture_filter(TEXTURE_FILTER_NEAREST);
-	texture_rect->set_custom_minimum_size(Size2(0, 250) * EDSCALE);
+	texture_rect->set_custom_minimum_size(Size2(0, 250 * EDSCALE));
 	add_child(texture_rect);
 
 	size_label = memnew(Label);

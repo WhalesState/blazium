@@ -266,7 +266,7 @@ int DisplayServerWeb::_mouse_button_callback(int p_pressed, int p_button, double
 		if (ev->get_button_index() == ds->last_click_button_index) {
 			if (diff < 400 && Point2(ds->last_click_pos).distance_to(ev->get_position()) < 5) {
 				ds->last_click_ms = 0;
-				ds->last_click_pos = Point2(-100, -100);
+				ds->last_click_pos = Point2(-100);
 				ds->last_click_button_index = MouseButton::NONE;
 				ev->set_double_click(true);
 			}
@@ -828,7 +828,7 @@ void DisplayServerWeb::_ime_callback(int p_type, const String &p_text) {
 			// IME update.
 			if (ds->ime_active && ds->ime_started) {
 				ds->ime_text = p_text;
-				ds->ime_selection = Vector2i(ds->ime_text.length(), ds->ime_text.length());
+				ds->ime_selection = Vector2i(ds->ime_text.length());
 				OS::get_singleton()->get_main_loop()->notification(MainLoop::NOTIFICATION_OS_IME_UPDATE);
 			}
 		} break;

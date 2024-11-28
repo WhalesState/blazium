@@ -215,7 +215,7 @@ void AudioStreamEditor::set_stream(const Ref<AudioStream> &p_stream) {
 }
 
 AudioStreamEditor::AudioStreamEditor() {
-	set_custom_minimum_size(Size2(1, 100) * EDSCALE);
+	set_custom_minimum_size(Size2(1, 100 * EDSCALE));
 
 	_player = memnew(AudioStreamPlayer);
 	_player->connect(SceneStringName(finished), callable_mp(this, &AudioStreamEditor::_on_finished));

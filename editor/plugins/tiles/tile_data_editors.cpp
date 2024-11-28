@@ -153,7 +153,7 @@ void GenericTilePolygonEditor::_base_control_draw() {
 
 	// Draw the focus rectangle.
 	if (base_control->has_focus()) {
-		base_control->draw_style_box(focus_stylebox, Rect2(Vector2(), base_control->get_size()));
+		base_control->draw_style_box(focus_stylebox, Rect2(Point2(), base_control->get_size()));
 	}
 
 	// Draw tile-related things.
@@ -161,11 +161,11 @@ void GenericTilePolygonEditor::_base_control_draw() {
 
 	Transform2D xform;
 	xform.set_origin(base_control->get_size() / 2 + panning);
-	xform.set_scale(Vector2(editor_zoom_widget->get_zoom(), editor_zoom_widget->get_zoom()));
+	xform.set_scale(Size2(editor_zoom_widget->get_zoom()));
 	base_control->draw_set_transform_matrix(xform);
 
 	// Draw fill rect under texture region.
-	Rect2 texture_rect(Vector2(), background_region.size);
+	Rect2 texture_rect(Point2(), background_region.size);
 	if (tile_data) {
 		texture_rect.position -= tile_data->get_texture_origin();
 		if (tile_data->get_transpose()) {
@@ -199,16 +199,16 @@ void GenericTilePolygonEditor::_base_control_draw() {
 		Vector2 spacing = base_tile_size / snap_subdivision->get_value();
 		Vector2 origin = -base_tile_size / 2;
 		for (real_t y = origin.y; y < grid_area.get_end().y; y += spacing.y) {
-			base_control->draw_line(Vector2(grid_area.get_position().x, y), Vector2(grid_area.get_end().x, y), Color(1, 1, 1, 0.33));
+			base_control->draw_line(Point2(grid_area.get_position().x, y), Point2(grid_area.get_end().x, y), Color(1, 1, 1, 0.33));
 		}
 		for (real_t y = origin.y - spacing.y; y > grid_area.get_position().y; y -= spacing.y) {
-			base_control->draw_line(Vector2(grid_area.get_position().x, y), Vector2(grid_area.get_end().x, y), Color(1, 1, 1, 0.33));
+			base_control->draw_line(Point2(grid_area.get_position().x, y), Point2(grid_area.get_end().x, y), Color(1, 1, 1, 0.33));
 		}
 		for (real_t x = origin.x; x < grid_area.get_end().x; x += spacing.x) {
-			base_control->draw_line(Vector2(x, grid_area.get_position().y), Vector2(x, grid_area.get_end().y), Color(1, 1, 1, 0.33));
+			base_control->draw_line(Point2(x, grid_area.get_position().y), Point2(x, grid_area.get_end().y), Color(1, 1, 1, 0.33));
 		}
 		for (real_t x = origin.x - spacing.x; x > grid_area.get_position().x; x -= spacing.x) {
-			base_control->draw_line(Vector2(x, grid_area.get_position().y), Vector2(x, grid_area.get_end().y), Color(1, 1, 1, 0.33));
+			base_control->draw_line(Point2(x, grid_area.get_position().y), Point2(x, grid_area.get_end().y), Color(1, 1, 1, 0.33));
 		}
 	}
 
@@ -521,7 +521,7 @@ void GenericTilePolygonEditor::_base_control_gui_input(Ref<InputEvent> p_event) 
 
 	Transform2D xform;
 	xform.set_origin(base_control->get_size() / 2 + panning);
-	xform.set_scale(Vector2(editor_zoom_widget->get_zoom(), editor_zoom_widget->get_zoom()));
+	xform.set_scale(Size2(editor_zoom_widget->get_zoom()));
 
 	Ref<InputEventMouseMotion> mm = p_event;
 	if (mm.is_valid()) {
@@ -986,7 +986,7 @@ GenericTilePolygonEditor::GenericTilePolygonEditor() {
 
 	editor_zoom_widget = memnew(EditorZoomWidget);
 	editor_zoom_widget->setup_zoom_limits(0.125, 128.0);
-	editor_zoom_widget->set_position(Vector2(5, 5));
+	editor_zoom_widget->set_position(Point2(5));
 	editor_zoom_widget->connect("zoom_changed", callable_mp(this, &GenericTilePolygonEditor::_zoom_changed).unbind(1));
 	editor_zoom_widget->set_shortcut_context(this);
 	root->add_child(editor_zoom_widget);
@@ -1256,11 +1256,11 @@ void TileDataDefaultEditor::draw_over_tile(CanvasItem *p_canvas_item, Transform2
 	if (value.get_type() == Variant::BOOL) {
 		Ref<Texture2D> texture = (bool)value ? tile_bool_checked : tile_bool_unchecked;
 		int size = MIN(tile_set->get_tile_size().x, tile_set->get_tile_size().y) / 3;
-		Rect2 rect = p_transform.xform(Rect2(Vector2(-size / 2, -size / 2) - texture_origin, Vector2(size, size)));
+		Rect2 rect = p_transform.xform(Rect2(Point2(-size / 2) - texture_origin, Size2(size)));
 		p_canvas_item->draw_texture_rect(texture, rect);
 	} else if (value.get_type() == Variant::COLOR) {
 		int size = MIN(tile_set->get_tile_size().x, tile_set->get_tile_size().y) / 3;
-		Rect2 rect = p_transform.xform(Rect2(Vector2(-size / 2, -size / 2) - texture_origin, Vector2(size, size)));
+		Rect2 rect = p_transform.xform(Rect2(Point2(-size / 2) - texture_origin, Size2(size)));
 		p_canvas_item->draw_rect(rect, value);
 	} else {
 		Ref<Font> font = TileSetEditor::get_singleton()->get_theme_font(SNAME("bold"), EditorStringName(EditorFonts));
@@ -1385,7 +1385,7 @@ void TileDataTextureOriginEditor::draw_over_tile(CanvasItem *p_canvas_item, Tran
 
 	TileSetSource *source = *(tile_set->get_source(p_cell.source_id));
 	TileSetAtlasSource *atlas_source = Object::cast_to<TileSetAtlasSource>(source);
-	if (atlas_source->is_rect_in_tile_texture_region(p_cell.get_atlas_coords(), p_cell.alternative_tile, Rect2(Vector2(-tile_set_tile_size) / 2, tile_set_tile_size))) {
+	if (atlas_source->is_rect_in_tile_texture_region(p_cell.get_atlas_coords(), p_cell.alternative_tile, Rect2(Point2(-tile_set_tile_size) / 2, tile_set_tile_size))) {
 		tile_set->draw_tile_shape(p_canvas_item, p_transform.scaled_local(tile_set_tile_size), color);
 	}
 
@@ -1398,8 +1398,8 @@ void TileDataTextureOriginEditor::draw_over_tile(CanvasItem *p_canvas_item, Tran
 		Vector2 texture_origin = tile_data->get_texture_origin();
 		String text = vformat("%s", texture_origin);
 		Vector2 string_size = font->get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size);
-		p_canvas_item->draw_string_outline(font, p_transform.xform(-texture_origin) + Vector2i(-string_size.x / 2, string_size.y / 2), text, HORIZONTAL_ALIGNMENT_CENTER, string_size.x, font_size, 1, Color(0, 0, 0, 1));
-		p_canvas_item->draw_string(font, p_transform.xform(-texture_origin) + Vector2i(-string_size.x / 2, string_size.y / 2), text, HORIZONTAL_ALIGNMENT_CENTER, string_size.x, font_size, color);
+		p_canvas_item->draw_string_outline(font, p_transform.xform(-texture_origin) + Point2i(-string_size.x / 2, string_size.y / 2), text, HORIZONTAL_ALIGNMENT_CENTER, string_size.x, font_size, 1, Color(0, 0, 0));
+		p_canvas_item->draw_string(font, p_transform.xform(-texture_origin) + Point2i(-string_size.x / 2, string_size.y / 2), text, HORIZONTAL_ALIGNMENT_CENTER, string_size.x, font_size, color);
 	}
 }
 
@@ -1801,10 +1801,10 @@ void TileDataCollisionEditor::draw_over_tile(CanvasItem *p_canvas_item, Transfor
 		if (tile_data->is_collision_polygon_one_way(physics_layer, i)) {
 			PackedVector2Array uvs;
 			uvs.resize(polygon.size());
-			Vector2 size_1 = Vector2(1, 1) / tile_set->get_tile_size();
+			Vector2 size_1 = Vector2(1) / tile_set->get_tile_size();
 
 			for (int j = 0; j < polygon.size(); j++) {
-				uvs.write[j] = polygon[j] * size_1 + Vector2(0.5, 0.5);
+				uvs.write[j] = polygon[j] * size_1 + Vector2(0.5);
 			}
 
 			Vector<Color> color2;
@@ -1834,7 +1834,7 @@ void TileDataTerrainsEditor::_update_terrain_selector() {
 		terrain_property_editor->hide();
 	} else {
 		options.clear();
-		Vector<Vector<Ref<Texture2D>>> icons = tile_set->generate_terrains_icons(Size2(16, 16) * EDSCALE);
+		Vector<Vector<Ref<Texture2D>>> icons = tile_set->generate_terrains_icons(Size2(16 * EDSCALE));
 		options.push_back(String(TTR("No terrain")) + String(":-1"));
 		for (int i = 0; i < tile_set->get_terrains_count(terrain_set); i++) {
 			String name = tile_set->get_terrain_name(terrain_set, i);
@@ -2031,9 +2031,9 @@ void TileDataTerrainsEditor::forward_draw_over_atlas(TileAtlasView *p_tile_atlas
 		Vector2 end = p_transform.affine_inverse().xform(p_canvas_item->get_local_mouse_position());
 		Vector<Point2> mouse_pos_rect_polygon;
 		mouse_pos_rect_polygon.push_back(drag_start_pos);
-		mouse_pos_rect_polygon.push_back(Vector2(end.x, drag_start_pos.y));
+		mouse_pos_rect_polygon.push_back(Point2(end.x, drag_start_pos.y));
 		mouse_pos_rect_polygon.push_back(end);
-		mouse_pos_rect_polygon.push_back(Vector2(drag_start_pos.x, end.y));
+		mouse_pos_rect_polygon.push_back(Point2(drag_start_pos.x, end.y));
 
 		Vector<Color> color;
 		color.push_back(Color(1.0, 1.0, 1.0, 0.5));
@@ -2514,9 +2514,9 @@ void TileDataTerrainsEditor::forward_painting_atlas_gui_input(TileAtlasView *p_t
 
 					Vector<Point2> mouse_pos_rect_polygon;
 					mouse_pos_rect_polygon.push_back(drag_start_pos);
-					mouse_pos_rect_polygon.push_back(Vector2(mb->get_position().x, drag_start_pos.y));
+					mouse_pos_rect_polygon.push_back(Point2(mb->get_position().x, drag_start_pos.y));
 					mouse_pos_rect_polygon.push_back(mb->get_position());
-					mouse_pos_rect_polygon.push_back(Vector2(drag_start_pos.x, mb->get_position().y));
+					mouse_pos_rect_polygon.push_back(Point2(drag_start_pos.x, mb->get_position().y));
 
 					undo_redo->create_action(TTR("Painting Terrain"));
 					for (const TileMapCell &E : edited) {

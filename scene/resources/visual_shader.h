@@ -707,7 +707,7 @@ class VisualShaderNodeResizableBase : public VisualShaderNode {
 	GDCLASS(VisualShaderNodeResizableBase, VisualShaderNode);
 
 protected:
-	Size2 size = Size2(0, 0);
+	Size2 size = Size2();
 	bool allow_v_resize = true;
 
 protected:

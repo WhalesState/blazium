@@ -201,8 +201,8 @@ private:
 		Color odd_row_bg = Color(0, 0, 0, 0);
 		Color even_row_bg = Color(0, 0, 0, 0);
 		Color border = Color(0, 0, 0, 0);
-		Size2 min_size_over = Size2(-1, -1);
-		Size2 max_size_over = Size2(-1, -1);
+		Size2 min_size_over = Size2(-1);
+		Size2 max_size_over = Size2(-1);
 		Rect2 padding;
 
 		ItemFrame() {

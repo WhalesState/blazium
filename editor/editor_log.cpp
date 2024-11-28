@@ -446,7 +446,7 @@ EditorLog::EditorLog() {
 	HBoxContainer *hb = this;
 
 	VBoxContainer *vb_left = memnew(VBoxContainer);
-	vb_left->set_custom_minimum_size(Size2(0, 180) * EDSCALE);
+	vb_left->set_custom_minimum_size(Size2(0, 180 * EDSCALE));
 	vb_left->set_v_size_flags(SIZE_EXPAND_FILL);
 	vb_left->set_h_size_flags(SIZE_EXPAND_FILL);
 	hb->add_child(vb_left);

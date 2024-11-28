@@ -924,7 +924,7 @@ Error EditorExportPlatformIOS::_export_icons(const Ref<EditorExportPreset> &p_pr
 				_blend_and_rotate(new_img, img, false);
 				err = new_img->save_png(p_iconset_dir + info.export_name);
 			} else if (img->get_width() != side_size || img->get_height() != side_size) {
-				add_message(EXPORT_MESSAGE_WARNING, TTR("Export Icons"), vformat("Icon (%s): '%s' has incorrect size %s and was automatically resized to %s.", info.preset_key, icon_path, img->get_size(), Vector2i(side_size, side_size)));
+				add_message(EXPORT_MESSAGE_WARNING, TTR("Export Icons"), vformat("Icon (%s): '%s' has incorrect size %s and was automatically resized to %s.", info.preset_key, icon_path, img->get_size(), Vector2i(side_size)));
 				img->resize(side_size, side_size, (Image::Interpolation)(p_preset->get("application/icon_interpolation").operator int()));
 				err = img->save_png(p_iconset_dir + info.export_name);
 			} else {

@@ -283,7 +283,7 @@ TEST_CASE("[Animation] Create Bezier track") {
 	Ref<Animation> animation = memnew(Animation);
 	const int track_index = animation->add_track(Animation::TYPE_BEZIER);
 	animation->track_set_path(track_index, NodePath("Enemy:scale"));
-	animation->bezier_track_insert_key(track_index, 0.0, -1.0, Vector2(-1, -1), Vector2(1, 1));
+	animation->bezier_track_insert_key(track_index, 0.0, -1.0, Vector2(-1), Vector2(1));
 	animation->bezier_track_insert_key(track_index, 0.5, 1.0, Vector2(0, 1), Vector2(1, 0.5));
 
 	CHECK(animation->get_track_count() == 1);

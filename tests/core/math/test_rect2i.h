@@ -39,7 +39,7 @@
 namespace TestRect2i {
 TEST_CASE("[Rect2i] Constructor methods") {
 	Rect2i recti = Rect2i(0, 100, 1280, 720);
-	Rect2i recti_vector = Rect2i(Vector2i(0, 100), Vector2i(1280, 720));
+	Rect2i recti_vector = Rect2i(Point2i(0, 100), Size2(1280, 720));
 	Rect2i recti_copy_recti = Rect2i(recti);
 	Rect2i recti_copy_rect = Rect2i(Rect2(0, 100, 1280, 720));
 
@@ -82,19 +82,19 @@ TEST_CASE("[Rect2i] Basic getters") {
 
 TEST_CASE("[Rect2i] Basic setters") {
 	Rect2i rect = Rect2i(0, 100, 1280, 720);
-	rect.set_end(Vector2i(4000, 4000));
+	rect.set_end(Vector2i(4000));
 	CHECK_MESSAGE(
 			rect == Rect2i(0, 100, 4000, 3900),
 			"set_end() should result in the expected Rect2i.");
 
 	rect = Rect2i(0, 100, 1280, 720);
-	rect.set_position(Vector2i(4000, 4000));
+	rect.set_position(Vector2i(4000));
 	CHECK_MESSAGE(
 			rect == Rect2i(4000, 4000, 1280, 720),
 			"set_position() should result in the expected Rect2i.");
 
 	rect = Rect2i(0, 100, 1280, 720);
-	rect.set_size(Vector2i(4000, 4000));
+	rect.set_size(Vector2i(4000));
 	CHECK_MESSAGE(
 			rect == Rect2i(0, 100, 4000, 4000),
 			"set_size() should result in the expected Rect2i.");
@@ -215,14 +215,14 @@ TEST_CASE("[Rect2i] Has point") {
 			rect.has_point(Vector2i(500, 600)),
 			"has_point() with contained Vector2i should return the expected result.");
 	CHECK_MESSAGE(
-			!rect.has_point(Vector2i(0, 0)),
+			!rect.has_point(Vector2i(0)),
 			"has_point() with non-contained Vector2i should return the expected result.");
 
 	CHECK_MESSAGE(
 			rect.has_point(rect.position),
 			"has_point() with positive size should include `position`.");
 	CHECK_MESSAGE(
-			rect.has_point(rect.position + Vector2i(1, 1)),
+			rect.has_point(rect.position + Vector2i(1)),
 			"has_point() with positive size should include `position + (1, 1)`.");
 	CHECK_MESSAGE(
 			!rect.has_point(rect.position + Vector2i(1, -1)),
@@ -231,10 +231,10 @@ TEST_CASE("[Rect2i] Has point") {
 			!rect.has_point(rect.position + rect.size),
 			"has_point() with positive size should not include `position + size`.");
 	CHECK_MESSAGE(
-			!rect.has_point(rect.position + rect.size + Vector2i(1, 1)),
+			!rect.has_point(rect.position + rect.size + Vector2i(1)),
 			"has_point() with positive size should not include `position + size + (1, 1)`.");
 	CHECK_MESSAGE(
-			rect.has_point(rect.position + rect.size + Vector2i(-1, -1)),
+			rect.has_point(rect.position + rect.size + Vector2i(-1)),
 			"has_point() with positive size should include `position + size + (-1, -1)`.");
 	CHECK_MESSAGE(
 			!rect.has_point(rect.position + rect.size + Vector2i(-1, 1)),

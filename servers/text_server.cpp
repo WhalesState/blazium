@@ -700,25 +700,25 @@ void TextServer::_draw_hex_code_box_number(const RID &p_canvas, int64_t p_size, 
 	static uint8_t chars[] = { 0x7E, 0x30, 0x6D, 0x79, 0x33, 0x5B, 0x5F, 0x70, 0x7F, 0x7B, 0x77, 0x1F, 0x4E, 0x3D, 0x4F, 0x47, 0x00 };
 	uint8_t x = chars[p_index];
 	if (x & (1 << 6)) {
-		RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(p_pos, Size2(3, 1) * p_size), p_color);
+		RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(p_pos, Size2(3 * p_size, p_size)), p_color);
 	}
 	if (x & (1 << 5)) {
-		RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(p_pos + Point2(2, 0) * p_size, Size2(1, 3) * p_size), p_color);
+		RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(p_pos + Point2(2 * p_size, 0), Size2(p_size, 3 * p_size)), p_color);
 	}
 	if (x & (1 << 4)) {
-		RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(p_pos + Point2(2, 2) * p_size, Size2(1, 3) * p_size), p_color);
+		RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(p_pos + Point2(2 * p_size), Size2(p_size, 3 * p_size)), p_color);
 	}
 	if (x & (1 << 3)) {
-		RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(p_pos + Point2(0, 4) * p_size, Size2(3, 1) * p_size), p_color);
+		RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(p_pos + Point2(0, 4 * p_size), Size2(3 * p_size, p_size)), p_color);
 	}
 	if (x & (1 << 2)) {
-		RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(p_pos + Point2(0, 2) * p_size, Size2(1, 3) * p_size), p_color);
+		RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(p_pos + Point2(0, 2 * p_size), Size2(p_size, 3 * p_size)), p_color);
 	}
 	if (x & (1 << 1)) {
-		RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(p_pos, Size2(1, 3) * p_size), p_color);
+		RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(p_pos, Size2(p_size, 3 * p_size)), p_color);
 	}
 	if (x & (1 << 0)) {
-		RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(p_pos + Point2(0, 2) * p_size, Size2(3, 1) * p_size), p_color);
+		RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(p_pos + Point2(0, 2 * p_size), Size2(3 * p_size, p_size)), p_color);
 	}
 }
 
@@ -735,9 +735,9 @@ void TextServer::draw_hex_code_box(const RID &p_canvas, int64_t p_size, const Ve
 	Point2 pos = p_pos - Point2i(0, size.y * 0.85);
 
 	// Draw frame.
-	RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(pos + Point2(0, 0), Size2(sz, size.y)), p_color);
+	RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(pos + Point2(), Size2(sz, size.y)), p_color);
 	RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(pos + Point2(size.x - sz, 0), Size2(sz, size.y)), p_color);
-	RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(pos + Point2(0, 0), Size2(size.x, sz)), p_color);
+	RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(pos + Point2(), Size2(size.x, sz)), p_color);
 	RenderingServer::get_singleton()->canvas_item_add_rect(p_canvas, Rect2(pos + Point2(0, size.y - sz), Size2(size.x, sz)), p_color);
 
 	uint8_t a = p_index & 0x0F;
@@ -749,15 +749,15 @@ void TextServer::draw_hex_code_box(const RID &p_canvas, int64_t p_size, const Ve
 
 	// Draw hex code.
 	if (p_index <= 0xFF) {
-		_draw_hex_code_box_number(p_canvas, sz, pos + Point2(2, 2) * sz, b, p_color);
+		_draw_hex_code_box_number(p_canvas, sz, pos + Point2(2 * sz), b, p_color);
 		_draw_hex_code_box_number(p_canvas, sz, pos + Point2(2, 8) * sz, a, p_color);
 	} else if (p_index <= 0xFFFF) {
-		_draw_hex_code_box_number(p_canvas, sz, pos + Point2(2, 2) * sz, d, p_color);
+		_draw_hex_code_box_number(p_canvas, sz, pos + Point2(2 * sz), d, p_color);
 		_draw_hex_code_box_number(p_canvas, sz, pos + Point2(6, 2) * sz, c, p_color);
 		_draw_hex_code_box_number(p_canvas, sz, pos + Point2(2, 8) * sz, b, p_color);
 		_draw_hex_code_box_number(p_canvas, sz, pos + Point2(6, 8) * sz, a, p_color);
 	} else {
-		_draw_hex_code_box_number(p_canvas, sz, pos + Point2(2, 2) * sz, f, p_color);
+		_draw_hex_code_box_number(p_canvas, sz, pos + Point2(2 * sz), f, p_color);
 		_draw_hex_code_box_number(p_canvas, sz, pos + Point2(6, 2) * sz, e, p_color);
 		_draw_hex_code_box_number(p_canvas, sz, pos + Point2(10, 2) * sz, d, p_color);
 		_draw_hex_code_box_number(p_canvas, sz, pos + Point2(2, 8) * sz, c, p_color);

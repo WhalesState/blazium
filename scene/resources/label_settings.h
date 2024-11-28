@@ -50,7 +50,7 @@ class LabelSettings : public Resource {
 
 	int shadow_size = 1;
 	Color shadow_color = Color(0, 0, 0, 0);
-	Vector2 shadow_offset = Vector2(1, 1);
+	Vector2 shadow_offset = Vector2(1);
 
 	void _font_changed();
 

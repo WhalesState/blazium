@@ -273,7 +273,7 @@ void EditorDebuggerInspector::add_stack_variable(const Array &p_array) {
 void EditorDebuggerInspector::clear_stack_variables() {
 	variables->clear();
 	variables->update();
-	set_custom_minimum_size(Size2(0, 0));
+	set_custom_minimum_size(Size2());
 }
 
 String EditorDebuggerInspector::get_stack_variable(const String &p_var) {

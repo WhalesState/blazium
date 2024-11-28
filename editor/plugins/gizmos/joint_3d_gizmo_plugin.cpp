@@ -244,8 +244,8 @@ void JointGizmosDrawer::draw_cone(const Transform3D &p_offset, const Basis &p_ba
 	for (int i = 0; i < 360; i += 10) {
 		float ra = Math::deg_to_rad((float)i);
 		float rb = Math::deg_to_rad((float)i + 10);
-		Point2 a = Vector2(Math::sin(ra), Math::cos(ra)) * w;
-		Point2 b = Vector2(Math::sin(rb), Math::cos(rb)) * w;
+		Point2 a = Point2(Math::sin(ra), Math::cos(ra)) * w;
+		Point2 b = Point2(Math::sin(rb), Math::cos(rb)) * w;
 
 		r_points.push_back(p_offset.translated_local(p_base.xform(Vector3(d, a.x, a.y))).origin);
 		r_points.push_back(p_offset.translated_local(p_base.xform(Vector3(d, b.x, b.y))).origin);
@@ -268,8 +268,8 @@ void JointGizmosDrawer::draw_cone(const Transform3D &p_offset, const Basis &p_ba
 		float rb = Math::deg_to_rad((float)i + 5);
 		float c = i / 720.0;
 		float cn = (i + 5) / 720.0;
-		Point2 a = Vector2(Math::sin(ra), Math::cos(ra)) * w * c;
-		Point2 b = Vector2(Math::sin(rb), Math::cos(rb)) * w * cn;
+		Point2 a = Point2(Math::sin(ra), Math::cos(ra)) * w * c;
+		Point2 b = Point2(Math::sin(rb), Math::cos(rb)) * w * cn;
 
 		r_points.push_back(p_offset.translated_local(p_base.xform(Vector3(c, a.x, a.y))).origin);
 		r_points.push_back(p_offset.translated_local(p_base.xform(Vector3(cn, b.x, b.y))).origin);

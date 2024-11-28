@@ -39,7 +39,7 @@ class CanvasLayer : public Node {
 
 	bool locrotscale_dirty = false;
 	Vector2 ofs;
-	Size2 scale = Vector2(1, 1);
+	Size2 scale = Vector2(1);
 	real_t rot = 0.0;
 	int layer = 1;
 	Transform2D transform;

@@ -322,7 +322,7 @@ void EditorSceneTabs::_tab_preview_done(const String &p_path, const Ref<Texture2
 
 		Rect2 rect = scene_tabs->get_tab_rect(p_tab);
 		rect.position += scene_tabs->get_global_position();
-		tab_preview_panel->set_global_position(rect.position + Vector2(0, rect.size.height));
+		tab_preview_panel->set_global_position(rect.position + Point2(0, rect.size.height));
 		tab_preview_panel->show();
 	}
 }
@@ -429,14 +429,14 @@ EditorSceneTabs::EditorSceneTabs() {
 	add_child(tab_preview_anchor);
 
 	tab_preview_panel = memnew(Panel);
-	tab_preview_panel->set_size(Size2(100, 100) * EDSCALE);
+	tab_preview_panel->set_size(Size2(100 * EDSCALE));
 	tab_preview_panel->hide();
 	tab_preview_panel->set_self_modulate(Color(1, 1, 1, 0.7));
 	tab_preview_anchor->add_child(tab_preview_panel);
 
 	tab_preview = memnew(TextureRect);
 	tab_preview->set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT_CENTERED);
-	tab_preview->set_size(Size2(96, 96) * EDSCALE);
-	tab_preview->set_position(Point2(2, 2) * EDSCALE);
+	tab_preview->set_size(Size2(96 * EDSCALE));
+	tab_preview->set_position(Point2(2 * EDSCALE));
 	tab_preview_panel->add_child(tab_preview);
 }

@@ -66,7 +66,7 @@ void CurveTexture::ensure_default_setup(float p_min, float p_max) {
 	if (_curve.is_null()) {
 		Ref<Curve> curve = Ref<Curve>(memnew(Curve));
 		curve->add_point(Vector2(0, 1));
-		curve->add_point(Vector2(1, 1));
+		curve->add_point(Vector2(1));
 		curve->set_min_value(p_min);
 		curve->set_max_value(p_max);
 		set_curve(curve);
@@ -211,7 +211,7 @@ void CurveXYZTexture::ensure_default_setup(float p_min, float p_max) {
 	if (_curve_x.is_null()) {
 		Ref<Curve> curve = Ref<Curve>(memnew(Curve));
 		curve->add_point(Vector2(0, 1));
-		curve->add_point(Vector2(1, 1));
+		curve->add_point(Vector2(1));
 		curve->set_min_value(p_min);
 		curve->set_max_value(p_max);
 		set_curve_x(curve);
@@ -220,7 +220,7 @@ void CurveXYZTexture::ensure_default_setup(float p_min, float p_max) {
 	if (_curve_y.is_null()) {
 		Ref<Curve> curve = Ref<Curve>(memnew(Curve));
 		curve->add_point(Vector2(0, 1));
-		curve->add_point(Vector2(1, 1));
+		curve->add_point(Vector2(1));
 		curve->set_min_value(p_min);
 		curve->set_max_value(p_max);
 		set_curve_y(curve);
@@ -229,7 +229,7 @@ void CurveXYZTexture::ensure_default_setup(float p_min, float p_max) {
 	if (_curve_z.is_null()) {
 		Ref<Curve> curve = Ref<Curve>(memnew(Curve));
 		curve->add_point(Vector2(0, 1));
-		curve->add_point(Vector2(1, 1));
+		curve->add_point(Vector2(1));
 		curve->set_min_value(p_min);
 		curve->set_max_value(p_max);
 		set_curve_z(curve);

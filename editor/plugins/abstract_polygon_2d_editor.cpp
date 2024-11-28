@@ -100,7 +100,7 @@ void AbstractPolygon2DEditor::_action_set_polygon(int p_idx, const Variant &p_pr
 }
 
 Vector2 AbstractPolygon2DEditor::_get_offset(int p_idx) const {
-	return Vector2(0, 0);
+	return Vector2();
 }
 
 void AbstractPolygon2DEditor::_commit_action() {
@@ -517,7 +517,7 @@ void AbstractPolygon2DEditor::forward_canvas_draw_over_viewport(Control *p_overl
 
 		if (wip_active && j == edited_point.polygon) {
 			points = Variant(wip);
-			offset = Vector2(0, 0);
+			offset = Vector2();
 		} else {
 			if (j == -1) {
 				continue;

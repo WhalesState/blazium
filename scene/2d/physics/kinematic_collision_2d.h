@@ -53,7 +53,7 @@ public:
 	Vector2 get_normal() const;
 	Vector2 get_travel() const;
 	Vector2 get_remainder() const;
-	real_t get_angle(const Vector2 &p_up_direction = Vector2(0.0, -1.0)) const;
+	real_t get_angle(const Vector2 &p_up_direction = Vector2(0, -1)) const;
 	real_t get_depth() const;
 	Object *get_local_shape() const;
 	Object *get_collider() const;

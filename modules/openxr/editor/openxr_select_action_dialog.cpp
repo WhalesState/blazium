@@ -90,7 +90,7 @@ void OpenXRSelectActionDialog::open() {
 			main_vb->add_child(action_hb);
 
 			Control *indent_node = memnew(Control);
-			indent_node->set_custom_minimum_size(Size2(10.0, 0.0));
+			indent_node->set_custom_minimum_size(Size2(10, 0));
 			action_hb->add_child(indent_node);
 
 			Button *action_button = memnew(Button);
@@ -123,7 +123,7 @@ OpenXRSelectActionDialog::OpenXRSelectActionDialog(Ref<OpenXRActionMap> p_action
 	set_title(TTR("Select an action"));
 
 	scroll = memnew(ScrollContainer);
-	scroll->set_custom_minimum_size(Size2(600.0, 400.0));
+	scroll->set_custom_minimum_size(Size2(600, 400));
 	add_child(scroll);
 
 	main_vb = memnew(VBoxContainer);

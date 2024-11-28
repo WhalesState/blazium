@@ -65,9 +65,9 @@ protected:
 
 	StringName blend_position = "blend_position";
 	StringName closest = "closest";
-	Vector2 max_space = Vector2(1, 1);
-	Vector2 min_space = Vector2(-1, -1);
-	Vector2 snap = Vector2(0.1, 0.1);
+	Vector2 max_space = Vector2(1);
+	Vector2 min_space = Vector2(-1);
+	Vector2 snap = Vector2(0.1);
 	String x_label = "x";
 	String y_label = "y";
 	BlendMode blend_mode = BLEND_MODE_INTERPOLATED;

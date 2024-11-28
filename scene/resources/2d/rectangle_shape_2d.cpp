@@ -102,6 +102,6 @@ void RectangleShape2D::_bind_methods() {
 
 RectangleShape2D::RectangleShape2D() :
 		Shape2D(PhysicsServer2D::get_singleton()->rectangle_shape_create()) {
-	size = Size2(20, 20);
+	size = Size2(20);
 	_update_shape();
 }

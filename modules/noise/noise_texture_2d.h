@@ -51,7 +51,7 @@ private:
 	mutable RID texture;
 	uint32_t flags = 0;
 
-	Size2i size = Size2i(512, 512);
+	Size2i size = Size2i(512);
 	bool invert = false;
 	bool in_3d_space = false;
 	bool generate_mipmaps = true;

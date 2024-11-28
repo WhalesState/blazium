@@ -72,7 +72,7 @@ protected:
 	virtual void _create_mesh_array(Array &p_arr) const {}
 	GDVIRTUAL0RC(Array, _create_mesh_array)
 
-	Vector2 get_uv2_scale(Vector2 p_margin_scale = Vector2(1.0, 1.0)) const;
+	Vector2 get_uv2_scale(Vector2 p_margin_scale = Vector2(1)) const;
 	float get_lightmap_texel_size() const;
 	virtual void _update_lightmap_size(){};
 
@@ -251,7 +251,7 @@ public:
 	};
 
 private:
-	Size2 size = Size2(2.0, 2.0);
+	Size2 size = Size2(2);
 	int subdivide_w = 0;
 	int subdivide_d = 0;
 	Vector3 center_offset;
@@ -293,7 +293,7 @@ class QuadMesh : public PlaneMesh {
 public:
 	QuadMesh() {
 		set_orientation(FACE_Z);
-		set_size(Size2(1, 1));
+		set_size(Size2(1));
 	}
 };
 
@@ -577,8 +577,8 @@ private:
 		Vector<Vector2> triangles;
 		Vector<Vector<ContourPoint>> contours;
 		Vector<ContourInfo> contours_info;
-		Vector2 min_p = Vector2(INFINITY, INFINITY);
-		Vector2 max_p = Vector2(-INFINITY, -INFINITY);
+		Vector2 min_p = Vector2(INFINITY);
+		Vector2 max_p = Vector2(-INFINITY);
 	};
 	mutable HashMap<GlyphMeshKey, GlyphMeshData, GlyphMeshKeyHasher> cache;
 

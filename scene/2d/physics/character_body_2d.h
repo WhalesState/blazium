@@ -65,7 +65,7 @@ public:
 	const Vector2 &get_wall_normal() const;
 	const Vector2 &get_real_velocity() const;
 
-	real_t get_floor_angle(const Vector2 &p_up_direction = Vector2(0.0, -1.0)) const;
+	real_t get_floor_angle(const Vector2 &p_up_direction = Vector2(0, -1)) const;
 	const Vector2 &get_platform_velocity() const;
 
 	int get_slide_collision_count() const;
@@ -126,7 +126,7 @@ private:
 	real_t floor_max_angle = Math::deg_to_rad((real_t)45.0);
 	real_t floor_snap_length = 1;
 	real_t wall_min_slide_angle = Math::deg_to_rad((real_t)15.0);
-	Vector2 up_direction = Vector2(0.0, -1.0);
+	Vector2 up_direction = Vector2(0, -1);
 	uint32_t platform_floor_layers = UINT32_MAX;
 	uint32_t platform_wall_layers = 0;
 	Vector2 velocity;

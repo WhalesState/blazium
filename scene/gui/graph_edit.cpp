@@ -84,7 +84,7 @@ void GraphEditMinimap::update_minimap() {
 	float graph_ratio = graph_size.width / graph_size.height;
 
 	graph_proportions = graph_size;
-	graph_padding = Vector2(0, 0);
+	graph_padding = Vector2();
 	if (graph_ratio > target_ratio) {
 		graph_proportions.width = graph_size.width;
 		graph_proportions.height = graph_size.width / target_ratio;
@@ -108,7 +108,7 @@ Rect2 GraphEditMinimap::get_camera_rect() {
 
 Vector2 GraphEditMinimap::_get_render_size() {
 	if (!is_inside_tree()) {
-		return Vector2(0, 0);
+		return Vector2();
 	}
 
 	return get_size() - 2 * minimap_padding;
@@ -132,7 +132,7 @@ Vector2 GraphEditMinimap::_get_graph_size() {
 }
 
 Vector2 GraphEditMinimap::_convert_from_graph_position(const Vector2 &p_position) {
-	Vector2 map_position = Vector2(0, 0);
+	Vector2 map_position = Vector2();
 	Vector2 render_size = _get_render_size();
 
 	map_position.x = p_position.x * render_size.width / graph_proportions.x;
@@ -142,7 +142,7 @@ Vector2 GraphEditMinimap::_convert_from_graph_position(const Vector2 &p_position
 }
 
 Vector2 GraphEditMinimap::_convert_to_graph_position(const Vector2 &p_position) {
-	Vector2 graph_position = Vector2(0, 0);
+	Vector2 graph_position = Vector2();
 	Vector2 render_size = _get_render_size();
 
 	graph_position.x = p_position.x * graph_proportions.x / render_size.width;
@@ -209,7 +209,7 @@ void GraphEditMinimap::_bind_methods() {
 GraphEditMinimap::GraphEditMinimap(GraphEdit *p_edit) {
 	ge = p_edit;
 
-	minimap_padding = Vector2(MINIMAP_PADDING, MINIMAP_PADDING);
+	minimap_padding = Vector2(MINIMAP_PADDING);
 	minimap_offset = minimap_padding + _convert_from_graph_position(graph_padding);
 }
 
@@ -367,8 +367,8 @@ void GraphEdit::_update_scroll_offset() {
 		Point2 pos = graph_element->get_position_offset() * zoom;
 		pos -= Point2(h_scrollbar->get_value(), v_scrollbar->get_value());
 		graph_element->set_position(pos);
-		if (graph_element->get_scale() != Vector2(zoom, zoom)) {
-			graph_element->set_scale(Vector2(zoom, zoom));
+		if (graph_element->get_scale() != Vector2(zoom)) {
+			graph_element->set_scale(Vector2(zoom));
 		}
 	}
 
@@ -626,7 +626,7 @@ void GraphEdit::add_child_notify(Node *p_child) {
 		graph_element->connect(SceneStringName(item_rect_changed), callable_mp((CanvasItem *)connections_layer, &CanvasItem::queue_redraw));
 		graph_element->connect(SceneStringName(item_rect_changed), callable_mp((CanvasItem *)minimap, &GraphEditMinimap::queue_redraw));
 
-		graph_element->set_scale(Vector2(zoom, zoom));
+		graph_element->set_scale(Vector2(zoom));
 		_graph_element_moved(graph_element);
 		graph_element->set_mouse_filter(MOUSE_FILTER_PASS);
 	}
@@ -724,7 +724,7 @@ void GraphEdit::_notification(int p_what) {
 			minimap_button->set_icon(theme_cache.minimap_toggle);
 			arrange_button->set_icon(theme_cache.layout);
 
-			zoom_label->set_custom_minimum_size(Size2(48, 0) * theme_cache.base_scale);
+			zoom_label->set_custom_minimum_size(Size2(48 * theme_cache.base_scale, 0));
 
 			menu_panel->add_theme_style_override(SceneStringName(panel), theme_cache.menu_panel);
 		} break;
@@ -794,7 +794,7 @@ Rect2 GraphEdit::_compute_shrinked_frame_rect(const GraphFrame *p_frame) {
 	const Size2 titlebar_size = p_frame->get_titlebar_size();
 
 	min_point -= Size2(autoshrink_margin, MAX(autoshrink_margin, titlebar_size.y));
-	max_point += Size2(autoshrink_margin, autoshrink_margin);
+	max_point += Size2(autoshrink_margin);
 
 	return Rect2(min_point, max_point - min_point);
 }
@@ -884,7 +884,7 @@ bool GraphEdit::_filter_input(const Point2 &p_point) {
 		Ref<Texture2D> port_icon = graph_node->theme_cache.port;
 
 		for (int j = 0; j < graph_node->get_input_port_count(); j++) {
-			Vector2i port_size = Vector2i(port_icon->get_width(), port_icon->get_height());
+			Vector2i port_size = port_icon->get_size();
 
 			// Determine slot height.
 			int slot_index = graph_node->get_input_port_slot(j);
@@ -898,7 +898,7 @@ bool GraphEdit::_filter_input(const Point2 &p_point) {
 		}
 
 		for (int j = 0; j < graph_node->get_output_port_count(); j++) {
-			Vector2i port_size = Vector2i(port_icon->get_width(), port_icon->get_height());
+			Vector2i port_size = port_icon->get_size();
 
 			// Determine slot height.
 			int slot_index = graph_node->get_output_port_slot(j);
@@ -935,7 +935,7 @@ void GraphEdit::_top_connection_layer_input(const Ref<InputEvent> &p_ev) {
 
 			for (int j = 0; j < graph_node->get_output_port_count(); j++) {
 				Vector2 pos = graph_node->get_output_port_position(j) * zoom + graph_node->get_position();
-				Vector2i port_size = Vector2i(port_icon->get_width(), port_icon->get_height());
+				Vector2i port_size = port_icon->get_size();
 
 				// Determine slot height.
 				int slot_index = graph_node->get_output_port_slot(j);
@@ -992,7 +992,7 @@ void GraphEdit::_top_connection_layer_input(const Ref<InputEvent> &p_ev) {
 			for (int j = 0; j < graph_node->get_input_port_count(); j++) {
 				Vector2 pos = graph_node->get_input_port_position(j) * zoom + graph_node->get_position();
 
-				Vector2i port_size = Vector2i(port_icon->get_width(), port_icon->get_height());
+				Vector2i port_size = port_icon->get_size();
 
 				// Determine slot height.
 				int slot_index = graph_node->get_input_port_slot(j);
@@ -1068,7 +1068,7 @@ void GraphEdit::_top_connection_layer_input(const Ref<InputEvent> &p_ev) {
 				if (!connecting_from_output) {
 					for (int j = 0; j < graph_node->get_output_port_count(); j++) {
 						Vector2 pos = graph_node->get_output_port_position(j) * zoom + graph_node->get_position();
-						Vector2i port_size = Vector2i(port_icon->get_width(), port_icon->get_height());
+						Vector2i port_size = port_icon->get_size();
 
 						// Determine slot height.
 						int slot_index = graph_node->get_output_port_slot(j);
@@ -1093,7 +1093,7 @@ void GraphEdit::_top_connection_layer_input(const Ref<InputEvent> &p_ev) {
 				} else {
 					for (int j = 0; j < graph_node->get_input_port_count(); j++) {
 						Vector2 pos = graph_node->get_input_port_position(j) * zoom + graph_node->get_position();
-						Vector2i port_size = Vector2i(port_icon->get_width(), port_icon->get_height());
+						Vector2i port_size = port_icon->get_size();
 
 						// Determine slot height.
 						int slot_index = graph_node->get_input_port_slot(j);
@@ -1612,7 +1612,7 @@ void GraphEdit::_draw_grid() {
 	Size2 size = get_size() / zoom;
 
 	Point2i from_pos = (offset / float(snapping_distance)).floor();
-	Point2i len = (size / float(snapping_distance)).floor() + Vector2(1, 1);
+	Point2i len = (size / float(snapping_distance)).floor() + Vector2(1);
 
 	switch (grid_pattern) {
 		case GRID_PATTERN_LINES: {
@@ -2835,7 +2835,7 @@ GraphEdit::GraphEdit() {
 	menu_panel = memnew(PanelContainer);
 	menu_panel->set_visible(show_menu);
 	top_layer->add_child(menu_panel);
-	menu_panel->set_position(Vector2(10, 10));
+	menu_panel->set_position(Vector2(10));
 
 	menu_hbox = memnew(HBoxContainer);
 	menu_panel->add_child(menu_hbox);

@@ -787,7 +787,7 @@ CreateDialog::CreateDialog() {
 	recent->add_theme_constant_override("draw_guides", 1);
 
 	VBoxContainer *vbc = memnew(VBoxContainer);
-	vbc->set_custom_minimum_size(Size2(300, 0) * EDSCALE);
+	vbc->set_custom_minimum_size(Size2(300 * EDSCALE, 0));
 	vbc->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	hsc->add_child(vbc);
 

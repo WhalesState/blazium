@@ -98,36 +98,36 @@ void SpriteFramesEditor::_sheet_preview_draw() {
 	const Size2 draw_offset = Size2(_get_offset()) * sheet_zoom;
 	const Size2 draw_sep = Size2(separation) * sheet_zoom;
 	const Size2 draw_frame_size = Size2(_get_frame_size()) * sheet_zoom;
-	const Size2 draw_size = draw_frame_size * frame_count + draw_sep * (frame_count - Size2i(1, 1));
+	const Size2 draw_size = draw_frame_size * frame_count + draw_sep * (frame_count - Size2i(1));
 
 	const Color line_color = Color(1, 1, 1, 0.3);
 	const Color shadow_color = Color(0, 0, 0, 0.3);
 
 	// Vertical lines.
-	_draw_shadowed_line(split_sheet_preview, draw_offset, Vector2(0, draw_size.y), Vector2(1, 0), line_color, shadow_color);
+	_draw_shadowed_line(split_sheet_preview, draw_offset, Size2(0, draw_size.y), Size2(1, 0), line_color, shadow_color);
 	for (int i = 0; i < frame_count.x - 1; i++) {
-		const Point2 start = draw_offset + Vector2(i * draw_sep.x + (i + 1) * draw_frame_size.x, 0);
+		const Point2 start = draw_offset + Point2(i * draw_sep.x + (i + 1) * draw_frame_size.x, 0);
 		if (separation.x == 0) {
-			_draw_shadowed_line(split_sheet_preview, start, Vector2(0, draw_size.y), Vector2(1, 0), line_color, shadow_color);
+			_draw_shadowed_line(split_sheet_preview, start, Size2(0, draw_size.y), Size2(1, 0), line_color, shadow_color);
 		} else {
 			const Size2 size = Size2(draw_sep.x, draw_size.y);
 			split_sheet_preview->draw_rect(Rect2(start, size), line_color);
 		}
 	}
-	_draw_shadowed_line(split_sheet_preview, draw_offset + Vector2(draw_size.x, 0), Vector2(0, draw_size.y), Vector2(1, 0), line_color, shadow_color);
+	_draw_shadowed_line(split_sheet_preview, draw_offset + Point2(draw_size.x, 0), Size2(0, draw_size.y), Size2(1, 0), line_color, shadow_color);
 
 	// Horizontal lines.
-	_draw_shadowed_line(split_sheet_preview, draw_offset, Vector2(draw_size.x, 0), Vector2(0, 1), line_color, shadow_color);
+	_draw_shadowed_line(split_sheet_preview, draw_offset, Size2(draw_size.x, 0), Size2(0, 1), line_color, shadow_color);
 	for (int i = 0; i < frame_count.y - 1; i++) {
-		const Point2 start = draw_offset + Vector2(0, i * draw_sep.y + (i + 1) * draw_frame_size.y);
+		const Point2 start = draw_offset + Point2(0, i * draw_sep.y + (i + 1) * draw_frame_size.y);
 		if (separation.y == 0) {
-			_draw_shadowed_line(split_sheet_preview, start, Vector2(draw_size.x, 0), Vector2(0, 1), line_color, shadow_color);
+			_draw_shadowed_line(split_sheet_preview, start, Size2(draw_size.x, 0), Size2(0, 1), line_color, shadow_color);
 		} else {
 			const Size2 size = Size2(draw_size.x, draw_sep.y);
 			split_sheet_preview->draw_rect(Rect2(start, size), line_color);
 		}
 	}
-	_draw_shadowed_line(split_sheet_preview, draw_offset + Vector2(0, draw_size.y), Vector2(draw_size.x, 0), Vector2(0, 1), line_color, shadow_color);
+	_draw_shadowed_line(split_sheet_preview, draw_offset + Point2(0, draw_size.y), Size2(draw_size.x, 0), Size2(0, 1), line_color, shadow_color);
 
 	if (frames_selected.size() == 0) {
 		split_sheet_dialog->get_ok_button()->set_disabled(true);
@@ -148,13 +148,13 @@ void SpriteFramesEditor::_sheet_preview_draw() {
 		const int x = idx % frame_count.x;
 		const int y = idx / frame_count.x;
 		const Point2 pos = draw_offset + Point2(x, y) * (draw_frame_size + draw_sep);
-		split_sheet_preview->draw_rect(Rect2(pos + Size2(5, 5), draw_frame_size - Size2(10, 10)), Color(0, 0, 0, 0.35), true);
+		split_sheet_preview->draw_rect(Rect2(pos + Size2(5), draw_frame_size - Size2(10)), Color(0, 0, 0, 0.35), true);
 		split_sheet_preview->draw_rect(Rect2(pos, draw_frame_size), Color(0, 0, 0, 1), false);
-		split_sheet_preview->draw_rect(Rect2(pos + Size2(1, 1), draw_frame_size - Size2(2, 2)), Color(0, 0, 0, 1), false);
-		split_sheet_preview->draw_rect(Rect2(pos + Size2(2, 2), draw_frame_size - Size2(4, 4)), accent, false);
-		split_sheet_preview->draw_rect(Rect2(pos + Size2(3, 3), draw_frame_size - Size2(6, 6)), accent, false);
-		split_sheet_preview->draw_rect(Rect2(pos + Size2(4, 4), draw_frame_size - Size2(8, 8)), Color(0, 0, 0, 1), false);
-		split_sheet_preview->draw_rect(Rect2(pos + Size2(5, 5), draw_frame_size - Size2(10, 10)), Color(0, 0, 0, 1), false);
+		split_sheet_preview->draw_rect(Rect2(pos + Size2(1), draw_frame_size - Size2(2)), Color(0, 0, 0), false);
+		split_sheet_preview->draw_rect(Rect2(pos + Size2(2), draw_frame_size - Size2(4)), accent, false);
+		split_sheet_preview->draw_rect(Rect2(pos + Size2(3), draw_frame_size - Size2(6)), accent, false);
+		split_sheet_preview->draw_rect(Rect2(pos + Size2(4), draw_frame_size - Size2(8)), Color(0, 0, 0), false);
+		split_sheet_preview->draw_rect(Rect2(pos + Size2(5), draw_frame_size - Size2(10)), Color(0, 0, 0), false);
 
 		const String text = itos(i);
 		const Vector2 string_size = font->get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size);
@@ -471,7 +471,7 @@ void SpriteFramesEditor::_sheet_spin_changed(double p_value, int p_dominant_para
 			split_sheet_offset_x->set_max(offset_max.x);
 			split_sheet_offset_y->set_max(offset_max.y);
 
-			const Size2i gap_count = count - Size2i(1, 1);
+			const Size2i gap_count = count - Size2i(1);
 			split_sheet_sep_x->set_max(gap_count.x == 0 ? size.x : (size.x - count.x) / gap_count.x);
 			split_sheet_sep_y->set_max(gap_count.y == 0 ? size.y : (size.y - count.y) / gap_count.y);
 
@@ -1248,7 +1248,7 @@ void SpriteFramesEditor::_zoom_in() {
 		thumbnail_zoom *= scale_ratio;
 		int thumbnail_size = (int)(thumbnail_default_size * thumbnail_zoom);
 		frame_list->set_fixed_column_width(thumbnail_size * 3 / 2);
-		frame_list->set_fixed_icon_size(Size2(thumbnail_size, thumbnail_size));
+		frame_list->set_fixed_icon_size(Size2(thumbnail_size));
 	}
 }
 
@@ -1261,14 +1261,14 @@ void SpriteFramesEditor::_zoom_out() {
 		thumbnail_zoom /= scale_ratio;
 		int thumbnail_size = (int)(thumbnail_default_size * thumbnail_zoom);
 		frame_list->set_fixed_column_width(thumbnail_size * 3 / 2);
-		frame_list->set_fixed_icon_size(Size2(thumbnail_size, thumbnail_size));
+		frame_list->set_fixed_icon_size(Size2(thumbnail_size));
 	}
 }
 
 void SpriteFramesEditor::_zoom_reset() {
 	thumbnail_zoom = MAX(1.0f, EDSCALE);
 	frame_list->set_fixed_column_width(thumbnail_default_size * 3 / 2);
-	frame_list->set_fixed_icon_size(Size2(thumbnail_default_size, thumbnail_default_size));
+	frame_list->set_fixed_icon_size(Size2(thumbnail_default_size));
 }
 
 void SpriteFramesEditor::_update_library(bool p_skip_selector) {
@@ -1774,7 +1774,7 @@ void SpriteFramesEditor::_node_removed(Node *p_node) {
 SpriteFramesEditor::SpriteFramesEditor() {
 	VBoxContainer *vbc_animlist = memnew(VBoxContainer);
 	add_child(vbc_animlist);
-	vbc_animlist->set_custom_minimum_size(Size2(150, 0) * EDSCALE);
+	vbc_animlist->set_custom_minimum_size(Size2(150 * EDSCALE, 0));
 
 	VBoxContainer *sub_vb = memnew(VBoxContainer);
 	vbc_animlist->add_margin_child(TTR("Animations:"), sub_vb, true);
@@ -2362,7 +2362,7 @@ void SpriteFramesEditorPlugin::make_visible(bool p_visible) {
 
 SpriteFramesEditorPlugin::SpriteFramesEditorPlugin() {
 	frames_editor = memnew(SpriteFramesEditor);
-	frames_editor->set_custom_minimum_size(Size2(0, 300) * EDSCALE);
+	frames_editor->set_custom_minimum_size(Size2(0, 300 * EDSCALE));
 	button = EditorNode::get_bottom_panel()->add_item(TTR("SpriteFrames"), frames_editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_sprite_frames_bottom_panel", TTR("Toggle SpriteFrames Bottom Panel")));
 	button->hide();
 }

@@ -310,7 +310,7 @@ void Polygon2DEditor::_uv_edit_mode_select(int p_mode) {
 		bone_paint_radius->show();
 		bone_paint_radius_label->show();
 		_update_bone_list();
-		bone_paint_pos = Vector2(-100000, -100000); //send brush away when switching
+		bone_paint_pos = Vector2(-100000); //send brush away when switching
 	}
 
 	uv_edit->set_size(uv_edit->get_size()); // Necessary readjustment of the popup window.
@@ -507,7 +507,7 @@ void Polygon2DEditor::_uv_input(const Ref<InputEvent> &p_input) {
 
 	Transform2D mtx;
 	mtx.columns[2] = -uv_draw_ofs * uv_draw_zoom;
-	mtx.scale_basis(Vector2(uv_draw_zoom, uv_draw_zoom));
+	mtx.scale_basis(Size2(uv_draw_zoom));
 
 	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
 
@@ -983,7 +983,7 @@ void Polygon2DEditor::_center_view() {
 	Size2 texture_size;
 	if (node->get_texture().is_valid()) {
 		texture_size = node->get_texture()->get_size();
-		Vector2 zoom_factor = (uv_edit_draw->get_size() - Vector2(1, 1) * 50 * EDSCALE) / texture_size;
+		Vector2 zoom_factor = (uv_edit_draw->get_size() - Vector2(50 * EDSCALE)) / texture_size;
 		zoom_widget->set_zoom(MIN(zoom_factor.x, zoom_factor.y));
 	} else {
 		zoom_widget->set_zoom(EDSCALE);
@@ -1032,7 +1032,7 @@ void Polygon2DEditor::_update_zoom_and_pan(bool p_zoom_at_center) {
 		max_corner = max_corner.max(points[i]);
 	}
 	Size2 page_size = uv_edit_draw->get_size() / uv_draw_zoom;
-	Vector2 margin = Vector2(50, 50) * EDSCALE / uv_draw_zoom;
+	Vector2 margin = Vector2(50 * EDSCALE) / uv_draw_zoom;
 	min_corner -= page_size - margin;
 	max_corner += page_size - margin;
 
@@ -1067,7 +1067,7 @@ void Polygon2DEditor::_uv_draw() {
 
 	Transform2D mtx;
 	mtx.columns[2] = -uv_draw_ofs * uv_draw_zoom;
-	mtx.scale_basis(Vector2(uv_draw_zoom, uv_draw_zoom));
+	mtx.scale_basis(Vector2(uv_draw_zoom));
 
 	// Draw texture as a background if editing uvs or no uv mapping exist.
 	if (uv_edit_mode[0]->is_pressed() || uv_mode == UV_MODE_CREATE || node->get_polygon().is_empty() || node->get_uv().size() != node->get_polygon().size()) {
@@ -1220,7 +1220,7 @@ void Polygon2DEditor::_uv_draw() {
 		if (weight_r) {
 			Vector2 draw_pos = mtx.xform(uvs[i]);
 			float weight = weight_r[i];
-			uv_edit_draw->draw_rect(Rect2(draw_pos - Vector2(2, 2) * EDSCALE, Vector2(5, 5) * EDSCALE), Color(weight, weight, weight, 1.0), Math::round(EDSCALE));
+			uv_edit_draw->draw_rect(Rect2(draw_pos - Point2(2 * EDSCALE), Size2(5 * EDSCALE)), Color(weight, weight, weight, 1.0), Math::round(EDSCALE));
 		} else {
 			if (i < uv_draw_max) {
 				uv_edit_draw->draw_texture(handle, mtx.xform(uvs[i]) - handle->get_size() * 0.5);
@@ -1315,7 +1315,7 @@ Vector2 Polygon2DEditor::snap_point(Vector2 p_target) const {
 Polygon2DEditor::Polygon2DEditor() {
 	snap_offset = EditorSettings::get_singleton()->get_project_metadata("polygon_2d_uv_editor", "snap_offset", Vector2());
 	// A power-of-two value works better as a default grid size.
-	snap_step = EditorSettings::get_singleton()->get_project_metadata("polygon_2d_uv_editor", "snap_step", Vector2(8, 8));
+	snap_step = EditorSettings::get_singleton()->get_project_metadata("polygon_2d_uv_editor", "snap_step", Vector2(8));
 	use_snap = EditorSettings::get_singleton()->get_project_metadata("polygon_2d_uv_editor", "snap_enabled", false);
 	snap_show_grid = EditorSettings::get_singleton()->get_project_metadata("polygon_2d_uv_editor", "show_grid", false);
 
@@ -1431,7 +1431,7 @@ Polygon2DEditor::Polygon2DEditor() {
 	uv_edit_background = memnew(Panel);
 	uv_main_hsc->add_child(uv_edit_background);
 	uv_edit_background->set_h_size_flags(SIZE_EXPAND_FILL);
-	uv_edit_background->set_custom_minimum_size(Size2(200, 200) * EDSCALE);
+	uv_edit_background->set_custom_minimum_size(Size2(200 * EDSCALE));
 	uv_edit_background->set_clip_contents(true);
 
 	preview_polygon = memnew(Polygon2D);

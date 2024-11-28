@@ -91,7 +91,7 @@ Transform2D CanvasLayer::get_transform() const {
 Transform2D CanvasLayer::get_final_transform() const {
 	if (is_following_viewport()) {
 		Transform2D follow;
-		follow.scale(Vector2(get_follow_viewport_scale(), get_follow_viewport_scale()));
+		follow.scale(Vector2(get_follow_viewport_scale()));
 		if (vp) {
 			follow = vp->get_canvas_transform() * follow;
 		}
@@ -209,10 +209,10 @@ void CanvasLayer::update_draw_order() {
 
 Size2 CanvasLayer::get_viewport_size() const {
 	if (!is_inside_tree()) {
-		return Size2(1, 1);
+		return Size2(1);
 	}
 
-	ERR_FAIL_NULL_V_MSG(vp, Size2(1, 1), "Viewport is not initialized.");
+	ERR_FAIL_NULL_V_MSG(vp, Size2(1), "Viewport is not initialized.");
 
 	Rect2 r = vp->get_visible_rect();
 	return r.size;

@@ -51,7 +51,7 @@
 Transform2D TextureRegionEditor::_get_offset_transform() const {
 	Transform2D mtx;
 	mtx.columns[2] = -draw_ofs * draw_zoom;
-	mtx.scale_basis(Vector2(draw_zoom, draw_zoom));
+	mtx.scale_basis(Size2(draw_zoom));
 
 	return mtx;
 }
@@ -302,7 +302,7 @@ void TextureRegionEditor::_texture_overlay_input(const Ref<InputEvent> &p_input)
 
 	Transform2D mtx;
 	mtx.columns[2] = -draw_ofs * draw_zoom;
-	mtx.scale_basis(Vector2(draw_zoom, draw_zoom));
+	mtx.scale_basis(Size2(draw_zoom));
 
 	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
 	Ref<InputEventMouseButton> mb = p_input;
@@ -316,11 +316,11 @@ void TextureRegionEditor::_texture_overlay_input(const Ref<InputEvent> &p_input)
 
 					// Position of selection handles.
 					const Vector2 endpoints[8] = {
-						mtx.xform(rect.position) + Vector2(-handle_offset, -handle_offset),
+						mtx.xform(rect.position) + Vector2(-handle_offset),
 						mtx.xform(rect.position + Vector2(rect.size.x / 2, 0)) + Vector2(0, -handle_offset),
 						mtx.xform(rect.position + Vector2(rect.size.x, 0)) + Vector2(handle_offset, -handle_offset),
 						mtx.xform(rect.position + Vector2(rect.size.x, rect.size.y / 2)) + Vector2(handle_offset, 0),
-						mtx.xform(rect.position + rect.size) + Vector2(handle_offset, handle_offset),
+						mtx.xform(rect.position + rect.size) + Vector2(handle_offset),
 						mtx.xform(rect.position + Vector2(rect.size.x / 2, rect.size.y)) + Vector2(0, handle_offset),
 						mtx.xform(rect.position + Vector2(0, rect.size.y)) + Vector2(-handle_offset, handle_offset),
 						mtx.xform(rect.position + Vector2(0, rect.size.y / 2)) + Vector2(-handle_offset, 0)
@@ -1117,7 +1117,7 @@ TextureRegionEditor::TextureRegionEditor() {
 
 	// A power-of-two value works better as a default grid size.
 	snap_offset = EditorSettings::get_singleton()->get_project_metadata("texture_region_editor", "snap_offset", Vector2());
-	snap_step = EditorSettings::get_singleton()->get_project_metadata("texture_region_editor", "snap_step", Vector2(8, 8));
+	snap_step = EditorSettings::get_singleton()->get_project_metadata("texture_region_editor", "snap_step", Vector2(8));
 	snap_separation = EditorSettings::get_singleton()->get_project_metadata("texture_region_editor", "snap_separation", Vector2());
 	snap_mode = (SnapMode)(int)EditorSettings::get_singleton()->get_project_metadata("texture_region_editor", "snap_mode", SNAP_NONE);
 
@@ -1223,7 +1223,7 @@ TextureRegionEditor::TextureRegionEditor() {
 
 	HBoxContainer *zoom_hb = memnew(HBoxContainer);
 	texture_overlay->add_child(zoom_hb);
-	zoom_hb->set_begin(Point2(5, 5));
+	zoom_hb->set_begin(Point2(5));
 
 	zoom_out = memnew(Button);
 	zoom_out->set_flat(true);

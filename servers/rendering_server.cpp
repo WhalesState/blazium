@@ -389,10 +389,10 @@ Error RenderingServer::_surface_set_data(Array p_arrays, uint64_t p_format, uint
 			uv2_src = array.ptr();
 		}
 
-		Vector2 max_val = Vector2(0.0, 0.0);
-		Vector2 min_val = Vector2(0.0, 0.0);
-		Vector2 max_val2 = Vector2(0.0, 0.0);
-		Vector2 min_val2 = Vector2(0.0, 0.0);
+		Vector2 max_val = Vector2();
+		Vector2 min_val = Vector2();
+		Vector2 max_val2 = Vector2();
+		Vector2 min_val2 = Vector2();
 
 		for (int i = 0; i < p_vertex_array_len; i++) {
 			if (p_format & RS::ARRAY_FORMAT_TEX_UV) {
@@ -761,7 +761,7 @@ Error RenderingServer::_surface_set_data(Array p_arrays, uint64_t p_format, uint
 						Vector2 vec = src[i];
 						if (!r_uv_scale.is_zero_approx()) {
 							// Normalize into 0-1 from possible range -uv_scale - uv_scale.
-							vec = vec / (Vector2(r_uv_scale.z, r_uv_scale.w)) + Vector2(0.5, 0.5);
+							vec = vec / (Vector2(r_uv_scale.z, r_uv_scale.w)) + Vector2(0.5);
 						}
 						uint16_t uv[2] = { (uint16_t)CLAMP(vec.x * 65535, 0, 65535), (uint16_t)CLAMP(vec.y * 65535, 0, 65535) };
 						memcpy(&aw[p_offsets[ai] + i * p_attrib_stride], uv, 4);
@@ -1543,7 +1543,7 @@ Array RenderingServer::_get_array_from_surface(uint64_t p_format, Vector<uint8_t
 						const uint16_t *v = reinterpret_cast<const uint16_t *>(&ar[j * attrib_elem_size + offsets[i]]);
 						Vector2 vec = Vector2(float(v[0]) / 65535.0, float(v[1]) / 65535.0);
 						if (!p_uv_scale.is_zero_approx()) {
-							vec = (vec - Vector2(0.5, 0.5)) * Vector2(p_uv_scale.x, p_uv_scale.y);
+							vec = (vec - Vector2(0.5)) * Vector2(p_uv_scale.x, p_uv_scale.y);
 						}
 
 						w[j] = vec;
@@ -1568,7 +1568,7 @@ Array RenderingServer::_get_array_from_surface(uint64_t p_format, Vector<uint8_t
 						const uint16_t *v = reinterpret_cast<const uint16_t *>(&ar[j * attrib_elem_size + offsets[i]]);
 						Vector2 vec = Vector2(float(v[0]) / 65535.0, float(v[1]) / 65535.0);
 						if (!p_uv_scale.is_zero_approx()) {
-							vec = (vec - Vector2(0.5, 0.5)) * Vector2(p_uv_scale.z, p_uv_scale.w);
+							vec = (vec - Vector2(0.5)) * Vector2(p_uv_scale.z, p_uv_scale.w);
 						}
 						w[j] = vec;
 					}

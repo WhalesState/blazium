@@ -660,10 +660,10 @@ void ColorPicker::_update_presets() {
 	// Only update the preset button size if it has changed.
 	if (preset_size != prev_preset_size) {
 		prev_preset_size = preset_size;
-		btn_add_preset->set_custom_minimum_size(Size2(preset_size, preset_size));
+		btn_add_preset->set_custom_minimum_size(Size2(preset_size));
 		for (int i = 1; i < preset_container->get_child_count(); i++) {
 			ColorPresetButton *cpb = Object::cast_to<ColorPresetButton>(preset_container->get_child(i));
-			cpb->set_custom_minimum_size(Size2(preset_size, preset_size));
+			cpb->set_custom_minimum_size(Size2(preset_size));
 		}
 	}
 
@@ -1203,8 +1203,8 @@ void ColorPicker::_hsv_draw(int p_which, Control *c) {
 	} else if (p_which == 1) {
 		if (actual_shape == SHAPE_HSV_RECTANGLE) {
 			c->draw_set_transform(Point2(), -Math_PI / 2, Size2(c->get_size().x, -c->get_size().y));
-			c->draw_texture_rect(theme_cache.color_hue, Rect2(Point2(), Size2(1, 1)));
-			c->draw_set_transform(Point2(), 0, Size2(1, 1));
+			c->draw_texture_rect(theme_cache.color_hue, Rect2(Point2(), Size2(1)));
+			c->draw_set_transform(Point2(), 0, Size2(1));
 			int y = c->get_size().y - c->get_size().y * (1.0 - h);
 			Color col;
 			col.set_hsv(h, 1, 1);
@@ -1493,7 +1493,7 @@ void ColorPicker::_pick_button_pressed() {
 
 	if (!picker_window) {
 		picker_window = memnew(Popup);
-		picker_window->set_size(Vector2i(1, 1));
+		picker_window->set_size(Vector2i(1));
 		picker_window->connect(SceneStringName(visibility_changed), callable_mp(this, &ColorPicker::_pick_finished));
 		add_child(picker_window, false, INTERNAL_MODE_FRONT);
 	}
@@ -1578,7 +1578,7 @@ void ColorPicker::_pick_button_pressed_legacy() {
 				continue;
 			}
 			img->convert(Image::FORMAT_RGB8);
-			target_image->blit_rect(img, Rect2i(Point2i(0, 0), img->get_size()), w->get_position());
+			target_image->blit_rect(img, Rect2i(Point2i(), img->get_size()), w->get_position());
 		}
 
 		picker_texture_rect->set_texture(ImageTexture::create_from_image(target_image));
@@ -2180,7 +2180,7 @@ ColorPickerButton::ColorPickerButton(const String &p_text) :
 void ColorPresetButton::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_DRAW: {
-			const Rect2 r = Rect2(Point2(0, 0), get_size());
+			const Rect2 r = Rect2(Point2(), get_size());
 			Ref<StyleBox> sb_raw = theme_cache.foreground_style->duplicate();
 			Ref<StyleBoxFlat> sb_flat = sb_raw;
 			Ref<StyleBoxTexture> sb_texture = sb_raw;
@@ -2221,7 +2221,7 @@ void ColorPresetButton::_notification(int p_what) {
 			}
 			if (preset_color.r > 1 || preset_color.g > 1 || preset_color.b > 1) {
 				// Draw an indicator to denote that the color is "overbright" and can't be displayed accurately in the preview
-				draw_texture(theme_cache.overbright_indicator, Vector2(0, 0));
+				draw_texture(theme_cache.overbright_indicator, Vector2());
 			}
 
 		} break;
@@ -2245,7 +2245,7 @@ void ColorPresetButton::_bind_methods() {
 ColorPresetButton::ColorPresetButton(Color p_color, int p_size) {
 	preset_color = p_color;
 	set_toggle_mode(true);
-	set_custom_minimum_size(Size2(p_size, p_size));
+	set_custom_minimum_size(Size2(p_size));
 }
 
 ColorPresetButton::~ColorPresetButton() {

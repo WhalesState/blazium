@@ -153,7 +153,7 @@ void CPUParticles2D::_update_mesh_texture() {
 	if (texture.is_valid()) {
 		tex_size = texture->get_size();
 	} else {
-		tex_size = Size2(1, 1);
+		tex_size = Size2(1);
 	}
 
 	Vector<Vector2> vertices = {
@@ -173,17 +173,17 @@ void CPUParticles2D::_update_mesh_texture() {
 		uvs.push_back(Vector2((region_rect.position.x + region_rect.size.x) / atlas_size.x, (region_rect.position.y + region_rect.size.y) / atlas_size.y));
 		uvs.push_back(Vector2(region_rect.position.x / atlas_size.x, (region_rect.position.y + region_rect.size.y) / atlas_size.y));
 	} else {
-		uvs.push_back(Vector2(0, 0));
+		uvs.push_back(Vector2());
 		uvs.push_back(Vector2(1, 0));
-		uvs.push_back(Vector2(1, 1));
+		uvs.push_back(Vector2(1));
 		uvs.push_back(Vector2(0, 1));
 	}
 
 	Vector<Color> colors = {
-		Color(1, 1, 1, 1),
-		Color(1, 1, 1, 1),
-		Color(1, 1, 1, 1),
-		Color(1, 1, 1, 1)
+		Color(1, 1, 1),
+		Color(1, 1, 1),
+		Color(1, 1, 1),
+		Color(1, 1, 1)
 	};
 
 	Vector<int> indices = { 0, 1, 2, 2, 3, 0 };
@@ -915,7 +915,7 @@ void CPUParticles2D::_particles_process(double p_delta) {
 		//apply color
 		//apply hue rotation
 
-		Vector2 tex_scale = Vector2(1.0, 1.0);
+		Vector2 tex_scale = Vector2(1);
 		if (split_scale) {
 			if (scale_curve_x.is_valid()) {
 				tex_scale.x = scale_curve_x->sample(tv);

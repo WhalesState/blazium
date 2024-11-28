@@ -54,13 +54,13 @@ private:
 		bool use_gravity = false;
 		Vector2 gravity = Vector2(0, 6.0);
 
-		Vector2 force = Vector2(0, 0);
-		Vector2 acceleration = Vector2(0, 0);
-		Vector2 velocity = Vector2(0, 0);
-		Vector2 last_position = Vector2(0, 0);
-		Vector2 dynamic_position = Vector2(0, 0);
+		Vector2 force = Vector2();
+		Vector2 acceleration = Vector2();
+		Vector2 velocity = Vector2();
+		Vector2 last_position = Vector2();
+		Vector2 dynamic_position = Vector2();
 
-		Vector2 last_noncollision_position = Vector2(0, 0);
+		Vector2 last_noncollision_position = Vector2();
 	};
 
 	Vector<Jiggle_Joint_Data2D> jiggle_data_chain;

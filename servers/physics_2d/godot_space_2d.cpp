@@ -61,8 +61,8 @@ int GodotPhysicsDirectSpaceState2D::intersect_point(const PointParameters &p_par
 	}
 
 	Rect2 aabb;
-	aabb.position = p_parameters.position - Vector2(0.00001, 0.00001);
-	aabb.size = Vector2(0.00002, 0.00002);
+	aabb.position = p_parameters.position - Vector2(0.00001);
+	aabb.size = Vector2(0.00002);
 
 	int amount = space->broadphase->cull_aabb(aabb, space->intersection_query_results, GodotSpace2D::INTERSECTION_QUERY_MAX, space->intersection_query_subindex_results);
 

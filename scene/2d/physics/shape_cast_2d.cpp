@@ -239,10 +239,10 @@ void ShapeCast2D::_notification(int p_what) {
 			const int steps = MAX(2, target_position.length() / shape->get_rect().get_size().length() * 4);
 			for (int i = 0; i <= steps; ++i) {
 				Vector2 t = (real_t(i) / steps) * target_position;
-				draw_set_transform(t, 0.0, Size2(1, 1));
+				draw_set_transform(t, 0.0, Size2(1));
 				shape->draw(get_canvas_item(), draw_col);
 			}
-			draw_set_transform(Vector2(), 0.0, Size2(1, 1));
+			draw_set_transform(Vector2(), 0.0, Size2(1));
 
 			// Draw an arrow indicating where the ShapeCast is pointing to.
 			if (target_position != Vector2()) {

@@ -1294,8 +1294,8 @@ void CodeEdit::_main_gutter_draw_callback(int p_line, int p_gutter, const Rect2 
 				use_color = breakpointed ? use_color.lightened(0.3) : use_color.darkened(0.5);
 			}
 			Rect2 icon_region = p_region;
-			icon_region.position += Point2(padding, padding);
-			icon_region.size -= Point2(padding, padding) * 2;
+			icon_region.position += Point2(padding);
+			icon_region.size -= Point2(padding * 2);
 			theme_cache.breakpoint_icon->draw_rect(get_canvas_item(), icon_region, false, use_color);
 		}
 	}
@@ -1875,10 +1875,10 @@ String CodeEdit::get_delimiter_end_key(int p_delimiter_idx) const {
 
 Point2 CodeEdit::get_delimiter_start_position(int p_line, int p_column) const {
 	if (delimiters.size() == 0) {
-		return Point2(-1, -1);
+		return Point2(-1);
 	}
-	ERR_FAIL_INDEX_V(p_line, get_line_count(), Point2(-1, -1));
-	ERR_FAIL_COND_V(p_column - 1 > get_line(p_line).size(), Point2(-1, -1));
+	ERR_FAIL_INDEX_V(p_line, get_line_count(), Point2(-1));
+	ERR_FAIL_COND_V(p_column - 1 > get_line(p_line).size(), Point2(-1));
 
 	Point2 start_position;
 	start_position.y = -1;
@@ -1926,10 +1926,10 @@ Point2 CodeEdit::get_delimiter_start_position(int p_line, int p_column) const {
 
 Point2 CodeEdit::get_delimiter_end_position(int p_line, int p_column) const {
 	if (delimiters.size() == 0) {
-		return Point2(-1, -1);
+		return Point2(-1);
 	}
-	ERR_FAIL_INDEX_V(p_line, get_line_count(), Point2(-1, -1));
-	ERR_FAIL_COND_V(p_column - 1 > get_line(p_line).size(), Point2(-1, -1));
+	ERR_FAIL_INDEX_V(p_line, get_line_count(), Point2(-1));
+	ERR_FAIL_COND_V(p_column - 1 > get_line(p_line).size(), Point2(-1));
 
 	Point2 end_position;
 	end_position.y = -1;

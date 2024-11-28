@@ -2482,7 +2482,7 @@ Rect2i TileMapLayer::get_used_rect() const {
 		if (!first) {
 			// Only if we have at least one cell.
 			// The cache expands to top-left coordinate, so we add one full tile.
-			used_rect_cache.size += Vector2i(1, 1);
+			used_rect_cache.size += Vector2i(1);
 		}
 		used_rect_cache_dirty = false;
 	}
@@ -2499,7 +2499,7 @@ Ref<TileMapPattern> TileMapLayer::get_pattern(TypedArray<Vector2i> p_coords_arra
 		return output;
 	}
 
-	Vector2i min = Vector2i(p_coords_array[0]);
+	Vector2i min = p_coords_array[0];
 	for (int i = 1; i < p_coords_array.size(); i++) {
 		min = min.min(p_coords_array[i]);
 	}

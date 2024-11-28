@@ -389,7 +389,7 @@ void OpenXRActionMapEditor::_clear_action_map() {
 
 OpenXRActionMapEditor::OpenXRActionMapEditor() {
 	undo_redo = EditorUndoRedoManager::get_singleton();
-	set_custom_minimum_size(Size2(0.0, 300.0));
+	set_custom_minimum_size(Size2(0, 300));
 
 	top_hb = memnew(HBoxContainer);
 	add_child(top_hb);

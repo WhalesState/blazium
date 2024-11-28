@@ -6394,7 +6394,7 @@ static void projectTriangle(Vector3 p0, Vector3 p1, Vector3 p2, Vector2 *z0, Vec
 	Vector3 Z = normalize(cross(X, p2 - p0));
 	Vector3 Y = cross(Z, X);
 	Vector3 &O = p0;
-	*z0 = Vector2(0, 0);
+	*z0 = Vector2();
 	*z1 = Vector2(length(p1 - O), 0);
 	*z2 = Vector2(dot(p2 - O, X), dot(p2 - O, Y));
 }

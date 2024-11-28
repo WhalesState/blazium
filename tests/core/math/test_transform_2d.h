@@ -47,7 +47,7 @@ Transform2D identity() {
 
 TEST_CASE("[Transform2D] Default constructor") {
 	Transform2D default_constructor = Transform2D();
-	CHECK(default_constructor == Transform2D(Vector2(1, 0), Vector2(0, 1), Vector2(0, 0)));
+	CHECK(default_constructor == Transform2D(Vector2(1, 0), Vector2(0, 1), Vector2()));
 }
 
 TEST_CASE("[Transform2D] Copy constructor") {
@@ -92,8 +92,8 @@ TEST_CASE("[Transform2D] xform") {
 }
 
 TEST_CASE("[Transform2D] Basis xform") {
-	const Vector2 v = Vector2(2, 2);
-	const Transform2D T1 = Transform2D(Vector2(1, 2), Vector2(3, 4), Vector2(0, 0));
+	const Vector2 v = Vector2(2);
+	const Transform2D T1 = Transform2D(Vector2(1, 2), Vector2(3, 4), Vector2());
 
 	// Both versions should be the same when the origin is (0,0).
 	CHECK(T1.basis_xform(v) == T1.xform(v));
@@ -183,7 +183,7 @@ TEST_CASE("[Transform2D] Interpolation") {
 
 TEST_CASE("[Transform2D] Finite number checks") {
 	const Vector2 x = Vector2(0, 1);
-	const Vector2 infinite = Vector2(NAN, NAN);
+	const Vector2 infinite = Vector2(NAN);
 
 	CHECK_MESSAGE(
 			Transform2D(x, x, x).is_finite(),

@@ -621,7 +621,7 @@ void Viewport::_notification(int p_what) {
 				Color ccol = get_tree()->get_debug_collision_contact_color();
 
 				for (int i = 0; i < point_count; i++) {
-					RenderingServer::get_singleton()->canvas_item_add_rect(contact_2d_debug, Rect2(points[i] - Vector2(2, 2), Vector2(5, 5)), ccol);
+					RenderingServer::get_singleton()->canvas_item_add_rect(contact_2d_debug, Rect2(points[i] - Point2(2), Point2(5)), ccol);
 				}
 			}
 #ifndef _3D_DISABLED
@@ -5133,7 +5133,7 @@ Transform2D SubViewport::get_screen_transform_internal(bool p_absolute_position)
 	SubViewportContainer *c = Object::cast_to<SubViewportContainer>(get_parent());
 	if (c) {
 		if (c->is_stretch_enabled()) {
-			container_transform.scale(Vector2(c->get_stretch_shrink(), c->get_stretch_shrink()));
+			container_transform.scale(Size2(c->get_stretch_shrink()));
 		}
 		container_transform = c->get_viewport()->get_screen_transform_internal(p_absolute_position) * c->get_global_transform_with_canvas() * container_transform;
 	} else {
@@ -5153,7 +5153,7 @@ Transform2D SubViewport::get_popup_base_transform() const {
 	}
 	Transform2D container_transform;
 	if (c->is_stretch_enabled()) {
-		container_transform.scale(Vector2(c->get_stretch_shrink(), c->get_stretch_shrink()));
+		container_transform.scale(Size2(c->get_stretch_shrink()));
 	}
 	return c->get_screen_transform() * container_transform * get_final_transform();
 }

@@ -4075,7 +4075,7 @@ ScriptEditor::ScriptEditor(WindowWrapper *p_wrapper) {
 	overview_vbox->add_child(members_overview);
 
 	members_overview->set_allow_reselect(true);
-	members_overview->set_custom_minimum_size(Size2(0, 60) * EDSCALE); //need to give a bit of limit to avoid it from disappearing
+	members_overview->set_custom_minimum_size(Size2(0, 60 * EDSCALE)); //need to give a bit of limit to avoid it from disappearing
 	members_overview->set_v_size_flags(SIZE_EXPAND_FILL);
 	members_overview->set_allow_rmb_select(true);
 
@@ -4083,7 +4083,7 @@ ScriptEditor::ScriptEditor(WindowWrapper *p_wrapper) {
 	help_overview->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);
 	overview_vbox->add_child(help_overview);
 	help_overview->set_allow_reselect(true);
-	help_overview->set_custom_minimum_size(Size2(0, 60) * EDSCALE); //need to give a bit of limit to avoid it from disappearing
+	help_overview->set_custom_minimum_size(Size2(0, 60 * EDSCALE)); //need to give a bit of limit to avoid it from disappearing
 	help_overview->set_v_size_flags(SIZE_EXPAND_FILL);
 
 	VBoxContainer *code_editor_container = memnew(VBoxContainer);
@@ -4091,7 +4091,7 @@ ScriptEditor::ScriptEditor(WindowWrapper *p_wrapper) {
 
 	tab_container = memnew(TabContainer);
 	tab_container->set_tabs_visible(false);
-	tab_container->set_custom_minimum_size(Size2(200, 0) * EDSCALE);
+	tab_container->set_custom_minimum_size(Size2(200 * EDSCALE, 0));
 	code_editor_container->add_child(tab_container);
 	tab_container->set_h_size_flags(SIZE_EXPAND_FILL);
 	tab_container->set_v_size_flags(SIZE_EXPAND_FILL);
@@ -4313,7 +4313,7 @@ ScriptEditor::ScriptEditor(WindowWrapper *p_wrapper) {
 	add_child(find_in_files_dialog);
 	find_in_files = memnew(FindInFilesPanel);
 	find_in_files_button = EditorNode::get_bottom_panel()->add_item(TTR("Search Results"), find_in_files, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_search_results_bottom_panel", TTR("Toggle Search Results Bottom Panel")));
-	find_in_files->set_custom_minimum_size(Size2(0, 200) * EDSCALE);
+	find_in_files->set_custom_minimum_size(Size2(0, 200 * EDSCALE));
 	find_in_files->connect(FindInFilesPanel::SIGNAL_RESULT_SELECTED, callable_mp(this, &ScriptEditor::_on_find_in_files_result_selected));
 	find_in_files->connect(FindInFilesPanel::SIGNAL_FILES_MODIFIED, callable_mp(this, &ScriptEditor::_on_find_in_files_modified_files));
 	find_in_files->connect(FindInFilesPanel::SIGNAL_CLOSE_BUTTON_CLICKED, callable_mp(this, &ScriptEditor::_on_find_in_files_close_button_clicked));

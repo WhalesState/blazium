@@ -1057,7 +1057,7 @@ TEST_CASE("[SceneTree][CodeEdit] delimiters") {
 
 			/* Check column after start key is in string and start / end positions are correct. */
 			CHECK(code_edit->is_in_string(1, 1) != -1);
-			CHECK(code_edit->get_delimiter_start_position(1, 1) == Point2(1, 1));
+			CHECK(code_edit->get_delimiter_start_position(1, 1) == Point2(1));
 			CHECK(code_edit->get_delimiter_end_position(1, 1) == Point2(2, 1));
 
 			/* Check line after is not in string. */
@@ -1085,12 +1085,12 @@ TEST_CASE("[SceneTree][CodeEdit] delimiters") {
 
 			/* Check column after the first start key is in string and start / end positions are correct. */
 			CHECK(code_edit->is_in_string(1, 1) != -1);
-			CHECK(code_edit->get_delimiter_start_position(1, 1) == Point2(1, 1));
+			CHECK(code_edit->get_delimiter_start_position(1, 1) == Point2(1));
 			CHECK(code_edit->get_delimiter_end_position(1, 1) == Point2(6, 1));
 
 			/* Check column after the second start key returns data for the first. */
 			CHECK(code_edit->is_in_string(1, 5) != -1);
-			CHECK(code_edit->get_delimiter_start_position(1, 5) == Point2(1, 1));
+			CHECK(code_edit->get_delimiter_start_position(1, 5) == Point2(1));
 			CHECK(code_edit->get_delimiter_end_position(1, 5) == Point2(6, 1));
 
 			/* Check line after is not in string. */
@@ -1148,7 +1148,7 @@ TEST_CASE("[SceneTree][CodeEdit] delimiters") {
 
 			/* Check column after start key is in comment and start / end positions are correct. */
 			CHECK(code_edit->is_in_comment(1, 1) != -1);
-			CHECK(code_edit->get_delimiter_start_position(1, 1) == Point2(1, 1));
+			CHECK(code_edit->get_delimiter_start_position(1, 1) == Point2(1));
 			CHECK(code_edit->get_delimiter_end_position(1, 1) == Point2(2, 1));
 
 			/* Check line after is not in comment. */
@@ -1176,12 +1176,12 @@ TEST_CASE("[SceneTree][CodeEdit] delimiters") {
 
 			/* Check column after the first start key is in comment and start / end positions are correct. */
 			CHECK(code_edit->is_in_comment(1, 1) != -1);
-			CHECK(code_edit->get_delimiter_start_position(1, 1) == Point2(1, 1));
+			CHECK(code_edit->get_delimiter_start_position(1, 1) == Point2(1));
 			CHECK(code_edit->get_delimiter_end_position(1, 1) == Point2(6, 1));
 
 			/* Check column after the second start key returns data for the first. */
 			CHECK(code_edit->is_in_comment(1, 5) != -1);
-			CHECK(code_edit->get_delimiter_start_position(1, 5) == Point2(1, 1));
+			CHECK(code_edit->get_delimiter_start_position(1, 5) == Point2(1));
 			CHECK(code_edit->get_delimiter_end_position(1, 5) == Point2(6, 1));
 
 			/* Check line after is not in comment. */
@@ -1245,12 +1245,12 @@ TEST_CASE("[SceneTree][CodeEdit] delimiters") {
 
 			/* Check column after the first start key is in comment and start / end positions are correct. */
 			CHECK(code_edit->is_in_comment(1, 1) != -1);
-			CHECK(code_edit->get_delimiter_start_position(1, 1) == Point2(1, 1));
+			CHECK(code_edit->get_delimiter_start_position(1, 1) == Point2(1));
 			CHECK(code_edit->get_delimiter_end_position(1, 1) == Point2(6, 1));
 
 			/* Check column after the second start key returns data for the first, and does not state string. */
 			CHECK(code_edit->is_in_comment(1, 5) != -1);
-			CHECK(code_edit->get_delimiter_start_position(1, 5) == Point2(1, 1));
+			CHECK(code_edit->get_delimiter_start_position(1, 5) == Point2(1));
 			CHECK(code_edit->get_delimiter_end_position(1, 5) == Point2(6, 1));
 			CHECK(code_edit->is_in_string(1, 5) == -1);
 
@@ -1420,17 +1420,17 @@ TEST_CASE("[SceneTree][CodeEdit] delimiters") {
 			/* Check column just after start key is in string. */
 			CHECK(code_edit->is_in_string(1, 2) != -1);
 			CHECK(code_edit->get_delimiter_start_position(1, 2) == Point2(2, 1));
-			CHECK(code_edit->get_delimiter_end_position(1, 2) == Point2(3, 3));
+			CHECK(code_edit->get_delimiter_end_position(1, 2) == Point2(3));
 
 			/* Check middle line. */
 			CHECK(code_edit->is_in_string(2, 0) != -1);
 			CHECK(code_edit->get_delimiter_start_position(2, 0) == Point2(2, 1));
-			CHECK(code_edit->get_delimiter_end_position(2, 0) == Point2(3, 3));
+			CHECK(code_edit->get_delimiter_end_position(2, 0) == Point2(3));
 
 			/* Check column just before end key is in string. */
 			CHECK(code_edit->is_in_string(3, 0) != -1);
 			CHECK(code_edit->get_delimiter_start_position(3, 0) == Point2(2, 1));
-			CHECK(code_edit->get_delimiter_end_position(3, 0) == Point2(3, 3));
+			CHECK(code_edit->get_delimiter_end_position(3, 0) == Point2(3));
 
 			/* Check column after end key is not in string. */
 			CHECK(code_edit->is_in_string(3, 3) == -1);
@@ -1622,17 +1622,17 @@ TEST_CASE("[SceneTree][CodeEdit] delimiters") {
 			/* Check column just after start key is in comment. */
 			CHECK(code_edit->is_in_comment(1, 2) != -1);
 			CHECK(code_edit->get_delimiter_start_position(1, 2) == Point2(2, 1));
-			CHECK(code_edit->get_delimiter_end_position(1, 2) == Point2(3, 3));
+			CHECK(code_edit->get_delimiter_end_position(1, 2) == Point2(3));
 
 			/* Check middle line. */
 			CHECK(code_edit->is_in_comment(2, 0) != -1);
 			CHECK(code_edit->get_delimiter_start_position(2, 0) == Point2(2, 1));
-			CHECK(code_edit->get_delimiter_end_position(2, 0) == Point2(3, 3));
+			CHECK(code_edit->get_delimiter_end_position(2, 0) == Point2(3));
 
 			/* Check column just before end key is in comment. */
 			CHECK(code_edit->is_in_comment(3, 0) != -1);
 			CHECK(code_edit->get_delimiter_start_position(3, 0) == Point2(2, 1));
-			CHECK(code_edit->get_delimiter_end_position(3, 0) == Point2(3, 3));
+			CHECK(code_edit->get_delimiter_end_position(3, 0) == Point2(3));
 
 			/* Check column after end key is not in comment. */
 			CHECK(code_edit->is_in_comment(3, 3) == -1);
@@ -1711,17 +1711,17 @@ TEST_CASE("[SceneTree][CodeEdit] delimiters") {
 			/* Check column just after start key is in comment. */
 			CHECK(code_edit->is_in_comment(1, 2) != -1);
 			CHECK(code_edit->get_delimiter_start_position(1, 2) == Point2(2, 1));
-			CHECK(code_edit->get_delimiter_end_position(1, 2) == Point2(3, 3));
+			CHECK(code_edit->get_delimiter_end_position(1, 2) == Point2(3));
 
 			/* Check middle line. */
 			CHECK(code_edit->is_in_comment(2, 0) != -1);
 			CHECK(code_edit->get_delimiter_start_position(2, 0) == Point2(2, 1));
-			CHECK(code_edit->get_delimiter_end_position(2, 0) == Point2(3, 3));
+			CHECK(code_edit->get_delimiter_end_position(2, 0) == Point2(3));
 
 			/* Check column just before end key is in comment. */
 			CHECK(code_edit->is_in_comment(3, 0) != -1);
 			CHECK(code_edit->get_delimiter_start_position(3, 0) == Point2(2, 1));
-			CHECK(code_edit->get_delimiter_end_position(3, 0) == Point2(3, 3));
+			CHECK(code_edit->get_delimiter_end_position(3, 0) == Point2(3));
 
 			/* Check column after end key is not in comment. */
 			CHECK(code_edit->is_in_comment(3, 3) == -1);
@@ -4056,7 +4056,7 @@ TEST_CASE("[SceneTree][CodeEdit] completion") {
 			CHECK(option["default_value"] == Color(1, 0, 0));
 
 			/* Set size for mouse input. */
-			code_edit->set_size(Size2(100, 100));
+			code_edit->set_size(Size2(100));
 
 			/* Test home and end keys close the completion and move the caret */
 			/* => ui_text_caret_line_start */
@@ -4486,7 +4486,7 @@ TEST_CASE("[SceneTree][CodeEdit] symbol lookup") {
 
 	if (TS->has_feature(TextServer::FEATURE_FONT_DYNAMIC) && TS->has_feature(TextServer::FEATURE_SIMPLE_LAYOUT)) {
 		/* Set size for mouse input. */
-		code_edit->set_size(Size2(100, 100));
+		code_edit->set_size(Size2(100));
 
 		code_edit->set_text("this is some text");
 

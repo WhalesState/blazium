@@ -817,7 +817,7 @@ void EditorSettings::_load_defaults(Ref<ConfigFile> p_extra_config) {
 	for (int i = 0; i < DisplayServer::get_singleton()->get_screen_count(); i++) {
 		screen_hints += ",Screen " + itos(i + 1) + ":" + itos(i);
 	}
-	_initial_set("run/window_placement/rect_custom_position", Vector2());
+	_initial_set("run/window_placement/rect_custom_position", Point2());
 	EDITOR_SETTING(Variant::INT, PROPERTY_HINT_ENUM, "run/window_placement/screen", -5, screen_hints)
 #endif
 	// Should match the ANDROID_WINDOW_* constants in 'platform/android/java/editor/src/main/java/org/godotengine/editor/GodotEditor.kt'

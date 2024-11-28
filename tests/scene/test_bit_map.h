@@ -59,7 +59,7 @@ TEST_CASE("[BitMap] Create bit map") {
 	bit_map.create(dim);
 	CHECK_MESSAGE(bit_map.get_size() == Size2i(256, 512), "We should still have the same dimensions as before, because the new dimension is invalid.");
 
-	dim = Size2i(46341, 46341);
+	dim = Size2i(46341);
 	bit_map.create(dim);
 	CHECK_MESSAGE(bit_map.get_size() == Size2i(256, 512), "We should still have the same dimensions as before, because the new dimension is too large (46341*46341=2147488281).");
 
@@ -75,16 +75,16 @@ TEST_CASE("[BitMap] Create bit map from image alpha") {
 
 	const Ref<Image> null_img = nullptr;
 	bit_map.create_from_image_alpha(null_img);
-	CHECK_MESSAGE(bit_map.get_size() == Size2i(256, 256), "Bitmap should have its old values because bitmap creation from a nullptr should fail.");
+	CHECK_MESSAGE(bit_map.get_size() == Size2i(256), "Bitmap should have its old values because bitmap creation from a nullptr should fail.");
 
 	Ref<Image> empty_img;
 	empty_img.instantiate();
 	bit_map.create_from_image_alpha(empty_img);
-	CHECK_MESSAGE(bit_map.get_size() == Size2i(256, 256), "Bitmap should have its old values because bitmap creation from an empty image should fail.");
+	CHECK_MESSAGE(bit_map.get_size() == Size2i(256), "Bitmap should have its old values because bitmap creation from an empty image should fail.");
 
 	Ref<Image> wrong_format_img = Image::create_empty(3, 3, false, Image::Format::FORMAT_DXT1);
 	bit_map.create_from_image_alpha(wrong_format_img);
-	CHECK_MESSAGE(bit_map.get_size() == Size2i(256, 256), "Bitmap should have its old values because converting from a compressed image should fail.");
+	CHECK_MESSAGE(bit_map.get_size() == Size2i(256), "Bitmap should have its old values because converting from a compressed image should fail.");
 
 	ERR_PRINT_ON
 
@@ -115,20 +115,20 @@ TEST_CASE("[BitMap] Set bit") {
 	// Setting a point before a bit map is created should not crash, because there are checks to see if we are out of bounds.
 	ERR_PRINT_OFF
 
-	bit_map.set_bitv(Point2i(128, 128), true);
+	bit_map.set_bitv(Point2i(128), true);
 
 	bit_map.create(dim);
 	CHECK_MESSAGE(bit_map.get_true_bit_count() == 0, "All values should be initialized to false.");
-	bit_map.set_bitv(Point2i(128, 128), true);
+	bit_map.set_bitv(Point2i(128), true);
 	CHECK_MESSAGE(bit_map.get_true_bit_count() == 1, "One bit should be set to true.");
-	CHECK_MESSAGE(bit_map.get_bitv(Point2i(128, 128)) == true, "The bit at (128,128) should be set to true");
+	CHECK_MESSAGE(bit_map.get_bitv(Point2i(128)) == true, "The bit at (128,128) should be set to true");
 
-	bit_map.set_bitv(Point2i(128, 128), false);
+	bit_map.set_bitv(Point2i(128), false);
 	CHECK_MESSAGE(bit_map.get_true_bit_count() == 0, "The bit should now be set to false again");
-	CHECK_MESSAGE(bit_map.get_bitv(Point2i(128, 128)) == false, "The bit at (128,128) should now be set to false again");
+	CHECK_MESSAGE(bit_map.get_bitv(Point2i(128)) == false, "The bit at (128,128) should now be set to false again");
 
 	bit_map.create(dim);
-	bit_map.set_bitv(Point2i(512, 512), true);
+	bit_map.set_bitv(Point2i(512), true);
 	CHECK_MESSAGE(bit_map.get_true_bit_count() == 0, "Nothing should change as we were trying to edit a bit outside of the correct range.");
 
 	ERR_PRINT_ON
@@ -140,20 +140,20 @@ TEST_CASE("[BitMap] Get bit") {
 
 	ERR_PRINT_OFF
 
-	CHECK_MESSAGE(bit_map.get_bitv(Point2i(128, 128)) == false, "Trying to access a bit outside of the BitMap's range should always return false");
+	CHECK_MESSAGE(bit_map.get_bitv(Point2i(128)) == false, "Trying to access a bit outside of the BitMap's range should always return false");
 
 	bit_map.create(dim);
-	CHECK(bit_map.get_bitv(Point2i(128, 128)) == false);
+	CHECK(bit_map.get_bitv(Point2i(128)) == false);
 
 	bit_map.set_bit_rect(Rect2i(-1, -1, 257, 257), true);
 
 	// Checking that range is [0, 256).
 	CHECK(bit_map.get_bitv(Point2i(-1, 0)) == false);
-	CHECK(bit_map.get_bitv(Point2i(0, 0)) == true);
-	CHECK(bit_map.get_bitv(Point2i(128, 128)) == true);
-	CHECK(bit_map.get_bitv(Point2i(255, 255)) == true);
-	CHECK(bit_map.get_bitv(Point2i(256, 256)) == false);
-	CHECK(bit_map.get_bitv(Point2i(257, 257)) == false);
+	CHECK(bit_map.get_bitv(Point2i()) == true);
+	CHECK(bit_map.get_bitv(Point2i(128)) == true);
+	CHECK(bit_map.get_bitv(Point2i(255)) == true);
+	CHECK(bit_map.get_bitv(Point2i(256)) == false);
+	CHECK(bit_map.get_bitv(Point2i(257)) == false);
 
 	ERR_PRINT_ON
 }
@@ -213,15 +213,15 @@ TEST_CASE("[BitMap] Get size") {
 	const Size2i dim{ 256, 256 };
 	BitMap bit_map{};
 
-	CHECK_MESSAGE(bit_map.get_size() == Size2i(0, 0), "Uninitialized bit map should have a size of 0x0");
+	CHECK_MESSAGE(bit_map.get_size() == Size2i(), "Uninitialized bit map should have a size of 0x0");
 
 	bit_map.create(dim);
-	CHECK(bit_map.get_size() == Size2i(256, 256));
+	CHECK(bit_map.get_size() == Size2i(256));
 
 	ERR_PRINT_OFF
 	bit_map.create(Size2i(-1, 0));
 	ERR_PRINT_ON
-	CHECK_MESSAGE(bit_map.get_size() == Size2i(256, 256), "Invalid size should not be accepted by create");
+	CHECK_MESSAGE(bit_map.get_size() == Size2i(256), "Invalid size should not be accepted by create");
 
 	bit_map.create(Size2i(256, 128));
 	CHECK_MESSAGE(bit_map.get_size() == Size2i(256, 128), "Bitmap should have updated size");
@@ -238,22 +238,22 @@ TEST_CASE("[BitMap] Resize") {
 	bit_map.set_bit_rect(Rect2i(0, 0, 10, 10), true);
 	bit_map.set_bit_rect(Rect2i(118, 118, 10, 10), true);
 	CHECK_MESSAGE(bit_map.get_true_bit_count() == 200, "There should be 100 bits in the top left corner, and 100 bits in the bottom right corner");
-	bit_map.resize(Size2i(64, 64));
+	bit_map.resize(Size2i(64));
 	CHECK_MESSAGE(bit_map.get_true_bit_count() == 50, "There should be 25 bits in the top left corner, and 25 bits in the bottom right corner");
 
 	bit_map.create(dim);
 	ERR_PRINT_OFF
 	bit_map.resize(Size2i(-1, 128));
 	ERR_PRINT_ON
-	CHECK_MESSAGE(bit_map.get_size() == Size2i(128, 128), "When an invalid size is given the bit map will keep its size");
+	CHECK_MESSAGE(bit_map.get_size() == Size2i(128), "When an invalid size is given the bit map will keep its size");
 
 	bit_map.create(dim);
 	bit_map.set_bit_rect(Rect2i(0, 0, 10, 10), true);
 	bit_map.set_bit_rect(Rect2i(118, 118, 10, 10), true);
 	CHECK_MESSAGE(bit_map.get_true_bit_count() == 200, "There should be 100 bits in the top left corner, and 100 bits in the bottom right corner");
-	bit_map.resize(Size2i(256, 256));
+	bit_map.resize(Size2i(256));
 	CHECK_MESSAGE(bit_map.get_true_bit_count() == 800, "There should still be 100 bits in the bottom right corner, and all new bits should be initialized to false");
-	CHECK_MESSAGE(bit_map.get_size() == Size2i(256, 256), "The bitmap should now be 256x256");
+	CHECK_MESSAGE(bit_map.get_size() == Size2i(256), "The bitmap should now be 256x256");
 }
 
 TEST_CASE("[BitMap] Grow and shrink mask") {
@@ -262,7 +262,7 @@ TEST_CASE("[BitMap] Grow and shrink mask") {
 	ERR_PRINT_OFF
 	bit_map.grow_mask(100, Rect2i(0, 0, 128, 128)); // Check if method does not crash when working with an uninitialized bit map.
 	ERR_PRINT_ON
-	CHECK_MESSAGE(bit_map.get_size() == Size2i(0, 0), "Size should still be equal to 0x0");
+	CHECK_MESSAGE(bit_map.get_size() == Size2i(), "Size should still be equal to 0x0");
 
 	bit_map.create(dim);
 
@@ -346,7 +346,7 @@ TEST_CASE("[BitMap] Grow and shrink mask") {
 	CHECK_MESSAGE(bit_map.get_bitv(Point2i(124, 124)) == false, "Bits that are on the edge of the shape should be set to false");
 	CHECK_MESSAGE(bit_map.get_bitv(Point2i(126, 124)) == false, "Bits that are on the edge of the shape should be set to false");
 	CHECK_MESSAGE(bit_map.get_bitv(Point2i(124, 131)) == false, "Bits that are on the edge of the shape should be set to false");
-	CHECK_MESSAGE(bit_map.get_bitv(Point2i(131, 131)) == false, "Bits that are on the edge of the shape should be set to false");
+	CHECK_MESSAGE(bit_map.get_bitv(Point2i(131)) == false, "Bits that are on the edge of the shape should be set to false");
 }
 
 TEST_CASE("[BitMap] Blit") {
@@ -374,9 +374,9 @@ TEST_CASE("[BitMap] Blit") {
 	// Testing if uninitialized bit map does not crash
 	blit_bit_map.unref();
 	blit_bit_map.instantiate();
-	CHECK_MESSAGE(blit_bit_map->get_size() == Point2i(0, 0), "Size should be cleared by unref and instance calls.");
+	CHECK_MESSAGE(blit_bit_map->get_size() == Point2i(), "Size should be cleared by unref and instance calls.");
 	bit_map.create(bit_map_size);
-	bit_map.blit(Point2i(128, 128), blit_bit_map);
+	bit_map.blit(Point2i(128), blit_bit_map);
 
 	// Testing if both initialized does not crash.
 	blit_bit_map->create(blit_size);
@@ -384,7 +384,7 @@ TEST_CASE("[BitMap] Blit") {
 
 	bit_map.set_bit_rect(Rect2i{ 127, 127, 3, 3 }, true);
 	CHECK(bit_map.get_true_bit_count() == 9);
-	bit_map.blit(Point2i(112, 112), blit_bit_map);
+	bit_map.blit(Point2i(112), blit_bit_map);
 	CHECK_MESSAGE(bit_map.get_true_bit_count() == 9, "No bits should have been changed, as the blit bit map only contains falses");
 
 	bit_map.create(bit_map_size);
@@ -393,7 +393,7 @@ TEST_CASE("[BitMap] Blit") {
 	CHECK(blit_bit_map->get_true_bit_count() == 9);
 
 	CHECK(bit_map.get_true_bit_count() == 0);
-	bit_map.blit(Point2i(112, 112), blit_bit_map);
+	bit_map.blit(Point2i(112), blit_bit_map);
 	CHECK_MESSAGE(bit_map.get_true_bit_count() == 9, "All true bits should have been moved to the bit map");
 	for (int x = 127; x < 129; ++x) {
 		for (int y = 127; y < 129; ++y) {
@@ -412,7 +412,7 @@ TEST_CASE("[BitMap] Convert to image") {
 	ERR_PRINT_ON
 	CHECK_MESSAGE(img.is_valid(), "We should receive a valid Image Object even if BitMap is not created yet");
 	CHECK_MESSAGE(img->get_format() == Image::FORMAT_L8, "We should receive a valid Image Object even if BitMap is not created yet");
-	CHECK_MESSAGE(img->get_size() == (Size2i(0, 0)), "Image should have no width or height, because BitMap has not yet been created");
+	CHECK_MESSAGE(img->get_size() == (Size2i()), "Image should have no width or height, because BitMap has not yet been created");
 
 	bit_map.create(dim);
 	img = bit_map.convert_to_image();

@@ -776,10 +776,10 @@ LightmapGI::BakeError LightmapGI::bake(Node *p_from_node, String p_image_data_pa
 			MeshesFound &mf = meshes_found.write[m_i];
 
 			Size2i mesh_lightmap_size = mf.mesh->get_lightmap_size_hint();
-			if (mesh_lightmap_size == Size2i(0, 0)) {
+			if (mesh_lightmap_size == Size2i()) {
 				// TODO we should compute a size if no lightmap hint is set, as we did in 3.x.
 				// For now set to basic size to avoid crash.
-				mesh_lightmap_size = Size2i(64, 64);
+				mesh_lightmap_size = Size2i(64);
 			}
 			Size2i lightmap_size = Size2i(Size2(mesh_lightmap_size) * mf.lightmap_scale * texel_scale);
 			ERR_FAIL_COND_V(lightmap_size.x == 0 || lightmap_size.y == 0, BAKE_ERROR_LIGHTMAP_TOO_SMALL);

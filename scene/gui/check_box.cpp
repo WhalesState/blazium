@@ -34,7 +34,7 @@
 #include "servers/rendering_server.h"
 
 Size2 CheckBox::get_icon_size() const {
-	Size2 tex_size = Size2(0, 0);
+	Size2 tex_size = Size2();
 	if (!theme_cache.checked.is_null()) {
 		tex_size = theme_cache.checked->get_size();
 	}

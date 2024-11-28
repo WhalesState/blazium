@@ -175,8 +175,8 @@ void TextureLayeredEditor::_texture_rect_update_area() {
 	int ofs_x = (size.width - tex_width) / 2;
 	int ofs_y = (size.height - tex_height) / 2;
 
-	texture_rect->set_position(Vector2(ofs_x, ofs_y));
-	texture_rect->set_size(Vector2(tex_width, tex_height));
+	texture_rect->set_position(Point2(ofs_x, ofs_y));
+	texture_rect->set_size(Size2(tex_width, tex_height));
 }
 
 void TextureLayeredEditor::edit(Ref<TextureLayered> p_texture) {

@@ -1671,7 +1671,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 
 			Ref<ImageTexture> port_icon = p_theme->get_icon(SNAME("GuiGraphNodePort"), EditorStringName(EditorIcons));
 			// The true size is 24x24 This is necessary for sharp port icons at high zoom levels in GraphEdit (up to ~200%).
-			port_icon->set_size_override(Size2(12, 12));
+			port_icon->set_size_override(Size2(12));
 			p_theme->set_icon("port", "GraphNode", port_icon);
 
 			// GraphNode's title Label.

@@ -793,7 +793,7 @@ void ProjectDialog::show_dialog(bool p_reset_name) {
 
 	_validate_path();
 
-	popup_centered(Size2(500, 0) * EDSCALE);
+	popup_centered(Size2(500 * EDSCALE, 0));
 }
 
 void ProjectDialog::_notification(int p_what) {
@@ -897,7 +897,7 @@ ProjectDialog::ProjectDialog() {
 
 	msg = memnew(Label);
 	msg->set_horizontal_alignment(HORIZONTAL_ALIGNMENT_CENTER);
-	msg->set_custom_minimum_size(Size2(200, 0) * EDSCALE);
+	msg->set_custom_minimum_size(Size2(200 * EDSCALE, 0));
 	msg->set_autowrap_mode(TextServer::AUTOWRAP_WORD_SMART);
 	vb->add_child(msg);
 
@@ -972,7 +972,7 @@ ProjectDialog::ProjectDialog() {
 	l = memnew(Label);
 	l->set_text(TTR("The renderer can be changed later, but scenes may need to be adjusted."));
 	// Add some extra spacing to separate it from the list above and the buttons below.
-	l->set_custom_minimum_size(Size2(0, 40) * EDSCALE);
+	l->set_custom_minimum_size(Size2(0, 40 * EDSCALE));
 	l->set_horizontal_alignment(HORIZONTAL_ALIGNMENT_CENTER);
 	l->set_vertical_alignment(VERTICAL_ALIGNMENT_CENTER);
 	l->set_modulate(Color(1, 1, 1, 0.7));

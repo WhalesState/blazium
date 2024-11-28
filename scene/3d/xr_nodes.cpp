@@ -592,11 +592,11 @@ Vector2 XRController3D::get_vector2(const StringName &p_name) const {
 		switch (input.get_type()) {
 			case Variant::BOOL: {
 				bool value = input;
-				return Vector2(value ? 1.0 : 0.0, 0.0);
+				return Vector2(value ? 1 : 0, 0);
 			} break;
 			case Variant::FLOAT: {
 				float value = input;
-				return Vector2(value, 0.0);
+				return Vector2(value, 0);
 			} break;
 			case Variant::VECTOR2: {
 				Vector2 axis = input;

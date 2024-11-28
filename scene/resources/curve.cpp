@@ -270,7 +270,7 @@ int Curve::set_point_offset(int p_index, real_t p_offset) {
 }
 
 Vector2 Curve::get_point_position(int p_index) const {
-	ERR_FAIL_INDEX_V(p_index, _points.size(), Vector2(0, 0));
+	ERR_FAIL_INDEX_V(p_index, _points.size(), Vector2());
 	return _points[p_index].position;
 }
 
@@ -517,7 +517,7 @@ real_t Curve::sample_baked(real_t p_offset) const {
 void Curve::ensure_default_setup(real_t p_min, real_t p_max) {
 	if (_points.size() == 0 && _min_value == 0 && _max_value == 1) {
 		add_point(Vector2(0, 1));
-		add_point(Vector2(1, 1));
+		add_point(Vector2(1));
 		set_min_value(p_min);
 		set_max_value(p_max);
 	}
@@ -977,7 +977,7 @@ Transform2D Curve2D::_sample_posture(Interval p_interval) const {
 	const Vector2 forward = forward_begin.slerp(forward_end, frac).normalized();
 	const Vector2 side = Vector2(-forward.y, forward.x);
 
-	return Transform2D(forward, side, Vector2(0.0, 0.0));
+	return Transform2D(forward, side, Vector2());
 }
 
 Vector2 Curve2D::sample_baked(real_t p_offset, bool p_cubic) const {

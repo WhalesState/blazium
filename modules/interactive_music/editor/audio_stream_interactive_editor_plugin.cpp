@@ -331,7 +331,7 @@ AudioStreamInteractiveTransitionEditor::AudioStreamInteractiveTransitionEditor()
 	tree->set_hide_root(true);
 	tree->add_theme_constant_override("draw_guides", 1);
 	tree->set_select_mode(Tree::SELECT_MULTI);
-	tree->set_custom_minimum_size(Size2(400, 0) * EDSCALE);
+	tree->set_custom_minimum_size(Size2(400 * EDSCALE, 0));
 	split->add_child(tree);
 
 	tree->set_h_size_flags(Control::SIZE_EXPAND_FILL);

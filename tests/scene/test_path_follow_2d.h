@@ -47,11 +47,11 @@ bool is_equal_approx(const Vector2 &p_a, const Vector2 &p_b) {
 TEST_CASE("[SceneTree][PathFollow2D] Sampling with progress ratio") {
 	Ref<Curve2D> curve = memnew(Curve2D);
 	curve->set_bake_interval(1);
-	curve->add_point(Vector2(0, 0));
+	curve->add_point(Vector2());
 	curve->add_point(Vector2(100, 0));
-	curve->add_point(Vector2(100, 100));
+	curve->add_point(Vector2(100));
 	curve->add_point(Vector2(0, 100));
-	curve->add_point(Vector2(0, 0));
+	curve->add_point(Vector2());
 	Path2D *path = memnew(Path2D);
 	path->set_curve(curve);
 	PathFollow2D *path_follow_2d = memnew(PathFollow2D);
@@ -60,7 +60,7 @@ TEST_CASE("[SceneTree][PathFollow2D] Sampling with progress ratio") {
 	SceneTree::get_singleton()->get_root()->add_child(path);
 
 	path_follow_2d->set_progress_ratio(0);
-	CHECK(is_equal_approx(Vector2(0, 0), path_follow_2d->get_transform().get_origin()));
+	CHECK(is_equal_approx(Vector2(), path_follow_2d->get_transform().get_origin()));
 
 	path_follow_2d->set_progress_ratio(0.125);
 	CHECK(is_equal_approx(Vector2(50, 0), path_follow_2d->get_transform().get_origin()));
@@ -84,7 +84,7 @@ TEST_CASE("[SceneTree][PathFollow2D] Sampling with progress ratio") {
 	CHECK(is_equal_approx(Vector2(0, 50), path_follow_2d->get_transform().get_origin()));
 
 	path_follow_2d->set_progress_ratio(1);
-	CHECK(is_equal_approx(Vector2(0, 0), path_follow_2d->get_transform().get_origin()));
+	CHECK(is_equal_approx(Vector2(), path_follow_2d->get_transform().get_origin()));
 
 	memdelete(path);
 }
@@ -92,11 +92,11 @@ TEST_CASE("[SceneTree][PathFollow2D] Sampling with progress ratio") {
 TEST_CASE("[SceneTree][PathFollow2D] Sampling with progress") {
 	Ref<Curve2D> curve = memnew(Curve2D);
 	curve->set_bake_interval(1);
-	curve->add_point(Vector2(0, 0));
+	curve->add_point(Vector2());
 	curve->add_point(Vector2(100, 0));
-	curve->add_point(Vector2(100, 100));
+	curve->add_point(Vector2(100));
 	curve->add_point(Vector2(0, 100));
-	curve->add_point(Vector2(0, 0));
+	curve->add_point(Vector2());
 	Path2D *path = memnew(Path2D);
 	path->set_curve(curve);
 	PathFollow2D *path_follow_2d = memnew(PathFollow2D);
@@ -105,7 +105,7 @@ TEST_CASE("[SceneTree][PathFollow2D] Sampling with progress") {
 	SceneTree::get_singleton()->get_root()->add_child(path);
 
 	path_follow_2d->set_progress(0);
-	CHECK(is_equal_approx(Vector2(0, 0), path_follow_2d->get_transform().get_origin()));
+	CHECK(is_equal_approx(Vector2(), path_follow_2d->get_transform().get_origin()));
 
 	path_follow_2d->set_progress(50);
 	CHECK(is_equal_approx(Vector2(50, 0), path_follow_2d->get_transform().get_origin()));
@@ -117,7 +117,7 @@ TEST_CASE("[SceneTree][PathFollow2D] Sampling with progress") {
 	CHECK(is_equal_approx(Vector2(100, 50), path_follow_2d->get_transform().get_origin()));
 
 	path_follow_2d->set_progress(200);
-	CHECK(is_equal_approx(Vector2(100, 100), path_follow_2d->get_transform().get_origin()));
+	CHECK(is_equal_approx(Vector2(100), path_follow_2d->get_transform().get_origin()));
 
 	path_follow_2d->set_progress(250);
 	CHECK(is_equal_approx(Vector2(50, 100), path_follow_2d->get_transform().get_origin()));
@@ -129,16 +129,16 @@ TEST_CASE("[SceneTree][PathFollow2D] Sampling with progress") {
 	CHECK(is_equal_approx(Vector2(0, 50), path_follow_2d->get_transform().get_origin()));
 
 	path_follow_2d->set_progress(400);
-	CHECK(is_equal_approx(Vector2(0, 0), path_follow_2d->get_transform().get_origin()));
+	CHECK(is_equal_approx(Vector2(), path_follow_2d->get_transform().get_origin()));
 
 	memdelete(path);
 }
 
 TEST_CASE("[SceneTree][PathFollow2D] Removal of a point in curve") {
 	Ref<Curve2D> curve = memnew(Curve2D);
-	curve->add_point(Vector2(0, 0));
+	curve->add_point(Vector2());
 	curve->add_point(Vector2(100, 0));
-	curve->add_point(Vector2(100, 100));
+	curve->add_point(Vector2(100));
 	Path2D *path = memnew(Path2D);
 	path->set_curve(curve);
 	PathFollow2D *path_follow_2d = memnew(PathFollow2D);
@@ -152,7 +152,7 @@ TEST_CASE("[SceneTree][PathFollow2D] Removal of a point in curve") {
 
 	path_follow_2d->set_progress_ratio(0.5);
 	CHECK_MESSAGE(
-			is_equal_approx(Vector2(50, 50), path_follow_2d->get_transform().get_origin()),
+			is_equal_approx(Vector2(50), path_follow_2d->get_transform().get_origin()),
 			"Path follow's position should be updated after removing a point from the curve");
 
 	memdelete(path);
@@ -160,7 +160,7 @@ TEST_CASE("[SceneTree][PathFollow2D] Removal of a point in curve") {
 
 TEST_CASE("[SceneTree][PathFollow2D] Setting h_offset and v_offset") {
 	Ref<Curve2D> curve = memnew(Curve2D);
-	curve->add_point(Vector2(0, 0));
+	curve->add_point(Vector2());
 	curve->add_point(Vector2(100, 0));
 	Path2D *path = memnew(Path2D);
 	path->set_curve(curve);
@@ -182,7 +182,7 @@ TEST_CASE("[SceneTree][PathFollow2D] Setting h_offset and v_offset") {
 
 TEST_CASE("[SceneTree][PathFollow2D] Progress ratio out of range") {
 	Ref<Curve2D> curve = memnew(Curve2D);
-	curve->add_point(Vector2(0, 0));
+	curve->add_point(Vector2());
 	curve->add_point(Vector2(100, 0));
 	Path2D *path = memnew(Path2D);
 	path->set_curve(curve);
@@ -219,7 +219,7 @@ TEST_CASE("[SceneTree][PathFollow2D] Progress ratio out of range") {
 
 TEST_CASE("[SceneTree][PathFollow2D] Progress out of range") {
 	Ref<Curve2D> curve = memnew(Curve2D);
-	curve->add_point(Vector2(0, 0));
+	curve->add_point(Vector2());
 	curve->add_point(Vector2(100, 0));
 	Path2D *path = memnew(Path2D);
 	path->set_curve(curve);

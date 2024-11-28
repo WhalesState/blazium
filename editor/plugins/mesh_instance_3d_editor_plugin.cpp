@@ -239,7 +239,7 @@ void MeshInstance3DEditor::_menu_option(int p_option) {
 		} break;
 
 		case MENU_OPTION_CREATE_OUTLINE_MESH: {
-			outline_dialog->popup_centered(Vector2(200, 90));
+			outline_dialog->popup_centered(Point2(200, 90));
 		} break;
 		case MENU_OPTION_CREATE_DEBUG_TANGENTS: {
 			EditorUndoRedoManager *ur = EditorUndoRedoManager::get_singleton();
@@ -466,8 +466,8 @@ void MeshInstance3DEditor::_debug_uv_draw() {
 	}
 
 	debug_uv->set_clip_contents(true);
-	debug_uv->draw_rect(Rect2(Vector2(), debug_uv->get_size()), get_theme_color(SNAME("dark_color_3"), EditorStringName(Editor)));
-	debug_uv->draw_set_transform(Vector2(), 0, debug_uv->get_size());
+	debug_uv->draw_rect(Rect2(Point2(), debug_uv->get_size()), get_theme_color(SNAME("dark_color_3"), EditorStringName(Editor)));
+	debug_uv->draw_set_transform(Point2(), 0, debug_uv->get_size());
 	// Use a translucent color to allow overlapping triangles to be visible.
 	debug_uv->draw_multiline(uv_lines, get_theme_color(SNAME("mono_color"), EditorStringName(Editor)) * Color(1, 1, 1, 0.5));
 }
@@ -605,7 +605,7 @@ MeshInstance3DEditor::MeshInstance3DEditor() {
 	debug_uv_dialog->set_title(TTR("UV Channel Debug"));
 	add_child(debug_uv_dialog);
 	debug_uv = memnew(Control);
-	debug_uv->set_custom_minimum_size(Size2(600, 600) * EDSCALE);
+	debug_uv->set_custom_minimum_size(Size2(600 * EDSCALE));
 	debug_uv->connect(SceneStringName(draw), callable_mp(this, &MeshInstance3DEditor::_debug_uv_draw));
 	debug_uv_dialog->add_child(debug_uv);
 }

@@ -115,7 +115,7 @@ void ProgressBar::_notification(int p_what) {
 							int p_remaining = round((1.0 - r) * (get_size().width - mp));
 							draw_style_box(theme_cache.fill_style, Rect2(Point2(p_remaining, 0), Size2(p + theme_cache.fill_style->get_minimum_size().width, get_size().height)));
 						} else {
-							draw_style_box(theme_cache.fill_style, Rect2(Point2(0, 0), Size2(p + theme_cache.fill_style->get_minimum_size().width, get_size().height)));
+							draw_style_box(theme_cache.fill_style, Rect2(Point2(), Size2(p + theme_cache.fill_style->get_minimum_size().width, get_size().height)));
 						}
 					}
 				} break;
@@ -126,7 +126,7 @@ void ProgressBar::_notification(int p_what) {
 
 					if (p > 0) {
 						if (mode == FILL_TOP_TO_BOTTOM) {
-							draw_style_box(theme_cache.fill_style, Rect2(Point2(0, 0), Size2(get_size().width, p + theme_cache.fill_style->get_minimum_size().height)));
+							draw_style_box(theme_cache.fill_style, Rect2(Point2(), Size2(get_size().width, p + theme_cache.fill_style->get_minimum_size().height)));
 						} else {
 							int p_remaining = round((1.0 - r) * (get_size().height - mp));
 							draw_style_box(theme_cache.fill_style, Rect2(Point2(0, p_remaining), Size2(get_size().width, p + theme_cache.fill_style->get_minimum_size().height)));

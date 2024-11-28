@@ -80,8 +80,8 @@ void NavigationLink3DGizmoPlugin::redraw(EditorNode3DGizmo *p_gizmo) {
 		// Create a circle
 		const float ra = Math::deg_to_rad((float)(i * 12));
 		const float rb = Math::deg_to_rad((float)((i + 1) * 12));
-		const Point2 a = Vector2(Math::sin(ra), Math::cos(ra)) * search_radius;
-		const Point2 b = Vector2(Math::sin(rb), Math::cos(rb)) * search_radius;
+		const Point2 a = Point2(Math::sin(ra), Math::cos(ra)) * search_radius;
+		const Point2 b = Point2(Math::sin(rb), Math::cos(rb)) * search_radius;
 
 		// Draw axis-aligned circle
 		switch (up_axis) {
@@ -105,8 +105,8 @@ void NavigationLink3DGizmoPlugin::redraw(EditorNode3DGizmo *p_gizmo) {
 		// Create a circle
 		const float ra = Math::deg_to_rad((float)(i * 12));
 		const float rb = Math::deg_to_rad((float)((i + 1) * 12));
-		const Point2 a = Vector2(Math::sin(ra), Math::cos(ra)) * search_radius;
-		const Point2 b = Vector2(Math::sin(rb), Math::cos(rb)) * search_radius;
+		const Point2 a = Point2(Math::sin(ra), Math::cos(ra)) * search_radius;
+		const Point2 b = Point2(Math::sin(rb), Math::cos(rb)) * search_radius;
 
 		// Draw axis-aligned circle
 		switch (up_axis) {

@@ -104,7 +104,7 @@ void StyleBoxPreview::_redraw() {
 
 StyleBoxPreview::StyleBoxPreview() {
 	set_clip_contents(true);
-	set_custom_minimum_size(Size2(0, 150) * EDSCALE);
+	set_custom_minimum_size(Size2(0, 150 * EDSCALE));
 	set_stretch_mode(TextureRect::STRETCH_TILE);
 	set_texture_repeat(CanvasItem::TEXTURE_REPEAT_ENABLED);
 	set_anchors_and_offsets_preset(PRESET_FULL_RECT);

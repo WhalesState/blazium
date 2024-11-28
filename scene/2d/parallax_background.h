@@ -39,7 +39,7 @@ class ParallaxBackground : public CanvasLayer {
 	Point2 offset;
 	real_t scale = 1.0;
 	Point2 base_offset;
-	Point2 base_scale = Vector2(1, 1);
+	Point2 base_scale = Vector2(1);
 	Point2 screen_offset;
 	String group_name;
 	Point2 limit_begin;

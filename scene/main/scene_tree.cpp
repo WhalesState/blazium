@@ -1742,7 +1742,7 @@ SceneTree::SceneTree() {
 	// Create with mainloop.
 
 	root = memnew(Window);
-	root->set_min_size(Size2i(64, 64)); // Define a very small minimum window size to prevent bugs such as GH-37242.
+	root->set_min_size(Size2i(64)); // Define a very small minimum window size to prevent bugs such as GH-37242.
 	root->set_process_mode(Node::PROCESS_MODE_PAUSABLE);
 	root->set_auto_translate_mode(GLOBAL_GET("internationalization/rendering/root_node_auto_translate") ? Node::AUTO_TRANSLATE_MODE_ALWAYS : Node::AUTO_TRANSLATE_MODE_DISABLED);
 	root->set_name("root");

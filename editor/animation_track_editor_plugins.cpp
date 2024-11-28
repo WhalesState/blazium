@@ -172,12 +172,12 @@ void AnimationTrackEditColor::draw_key(int p_index, float p_pixels_sec, int p_x,
 	int font_size = get_theme_font_size(SceneStringName(font_size), SNAME("Label"));
 	int fh = font->get_height(font_size) * 0.8;
 
-	Rect2 rect(Vector2(p_x - fh / 2, int(get_size().height - fh) / 2), Size2(fh, fh));
+	Rect2 rect(Point2(p_x - fh / 2, int(get_size().height - fh) / 2), Size2(fh));
 
 	draw_rect_clipped(Rect2(rect.position, rect.size / 2), Color(0.4, 0.4, 0.4));
 	draw_rect_clipped(Rect2(rect.position + rect.size / 2, rect.size / 2), Color(0.4, 0.4, 0.4));
-	draw_rect_clipped(Rect2(rect.position + Vector2(rect.size.x / 2, 0), rect.size / 2), Color(0.6, 0.6, 0.6));
-	draw_rect_clipped(Rect2(rect.position + Vector2(0, rect.size.y / 2), rect.size / 2), Color(0.6, 0.6, 0.6));
+	draw_rect_clipped(Rect2(rect.position + Point2(rect.size.x / 2, 0), rect.size / 2), Color(0.6, 0.6, 0.6));
+	draw_rect_clipped(Rect2(rect.position + Point2(0, rect.size.y / 2), rect.size / 2), Color(0.6, 0.6, 0.6));
 	draw_rect_clipped(rect, color);
 
 	if (p_selected) {
@@ -337,7 +337,7 @@ void AnimationTrackEditAudio::draw_key(int p_index, float p_pixels_sec, int p_x,
 		Ref<Font> font = get_theme_font(SceneStringName(font), SNAME("Label"));
 		int font_size = get_theme_font_size(SceneStringName(font_size), SNAME("Label"));
 		int fh = font->get_height(font_size) * 0.8;
-		Rect2 rect(Vector2(p_x, int(get_size().height - fh) / 2), Size2(fh, fh));
+		Rect2 rect(Point2(p_x, int(get_size().height - fh) / 2), Size2(fh));
 
 		Color color = get_theme_color(SceneStringName(font_color), SNAME("Label"));
 		draw_rect_clipped(rect, color);
@@ -708,7 +708,7 @@ void AnimationTrackEditSubAnim::draw_key(int p_index, float p_pixels_sec, int p_
 		Ref<Font> font = get_theme_font(SceneStringName(font), SNAME("Label"));
 		int font_size = get_theme_font_size(SceneStringName(font_size), SNAME("Label"));
 		int fh = font->get_height(font_size) * 0.8;
-		Rect2 rect(Vector2(p_x, int(get_size().height - fh) / 2), Size2(fh, fh));
+		Rect2 rect(Vector2(p_x, int(get_size().height - fh) / 2), Size2(fh));
 
 		Color color = get_theme_color(SceneStringName(font_color), SNAME("Label"));
 		draw_rect_clipped(rect, color);
@@ -748,7 +748,7 @@ void AnimationTrackEditVolumeDB::draw_fg(int p_clip_left, int p_clip_right) {
 	int y_from = (get_size().height - tex_h) / 2;
 	int db0 = y_from + (24 / 80.0) * tex_h;
 
-	draw_line(Vector2(p_clip_left, db0), Vector2(p_clip_right, db0), Color(1, 1, 1, 0.3));
+	draw_line(Point2(p_clip_left, db0), Point2(p_clip_right, db0), Color(1, 1, 1, 0.3));
 }
 
 void AnimationTrackEditVolumeDB::draw_key_link(int p_index, float p_pixels_sec, int p_x, int p_next_x, int p_clip_left, int p_clip_right) {
@@ -1313,7 +1313,7 @@ void AnimationTrackEditTypeAnimation::draw_key(int p_index, float p_pixels_sec, 
 		Ref<Font> font = get_theme_font(SceneStringName(font), SNAME("Label"));
 		int font_size = get_theme_font_size(SceneStringName(font_size), SNAME("Label"));
 		int fh = font->get_height(font_size) * 0.8;
-		Rect2 rect(Vector2(p_x, int(get_size().height - fh) / 2), Size2(fh, fh));
+		Rect2 rect(Point2(p_x, int(get_size().height - fh) / 2), Size2(fh));
 
 		Color color = get_theme_color(SceneStringName(font_color), SNAME("Label"));
 		draw_rect_clipped(rect, color);

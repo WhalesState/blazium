@@ -1002,7 +1002,7 @@ void TileSetAtlasSourceEditor::_update_atlas_view() {
 			button->add_theme_style_override("focus", memnew(StyleBoxEmpty));
 			button->add_theme_style_override(SceneStringName(pressed), memnew(StyleBoxEmpty));
 			button->connect(SceneStringName(pressed), callable_mp(tile_set_atlas_source, &TileSetAtlasSource::create_alternative_tile).bind(tile_id, TileSetSource::INVALID_TILE_ALTERNATIVE));
-			button->set_rect(Rect2(Vector2(pos.x, pos.y + (y_increment - texture_region_base_size.y) / 2.0), Vector2(texture_region_base_size_min, texture_region_base_size_min)));
+			button->set_rect(Rect2(Point2(pos.x, pos.y + (y_increment - texture_region_base_size.y) / 2.0), Size2(texture_region_base_size_min)));
 			button->set_expand_icon(true);
 			alternative_tiles_control->add_child(button);
 
@@ -1094,10 +1094,10 @@ void TileSetAtlasSourceEditor::_tile_atlas_control_gui_input(const Ref<InputEven
 
 			if (drag_type == DRAG_TYPE_CREATE_BIG_TILE) {
 				// Create big tile.
-				new_base_tiles_coords = new_base_tiles_coords.maxi(0).min(grid_size - Vector2i(1, 1));
+				new_base_tiles_coords = new_base_tiles_coords.maxi(0).min(grid_size - Vector2i(1));
 
 				Rect2i new_rect = Rect2i(start_base_tiles_coords, new_base_tiles_coords - start_base_tiles_coords).abs();
-				new_rect.size += Vector2i(1, 1);
+				new_rect.size += Vector2i(1);
 				// Check if the new tile can fit in the new rect.
 				if (tile_set_atlas_source->has_room_for_tile(new_rect.position, new_rect.size, tile_set_atlas_source->get_tile_animation_columns(drag_current_tile), tile_set_atlas_source->get_tile_animation_separation(drag_current_tile), tile_set_atlas_source->get_tile_animation_frames_count(drag_current_tile), drag_current_tile)) {
 					// Move and resize the tile.
@@ -1106,8 +1106,8 @@ void TileSetAtlasSourceEditor::_tile_atlas_control_gui_input(const Ref<InputEven
 				}
 			} else if (drag_type == DRAG_TYPE_CREATE_TILES) {
 				// Create tiles.
-				last_base_tiles_coords = last_base_tiles_coords.maxi(0).min(grid_size - Vector2i(1, 1));
-				new_base_tiles_coords = new_base_tiles_coords.maxi(0).min(grid_size - Vector2i(1, 1));
+				last_base_tiles_coords = last_base_tiles_coords.maxi(0).min(grid_size - Vector2i(1));
+				new_base_tiles_coords = new_base_tiles_coords.maxi(0).min(grid_size - Vector2i(1));
 
 				Vector<Point2i> line = Geometry2D::bresenham_line(last_base_tiles_coords, new_base_tiles_coords);
 				for (int i = 0; i < line.size(); i++) {
@@ -1121,8 +1121,8 @@ void TileSetAtlasSourceEditor::_tile_atlas_control_gui_input(const Ref<InputEven
 
 			} else if (drag_type == DRAG_TYPE_REMOVE_TILES) {
 				// Remove tiles.
-				last_base_tiles_coords = last_base_tiles_coords.maxi(0).min(grid_size - Vector2i(1, 1));
-				new_base_tiles_coords = new_base_tiles_coords.maxi(0).min(grid_size - Vector2i(1, 1));
+				last_base_tiles_coords = last_base_tiles_coords.maxi(0).min(grid_size - Vector2i(1));
+				new_base_tiles_coords = new_base_tiles_coords.maxi(0).min(grid_size - Vector2i(1));
 
 				Vector<Point2i> line = Geometry2D::bresenham_line(last_base_tiles_coords, new_base_tiles_coords);
 				for (int i = 0; i < line.size(); i++) {
@@ -1135,7 +1135,7 @@ void TileSetAtlasSourceEditor::_tile_atlas_control_gui_input(const Ref<InputEven
 				drag_last_mouse_pos = tile_atlas_control->get_local_mouse_position();
 			} else if (drag_type == DRAG_TYPE_MOVE_TILE) {
 				// Move tile.
-				Vector2 mouse_offset = (Vector2(tile_set_atlas_source->get_tile_size_in_atlas(drag_current_tile)) / 2.0 - Vector2(0.5, 0.5)) * tile_set->get_tile_size();
+				Vector2 mouse_offset = (Vector2(tile_set_atlas_source->get_tile_size_in_atlas(drag_current_tile)) / 2.0 - Vector2(0.5)) * tile_set->get_tile_size();
 				Vector2i coords = tile_atlas_view->get_atlas_tile_coords_at_pos(tile_atlas_control->get_local_mouse_position() - mouse_offset);
 				if (drag_current_tile != coords && tile_set_atlas_source->has_room_for_tile(coords, tile_set_atlas_source->get_tile_size_in_atlas(drag_current_tile), tile_set_atlas_source->get_tile_animation_columns(drag_current_tile), tile_set_atlas_source->get_tile_animation_separation(drag_current_tile), tile_set_atlas_source->get_tile_animation_frames_count(drag_current_tile), drag_current_tile)) {
 					tile_set_atlas_source->move_tile_in_atlas(drag_current_tile, coords);
@@ -1282,7 +1282,7 @@ void TileSetAtlasSourceEditor::_tile_atlas_control_gui_input(const Ref<InputEven
 								Rect2 region = tile_set_atlas_source->get_tile_texture_region(selected.tile);
 								Size2 zoomed_size = resize_handle->get_size() / tile_atlas_view->get_zoom();
 								Rect2 rect = region.grow_individual(zoomed_size.x, zoomed_size.y, 0, 0);
-								const Vector2i coords[] = { Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1) };
+								const Vector2i coords[] = { Vector2i(), Vector2i(1, 0), Vector2i(1), Vector2i(0, 1) };
 								const Vector2i directions[] = { Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0) };
 								bool can_grow[4];
 								for (int i = 0; i < 4; i++) {
@@ -1409,7 +1409,7 @@ void TileSetAtlasSourceEditor::_end_dragging() {
 			Vector2i start_base_tiles_coords = tile_atlas_view->get_atlas_tile_coords_at_pos(drag_start_mouse_pos, true);
 			Vector2i new_base_tiles_coords = tile_atlas_view->get_atlas_tile_coords_at_pos(tile_atlas_control->get_local_mouse_position(), true);
 			Rect2i area = Rect2i(start_base_tiles_coords, new_base_tiles_coords - start_base_tiles_coords).abs();
-			area.set_end((area.get_end() + Vector2i(1, 1)).min(tile_set_atlas_source->get_atlas_grid_size()));
+			area.set_end((area.get_end() + Vector2i(1)).min(tile_set_atlas_source->get_atlas_grid_size()));
 			undo_redo->create_action(TTR("Create tiles"));
 			for (int x = area.get_position().x; x < area.get_end().x; x++) {
 				for (int y = area.get_position().y; y < area.get_end().y; y++) {
@@ -1426,7 +1426,7 @@ void TileSetAtlasSourceEditor::_end_dragging() {
 			Vector2i start_base_tiles_coords = tile_atlas_view->get_atlas_tile_coords_at_pos(drag_start_mouse_pos, true);
 			Vector2i new_base_tiles_coords = tile_atlas_view->get_atlas_tile_coords_at_pos(tile_atlas_control->get_local_mouse_position(), true);
 			Rect2i area = Rect2i(start_base_tiles_coords, new_base_tiles_coords - start_base_tiles_coords).abs();
-			area.set_end((area.get_end() + Vector2i(1, 1)).min(tile_set_atlas_source->get_atlas_grid_size()));
+			area.set_end((area.get_end() + Vector2i(1)).min(tile_set_atlas_source->get_atlas_grid_size()));
 			List<PropertyInfo> list;
 			tile_set_atlas_source->get_property_list(&list);
 			HashMap<Vector2i, List<const PropertyInfo *>> per_tile = _group_properties_per_tiles(list, tile_set_atlas_source);
@@ -1480,7 +1480,7 @@ void TileSetAtlasSourceEditor::_end_dragging() {
 			ERR_FAIL_COND(new_base_tiles_coords == TileSetSource::INVALID_ATLAS_COORDS);
 
 			Rect2i region = Rect2i(start_base_tiles_coords, new_base_tiles_coords - start_base_tiles_coords).abs();
-			region.size += Vector2i(1, 1);
+			region.size += Vector2i(1);
 
 			undo_redo->create_action(TTR("Select tiles"));
 			undo_redo->add_undo_method(this, "_set_selection_from_array", _get_selection_as_array());
@@ -1754,7 +1754,7 @@ void TileSetAtlasSourceEditor::_tile_atlas_control_draw() {
 				Size2 zoomed_size = resize_handle->get_size() / tile_atlas_view->get_zoom();
 				Rect2 region = tile_set_atlas_source->get_tile_texture_region(selected.tile);
 				Rect2 rect = region.grow_individual(zoomed_size.x, zoomed_size.y, 0, 0);
-				const Vector2i coords[] = { Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1) };
+				const Vector2i coords[] = { Vector2i(), Vector2i(1, 0), Vector2i(1), Vector2i(0, 1) };
 				const Vector2i directions[] = { Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0) };
 				bool can_grow[4];
 				for (int i = 0; i < 4; i++) {
@@ -1791,7 +1791,7 @@ void TileSetAtlasSourceEditor::_tile_atlas_control_draw() {
 		Vector2i start_base_tiles_coords = tile_atlas_view->get_atlas_tile_coords_at_pos(drag_start_mouse_pos, true);
 		Vector2i new_base_tiles_coords = tile_atlas_view->get_atlas_tile_coords_at_pos(tile_atlas_control->get_local_mouse_position(), true);
 		Rect2i area = Rect2i(start_base_tiles_coords, new_base_tiles_coords - start_base_tiles_coords).abs();
-		area.set_end((area.get_end() + Vector2i(1, 1)).min(tile_set_atlas_source->get_atlas_grid_size()));
+		area.set_end((area.get_end() + Vector2i(1)).min(tile_set_atlas_source->get_atlas_grid_size()));
 
 		Color color = Color(0.0, 0.0, 0.0);
 		if (drag_type == DRAG_TYPE_RECT_SELECT) {
@@ -1821,7 +1821,7 @@ void TileSetAtlasSourceEditor::_tile_atlas_control_draw() {
 		Vector2i start_base_tiles_coords = tile_atlas_view->get_atlas_tile_coords_at_pos(drag_start_mouse_pos, true);
 		Vector2i new_base_tiles_coords = tile_atlas_view->get_atlas_tile_coords_at_pos(tile_atlas_control->get_local_mouse_position(), true);
 		Rect2i area = Rect2i(start_base_tiles_coords, new_base_tiles_coords - start_base_tiles_coords).abs();
-		area.set_end((area.get_end() + Vector2i(1, 1)).min(tile_set_atlas_source->get_atlas_grid_size()));
+		area.set_end((area.get_end() + Vector2i(1)).min(tile_set_atlas_source->get_atlas_grid_size()));
 		for (int x = area.get_position().x; x < area.get_end().x; x++) {
 			for (int y = area.get_position().y; y < area.get_end().y; y++) {
 				Vector2i coords = Vector2i(x, y);
@@ -1839,12 +1839,12 @@ void TileSetAtlasSourceEditor::_tile_atlas_control_draw() {
 		Vector2i start_base_tiles_coords = tile_atlas_view->get_atlas_tile_coords_at_pos(drag_start_mouse_pos, true);
 		Vector2i new_base_tiles_coords = tile_atlas_view->get_atlas_tile_coords_at_pos(tile_atlas_control->get_local_mouse_position(), true);
 		Rect2i area = Rect2i(start_base_tiles_coords, new_base_tiles_coords - start_base_tiles_coords).abs();
-		area.set_end((area.get_end() + Vector2i(1, 1)).min(tile_set_atlas_source->get_atlas_grid_size()));
+		area.set_end((area.get_end() + Vector2i(1)).min(tile_set_atlas_source->get_atlas_grid_size()));
 		Vector2i margins = tile_set_atlas_source->get_margins();
 		Vector2i separation = tile_set_atlas_source->get_separation();
 		Vector2i tile_size = tile_set_atlas_source->get_texture_region_size();
 		Vector2i origin = margins + (area.position * (tile_size + separation));
-		Vector2i size = area.size * tile_size + (area.size - Vector2i(1, 1)).maxi(0) * separation;
+		Vector2i size = area.size * tile_size + (area.size - Vector2i(1)).maxi(0) * separation;
 		TilesEditorUtils::draw_selection_rect(tile_atlas_control, Rect2i(origin, size));
 	} else {
 		Vector2i grid_size = tile_set_atlas_source->get_atlas_grid_size();
@@ -2508,7 +2508,7 @@ TileSetAtlasSourceEditor::TileSetAtlasSourceEditor() {
 
 	// Middle panel.
 	VBoxContainer *middle_vbox_container = memnew(VBoxContainer);
-	middle_vbox_container->set_custom_minimum_size(Size2(200, 0) * EDSCALE);
+	middle_vbox_container->set_custom_minimum_size(Size2(200 * EDSCALE, 0));
 	add_child(middle_vbox_container);
 
 	// -- Toolbox --
@@ -2671,7 +2671,7 @@ TileSetAtlasSourceEditor::TileSetAtlasSourceEditor() {
 	tile_atlas_view = memnew(TileAtlasView);
 	tile_atlas_view->set_h_size_flags(SIZE_EXPAND_FILL);
 	tile_atlas_view->set_v_size_flags(SIZE_EXPAND_FILL);
-	tile_atlas_view->set_custom_minimum_size(Size2(200, 0) * EDSCALE);
+	tile_atlas_view->set_custom_minimum_size(Size2(200 * EDSCALE, 0));
 	tile_atlas_view->connect("transform_changed", callable_mp(TilesEditorUtils::get_singleton(), &TilesEditorUtils::set_atlas_view_transform));
 	tile_atlas_view->connect("transform_changed", callable_mp(this, &TileSetAtlasSourceEditor::_tile_atlas_view_transform_changed).unbind(2));
 	right_panel->add_child(tile_atlas_view);
@@ -2972,7 +2972,7 @@ Control::CursorShape TileSetAtlasSourceEditor::TileAtlasControl::get_cursor_shap
 				Rect2 region = editor->tile_set_atlas_source->get_tile_texture_region(selected.tile);
 				Size2 zoomed_size = editor->resize_handle->get_size() / editor->tile_atlas_view->get_zoom();
 				Rect2 rect = region.grow_individual(zoomed_size.x, zoomed_size.y, 0, 0);
-				const Vector2i coords[] = { Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1) };
+				const Vector2i coords[] = { Vector2i(), Vector2i(1, 0), Vector2i(1), Vector2i(0, 1) };
 				const Vector2i directions[] = { Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0) };
 				bool can_grow[4];
 				for (int i = 0; i < 4; i++) {

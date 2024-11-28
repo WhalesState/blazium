@@ -83,17 +83,17 @@ TEST_CASE("[SceneTree][VisualShader] Testing VisualShaderNodes") {
 
 		Ref<VisualShaderNode> vsn1 = memnew(VisualShaderNodeInput);
 		CHECK(vsn1.is_valid());
-		vs->add_node(VisualShader::TYPE_COLLIDE, vsn1, Vector2(0, 0), 3);
-		CHECK(vs->get_node_position(VisualShader::TYPE_COLLIDE, 3) == Vector2(0, 0));
-		vs->set_node_position(VisualShader::TYPE_COLLIDE, 3, Vector2(1, 1));
-		CHECK(vs->get_node_position(VisualShader::TYPE_COLLIDE, 3) == Vector2(1, 1));
+		vs->add_node(VisualShader::TYPE_COLLIDE, vsn1, Vector2(), 3);
+		CHECK(vs->get_node_position(VisualShader::TYPE_COLLIDE, 3) == Vector2());
+		vs->set_node_position(VisualShader::TYPE_COLLIDE, 3, Vector2(1));
+		CHECK(vs->get_node_position(VisualShader::TYPE_COLLIDE, 3) == Vector2(1));
 
 		Ref<VisualShaderNode> vsn2 = memnew(VisualShaderNodeInput);
 		CHECK(vsn2.is_valid());
 		vs->add_node(VisualShader::TYPE_FOG, vsn2, Vector2(1, 2), 4);
 		CHECK(vs->get_node_position(VisualShader::TYPE_FOG, 4) == Vector2(1, 2));
-		vs->set_node_position(VisualShader::TYPE_FOG, 4, Vector2(2, 2));
-		CHECK(vs->get_node_position(VisualShader::TYPE_FOG, 4) == Vector2(2, 2));
+		vs->set_node_position(VisualShader::TYPE_FOG, 4, Vector2(2));
+		CHECK(vs->get_node_position(VisualShader::TYPE_FOG, 4) == Vector2(2));
 	}
 
 	SUBCASE("Testing VisualShaderNode ID") {

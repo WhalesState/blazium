@@ -433,7 +433,7 @@ void GodotBody2D::integrate_forces(real_t p_step) {
 
 	bool stopped = false;
 
-	gravity = Vector2(0, 0);
+	gravity = Vector2();
 
 	total_linear_damp = 0.0;
 	total_angular_damp = 0.0;

@@ -260,8 +260,8 @@ void CopyEffects::gaussian_blur(GLuint p_source_texture, int p_mipmap_count, con
 		}
 
 		float_size = Size2(base_size);
-		normalized_dest_region.position = Size2(dest_region.position) / float_size;
-		normalized_dest_region.size = Size2(dest_region.size) / float_size;
+		normalized_dest_region.position = Size2(dest_region.position / float_size);
+		normalized_dest_region.size = Size2(dest_region.size / float_size);
 
 		copy.shader.version_set_uniform(CopyShaderGLES3::COPY_SECTION, normalized_dest_region.position.x, normalized_dest_region.position.y, normalized_dest_region.size.x, normalized_dest_region.size.y, copy.shader_version, CopyShaderGLES3::MODE_GAUSSIAN_BLUR);
 		copy.shader.version_set_uniform(CopyShaderGLES3::SOURCE_SECTION, normalized_source_region.position.x, normalized_source_region.position.y, normalized_source_region.size.x, normalized_source_region.size.y, copy.shader_version, CopyShaderGLES3::MODE_GAUSSIAN_BLUR);

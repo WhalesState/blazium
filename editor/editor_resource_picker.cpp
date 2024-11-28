@@ -188,7 +188,7 @@ void EditorResourcePicker::_update_menu() {
 	Rect2 gt = edit_button->get_screen_rect();
 	edit_menu->reset_size();
 	int ms = edit_menu->get_contents_minimum_size().width;
-	Vector2 popup_pos = gt.get_end() - Vector2(ms, 0);
+	Point2 popup_pos = gt.get_end() - Point2(ms, 0);
 	edit_menu->set_position(popup_pos);
 	edit_menu->popup();
 }
@@ -401,7 +401,7 @@ void EditorResourcePicker::_edit_menu_cbk(int p_which) {
 			_gather_resources_to_duplicate(edited_resource, root);
 
 			duplicate_resources_dialog->reset_size();
-			duplicate_resources_dialog->popup_centered(Vector2(500, 400) * EDSCALE);
+			duplicate_resources_dialog->popup_centered(Point2(500, 400) * EDSCALE);
 		} break;
 
 		case OBJ_MENU_SAVE: {

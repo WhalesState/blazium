@@ -868,7 +868,7 @@ void AnimationNodeStateMachineEditor::_connection_draw(const Vector2 &p_from, co
 
 	state_machine_draw->draw_set_transform_matrix(xf);
 	if (!p_is_across_group) {
-		state_machine_draw->draw_texture(icon, Vector2(), icon_color);
+		state_machine_draw->draw_texture(icon, Point2(), icon_color);
 	}
 	state_machine_draw->draw_set_transform_matrix(Transform2D());
 }
@@ -1137,7 +1137,7 @@ void AnimationNodeStateMachineEditor::_state_machine_draw() {
 		nr.name.position = offset + Vector2(0, (h - theme_cache.node_title_font->get_height(theme_cache.node_title_font_size)) / 2).floor();
 		nr.name.size = Vector2(name_string_size, theme_cache.node_title_font->get_height(theme_cache.node_title_font_size));
 
-		state_machine_draw->draw_string(theme_cache.node_title_font, nr.name.position + Vector2(0, theme_cache.node_title_font->get_ascent(theme_cache.node_title_font_size)), name, HORIZONTAL_ALIGNMENT_LEFT, -1, theme_cache.node_title_font_size, theme_cache.node_title_font_color);
+		state_machine_draw->draw_string(theme_cache.node_title_font, nr.name.position + Point2(0, theme_cache.node_title_font->get_ascent(theme_cache.node_title_font_size)), name, HORIZONTAL_ALIGNMENT_LEFT, -1, theme_cache.node_title_font_size, theme_cache.node_title_font_color);
 		offset.x += name_string_size + sep;
 
 		nr.can_edit = needs_editor;

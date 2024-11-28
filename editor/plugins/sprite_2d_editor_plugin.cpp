@@ -172,7 +172,7 @@ void Sprite2DEditor::_update_mesh_data() {
 	}
 
 	Rect2 rect = node->is_region_enabled() ? node->get_region_rect() : Rect2(Point2(), image->get_size());
-	rect.size /= Vector2(node->get_hframes(), node->get_vframes());
+	rect.size /= Size2(node->get_hframes(), node->get_vframes());
 	rect.position += node->get_frame_coords() * rect.size;
 
 	Ref<BitMap> bm;
@@ -456,7 +456,7 @@ void Sprite2DEditor::_debug_uv_input(const Ref<InputEvent> &p_input) {
 }
 
 void Sprite2DEditor::_debug_uv_draw() {
-	debug_uv->draw_set_transform(-draw_offset * draw_zoom, 0, Vector2(draw_zoom, draw_zoom));
+	debug_uv->draw_set_transform(-draw_offset * draw_zoom, 0, Size2(draw_zoom));
 
 	Ref<Texture2D> tex = node->get_texture();
 	ERR_FAIL_COND(!tex.is_valid());
@@ -481,7 +481,7 @@ void Sprite2DEditor::_debug_uv_draw() {
 void Sprite2DEditor::_center_view() {
 	Ref<Texture2D> tex = node->get_texture();
 	ERR_FAIL_COND(!tex.is_valid());
-	Vector2 zoom_factor = (debug_uv->get_size() - Vector2(1, 1) * 50 * EDSCALE) / tex->get_size();
+	Vector2 zoom_factor = (debug_uv->get_size() - Vector2(50 * EDSCALE)) / tex->get_size();
 	zoom_widget->set_zoom(MIN(zoom_factor.x, zoom_factor.y));
 	// Recalculate scroll limits.
 	_update_zoom_and_pan(false);
@@ -522,7 +522,7 @@ void Sprite2DEditor::_update_zoom_and_pan(bool p_zoom_at_center) {
 	Point2 min_corner;
 	Point2 max_corner = tex->get_size();
 	Size2 page_size = debug_uv->get_size() / draw_zoom;
-	Vector2 margin = Vector2(50, 50) * EDSCALE / draw_zoom;
+	Vector2 margin = Vector2(50 * EDSCALE) / draw_zoom;
 	min_corner -= page_size - margin;
 	max_corner += page_size - margin;
 

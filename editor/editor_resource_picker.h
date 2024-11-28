@@ -64,7 +64,7 @@ class EditorResourcePicker : public HBoxContainer {
 	ConfirmationDialog *duplicate_resources_dialog = nullptr;
 	Tree *duplicate_resources_tree = nullptr;
 
-	Size2i assign_button_min_size = Size2i(1, 1);
+	Size2i assign_button_min_size = Size2i(1);
 
 	enum MenuOption {
 		OBJ_MENU_LOAD,

@@ -131,7 +131,7 @@ void RenderSceneDataRD::update_ubo(RID p_uniform_buffer, RS::ViewportDebugDraw p
 	ubo.viewport_size[0] = p_screen_size.x;
 	ubo.viewport_size[1] = p_screen_size.y;
 
-	Size2 screen_pixel_size = Vector2(1.0, 1.0) / Size2(p_screen_size);
+	Size2 screen_pixel_size = Vector2(1) / Size2(p_screen_size);
 	ubo.screen_pixel_size[0] = screen_pixel_size.x;
 	ubo.screen_pixel_size[1] = screen_pixel_size.y;
 

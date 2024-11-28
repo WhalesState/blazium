@@ -66,7 +66,7 @@ public:
 private:
 	Rect2i region;
 	Vector2 offset;
-	Size2 cell_size = Size2(1, 1);
+	Size2 cell_size = Size2(1);
 	bool dirty = false;
 	CellShape cell_shape = CELL_SHAPE_SQUARE;
 

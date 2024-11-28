@@ -106,7 +106,7 @@ void CurveEdit::set_snap_count(int p_snap_count) {
 }
 
 Size2 CurveEdit::get_minimum_size() const {
-	return Vector2(64, MAX(135, get_size().x * ASPECT_RATIO)) * EDSCALE;
+	return Size2(64, MAX(135, get_size().x * ASPECT_RATIO)) * EDSCALE;
 }
 
 void CurveEdit::_notification(int p_what) {
@@ -417,7 +417,7 @@ int CurveEdit::get_point_at(Vector2 p_pos) const {
 	}
 
 	// Use a square-shaped hover region. If hovering multiple points, pick the closer one.
-	const Rect2 hover_rect = Rect2(p_pos, Vector2(0, 0)).grow(hover_radius);
+	const Rect2 hover_rect = Rect2(p_pos, Size2()).grow(hover_radius);
 	int closest_idx = -1;
 	float closest_dist_squared = hover_radius * hover_radius * 2;
 
@@ -437,7 +437,7 @@ CurveEdit::TangentIndex CurveEdit::get_tangent_at(Vector2 p_pos) const {
 		return TANGENT_NONE;
 	}
 
-	const Rect2 hover_rect = Rect2(p_pos, Vector2(0, 0)).grow(tangent_hover_radius);
+	const Rect2 hover_rect = Rect2(p_pos, Size2()).grow(tangent_hover_radius);
 
 	if (selected_index != 0) {
 		Vector2 control_pos = get_tangent_view_pos(selected_index, TANGENT_LEFT);
@@ -667,7 +667,7 @@ void CurveEdit::update_view_transform() {
 
 	Transform2D world_trans;
 	world_trans.translate_local(-world_rect.position - Vector2(0, world_rect.size.y));
-	world_trans.scale(Vector2(scale.x, -scale.y));
+	world_trans.scale(Size2(scale.x, -scale.y));
 
 	Transform2D view_trans;
 	view_trans.translate_local(view_margin);
@@ -722,7 +722,7 @@ static void plot_curve_accurate(const Curve &curve, float step, Vector2 scaling,
 		// Not enough points to make a curve, so it's just a straight line.
 		// The added tiny vectors make the drawn line stay exactly within the bounds in practice.
 		float y = curve.sample(0);
-		plot_func(Vector2(0, y) * scaling + Vector2(0.5, 0), Vector2(1.f, y) * scaling - Vector2(1.5, 0), true);
+		plot_func(Vector2(0, y) * scaling + Vector2(0.5, 0), Vector2(1, y) * scaling - Vector2(1.5, 0), true);
 
 	} else {
 		Vector2 first_point = curve.get_point_position(0);
@@ -796,19 +796,19 @@ void CurveEdit::_redraw() {
 	const Vector2i grid_steps = Vector2i(4, 2);
 	const Vector2 step_size = Vector2(1, curve->get_range()) / grid_steps;
 
-	draw_line(Vector2(min_edge.x, curve->get_min_value()), Vector2(max_edge.x, curve->get_min_value()), grid_color_primary);
-	draw_line(Vector2(max_edge.x, curve->get_max_value()), Vector2(min_edge.x, curve->get_max_value()), grid_color_primary);
-	draw_line(Vector2(0, min_edge.y), Vector2(0, max_edge.y), grid_color_primary);
-	draw_line(Vector2(1, max_edge.y), Vector2(1, min_edge.y), grid_color_primary);
+	draw_line(Point2(min_edge.x, curve->get_min_value()), Point2(max_edge.x, curve->get_min_value()), grid_color_primary);
+	draw_line(Point2(max_edge.x, curve->get_max_value()), Point2(min_edge.x, curve->get_max_value()), grid_color_primary);
+	draw_line(Point2(0, min_edge.y), Point2(0, max_edge.y), grid_color_primary);
+	draw_line(Point2(1, max_edge.y), Point2(1, min_edge.y), grid_color_primary);
 
 	for (int i = 1; i < grid_steps.x; i++) {
 		real_t x = i * step_size.x;
-		draw_line(Vector2(x, min_edge.y), Vector2(x, max_edge.y), grid_color);
+		draw_line(Point2(x, min_edge.y), Point2(x, max_edge.y), grid_color);
 	}
 
 	for (int i = 1; i < grid_steps.y; i++) {
 		real_t y = curve->get_min_value() + i * step_size.y;
-		draw_line(Vector2(min_edge.x, y), Vector2(max_edge.x, y), grid_color);
+		draw_line(Point2(min_edge.x, y), Point2(max_edge.x, y), grid_color);
 	}
 
 	// Draw number markings.
@@ -821,7 +821,7 @@ void CurveEdit::_redraw() {
 
 	for (int i = 0; i <= grid_steps.x; ++i) {
 		real_t x = i * step_size.x;
-		draw_string(font, get_view_pos(Vector2(x - step_size.x / 2, curve->get_min_value())) + Vector2(0, font_height - Math::round(2 * EDSCALE)), String::num(x, 2), HORIZONTAL_ALIGNMENT_CENTER, get_view_pos(Vector2(step_size.x, 0)).x, font_size, text_color);
+		draw_string(font, get_view_pos(Point2(x - step_size.x / 2, curve->get_min_value())) + Point2(0, font_height - Math::round(2 * EDSCALE)), String::num(x, 2), HORIZONTAL_ALIGNMENT_CENTER, get_view_pos(Vector2(step_size.x, 0)).x, font_size, text_color);
 	}
 
 	for (int i = 0; i <= grid_steps.y; ++i) {
@@ -833,7 +833,7 @@ void CurveEdit::_redraw() {
 
 	// An unusual transform so we can offset the curve before scaling it up, allowing the curve to be antialiased.
 	// The scaling up ensures that the curve rendering doesn't break when we use a quad line to draw it.
-	draw_set_transform_matrix(Transform2D(0, get_view_pos(Vector2(0, 0))));
+	draw_set_transform_matrix(Transform2D(0, get_view_pos(Vector2())));
 
 	const Color line_color = get_theme_color(SceneStringName(font_color), EditorStringName(Editor));
 	const Color edge_line_color = get_theme_color(SceneStringName(font_color), EditorStringName(Editor)) * Color(1, 1, 1, 0.75);
@@ -851,10 +851,10 @@ void CurveEdit::_redraw() {
 	for (int i = 0; i < curve->get_point_count(); ++i) {
 		Vector2 pos = get_view_pos(curve->get_point_position(i));
 		if (selected_index != i) {
-			draw_rect(Rect2(pos, Vector2(0, 0)).grow(point_radius), point_color);
+			draw_rect(Rect2(pos, Size2()).grow(point_radius), point_color);
 		}
 		if (hovered_index == i && hovered_tangent_index == TANGENT_NONE) {
-			draw_rect(Rect2(pos, Vector2(0, 0)).grow(hover_radius - Math::round(3 * EDSCALE)), line_color, false, Math::round(1 * EDSCALE));
+			draw_rect(Rect2(pos, Size2()).grow(hover_radius - Math::round(3 * EDSCALE)), line_color, false, Math::round(1 * EDSCALE));
 		}
 	}
 
@@ -870,7 +870,7 @@ void CurveEdit::_redraw() {
 			const Color tangent_color = get_theme_color(SceneStringName(font_color), EditorStringName(Editor)).darkened(0.25);
 
 			if (selected_index != 0) {
-				Vector2 control_pos = get_tangent_view_pos(selected_index, TANGENT_LEFT);
+				Point2 control_pos = get_tangent_view_pos(selected_index, TANGENT_LEFT);
 				Color left_tangent_color = (selected_tangent_index == TANGENT_LEFT) ? selected_tangent_color : tangent_color;
 
 				draw_line(get_view_pos(point_pos), control_pos, left_tangent_color, 0.5 * EDSCALE, true);
@@ -878,16 +878,16 @@ void CurveEdit::_redraw() {
 				if (curve->get_point_left_mode(selected_index) == Curve::TANGENT_FREE) {
 					draw_circle(control_pos, tangent_radius, left_tangent_color);
 				} else {
-					draw_rect(Rect2(control_pos, Vector2(0, 0)).grow(tangent_radius), left_tangent_color);
+					draw_rect(Rect2(control_pos, Size2()).grow(tangent_radius), left_tangent_color);
 				}
 				// Hover indicator.
 				if (hovered_tangent_index == TANGENT_LEFT || (hovered_tangent_index == TANGENT_RIGHT && !shift_pressed && curve->get_point_left_mode(selected_index) != Curve::TANGENT_LINEAR)) {
-					draw_rect(Rect2(control_pos, Vector2(0, 0)).grow(tangent_hover_radius - Math::round(3 * EDSCALE)), tangent_color, false, Math::round(1 * EDSCALE));
+					draw_rect(Rect2(control_pos, Size2()).grow(tangent_hover_radius - Math::round(3 * EDSCALE)), tangent_color, false, Math::round(1 * EDSCALE));
 				}
 			}
 
 			if (selected_index != curve->get_point_count() - 1) {
-				Vector2 control_pos = get_tangent_view_pos(selected_index, TANGENT_RIGHT);
+				Point2 control_pos = get_tangent_view_pos(selected_index, TANGENT_RIGHT);
 				Color right_tangent_color = (selected_tangent_index == TANGENT_RIGHT) ? selected_tangent_color : tangent_color;
 
 				draw_line(get_view_pos(point_pos), control_pos, right_tangent_color, 0.5 * EDSCALE, true);
@@ -895,16 +895,16 @@ void CurveEdit::_redraw() {
 				if (curve->get_point_right_mode(selected_index) == Curve::TANGENT_FREE) {
 					draw_circle(control_pos, tangent_radius, right_tangent_color);
 				} else {
-					draw_rect(Rect2(control_pos, Vector2(0, 0)).grow(tangent_radius), right_tangent_color);
+					draw_rect(Rect2(control_pos, Size2()).grow(tangent_radius), right_tangent_color);
 				}
 				// Hover indicator.
 				if (hovered_tangent_index == TANGENT_RIGHT || (hovered_tangent_index == TANGENT_LEFT && !shift_pressed && curve->get_point_right_mode(selected_index) != Curve::TANGENT_LINEAR)) {
-					draw_rect(Rect2(control_pos, Vector2(0, 0)).grow(tangent_hover_radius - Math::round(3 * EDSCALE)), tangent_color, false, Math::round(1 * EDSCALE));
+					draw_rect(Rect2(control_pos, Size2()).grow(tangent_hover_radius - Math::round(3 * EDSCALE)), tangent_color, false, Math::round(1 * EDSCALE));
 				}
 			}
 		}
 
-		draw_rect(Rect2(get_view_pos(point_pos), Vector2(0, 0)).grow(point_radius), selected_point_color);
+		draw_rect(Rect2(get_view_pos(point_pos), Size2()).grow(point_radius), selected_point_color);
 	}
 
 	// Draw help text.
@@ -913,21 +913,21 @@ void CurveEdit::_redraw() {
 		float width = view_size.x - 50 * EDSCALE;
 		text_color.a *= 0.4;
 
-		draw_multiline_string(font, Vector2(25 * EDSCALE, font_height - Math::round(2 * EDSCALE)), TTR("Hold Shift to edit tangents individually"), HORIZONTAL_ALIGNMENT_CENTER, width, font_size, -1, text_color);
+		draw_multiline_string(font, Point2(25 * EDSCALE, font_height - Math::round(2 * EDSCALE)), TTR("Hold Shift to edit tangents individually"), HORIZONTAL_ALIGNMENT_CENTER, width, font_size, -1, text_color);
 
 	} else if (selected_index != -1 && selected_tangent_index == TANGENT_NONE) {
 		const Vector2 point_pos = curve->get_point_position(selected_index);
 		float width = view_size.x - 50 * EDSCALE;
 		text_color.a *= 0.8;
 
-		draw_string(font, Vector2(25 * EDSCALE, font_height - Math::round(2 * EDSCALE)), vformat("(%.2f, %.2f)", point_pos.x, point_pos.y), HORIZONTAL_ALIGNMENT_CENTER, width, font_size, text_color);
+		draw_string(font, Point2(25 * EDSCALE, font_height - Math::round(2 * EDSCALE)), vformat("(%.2f, %.2f)", point_pos.x, point_pos.y), HORIZONTAL_ALIGNMENT_CENTER, width, font_size, text_color);
 
 	} else if (selected_index != -1 && selected_tangent_index != TANGENT_NONE) {
 		float width = view_size.x - 50 * EDSCALE;
 		text_color.a *= 0.8;
 		real_t theta = Math::rad_to_deg(Math::atan(selected_tangent_index == TANGENT_LEFT ? -1 * curve->get_point_left_tangent(selected_index) : curve->get_point_right_tangent(selected_index)));
 
-		draw_string(font, Vector2(25 * EDSCALE, font_height - Math::round(2 * EDSCALE)), String::num(theta, 1) + String::utf8(" °"), HORIZONTAL_ALIGNMENT_CENTER, width, font_size, text_color);
+		draw_string(font, Point2(25 * EDSCALE, font_height - Math::round(2 * EDSCALE)), String::num(theta, 1) + String::utf8(" °"), HORIZONTAL_ALIGNMENT_CENTER, width, font_size, text_color);
 	}
 
 	// Draw temporary constraints and snapping axes.
@@ -937,13 +937,13 @@ void CurveEdit::_redraw() {
 		float prev_point_offset = (selected_index > 0) ? curve->get_point_position(selected_index - 1).x : 0.0;
 		float next_point_offset = (selected_index < curve->get_point_count() - 1) ? curve->get_point_position(selected_index + 1).x : 1.0;
 
-		draw_line(Vector2(prev_point_offset, curve->get_min_value()), Vector2(prev_point_offset, curve->get_max_value()), Color(point_color, 0.6));
-		draw_line(Vector2(next_point_offset, curve->get_min_value()), Vector2(next_point_offset, curve->get_max_value()), Color(point_color, 0.6));
+		draw_line(Point2(prev_point_offset, curve->get_min_value()), Point2(prev_point_offset, curve->get_max_value()), Color(point_color, 0.6));
+		draw_line(Point2(next_point_offset, curve->get_min_value()), Point2(next_point_offset, curve->get_max_value()), Color(point_color, 0.6));
 	}
 
 	if (shift_pressed && grabbing != GRAB_NONE && selected_tangent_index == TANGENT_NONE) {
-		draw_line(Vector2(initial_grab_pos.x, curve->get_min_value()), Vector2(initial_grab_pos.x, curve->get_max_value()), get_theme_color(SNAME("axis_x_color"), EditorStringName(Editor)).darkened(0.4));
-		draw_line(Vector2(0, initial_grab_pos.y), Vector2(1, initial_grab_pos.y), get_theme_color(SNAME("axis_y_color"), EditorStringName(Editor)).darkened(0.4));
+		draw_line(Point2(initial_grab_pos.x, curve->get_min_value()), Point2(initial_grab_pos.x, curve->get_max_value()), get_theme_color(SNAME("axis_x_color"), EditorStringName(Editor)).darkened(0.4));
+		draw_line(Point2(0, initial_grab_pos.y), Point2(1, initial_grab_pos.y), get_theme_color(SNAME("axis_y_color"), EditorStringName(Editor)).darkened(0.4));
 	}
 }
 
@@ -1027,7 +1027,7 @@ CurveEditor::CurveEditor() {
 
 	// Some empty space below. Not a part of the curve editor so it can't draw in it.
 	Control *empty_space = memnew(Control);
-	empty_space->set_custom_minimum_size(Vector2(0, spacing));
+	empty_space->set_custom_minimum_size(Size2(0, spacing));
 	add_child(empty_space);
 
 	set_mouse_filter(MOUSE_FILTER_STOP);

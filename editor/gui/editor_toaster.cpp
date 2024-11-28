@@ -48,7 +48,7 @@ void EditorToaster::_notification(int p_what) {
 			// Check if one element is hovered, if so, don't elapse time.
 			bool hovered = false;
 			for (const KeyValue<Control *, Toast> &element : toasts) {
-				if (Rect2(Vector2(), element.key->get_size()).has_point(element.key->get_local_mouse_position())) {
+				if (Rect2(Point2(), element.key->get_size()).has_point(element.key->get_local_mouse_position())) {
 					hovered = true;
 					break;
 				}
@@ -184,8 +184,8 @@ void EditorToaster::_error_handler_impl(const String &p_file, int p_line, const 
 
 void EditorToaster::_update_vbox_position() {
 	// This is kind of a workaround because it's hard to keep the VBox anchroed to the bottom.
-	vbox_container->set_size(Vector2());
-	vbox_container->set_position(get_global_position() - vbox_container->get_size() + Vector2(get_size().x, -5 * EDSCALE));
+	vbox_container->set_size(Size2());
+	vbox_container->set_position(get_global_position() - vbox_container->get_size() + Point2(get_size().x, -5 * EDSCALE));
 }
 
 void EditorToaster::_update_disable_notifications_button() {
@@ -201,7 +201,7 @@ void EditorToaster::_update_disable_notifications_button() {
 		disable_notifications_panel->hide();
 	} else {
 		disable_notifications_panel->show();
-		disable_notifications_panel->set_position(get_global_position() + Vector2(5 * EDSCALE, -disable_notifications_panel->get_minimum_size().y) + Vector2(get_size().x, -5 * EDSCALE));
+		disable_notifications_panel->set_position(get_global_position() + Point2(5 * EDSCALE, -disable_notifications_panel->get_minimum_size().y) + Point2(get_size().x, -5 * EDSCALE));
 	}
 }
 
@@ -282,7 +282,7 @@ void EditorToaster::_draw_button() {
 		default:
 			break;
 	}
-	main_button->draw_circle(Vector2(button_radius * 2, button_radius * 2), button_radius, color);
+	main_button->draw_circle(Point2(button_radius * 2), button_radius, color);
 }
 
 void EditorToaster::_draw_progress(Control *panel) {
@@ -304,7 +304,7 @@ void EditorToaster::_draw_progress(Control *panel) {
 			default:
 				break;
 		}
-		panel->draw_style_box(stylebox, Rect2(Vector2(), size));
+		panel->draw_style_box(stylebox, Rect2(Point2(), size));
 	}
 }
 

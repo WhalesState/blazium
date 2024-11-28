@@ -4098,7 +4098,7 @@ Error GLTFDocument::_serialize_materials(Ref<GLTFState> p_state) {
 							for (int32_t x = 0; x < img->get_width(); x++) {
 								Color c = img->get_pixel(x, y);
 								Vector2 red_green = Vector2(c.r, c.g);
-								red_green = red_green * Vector2(2.0f, 2.0f) - Vector2(1.0f, 1.0f);
+								red_green = red_green * Vector2(2) - Vector2(1);
 								float blue = 1.0f - red_green.dot(red_green);
 								blue = MAX(0.0f, blue);
 								c.b = Math::sqrt(blue);
@@ -6910,7 +6910,7 @@ Error GLTFDocument::_parse(Ref<GLTFState> p_state, String p_path, Ref<FileAccess
 
 Dictionary _serialize_texture_transform_uv(Vector2 p_offset, Vector2 p_scale) {
 	Dictionary texture_transform;
-	bool is_offset = p_offset != Vector2(0.0, 0.0);
+	bool is_offset = p_offset != Vector2(0);
 	if (is_offset) {
 		Array offset;
 		offset.resize(2);
@@ -6918,7 +6918,7 @@ Dictionary _serialize_texture_transform_uv(Vector2 p_offset, Vector2 p_scale) {
 		offset[1] = p_offset.y;
 		texture_transform["offset"] = offset;
 	}
-	bool is_scaled = p_scale != Vector2(1.0, 1.0);
+	bool is_scaled = p_scale != Vector2(1);
 	if (is_scaled) {
 		Array scale;
 		scale.resize(2);

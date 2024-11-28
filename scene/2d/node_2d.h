@@ -39,7 +39,7 @@ class Node2D : public CanvasItem {
 	mutable MTFlag xform_dirty;
 	mutable Point2 position;
 	mutable real_t rotation = 0.0;
-	mutable Size2 scale = Vector2(1, 1);
+	mutable Size2 scale = Vector2(1);
 	mutable real_t skew = 0.0;
 
 	Transform2D transform;

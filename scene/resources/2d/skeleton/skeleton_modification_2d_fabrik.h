@@ -47,7 +47,7 @@ private:
 		NodePath bone2d_node;
 		ObjectID bone2d_node_cache;
 
-		Vector2 magnet_position = Vector2(0, 0);
+		Vector2 magnet_position = Vector2();
 		bool use_target_rotation = false;
 
 		bool editor_draw_gizmo = true;
