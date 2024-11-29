@@ -1736,6 +1736,42 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		}
 	}
 
+	// ColorButton
+	{
+		Ref<StyleBoxFlat> color_button_base_style(memnew(StyleBoxFlat));
+		color_button_base_style->set_content_margin_all(4 * EDSCALE);
+		color_button_base_style->set_corner_radius_all(p_config.corner_radius * EDSCALE);
+
+		Ref<StyleBoxFlat> color_button_normal = color_button_base_style->duplicate();
+		color_button_normal->set_bg_color(p_config.dark_color_1);
+		p_theme->set_stylebox(CoreStringName(normal), "ColorButton", color_button_normal);
+
+		Ref<StyleBoxFlat> color_button_pressed = color_button_base_style->duplicate();
+		color_button_pressed->set_bg_color(p_config.dark_color_1.darkened(0.125));
+		color_button_pressed->set_border_width_all(Math::round(2 * EDSCALE));
+		p_theme->set_stylebox(SceneStringName(pressed), "ColorButton", color_button_pressed);
+		p_theme->set_stylebox("hover_pressed", "ColorButton", color_button_pressed);
+
+		Ref<StyleBoxFlat> color_button_hover = color_button_base_style->duplicate();
+		color_button_hover->set_bg_color(p_config.dark_color_1 * Color(1, 1, 1, 0.11));
+		p_theme->set_stylebox("hover", "ColorButton", color_button_hover);
+
+		Ref<StyleBoxFlat> color_button_disabled = color_button_base_style->duplicate();
+		color_button_disabled->set_bg_color(p_config.mono_color * Color(1, 1, 1, 0.11));
+		p_theme->set_stylebox("disabled", "ColorButton", color_button_disabled);
+
+		Ref<StyleBoxFlat> color_button_focus(memnew(StyleBoxFlat));
+		color_button_focus->set_draw_center(false);
+		color_button_focus->set_bg_color(p_config.dark_color_1); // Avoid white inner borders when antialiased.
+		color_button_focus->set_corner_radius_all(MAX(p_config.corner_radius - 1, 0) * EDSCALE);
+		color_button_focus->set_border_width_all(Math::round(3 * EDSCALE));
+		color_button_focus->set_border_color(p_config.accent_color);
+		p_theme->set_stylebox("focus", "ColorButton", color_button_focus);
+
+		p_theme->set_icon("bg", "ColorButton", p_theme->get_icon(SNAME("GuiMiniCheckerboard"), EditorStringName(EditorIcons)));
+		p_theme->set_icon("overbright_indicator", "ColorButton", p_theme->get_icon(SNAME("OverbrightIndicator"), EditorStringName(EditorIcons)));
+	}
+
 	// ColorPicker and related nodes.
 	{
 		// ColorPicker.
