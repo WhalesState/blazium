@@ -367,6 +367,7 @@ public:
 		INVALID_INDICATOR_ID = -1
 	};
 
+public:
 	typedef int WindowID;
 	typedef int IndicatorID;
 

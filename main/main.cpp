@@ -1963,6 +1963,7 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 
 		GLOBAL_DEF_RST("rendering/rendering_device/fallback_to_vulkan", true);
 		GLOBAL_DEF_RST("rendering/rendering_device/fallback_to_d3d12", true);
+		GLOBAL_DEF_RST("rendering/rendering_device/fallback_to_opengl3", true);
 	}
 
 	{
@@ -3975,6 +3976,7 @@ int Main::start() {
 			ProjectManager *pmanager = memnew(ProjectManager);
 			ProgressDialog *progress_dialog = memnew(ProgressDialog);
 			pmanager->add_child(progress_dialog);
+
 			sml->get_root()->add_child(pmanager);
 			OS::get_singleton()->benchmark_end_measure("Startup", "Project Manager");
 		}
@@ -4095,15 +4097,15 @@ bool Main::iteration() {
 
 		uint64_t physics_begin = OS::get_singleton()->get_ticks_usec();
 
-#ifndef _3D_DISABLED
-		PhysicsServer3D::get_singleton()->sync();
-		PhysicsServer3D::get_singleton()->flush_queries();
-#endif // _3D_DISABLED
-
 		// Prepare the fixed timestep interpolated nodes BEFORE they are updated
 		// by the physics server, otherwise the current and previous transforms
 		// may be the same, and no interpolation takes place.
 		OS::get_singleton()->get_main_loop()->iteration_prepare();
+
+#ifndef _3D_DISABLED
+		PhysicsServer3D::get_singleton()->sync();
+		PhysicsServer3D::get_singleton()->flush_queries();
+#endif // _3D_DISABLED
 
 		PhysicsServer2D::get_singleton()->sync();
 		PhysicsServer2D::get_singleton()->flush_queries();
@@ -4114,6 +4116,7 @@ bool Main::iteration() {
 #endif // _3D_DISABLED
 			PhysicsServer2D::get_singleton()->end_sync();
 
+			Engine::get_singleton()->_in_physics = false;
 			exit = true;
 			break;
 		}

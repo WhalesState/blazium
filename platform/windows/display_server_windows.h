@@ -39,7 +39,6 @@
 #include "core/config/project_settings.h"
 #include "core/input/input.h"
 #include "core/os/os.h"
-#include "drivers/unix/ip_unix.h"
 #include "drivers/wasapi/audio_driver_wasapi.h"
 #include "drivers/winmidi/midi_driver_winmidi.h"
 #include "servers/audio_server.h"
@@ -356,6 +355,10 @@ typedef enum _SHC_PROCESS_DPI_AWARENESS {
 	SHC_PROCESS_PER_MONITOR_DPI_AWARE = 2,
 } SHC_PROCESS_DPI_AWARENESS;
 
+#ifndef WS_EX_NOREDIRECTIONBITMAP
+#define WS_EX_NOREDIRECTIONBITMAP 0x00200000L
+#endif
+
 class DisplayServerWindows : public DisplayServer {
 	// No need to register with GDCLASS, it's platform-specific and nothing is added.
 
@@ -393,6 +396,14 @@ class DisplayServerWindows : public DisplayServer {
 	void _update_tablet_ctx(const String &p_old_driver, const String &p_new_driver);
 	String tablet_driver;
 	Vector<String> tablet_drivers;
+
+	enum DriverID {
+		DRIVER_ID_COMPAT_OPENGL3 = 1 << 0,
+		DRIVER_ID_COMPAT_ANGLE_D3D11 = 1 << 1,
+		DRIVER_ID_RD_VULKAN = 1 << 2,
+		DRIVER_ID_RD_D3D12 = 1 << 3,
+	};
+	static BitField<DriverID> tested_drivers;
 
 	enum TimerID {
 		TIMER_ID_MOVE_REDRAW = 1,
@@ -516,6 +527,8 @@ class DisplayServerWindows : public DisplayServer {
 
 		bool is_popup = false;
 		Rect2i parent_safe_rect;
+
+		bool initialized = false;
 	};
 
 	JoypadWindows *joypad = nullptr;
@@ -583,7 +596,7 @@ class DisplayServerWindows : public DisplayServer {
 	HashMap<int64_t, Vector2> pointer_last_pos;
 
 	void _send_window_event(const WindowData &wd, WindowEvent p_event);
-	void _get_window_style(bool p_main_window, bool p_fullscreen, bool p_multiwindow_fs, bool p_borderless, bool p_resizable, bool p_maximized, bool p_maximized_fs, bool p_no_activate_focus, DWORD &r_style, DWORD &r_style_ex);
+	void _get_window_style(bool p_main_window, bool p_initialized, bool p_fullscreen, bool p_multiwindow_fs, bool p_borderless, bool p_resizable, bool p_minimized, bool p_maximized, bool p_maximized_fs, bool p_no_activate_focus, DWORD &r_style, DWORD &r_style_ex);
 
 	MouseMode mouse_mode;
 	int restore_mouse_trails = 0;

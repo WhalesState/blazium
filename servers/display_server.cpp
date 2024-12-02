@@ -34,6 +34,14 @@
 #include "scene/resources/texture.h"
 #include "servers/display_server_headless.h"
 
+#if defined(VULKAN_ENABLED)
+#include "drivers/vulkan/rendering_context_driver_vulkan.h"
+#undef CursorShape
+#endif
+#if defined(D3D12_ENABLED)
+#include "drivers/d3d12/rendering_context_driver_d3d12.h"
+#endif
+
 DisplayServer *DisplayServer::singleton = nullptr;
 
 bool DisplayServer::hidpi_allowed = false;
@@ -539,7 +547,7 @@ DisplayServer::ScreenOrientation DisplayServer::screen_get_orientation(int p_scr
 
 float DisplayServer::screen_get_scale(int p_screen) const {
 	return 1.0f;
-};
+}
 
 bool DisplayServer::is_touchscreen_available() const {
 	return Input::get_singleton() && Input::get_singleton()->is_emulating_touch_from_mouse();
