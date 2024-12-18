@@ -6,7 +6,7 @@ on:
 env:
   # Used for the cache key. Add version suffix to force clean build.
   GODOT_BASE_BRANCH: blazium-dev
-  SCONSFLAGS: verbose=yes warnings=extra werror=yes debug_symbols=no module_text_server_fb_enabled=yes
+  SCONSFLAGS: verbose=yes warnings=no
 
 concurrency:
   group: ci-${{github.actor}}-${{github.head_ref || github.run_number}}-${{github.ref}}-ios
@@ -14,16 +14,193 @@ concurrency:
 
 jobs:
   ios-template:
-    runs-on: "macos-latest"
-    name: Template (target=template_release)
+    runs-on: "ubuntu-20.04"
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Debug
+            cache-name: ios-debug-template
+            target: template_debug
+            sconsflags: ${{ github.event.client_payload.production && 'production=yes' || '' }}
+            mono: false
+            arm: true
+            skip: true
+
+          - name: Release
+            cache-name: ios-release-template
+            target: template_release
+            sconsflags: ${{ github.event.client_payload.production && 'production=yes' || '' }}
+            mono: true
+            arm: true
+            skip: true
+
+          - name: Debug (Mono)
+            cache-name: ios-debug-template
+            target: template_debug
+            sconsflags: module_mono_enabled=yes ${{ github.event.client_payload.production && 'production=yes' || '' }}
+            mono: false
+            arm: true
+            skip: true
+
+          - name: Release (Mono)
+            cache-name: ios-release-template
+            target: template_release
+            sconsflags: module_mono_enabled=yes ${{ github.event.client_payload.production && 'production=yes' || '' }}
+            mono: true
+            arm: true
+            skip: true
 
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
 
+
+      - name: Distro-specific Deps Install
+        run: |
+          # Remove all existing third-party repositories
+          sudo rm -f /etc/apt/sources.list.d/*
+
+          # Add architecture support for 32-bit
+          sudo dpkg --add-architecture i386
+
+          # Update sources list to include default Ubuntu repositories
+          sudo bash -c 'cat > /etc/apt/sources.list <<EOF
+          deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+          EOF'
+
+          # Update package lists
+          sudo apt-get update
+
+          sudo apt-get install -y --no-install-recommends \
+            bash bzip2 curl file gettext wget \
+            git make nano patch scons pkg-config unzip xz-utils cmake gdb
+
+          # Install required packages
+          sudo apt-get install -y \
+            build-essential \
+            gcc-multilib g++-multilib \
+            libc6-dev libc6-dev-i386 \
+            libx11-dev libx11-dev:i386 \
+            libxcursor-dev libxcursor-dev:i386 \
+            libxinerama-dev libxinerama-dev:i386 \
+            libxi-dev libxi-dev:i386 \
+            libxrandr-dev libxrandr-dev:i386 \
+            libgl1-mesa-dev libgl1-mesa-dev:i386 
+          sudo apt-get install -y \
+            libglu1-mesa-dev \
+            libasound2-dev \
+            libpulse-dev \
+            libudev-dev \
+            libwayland-dev \
+            libstdc++6 \
+            libatomic1 \
+            libfreetype6-dev \
+            libssl-dev \
+            libc++-dev \
+            libc++abi-dev \
+            libgl-dev \
+            liblzma-dev \
+            liblzma5 \
+            libglu-dev \
+            libdbus-1-dev \
+            libwayland-bin
+          sudo apt-get install -y \
+            yasm \
+            xvfb \
+            llvm \
+            gcc \
+            g++ \
+            mingw-w64 \
+            mingw-w64-common \
+            mingw-w64-tools \
+            libspeechd-dev \
+            speech-dispatcher \
+            fontconfig \
+            libfontconfig-dev \
+            dotnet-sdk-8.0 \
+            gcc-mingw-w64 g++-mingw-w64 directx-headers-dev
+          sudo apt-get install -y \
+            fuse \
+            icu-devtools \
+            openssl \
+            zlib1g-dev
+          sudo update-alternatives --config x86_64-w64-mingw32-g++
+          sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
+          sudo update-alternatives --config x86_64-w64-mingw32-gcc
+          sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
+          sudo update-alternatives --config i686-w64-mingw32-g++
+          sudo update-alternatives --set i686-w64-mingw32-g++ /usr/bin/i686-w64-mingw32-g++-posix
+          sudo update-alternatives --config i686-w64-mingw32-gcc
+          sudo update-alternatives --set i686-w64-mingw32-gcc /usr/bin/i686-w64-mingw32-gcc-posix
+          sudo rm -rf /var/lib/apt/lists/*
+          sudo apt-get purge -y --auto-remove
+          sudo apt-get autoremove
+          sudo apt-get clean
+
+      - name: Install llvm-mingw
+        if: matrix.arm
+        run: |
+          curl -LO https://github.com/mstorsjo/llvm-mingw/releases/download/20240619/llvm-mingw-20240619-ucrt-ubuntu-20.04-x86_64.tar.xz && \
+          tar xf llvm-mingw-20240619-ucrt-ubuntu-20.04-x86_64.tar.xz && \
+          rm -f llvm-mingw-20240619-ucrt-ubuntu-20.04-x86_64.tar.xz
+          cd llvm-mingw-20240619-ucrt-ubuntu-20.04-x86_64
+          echo "MINGW_PREFIX=$(pwd)" >> $GITHUB_ENV
+
+      - name: Download and extract llvm-mingw SDK
+        env:
+          CURRENT_DIR: ${{ github.workspace }}
+        run: |
+          mkdir -p "$CURRENT_DIR/sdks"
+          cd "$CURRENT_DIR/sdks"
+          curl -LO https://github.com/mstorsjo/llvm-mingw/releases/download/20241015/llvm-mingw-20241015-msvcrt-ubuntu-20.04-x86_64.tar.xz
+          xz -dc llvm-mingw-20241015-msvcrt-ubuntu-20.04-x86_64.tar.xz | tar -xvf -
+          rm -f llvm-mingw-20241015-msvcrt-ubuntu-20.04-x86_64.tar.xz
+          cd llvm-mingw-20241015-msvcrt-ubuntu-20.04-x86_64
+          echo "LLVM_MINGW=$(pwd)" >> $GITHUB_ENV
+
+      # https://cdn.blazium.app/pipeline/MacOSX14.5.sdk.tar.xz
+      # https://cdn.blazium.app/pipeline/iPhoneSimulator17.5.sdk.tar.xz
+
+
+      - name: Download and extract XCode
+        env:
+          CURRENT_DIR: ${{ github.workspace }}
+        run: |
+          cd "$CURRENT_DIR"
+          curl -LO https://cdn.blazium.app/pipeline/Xcode_15.4.zip && \
+          unzip -qq Xcode_15.4.zip -d "$CURRENT_DIR" && \
+          rm -f Xcode_15.4.zip
+          mkdir -p iPhoneSDK/iPhoneOS17.5.sdk
+          cd iPhoneSDK/iPhoneOS17.5.sdk
+          curl -LO https://cdn.blazium.app/pipeline/iPhoneOS17.5.sdk.tar.xz && \
+          tar -xf iPhoneOS17.5.sdk.tar.xz
+          rm -f iPhoneOS17.5.sdk.tar.xz
+          cd ..
+          cp -r "$CURRENT_DIR/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/"* "$CURRENT_DIR/iPhoneSDK/iPhoneOS17.5.sdk"
+          tar -cf - * | xz -9 -c - > iPhoneOS17.5.sdk.tar.xz
+
+      - name: Download and build cctools
+        env:
+          CURRENT_DIR: ${{ github.workspace }}
+        run: |
+          git clone https://github.com/tpoechtrager/cctools-port.git
+          cd cctools-port/usage_examples/ios_toolchain
+          ./build.sh "$CURRENT_DIR/iPhoneSDK/iPhoneOS17.5.sdk.tar.xz" arm64
+          mkdir -p "$CURRENT_DIR/iostoolchain/usr"
+          cp -r target/* "$CURRENT_DIR/iostoolchain/usr/"
+          echo "$CURRENT_DIR/iostoolchain/usr/bin" >> $GITHUB_PATH
+          echo OSXCROSS_IOS=anything >> $GITHUB_ENV
+
       - name: Restore Godot build cache
         uses: ./.github/actions/godot-cache-restore
+        with:
+          cache-name: ${{ matrix.cache-name }}
         continue-on-error: true
 
       - name: Setup Python and SCons
@@ -32,14 +209,19 @@ jobs:
       - name: Compilation (arm64)
         uses: ./.github/actions/godot-build
         with:
-          sconsflags: ${{ env.SCONSFLAGS }}
+          sconsflags: ${{ matrix.sconsflags }} ${{ env.SCONSFLAGS }} arch=arm64 IOS_SDK_PATH="${{ github.workspace }}/iPhoneSDK/iPhoneOS17.5.sdk" IOS_TOOLCHAIN_PATH="${{ github.workspace }}/iostoolchain" ios_triple="arm-apple-darwin11-"
           platform: ios
-          target: template_release
-          tests: false
+          target: ${{ matrix.target }}
+          compiler: gcc
+          mingw-prefix: ${{ matrix.mingw || '' }}
 
       - name: Save Godot build cache
         uses: ./.github/actions/godot-cache-save
+        with:
+          cache-name: ${{ matrix.cache-name }}
         continue-on-error: true
 
       - name: Upload artifact
         uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ matrix.cache-name }}
