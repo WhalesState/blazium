@@ -126,9 +126,15 @@ jobs:
             dotnet-sdk-8.0 \
             gcc-mingw-w64 g++-mingw-w64 directx-headers-dev
           sudo apt-get install -y \
-            icu-devtools \
-            openssl \
-            zlib1g-dev
+            zlib1g-dev \
+            automake \
+            autoconf \
+            libicu-dev \
+            libtool \
+            libxml2-dev \
+            libssl-dev \
+            perl \
+            python
           sudo update-alternatives --config x86_64-w64-mingw32-g++
           sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
           sudo update-alternatives --config x86_64-w64-mingw32-gcc
@@ -171,49 +177,74 @@ jobs:
       # -rw-r--r-- 1 runner docker 14M Dec 18 06:51 iPhoneOS17.5.sdk.tar.xz
       # -rw-r--r-- 1 runner docker 14M Dec 18 06:52 iPhoneSimulator17.5.sdk.tar.xz
 
-      - name: Download and extract XCode
+      # - name: Download and extract XCode
+      #   env:
+      #     CURRENT_DIR: ${{ github.workspace }}
+      #     GH_TOKEN: ${{ github.token }}
+      #   run: |
+      #     curl -LO https://cdn.blazium.app/pipeline/Xcode_15.4.zip && \
+      #     unzip -qq Xcode_15.4.zip -d "$CURRENT_DIR" && \
+      #     rm -f Xcode_15.4.zip
+      #     mkdir -p iPhoneSDK/iPhoneOS17.5.sdk
+      #     cd iPhoneSDK/iPhoneOS17.5.sdk
+      #     # curl -L \
+      #     #   -H "Accept: application/vnd.github+json" \
+      #     #   -H "Authorization: Bearer $GH_TOKEN" \
+      #     #   -H "X-GitHub-Api-Version: 2022-11-28" \
+      #     #   -o xcode_sdks.zip "https://api.github.com/repos/blazium-engine/ci_cd/actions/artifacts/2336066326/zip" && \
+      #     # unzip -qq xcode_sdks.zip
+      #     # rm -f xcode_sdks.zip
+      #     # # ls -l --block-size=M
+      #     # rm -f MacOSX14.sdk.tar.xz
+      #     # rm -f MacOSX14.5.sdk.tar.xz
+      #     # rm -f iPhoneSimulator17.5.sdk.tar.xz
+      #     # tar -xf iPhoneOS17.5.sdk.tar.xz
+      #     # rm -f iPhoneOS17.5.sdk.tar.xz
+      #     cp -r "$CURRENT_DIR/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/"* "$CURRENT_DIR/iPhoneSDK/iPhoneOS17.5.sdk"
+      #     rm -rf "$CURRENT_DIR/Xcode.app"
+      #     cd ..
+      #     tar -cf - * | xz -9 -c - > iPhoneOS17.5.sdk.tar.xz
+      #     rm -rf iPhoneOS17.5.sdk
+
+      # - name: Download and build cctools
+      #   env:
+      #     CURRENT_DIR: ${{ github.workspace }}
+      #   run: |
+      #     git clone https://github.com/tpoechtrager/cctools-port.git
+      #     cd cctools-port
+      #     git checkout a98286d858210b209395624477533c0bde05556a
+      #     cd usage_examples/ios_toolchain
+      #     ./build.sh "$CURRENT_DIR/iPhoneSDK/iPhoneOS17.5.sdk.tar.xz" arm64
+      #     mkdir -p "$CURRENT_DIR/iostoolchain/usr"
+      #     cp -r target/* "$CURRENT_DIR/iostoolchain"
+      #     cp -r "$CURRENT_DIR/iostoolchain/bin" "$CURRENT_DIR/iostoolchain/usr"
+      #     echo "$CURRENT_DIR/iostoolchain/usr/bin" >> $GITHUB_PATH
+      #     echo OSXCROSS_IOS=anything >> $GITHUB_ENV
+
+      # - name: Upload cctools
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: iostoolchain
+      #     path: "${{ github.workspace }}/iostoolchain"
+      #     retention-days: 90
+
+      - name: Download cctools
         env:
           CURRENT_DIR: ${{ github.workspace }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          curl -LO https://cdn.blazium.app/pipeline/Xcode_15.4.zip && \
-          unzip -qq Xcode_15.4.zip -d "$CURRENT_DIR" && \
-          rm -f Xcode_15.4.zip
-          mkdir -p iPhoneSDK/iPhoneOS17.5.sdk
-          cd iPhoneSDK/iPhoneOS17.5.sdk
-          # curl -L \
-          #   -H "Accept: application/vnd.github+json" \
-          #   -H "Authorization: Bearer $GH_TOKEN" \
-          #   -H "X-GitHub-Api-Version: 2022-11-28" \
-          #   -o xcode_sdks.zip "https://api.github.com/repos/blazium-engine/ci_cd/actions/artifacts/2336066326/zip" && \
-          # unzip -qq xcode_sdks.zip
-          # rm -f xcode_sdks.zip
-          # # ls -l --block-size=M
-          # rm -f MacOSX14.sdk.tar.xz
-          # rm -f MacOSX14.5.sdk.tar.xz
-          # rm -f iPhoneSimulator17.5.sdk.tar.xz
-          # tar -xf iPhoneOS17.5.sdk.tar.xz
-          # rm -f iPhoneOS17.5.sdk.tar.xz
-          cp -r "$CURRENT_DIR/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/"* "$CURRENT_DIR/iPhoneSDK/iPhoneOS17.5.sdk"
-          rm -rf "$CURRENT_DIR/Xcode.app"
-          cd ..
-          tar -cf - * | xz -9 -c - > iPhoneOS17.5.sdk.tar.xz
-          rm -rf iPhoneOS17.5.sdk
-
-      - name: Download and build cctools
-        env:
-          CURRENT_DIR: ${{ github.workspace }}
-        run: |
-          git clone https://github.com/tpoechtrager/cctools-port.git
-          cd cctools-port
-          git checkout a98286d858210b209395624477533c0bde05556a
-          cd usage_examples/ios_toolchain
-          ./build.sh "$CURRENT_DIR/iPhoneSDK/iPhoneOS17.5.sdk.tar.xz" arm64
-          mkdir -p "$CURRENT_DIR/iostoolchain/usr"
-          cp -r target/* "$CURRENT_DIR/iostoolchain"
-          cp -r "$CURRENT_DIR/iostoolchain/bin" "$CURRENT_DIR/iostoolchain/usr"
+          cd "$CURRENT_DIR"
+          mkdir iostoolchain && \
+          cd iostoolchain
+          curl -L \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -o iostoolchain.zip "https://api.github.com/repos/WhalesState/blazium/actions/artifacts/2351140252/zip" && \
+          unzip -qq iostoolchain.zip
+          rm -f iostoolchain.zip
           echo "$CURRENT_DIR/iostoolchain/usr/bin" >> $GITHUB_PATH
-          echo OSXCROSS_IOS=anything >> $GITHUB_ENV
+          echo OSXCROSS_IOS=not_anything >> $GITHUB_ENV
 
       - name: Restore Godot build cache
         uses: ./.github/actions/godot-cache-restore
