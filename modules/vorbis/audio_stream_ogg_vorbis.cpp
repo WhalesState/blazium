@@ -34,6 +34,7 @@
 #include "core/variant/typed_array.h"
 
 #include "modules/vorbis/resource_importer_ogg_vorbis.h"
+
 #include <ogg/ogg.h>
 
 int AudioStreamPlaybackOggVorbis::_mix_internal(AudioFrame *p_buffer, int p_frames) {
