@@ -51,6 +51,8 @@ class Material;
 class EditorSceneFormatImporter : public RefCounted {
 	GDCLASS(EditorSceneFormatImporter, RefCounted);
 
+	List<ResourceImporter::ImportOption> *current_option_list = nullptr;
+
 protected:
 	static void _bind_methods();
 
@@ -74,6 +76,8 @@ public:
 		IMPORT_FORCE_DISABLE_MESH_COMPRESSION = 64,
 	};
 
+	void add_import_option(const String &p_name, const Variant &p_default_value);
+	void add_import_option_advanced(Variant::Type p_type, const String &p_name, const Variant &p_default_value, PropertyHint p_hint = PROPERTY_HINT_NONE, const String &p_hint_string = String(), int p_usage_flags = PROPERTY_USAGE_DEFAULT);
 	virtual uint32_t get_import_flags() const;
 	virtual void get_extensions(List<String> *r_extensions) const;
 	virtual Node *import_scene(const String &p_path, uint32_t p_flags, const HashMap<StringName, Variant> &p_options, List<String> *r_missing_deps, Error *r_err = nullptr);
