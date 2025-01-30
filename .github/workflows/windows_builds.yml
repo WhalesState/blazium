@@ -7,8 +7,8 @@ on:
 env:
   # Used for the cache key. Add version suffix to force clean build.
   GODOT_BASE_BRANCH: blazium-dev
-  SCONSFLAGS: verbose=yes warnings=extra werror=yes module_text_server_fb_enabled=yes d3d12=yes "angle_libs=${{github.workspace}}/"
-  SCONS_CACHE_MSVC_CONFIG: true
+  SCONSFLAGS: verbose=yes warnings=no strict_checks=yes "angle_libs=${{github.workspace}}/deps/angle"
+  D3D12FLAGS: d3d12=yes "mesa_libs=${{ github.workspace }}/deps/mesa" "agility_sdk_path=${{github.workspace}}/bin/build_deps/agility_sdk"
 
 concurrency:
   group: ci-${{github.actor}}-${{github.head_ref || github.run_number}}-${{github.ref}}-windows
@@ -16,64 +16,187 @@ concurrency:
 
 jobs:
   build-windows:
-    # Windows 10 with latest image
-    runs-on: "windows-latest"
+    runs-on: "ubuntu-20.04"
     name: ${{ matrix.name }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - name: Editor (target=editor, tests=yes)
-            cache-name: windows-editor
+          - name: Editor (arch=arm32)
+            cache-name: windows-editor-arm32
             target: editor
-            tests: true
-            # Skip debug symbols, they're way too big with MSVC.
-            sconsflags: debug_symbols=no vsproj=yes vsproj_gen_only=no windows_subsystem=console
-            bin: "./bin/blazium.windows.editor.x86_64.exe"
-            compiler: msvc
+            sconsflags: arch=arm32 use_llvm=yes ${{ github.event.client_payload.production && 'production=yes' || '' }} ${{ github.env.SCONSFLAGS }}
+            mono: false
+            arm: true
+            d3d12: false
+            skip: true
 
-          - name: Editor w/ Mono (target=editor)
-            cache-name: windows-editor-mono
+          - name: Editor w/ Mono (arch=arm32)
+            cache-name: windows-editor-mono-arm32
             target: editor
-            sconsflags: module_mono_enabled=yes
-            bin: ./bin/blazium.windows.editor.x86_64.mono.exe
-            build-mono: true
-            tests: false # Disabled due freeze caused by mix Mono build and CI
-            doc-test: true
-            proj-conv: true
-            api-compat: true
-            artifact: true
+            sconsflags: module_mono_enabled=yes arch=arm32 use_llvm=yes ${{ github.event.client_payload.production && 'production=yes' || '' }} ${{ github.env.SCONSFLAGS }}
+            mono: true
+            arm: true
+            d3d12: false
+            skip: true
 
-          - name: Editor w/ clang-cl (target=editor, tests=yes, use_llvm=yes)
-            cache-name: windows-editor-clang
+          - name: Editor (arch=arm64)
+            cache-name: windows-editor-arm64
             target: editor
-            tests: true
-            sconsflags: debug_symbols=no windows_subsystem=console use_llvm=yes
-            bin: ./bin/blazium.windows.editor.x86_64.llvm.exe
-            compiler: clang
+            sconsflags: arch=arm64 use_llvm=yes ${{ github.event.client_payload.production && 'production=yes' || '' }} ${{ github.env.SCONSFLAGS }}
+            mono: false
+            arm: true
+            d3d12: true
+            skip: true
 
-          - name: Template (target=template_release)
-            cache-name: windows-template
-            target: template_release
-            tests: true
-            sconsflags: debug_symbols=no tests=yes
-            bin: "./bin/blazium.windows.template_release.x86_64.console.exe"
-            compiler: msvc
-            artifact: true
+          - name: Editor w/ Mono (arch=arm64)
+            cache-name: windows-editor-mono-arm64
+            target: editor
+            sconsflags: module_mono_enabled=yes arch=arm64 use_llvm=yes ${{ github.event.client_payload.production && 'production=yes' || '' }} ${{ github.env.SCONSFLAGS }}
+            mono: true
+            arm: true
+            d3d12: true
+            skip: true
 
-          - name: Template w/ GCC (target=template_release, tests=yes, use_mingw=yes)
-            cache-name: windows-template-gcc
-            # MinGW takes MUCH longer to compile; save time by only targeting Template.
-            target: template_release
-            tests: true
-            sconsflags: debug_symbols=no use_mingw=yes
-            bin: ./bin/blazium.windows.template_release.x86_64.console.exe
-            compiler: gcc
+          - name: Editor (arch=x86_32)
+            cache-name: windows-editor-x32
+            target: editor
+            sconsflags: arch=x86_32 ${{ github.event.client_payload.production && 'production=yes' || '' }} ${{ github.env.SCONSFLAGS }}
+            mono: false
+            arm: false
+            d3d12: true
+            skip: true
+
+          - name: Editor w/ Mono (arch=x86_32)
+            cache-name: windows-editor-mono-x32
+            target: editor
+            sconsflags: module_mono_enabled=yes arch=x86_32 ${{ github.event.client_payload.production && 'production=yes' || '' }} ${{ github.env.SCONSFLAGS }}
+            mono: true
+            arm: false
+            d3d12: true
+            skip: true
+
+          - name: Editor (arch=x86_64)
+            cache-name: windows-editor-x64
+            target: editor
+            sconsflags: arch=x86_64 ${{ github.event.client_payload.production && 'production=yes' || '' }} ${{ github.env.SCONSFLAGS }}
+            mono: false
+            arm: false
+            d3d12: true
+            skip: true
+
+          - name: Editor w/ Mono (arch=x86_64)
+            cache-name: windows-editor-mono-x64
+            target: editor
+            sconsflags: module_mono_enabled=yes arch=x86_64 ${{ github.event.client_payload.production && 'production=yes' || '' }} ${{ github.env.SCONSFLAGS }}
+            mono: true
+            arm: false
+            d3d12: true
+            skip: true
 
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+
+      - name: Distro-specific Deps Install
+        run: |
+          # Remove all existing third-party repositories
+          sudo rm -f /etc/apt/sources.list.d/*
+
+          # Add architecture support for 32-bit
+          sudo dpkg --add-architecture i386
+
+          # Update sources list to include default Ubuntu repositories
+          sudo bash -c 'cat > /etc/apt/sources.list <<EOF
+          deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+          EOF'
+
+          # Update package lists
+          sudo apt-get update
+
+          sudo apt-get install -y --no-install-recommends \
+            bash bzip2 curl file gettext wget \
+            git make nano patch scons pkg-config unzip xz-utils cmake gdb
+
+          # Install required packages
+          sudo apt-get install -y \
+            build-essential \
+            gcc-multilib g++-multilib \
+            libc6-dev libc6-dev-i386 \
+            libx11-dev libx11-dev:i386 \
+            libxcursor-dev libxcursor-dev:i386 \
+            libxinerama-dev libxinerama-dev:i386 \
+            libxi-dev libxi-dev:i386 \
+            libxrandr-dev libxrandr-dev:i386 \
+            libgl1-mesa-dev libgl1-mesa-dev:i386 
+          sudo apt-get install -y \
+            libglu1-mesa-dev \
+            libasound2-dev \
+            libpulse-dev \
+            libudev-dev \
+            libwayland-dev \
+            libstdc++6 \
+            libatomic1 \
+            libfreetype6-dev \
+            libssl-dev \
+            libc++-dev \
+            libc++abi-dev \
+            libgl-dev \
+            liblzma-dev \
+            liblzma5 \
+            libglu-dev \
+            libdbus-1-dev \
+            libwayland-bin
+          sudo apt-get install -y \
+            yasm \
+            xvfb \
+            llvm \
+            gcc \
+            g++ \
+            libspeechd-dev \
+            speech-dispatcher \
+            fontconfig \
+            libfontconfig-dev \
+            dotnet-sdk-8.0 \
+            directx-headers-dev
+          # mingw-w64* \
+          # sudo update-alternatives --config x86_64-w64-mingw32-g++
+          # sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
+          # sudo update-alternatives --config x86_64-w64-mingw32-gcc
+          # sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
+          # sudo update-alternatives --config i686-w64-mingw32-g++
+          # sudo update-alternatives --set i686-w64-mingw32-g++ /usr/bin/i686-w64-mingw32-g++-posix
+          # sudo update-alternatives --config i686-w64-mingw32-gcc
+          # sudo update-alternatives --set i686-w64-mingw32-gcc /usr/bin/i686-w64-mingw32-gcc-posix
+          sudo rm -rf /var/lib/apt/lists/*
+          sudo apt-get purge -y --auto-remove
+          sudo apt-get autoremove
+          sudo apt-get clean
+
+      - name: Install llvm-mingw
+        run: |
+          curl -LO https://github.com/mstorsjo/llvm-mingw/releases/download/20240619/llvm-mingw-20240619-ucrt-ubuntu-20.04-x86_64.tar.xz && \
+          tar xf llvm-mingw-20240619-ucrt-ubuntu-20.04-x86_64.tar.xz && \
+          rm -f llvm-mingw-20240619-ucrt-ubuntu-20.04-x86_64.tar.xz
+          cd llvm-mingw-20240619-ucrt-ubuntu-20.04-x86_64
+          echo "MINGW_PREFIX=$(pwd)" >> $GITHUB_ENV
+
+      - name: Download and extract llvm-mingw SDK
+        env:
+          CURRENT_DIR: ${{ github.workspace }}
+        if: matrix.arm
+        run: |
+          mkdir -p "$CURRENT_DIR/sdks"
+          cd "$CURRENT_DIR/sdks"
+          curl -LO https://github.com/mstorsjo/llvm-mingw/releases/download/20241015/llvm-mingw-20241015-msvcrt-ubuntu-20.04-x86_64.tar.xz
+          xz -dc llvm-mingw-20241015-msvcrt-ubuntu-20.04-x86_64.tar.xz | tar -xvf -
+          rm -f llvm-mingw-20241015-msvcrt-ubuntu-20.04-x86_64.tar.xz
+          cd llvm-mingw-20241015-msvcrt-ubuntu-20.04-x86_64
+          echo "LLVM_MINGW=$(pwd)" >> $GITHUB_ENV
 
       - name: Restore Godot build cache
         uses: ./.github/actions/godot-cache-restore
@@ -85,42 +208,28 @@ jobs:
         uses: ./.github/actions/godot-deps
 
       - name: Download Direct3D 12 SDK components
-        run: python ./misc/scripts/install_d3d12_sdk_windows.py
+        run: |
+          python ./misc/scripts/install_d3d12_sdk_windows.py
 
-      - name: Download pre-built ANGLE static libraries
-        uses: dsaltares/fetch-gh-release-asset@1.1.2
+      - name: Download ANGLE Libraries
+        uses: ./.github/actions/download-angle
         with:
-          repo: godotengine/godot-angle-static
-          version: tags/chromium/6601.2
-          file: godot-angle-static-x86_64-${{ matrix.compiler == 'gcc' && 'gcc' || 'msvc' }}-release.zip
-          target: angle/angle.zip
+          angle_url_base: "https://github.com/blazium-engine/blazium-angle-static/releases/download/chromium%2F6601.2/godot-angle-static"
+          angle_folder: "${{ github.workspace }}/deps/angle"
 
-      - name: Extract pre-built ANGLE static libraries
-        run: Expand-Archive -Force angle/angle.zip ${{github.workspace}}/
-
-      - name: Setup MSVC problem matcher
-        if: matrix.compiler == 'msvc'
-        uses: ammaraskar/msvc-problem-matcher@master
-
-      - name: Setup GCC problem matcher
-        if: matrix.compiler != 'msvc'
-        uses: ammaraskar/gcc-problem-matcher@master
+      - name: Download Mesa Libraries
+        uses: ./.github/actions/download-mesa
+        with:
+          mesa_url_base: "https://github.com/WhalesState/godot-nir-static/releases/download/0.2/godot-nir-static"
+          mesa_folder: "${{ github.workspace }}/deps/mesa"
 
       - name: Compilation
         uses: ./.github/actions/godot-build
         with:
-          sconsflags: ${{ env.SCONSFLAGS }} ${{ matrix.sconsflags }}
+          sconsflags: ${{ matrix.sconsflags }} ${{ env.SCONSFLAGS }} ${{ matrix.d3d12 && env.D3D12FLAGS || '' }}
           platform: windows
           target: ${{ matrix.target }}
-          tests: ${{ matrix.tests }}
-
-      - name: Generate Glue Code
-        if: ${{ matrix.cache-name == 'windows-editor-mono' }}
-        run: ./bin/blazium.windows.editor.x86_64.mono.exe --headless --generate-mono-glue modules/mono/glue
-
-      - name: Build GodotSharp
-        if: ${{ matrix.cache-name == 'windows-editor-mono' }}
-        run: python modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin
+          # mingw-prefix: ${{ matrix.mingw || '' }}
 
       - name: Save Godot build cache
         uses: ./.github/actions/godot-cache-save
@@ -128,20 +237,7 @@ jobs:
           cache-name: ${{ matrix.cache-name }}
         continue-on-error: true
 
-      - name: Prepare artifact
-        if: matrix.compiler == 'msvc'
-        run: |
-          Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
-
       - name: Upload artifact
-        if: matrix.compiler == 'msvc'
         uses: ./.github/actions/upload-artifact
         with:
           name: ${{ matrix.cache-name }}
-
-      - name: Unit tests
-        if: ${{ matrix.tests }}
-        run: |
-          ${{ matrix.bin }} --version
-          ${{ matrix.bin }} --help
-          ${{ matrix.bin }} --test --force-colors
