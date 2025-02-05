@@ -73,7 +73,6 @@
 #include "servers/navigation_server_3d.h"
 #include "servers/physics_server_2d.h"
 
-#include <Windows.h>
 #include <filesystem>
 
 constexpr int GODOT4_CONFIG_VERSION = 5;
@@ -1059,15 +1058,16 @@ ProjectManager::ProjectManager() {
 		args.push_back("--path");
 		args.push_back(defaultProjectPath);
 		args.push_back("--editor");
-		if (!std::filesystem::exists(std::string(defaultProjectPath.utf8().get_data()) + std::string("\\project.godot")))
+		if (!std::filesystem::exists(std::string(defaultProjectPath.utf8().get_data()) + std::string("/project.godot")))
 		{
-			MessageBoxA(0, "Game Project Missing or Corrupted, Update or Repair to fix the Issue.", "Fatal Error", MB_ICONERROR);
-			quick_exit(0);
+			std::filesystem::create_directories(std::string(defaultProjectPath.utf8().get_data()));
+			std::string projectFilePath = std::string(defaultProjectPath.utf8().get_data()) + std::string("/project.godot");
+			std::ofstream output(projectFilePath);
 		}
 		Error err = OS::get_singleton()->create_instance(args);
 		if (err != OK)
 		{
-			MessageBoxA(0, "Game Project Missing or Corrupted, Update or Repair to fix the Issue.", "Fatal Error", MB_ICONERROR);
+			printf("Fatal Error : Game Project Missing or Corrupted, Update or Repair to fix the Issue.");
 			quick_exit(0);
 		}
 		quick_exit(0);
