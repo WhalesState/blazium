@@ -73,6 +73,7 @@
 #include "servers/navigation_server_3d.h"
 #include "servers/physics_server_2d.h"
 
+#include <fstream>
 #include <filesystem>
 
 constexpr int GODOT4_CONFIG_VERSION = 5;
