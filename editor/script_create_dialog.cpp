@@ -863,7 +863,7 @@ ScriptCreateDialog::ScriptCreateDialog() {
 	for (int i = 0; i < ScriptServer::get_language_count(); i++) {
 		String lang = ScriptServer::get_language(i)->get_name();
 		language_menu->add_item(lang);
-		if (lang == "GDScript") {
+		if (lang == "C++ Script") {
 			default_language = i;
 		}
 	}
