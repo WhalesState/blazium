@@ -42,7 +42,6 @@
 #include "editor/gui/editor_scene_tabs.h"
 #include "editor/gui/scene_tree_editor.h"
 #include "editor/inspector_dock.h"
-#include "editor/plugins/node_3d_editor_plugin.h"
 #include "editor/property_selector.h"
 #include "editor/themes/editor_scale.h"
 #include "main/main.h"
@@ -222,8 +221,7 @@ SubViewport *EditorInterface::get_editor_viewport_2d() const {
 }
 
 SubViewport *EditorInterface::get_editor_viewport_3d(int p_idx) const {
-	ERR_FAIL_INDEX_V(p_idx, static_cast<int>(Node3DEditor::VIEWPORTS_COUNT), nullptr);
-	return Node3DEditor::get_singleton()->get_editor_viewport(p_idx)->get_viewport_node();
+	return nullptr;
 }
 
 void EditorInterface::set_main_screen_editor(const String &p_name) {
@@ -515,10 +513,6 @@ void EditorInterface::get_argument_options(const StringName &p_function, int p_i
 		if (pf == "set_main_screen_editor") {
 			for (String E : { "\"2D\"", "\"3D\"", "\"Script\"", "\"AssetLib\"" }) {
 				r_options->push_back(E);
-			}
-		} else if (pf == "get_editor_viewport_3d") {
-			for (uint32_t i = 0; i < Node3DEditor::VIEWPORTS_COUNT; i++) {
-				r_options->push_back(String::num_int64(i));
 			}
 		}
 	}

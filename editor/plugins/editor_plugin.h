@@ -44,7 +44,6 @@ class EditorExportPlugin;
 class EditorImportPlugin;
 class EditorInspectorPlugin;
 class EditorInterface;
-class EditorNode3DGizmoPlugin;
 class EditorResourceConversionPlugin;
 class EditorSceneFormatImporter;
 class EditorScenePostImportPlugin;
@@ -223,9 +222,6 @@ public:
 
 	void add_export_plugin(const Ref<EditorExportPlugin> &p_exporter);
 	void remove_export_plugin(const Ref<EditorExportPlugin> &p_exporter);
-
-	void add_node_3d_gizmo_plugin(const Ref<EditorNode3DGizmoPlugin> &p_gizmo_plugin);
-	void remove_node_3d_gizmo_plugin(const Ref<EditorNode3DGizmoPlugin> &p_gizmo_plugin);
 
 	void add_inspector_plugin(const Ref<EditorInspectorPlugin> &p_plugin);
 	void remove_inspector_plugin(const Ref<EditorInspectorPlugin> &p_plugin);

@@ -39,16 +39,12 @@
 #include "editor/editor_settings.h"
 #include "editor/editor_string_names.h"
 #include "editor/editor_undo_redo_manager.h"
-#include "node_3d_editor_plugin.h"
 #include "scene/3d/camera_3d.h"
 #include "scene/gui/separator.h"
 
 void NavigationObstacle3DEditor::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_READY: {
-			button_create->set_icon(get_editor_theme_icon(SNAME("Edit")));
-			button_edit->set_icon(get_editor_theme_icon(SNAME("MovePoint")));
-			button_edit->set_pressed(true);
 			get_tree()->connect("node_removed", callable_mp(this, &NavigationObstacle3DEditor::_node_removed));
 
 		} break;
@@ -69,13 +65,9 @@ void NavigationObstacle3DEditor::_menu_option(int p_option) {
 	switch (p_option) {
 		case MODE_CREATE: {
 			mode = MODE_CREATE;
-			button_create->set_pressed(true);
-			button_edit->set_pressed(false);
 		} break;
 		case MODE_EDIT: {
 			mode = MODE_EDIT;
-			button_create->set_pressed(false);
-			button_edit->set_pressed(true);
 		} break;
 	}
 }
@@ -104,8 +96,6 @@ void NavigationObstacle3DEditor::_wip_close() {
 	wip.clear();
 	wip_active = false;
 	mode = MODE_EDIT;
-	button_edit->set_pressed(true);
-	button_create->set_pressed(false);
 	edited_point = -1;
 	undo_redo->commit_action();
 }
@@ -328,9 +318,6 @@ EditorPlugin::AfterGUIInput NavigationObstacle3DEditor::forward_3d_gui_input(Cam
 				snap_ignore = false;
 			}
 
-			if (!snap_ignore && Node3DEditor::get_singleton()->is_snap_enabled()) {
-				cpoint = cpoint.snappedf(Node3DEditor::get_singleton()->get_translate_snap());
-			}
 			edited_point_pos = cpoint;
 
 			_polygon_draw();
@@ -523,18 +510,6 @@ void NavigationObstacle3DEditor::_bind_methods() {
 NavigationObstacle3DEditor::NavigationObstacle3DEditor() {
 	obstacle_node = nullptr;
 
-	button_create = memnew(Button);
-	button_create->set_theme_type_variation("FlatButton");
-	add_child(button_create);
-	button_create->connect(SceneStringName(pressed), callable_mp(this, &NavigationObstacle3DEditor::_menu_option).bind(MODE_CREATE));
-	button_create->set_toggle_mode(true);
-
-	button_edit = memnew(Button);
-	button_edit->set_theme_type_variation("FlatButton");
-	add_child(button_edit);
-	button_edit->connect(SceneStringName(pressed), callable_mp(this, &NavigationObstacle3DEditor::_menu_option).bind(MODE_EDIT));
-	button_edit->set_toggle_mode(true);
-
 	mode = MODE_EDIT;
 	wip_active = false;
 	point_lines_meshinstance = memnew(MeshInstance3D);
@@ -593,8 +568,6 @@ void NavigationObstacle3DEditorPlugin::make_visible(bool p_visible) {
 
 NavigationObstacle3DEditorPlugin::NavigationObstacle3DEditorPlugin() {
 	obstacle_editor = memnew(NavigationObstacle3DEditor);
-	Node3DEditor::get_singleton()->add_control_to_menu_panel(obstacle_editor);
-
 	obstacle_editor->hide();
 }
 

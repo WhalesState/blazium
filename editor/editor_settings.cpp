@@ -366,9 +366,9 @@ void EditorSettings::_load_defaults(Ref<ConfigFile> p_extra_config) {
 			locales_to_skip.push_back("te"); // Telugu
 		}
 
-		if (!locales_to_skip.is_empty()) {
+		/*if (!locales_to_skip.is_empty()) {
 			WARN_PRINT("Some locales are not properly supported by selected Text Server and are disabled.");
-		}
+		}*/
 
 		String best;
 		int best_score = 0;

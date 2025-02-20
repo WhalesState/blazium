@@ -48,7 +48,6 @@
 #include "editor/plugins/canvas_item_editor_plugin.h"
 #include "editor/plugins/editor_debugger_plugin.h"
 #include "editor/plugins/editor_resource_conversion_plugin.h"
-#include "editor/plugins/node_3d_editor_plugin.h"
 #include "editor/plugins/script_editor_plugin.h"
 #include "editor/project_settings_editor.h"
 #include "editor/scene_tree_dock.h"
@@ -113,20 +112,6 @@ void EditorPlugin::add_control_to_container(CustomControlContainer p_location, C
 			EditorNode::get_title_bar()->add_child(p_control);
 		} break;
 
-		case CONTAINER_SPATIAL_EDITOR_MENU: {
-			Node3DEditor::get_singleton()->add_control_to_menu_panel(p_control);
-
-		} break;
-		case CONTAINER_SPATIAL_EDITOR_SIDE_LEFT: {
-			Node3DEditor::get_singleton()->add_control_to_left_panel(p_control);
-		} break;
-		case CONTAINER_SPATIAL_EDITOR_SIDE_RIGHT: {
-			Node3DEditor::get_singleton()->add_control_to_right_panel(p_control);
-		} break;
-		case CONTAINER_SPATIAL_EDITOR_BOTTOM: {
-			Node3DEditor::get_singleton()->get_shader_split()->add_child(p_control);
-
-		} break;
 		case CONTAINER_CANVAS_EDITOR_MENU: {
 			CanvasItemEditor::get_singleton()->add_control_to_menu_panel(p_control);
 
@@ -166,20 +151,6 @@ void EditorPlugin::remove_control_from_container(CustomControlContainer p_locati
 			EditorNode::get_title_bar()->remove_child(p_control);
 		} break;
 
-		case CONTAINER_SPATIAL_EDITOR_MENU: {
-			Node3DEditor::get_singleton()->remove_control_from_menu_panel(p_control);
-
-		} break;
-		case CONTAINER_SPATIAL_EDITOR_SIDE_LEFT: {
-			Node3DEditor::get_singleton()->remove_control_from_left_panel(p_control);
-		} break;
-		case CONTAINER_SPATIAL_EDITOR_SIDE_RIGHT: {
-			Node3DEditor::get_singleton()->remove_control_from_right_panel(p_control);
-		} break;
-		case CONTAINER_SPATIAL_EDITOR_BOTTOM: {
-			Node3DEditor::get_singleton()->get_shader_split()->remove_child(p_control);
-
-		} break;
 		case CONTAINER_CANVAS_EDITOR_MENU: {
 			CanvasItemEditor::get_singleton()->remove_control_from_menu_panel(p_control);
 
@@ -276,21 +247,8 @@ void EditorPlugin::forward_canvas_force_draw_over_viewport(Control *p_overlay) {
 
 // Updates the overlays of the 2D viewport or, if in 3D mode, of every 3D viewport.
 int EditorPlugin::update_overlays() const {
-	if (Node3DEditor::get_singleton()->is_visible()) {
-		int count = 0;
-		for (uint32_t i = 0; i < Node3DEditor::VIEWPORTS_COUNT; i++) {
-			Node3DEditorViewport *vp = Node3DEditor::get_singleton()->get_editor_viewport(i);
-			if (vp->is_visible()) {
-				vp->update_surface();
-				count++;
-			}
-		}
-		return count;
-	} else {
-		// This will update the normal viewport itself as well
-		CanvasItemEditor::get_singleton()->get_viewport_control()->queue_redraw();
-		return 1;
-	}
+	CanvasItemEditor::get_singleton()->get_viewport_control()->queue_redraw();
+	return 1;
 }
 
 EditorPlugin::AfterGUIInput EditorPlugin::forward_3d_gui_input(Camera3D *p_camera, const Ref<InputEvent> &p_event) {
@@ -439,16 +397,6 @@ void EditorPlugin::add_export_plugin(const Ref<EditorExportPlugin> &p_exporter) 
 void EditorPlugin::remove_export_plugin(const Ref<EditorExportPlugin> &p_exporter) {
 	ERR_FAIL_COND(!p_exporter.is_valid());
 	EditorExport::get_singleton()->remove_export_plugin(p_exporter);
-}
-
-void EditorPlugin::add_node_3d_gizmo_plugin(const Ref<EditorNode3DGizmoPlugin> &p_gizmo_plugin) {
-	ERR_FAIL_COND(!p_gizmo_plugin.is_valid());
-	Node3DEditor::get_singleton()->add_gizmo_plugin(p_gizmo_plugin);
-}
-
-void EditorPlugin::remove_node_3d_gizmo_plugin(const Ref<EditorNode3DGizmoPlugin> &p_gizmo_plugin) {
-	ERR_FAIL_COND(!p_gizmo_plugin.is_valid());
-	Node3DEditor::get_singleton()->remove_gizmo_plugin(p_gizmo_plugin);
 }
 
 void EditorPlugin::add_inspector_plugin(const Ref<EditorInspectorPlugin> &p_plugin) {
@@ -608,8 +556,6 @@ void EditorPlugin::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("remove_scene_post_import_plugin", "scene_import_plugin"), &EditorPlugin::remove_scene_post_import_plugin);
 	ClassDB::bind_method(D_METHOD("add_export_plugin", "plugin"), &EditorPlugin::add_export_plugin);
 	ClassDB::bind_method(D_METHOD("remove_export_plugin", "plugin"), &EditorPlugin::remove_export_plugin);
-	ClassDB::bind_method(D_METHOD("add_node_3d_gizmo_plugin", "plugin"), &EditorPlugin::add_node_3d_gizmo_plugin);
-	ClassDB::bind_method(D_METHOD("remove_node_3d_gizmo_plugin", "plugin"), &EditorPlugin::remove_node_3d_gizmo_plugin);
 	ClassDB::bind_method(D_METHOD("add_inspector_plugin", "plugin"), &EditorPlugin::add_inspector_plugin);
 	ClassDB::bind_method(D_METHOD("remove_inspector_plugin", "plugin"), &EditorPlugin::remove_inspector_plugin);
 	ClassDB::bind_method(D_METHOD("add_resource_conversion_plugin", "plugin"), &EditorPlugin::add_resource_conversion_plugin);

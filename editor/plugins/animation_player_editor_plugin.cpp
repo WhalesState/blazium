@@ -43,7 +43,6 @@
 #include "editor/gui/editor_file_dialog.h"
 #include "editor/inspector_dock.h"
 #include "editor/plugins/canvas_item_editor_plugin.h" // For onion skinning.
-#include "editor/plugins/node_3d_editor_plugin.h" // For onion skinning.
 #include "editor/scene_tree_dock.h"
 #include "editor/themes/editor_scale.h"
 #include "editor/themes/editor_theme_manager.h"
@@ -1621,43 +1620,20 @@ void AnimationPlayerEditor::_prepare_onion_layers_2_prolog() {
 	}
 
 	// Hide superfluous elements that would make the overlay unnecessary cluttered.
-	if (Node3DEditor::get_singleton()->is_visible()) {
-		// 3D
-		onion.temp.spatial_edit_state = Node3DEditor::get_singleton()->get_state();
-		Dictionary new_state = onion.temp.spatial_edit_state.duplicate();
-		new_state["show_grid"] = false;
-		new_state["show_origin"] = false;
-		Array orig_vp = onion.temp.spatial_edit_state["viewports"];
-		Array vp;
-		vp.resize(4);
-		for (int i = 0; i < vp.size(); i++) {
-			Dictionary d = ((Dictionary)orig_vp[i]).duplicate();
-			d["use_environment"] = false;
-			d["doppler"] = false;
-			d["listener"] = false;
-			d["gizmos"] = onion.include_gizmos ? d["gizmos"] : Variant(false);
-			d["information"] = false;
-			vp[i] = d;
-		}
-		new_state["viewports"] = vp;
-		// TODO: Save/restore only affected entries.
-		Node3DEditor::get_singleton()->set_state(new_state);
-	} else {
-		// CanvasItemEditor.
-		onion.temp.canvas_edit_state = CanvasItemEditor::get_singleton()->get_state();
-		Dictionary new_state = onion.temp.canvas_edit_state.duplicate();
-		new_state["show_origin"] = false;
-		new_state["show_grid"] = false;
-		new_state["show_rulers"] = false;
-		new_state["show_guides"] = false;
-		new_state["show_helpers"] = false;
-		new_state["show_zoom_control"] = false;
-		new_state["show_edit_locks"] = false;
-		new_state["grid_visibility"] = 2; // TODO: Expose CanvasItemEditor::GRID_VISIBILITY_HIDE somehow and use it.
-		new_state["show_transformation_gizmos"] = onion.include_gizmos ? new_state["gizmos"] : Variant(false);
-		// TODO: Save/restore only affected entries.
-		CanvasItemEditor::get_singleton()->set_state(new_state);
-	}
+	// CanvasItemEditor.
+	onion.temp.canvas_edit_state = CanvasItemEditor::get_singleton()->get_state();
+	Dictionary new_state = onion.temp.canvas_edit_state.duplicate();
+	new_state["show_origin"] = false;
+	new_state["show_grid"] = false;
+	new_state["show_rulers"] = false;
+	new_state["show_guides"] = false;
+	new_state["show_helpers"] = false;
+	new_state["show_zoom_control"] = false;
+	new_state["show_edit_locks"] = false;
+	new_state["grid_visibility"] = 2; // TODO: Expose CanvasItemEditor::GRID_VISIBILITY_HIDE somehow and use it.
+	new_state["show_transformation_gizmos"] = onion.include_gizmos ? new_state["gizmos"] : Variant(false);
+	// TODO: Save/restore only affected entries.
+	CanvasItemEditor::get_singleton()->set_state(new_state);
 
 	// Tweak the root viewport to ensure it's rendered before our target.
 	RID root_vp = get_tree()->get_root()->get_viewport_rid();
@@ -1768,13 +1744,7 @@ void AnimationPlayerEditor::_prepare_onion_layers_2_epilog() {
 	player->restore(onion.temp.anim_values_backup);
 
 	// Restore state of main editors.
-	if (Node3DEditor::get_singleton()->is_visible()) {
-		// 3D
-		Node3DEditor::get_singleton()->set_state(onion.temp.spatial_edit_state);
-	} else { // CanvasItemEditor
-		// 2D
-		CanvasItemEditor::get_singleton()->set_state(onion.temp.canvas_edit_state);
-	}
+	CanvasItemEditor::get_singleton()->set_state(onion.temp.canvas_edit_state);
 
 	// Update viewports with skin layers overlaid for the actual engine loop render.
 	onion.can_overlay = true;
@@ -2150,7 +2120,6 @@ AnimationPlayerEditor::~AnimationPlayerEditor() {
 void AnimationPlayerEditorPlugin::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
-			Node3DEditor::get_singleton()->connect(SNAME("transform_key_request"), callable_mp(this, &AnimationPlayerEditorPlugin::_transform_key_request));
 			InspectorDock::get_inspector_singleton()->connect(SNAME("property_keyed"), callable_mp(this, &AnimationPlayerEditorPlugin::_property_keyed));
 			anim_editor->get_track_editor()->connect(SNAME("keying_changed"), callable_mp(this, &AnimationPlayerEditorPlugin::_update_keying));
 			InspectorDock::get_inspector_singleton()->connect(SNAME("edited_object_changed"), callable_mp(anim_editor->get_track_editor(), &AnimationTrackEditor::update_keying));

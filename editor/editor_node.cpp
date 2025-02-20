@@ -143,8 +143,6 @@
 #include "editor/plugins/editor_resource_conversion_plugin.h"
 #include "editor/plugins/gdextension_export_plugin.h"
 #include "editor/plugins/material_editor_plugin.h"
-#include "editor/plugins/mesh_library_editor_plugin.h"
-#include "editor/plugins/node_3d_editor_plugin.h"
 #include "editor/plugins/packed_scene_translation_parser_plugin.h"
 #include "editor/plugins/particle_process_material_editor_plugin.h"
 #include "editor/plugins/plugin_config_dialog.h"
@@ -306,7 +304,7 @@ void EditorNode::_update_title() {
 		// Display the "modified" mark before anything else so that it can always be seen in the OS task bar.
 		title = vformat("(*) %s", title);
 	}
-	DisplayServer::get_singleton()->window_set_title(title + String(" - ") + VERSION_NAME + " :: Jenova Edition");
+	DisplayServer::get_singleton()->window_set_title(title + String(" - ") + VERSION_NAME + " :: Powered By Jenova Framework");
 	if (project_title) {
 		project_title->set_text(title);
 	}
@@ -322,8 +320,6 @@ void EditorNode::shortcut_input(const Ref<InputEvent> &p_event) {
 			FileSystemDock::get_singleton()->focus_on_filter();
 		} else if (ED_IS_SHORTCUT("editor/editor_2d", p_event)) {
 			editor_select(EDITOR_2D);
-		} else if (ED_IS_SHORTCUT("editor/editor_3d", p_event)) {
-			editor_select(EDITOR_3D);
 		} else if (ED_IS_SHORTCUT("editor/editor_script", p_event)) {
 			editor_select(EDITOR_SCRIPT);
 		} else if (ED_IS_SHORTCUT("editor/editor_help", p_event)) {
@@ -459,12 +455,6 @@ void EditorNode::_gdextensions_reloaded() {
 }
 
 void EditorNode::_select_default_main_screen_plugin() {
-	if (EDITOR_3D < main_editor_buttons.size() && main_editor_buttons[EDITOR_3D]->is_visible()) {
-		// If the 3D editor is enabled, use this as the default.
-		editor_select(EDITOR_3D);
-		return;
-	}
-
 	// Switch to the first main screen plugin that is enabled. Usually this is
 	// 2D, but may be subsequent ones if 2D is disabled in the feature profile.
 	for (int i = 0; i < main_editor_buttons.size(); i++) {
@@ -1683,14 +1673,6 @@ void EditorNode::_save_scene_with_preview(String p_file, int p_idx) {
 			if (viewport_texture->get_width() > 0 && viewport_texture->get_height() > 0) {
 				img = viewport_texture->get_image();
 			}
-		} else {
-			// The 3D editor may be disabled as a feature, but scenes can still be opened.
-			// This check prevents the preview from regenerating in case those scenes are then saved.
-			// The preview will be generated if no feature profile is set (as the 3D editor is enabled by default).
-			Ref<EditorFeatureProfile> profile = feature_profile_manager->get_current_profile();
-			if (!profile.is_valid() || !profile->is_feature_disabled(EditorFeatureProfile::FEATURE_3D)) {
-				img = Node3DEditor::get_singleton()->get_editor_viewport(0)->get_viewport_node()->get_texture()->get_image();
-			}
 		}
 
 		if (img.is_valid() && img->get_width() > 0 && img->get_height() > 0) {
@@ -2113,38 +2095,6 @@ void EditorNode::_dialog_action(String p_file) {
 				_save_scene_with_preview(p_file);
 				project_run_bar->play_main_scene((bool)pick_main_scene->get_meta("from_native", false));
 			}
-		} break;
-
-		case FILE_EXPORT_MESH_LIBRARY: {
-			const Dictionary &fd_options = file_export_lib->get_selected_options();
-			bool merge_with_existing_library = fd_options.get(TTR("Merge With Existing"), true);
-			bool apply_mesh_instance_transforms = fd_options.get(TTR("Apply MeshInstance Transforms"), false);
-
-			Ref<MeshLibrary> ml;
-			if (merge_with_existing_library && FileAccess::exists(p_file)) {
-				ml = ResourceLoader::load(p_file, "MeshLibrary");
-
-				if (ml.is_null()) {
-					show_accept(TTR("Can't load MeshLibrary for merging!"), TTR("OK"));
-					return;
-				}
-			}
-
-			if (ml.is_null()) {
-				ml = Ref<MeshLibrary>(memnew(MeshLibrary));
-			}
-
-			MeshLibraryEditor::update_library_file(editor_data.get_edited_scene_root(), ml, merge_with_existing_library, apply_mesh_instance_transforms);
-
-			Error err = ResourceSaver::save(ml, p_file);
-			if (err) {
-				show_accept(TTR("Error saving MeshLibrary!"), TTR("OK"));
-				return;
-			} else if (ResourceCache::has(p_file)) {
-				// Make sure MeshLibrary is updated in the editor.
-				ResourceLoader::load(p_file)->reload_from_file();
-			}
-
 		} break;
 
 		case RESOURCE_SAVE:
@@ -3293,35 +3243,16 @@ void EditorNode::_tool_menu_option(int p_idx) {
 }
 
 void EditorNode::_export_as_menu_option(int p_idx) {
-	if (p_idx == 0) { // MeshLibrary
-		current_menu_option = FILE_EXPORT_MESH_LIBRARY;
+	// Custom menu options added by plugins
+	if (export_as_menu->get_item_submenu(p_idx).is_empty()) { // If not a submenu
+		Callable callback = export_as_menu->get_item_metadata(p_idx);
+		Callable::CallError ce;
+		Variant result;
+		callback.callp(nullptr, 0, result, ce);
 
-		if (!editor_data.get_edited_scene_root()) {
-			show_accept(TTR("This operation can't be done without a scene."), TTR("OK"));
-			return;
-		}
-
-		List<String> extensions;
-		Ref<MeshLibrary> ml(memnew(MeshLibrary));
-		ResourceSaver::get_recognized_extensions(ml, &extensions);
-		file_export_lib->clear_filters();
-		for (const String &E : extensions) {
-			file_export_lib->add_filter("*." + E);
-		}
-
-		file_export_lib->set_title(TTR("Export Mesh Library"));
-		file_export_lib->popup_file_dialog();
-	} else { // Custom menu options added by plugins
-		if (export_as_menu->get_item_submenu(p_idx).is_empty()) { // If not a submenu
-			Callable callback = export_as_menu->get_item_metadata(p_idx);
-			Callable::CallError ce;
-			Variant result;
-			callback.callp(nullptr, 0, result, ce);
-
-			if (ce.error != Callable::CallError::CALL_OK) {
-				String err = Variant::get_callable_error_text(callback, nullptr, 0, ce);
-				ERR_PRINT("Error calling function from export_as menu: " + err);
-			}
+		if (ce.error != Callable::CallError::CALL_OK) {
+			String err = Variant::get_callable_error_text(callback, nullptr, 0, ce);
+			ERR_PRINT("Error calling function from export_as menu: " + err);
 		}
 	}
 }
@@ -3828,8 +3759,6 @@ void EditorNode::_set_main_scene_state(Dictionary p_state, Node *p_for_scene) {
 
 			if (Object::cast_to<CanvasItem>(editor_node)) {
 				editor_select(EDITOR_2D);
-			} else if (Object::cast_to<Node3D>(editor_node)) {
-				editor_select(EDITOR_3D);
 			}
 		}
 	}
@@ -6462,13 +6391,12 @@ void EditorNode::_feature_profile_changed() {
 		editor_dock_manager->set_dock_enabled(ImportDock::get_singleton(), !fs_dock_disabled && !profile->is_feature_disabled(EditorFeatureProfile::FEATURE_IMPORT_DOCK));
 		editor_dock_manager->set_dock_enabled(history_dock, !profile->is_feature_disabled(EditorFeatureProfile::FEATURE_HISTORY_DOCK));
 
-		main_editor_buttons[EDITOR_3D]->set_visible(!profile->is_feature_disabled(EditorFeatureProfile::FEATURE_3D));
+		main_editor_buttons[EDITOR_2D]->set_visible(!profile->is_feature_disabled(EditorFeatureProfile::FEATURE_3D));
 		main_editor_buttons[EDITOR_SCRIPT]->set_visible(!profile->is_feature_disabled(EditorFeatureProfile::FEATURE_SCRIPT));
 		if (AssetLibraryEditorPlugin::is_available()) {
 			main_editor_buttons[EDITOR_ASSETLIB]->set_visible(!profile->is_feature_disabled(EditorFeatureProfile::FEATURE_ASSET_LIB));
 		}
-		if ((profile->is_feature_disabled(EditorFeatureProfile::FEATURE_3D) && singleton->main_editor_buttons[EDITOR_3D]->is_pressed()) ||
-				(profile->is_feature_disabled(EditorFeatureProfile::FEATURE_SCRIPT) && singleton->main_editor_buttons[EDITOR_SCRIPT]->is_pressed()) ||
+		if ((profile->is_feature_disabled(EditorFeatureProfile::FEATURE_SCRIPT) && singleton->main_editor_buttons[EDITOR_SCRIPT]->is_pressed()) ||
 				(AssetLibraryEditorPlugin::is_available() && profile->is_feature_disabled(EditorFeatureProfile::FEATURE_ASSET_LIB) && singleton->main_editor_buttons[EDITOR_ASSETLIB]->is_pressed())) {
 			editor_select(EDITOR_2D);
 		}
@@ -6477,7 +6405,7 @@ void EditorNode::_feature_profile_changed() {
 		editor_dock_manager->set_dock_enabled(NodeDock::get_singleton(), true);
 		editor_dock_manager->set_dock_enabled(FileSystemDock::get_singleton(), true);
 		editor_dock_manager->set_dock_enabled(history_dock, true);
-		main_editor_buttons[EDITOR_3D]->set_visible(true);
+		main_editor_buttons[EDITOR_2D]->set_visible(true);
 		main_editor_buttons[EDITOR_SCRIPT]->set_visible(true);
 		if (AssetLibraryEditorPlugin::is_available()) {
 			main_editor_buttons[EDITOR_ASSETLIB]->set_visible(true);
@@ -7604,7 +7532,6 @@ EditorNode::EditorNode() {
 	add_editor_plugin(memnew(AnimationPlayerEditorPlugin));
 	add_editor_plugin(memnew(AnimationTrackKeyEditEditorPlugin));
 	add_editor_plugin(memnew(CanvasItemEditorPlugin));
-	add_editor_plugin(memnew(Node3DEditorPlugin));
 	add_editor_plugin(memnew(ScriptEditorPlugin));
 
 	EditorAudioBuses *audio_bus_editor = EditorAudioBuses::register_editor();

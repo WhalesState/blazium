@@ -2882,7 +2882,7 @@ void EditorHelp::remove_class(const String &p_class) {
 }
 
 void EditorHelp::_load_doc_thread(void *p_udata) {
-	Ref<Resource> cache_res = ResourceLoader::load(get_cache_full_path());
+	/* Ref<Resource> cache_res = ResourceLoader::load(get_cache_full_path());
 	if (cache_res.is_valid() && cache_res->get_meta("version_hash", "") == doc_version_hash) {
 		Array classes = cache_res->get_meta("classes", Array());
 		for (int i = 0; i < classes.size(); i++) {
@@ -2896,13 +2896,13 @@ void EditorHelp::_load_doc_thread(void *p_udata) {
 		callable_mp_static(&EditorHelp::generate_doc).call_deferred(false);
 	}
 
-	OS::get_singleton()->benchmark_end_measure("EditorHelp", vformat("Generate Documentation (Run %d)", doc_generation_count));
+	OS::get_singleton()->benchmark_end_measure("EditorHelp", vformat("Generate Documentation (Run %d)", doc_generation_count));*/
 }
 
 void EditorHelp::_gen_doc_thread(void *p_udata) {
-	DocTools compdoc;
+	/*DocTools compdoc;
 	compdoc.load_compressed(_doc_data_compressed, _doc_data_compressed_size, _doc_data_uncompressed_size);
-	doc->merge_from(compdoc); // Ensure all is up to date.
+	doc->merge_from(compdoc);
 
 	Ref<Resource> cache_res;
 	cache_res.instantiate();
@@ -2923,7 +2923,7 @@ void EditorHelp::_gen_doc_thread(void *p_udata) {
 		ERR_PRINT("Cannot save editor help cache (" + get_cache_full_path() + ").");
 	}
 
-	OS::get_singleton()->benchmark_end_measure("EditorHelp", vformat("Generate Documentation (Run %d)", doc_generation_count));
+	OS::get_singleton()->benchmark_end_measure("EditorHelp", vformat("Generate Documentation (Run %d)", doc_generation_count));*/
 }
 
 void EditorHelp::_gen_extensions_docs() {
