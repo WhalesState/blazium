@@ -59,7 +59,7 @@ const char *EditorFeatureProfile::feature_descriptions[FEATURE_MAX] = {
 };
 
 const char *EditorFeatureProfile::feature_identifiers[FEATURE_MAX] = {
-	"script",
+	"development",
 	"scene_tree",
 	"node_dock",
 	"filesystem_dock",

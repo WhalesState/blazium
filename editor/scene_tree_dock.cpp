@@ -1182,7 +1182,7 @@ void SceneTreeDock::_tool_selected(int p_tool, bool p_confirm_override) {
 			for (const Node *node : selection) {
 				ScriptEditor::get_singleton()->goto_help("class_name:" + node->get_class());
 			}
-			EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);
+			EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_DEVELOPMENT);
 		} break;
 		case TOOL_AUTO_EXPAND: {
 			scene_tree->set_auto_expand_selected(!EDITOR_GET("docks/scene_tree/auto_expand_to_selected"), true);

@@ -2272,7 +2272,7 @@ void EditorHelp::_update_doc() {
 void EditorHelp::_request_help(const String &p_string) {
 	Error err = _goto_desc(p_string);
 	if (err == OK) {
-		EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);
+		EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_DEVELOPMENT);
 	}
 }
 
@@ -3553,7 +3553,7 @@ void EditorHelpBit::_update_labels() {
 }
 
 void EditorHelpBit::_go_to_help(const String &p_what) {
-	EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);
+	EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_DEVELOPMENT);
 	ScriptEditor::get_singleton()->goto_help(p_what);
 	emit_signal(SNAME("request_hide"));
 }

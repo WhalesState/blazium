@@ -318,9 +318,9 @@ void EditorNode::shortcut_input(const Ref<InputEvent> &p_event) {
 		if (ED_IS_SHORTCUT("editor/filter_files", p_event)) {
 			FileSystemDock::get_singleton()->focus_on_filter();
 		} else if (ED_IS_SHORTCUT("editor/editor_2d", p_event)) {
-			editor_select(EDITOR_2D);
+			editor_select(EDITOR_DESIGNER);
 		} else if (ED_IS_SHORTCUT("editor/editor_script", p_event)) {
-			editor_select(EDITOR_SCRIPT);
+			editor_select(EDITOR_DEVELOPMENT);
 		} else if (ED_IS_SHORTCUT("editor/editor_help", p_event)) {
 			emit_signal(SNAME("request_help_search"), "");
 		} else if (ED_IS_SHORTCUT("editor/editor_next", p_event)) {
@@ -3404,7 +3404,7 @@ void EditorNode::editor_select(int p_which) {
 	}
 
 	if (EDITOR_GET("interface/editor/separate_distraction_mode")) {
-		if (p_which == EDITOR_SCRIPT) {
+		if (p_which == EDITOR_DEVELOPMENT) {
 			set_distraction_free_mode(script_distraction_free);
 		} else {
 			set_distraction_free_mode(scene_distraction_free);
@@ -3465,7 +3465,7 @@ void EditorNode::remove_editor_plugin(EditorPlugin *p_editor, bool p_config_chan
 		for (int i = singleton->main_editor_buttons.size() - 1; i >= 0; i--) {
 			if (p_editor->get_name() == singleton->main_editor_buttons[i]->get_text()) {
 				if (singleton->main_editor_buttons[i]->is_pressed()) {
-					singleton->editor_select(EDITOR_SCRIPT);
+					singleton->editor_select(EDITOR_DEVELOPMENT);
 				}
 
 				memdelete(singleton->main_editor_buttons[i]);
@@ -3755,7 +3755,7 @@ void EditorNode::_set_main_scene_state(Dictionary p_state, Node *p_for_scene) {
 			editor_node = editor_node == nullptr ? get_edited_scene() : editor_node;
 
 			if (Object::cast_to<CanvasItem>(editor_node)) {
-				editor_select(EDITOR_2D);
+				editor_select(EDITOR_DESIGNER);
 			}
 		}
 	}
@@ -5502,7 +5502,7 @@ void EditorNode::_toggle_distraction_free_mode() {
 			}
 		}
 
-		if (screen == EDITOR_SCRIPT) {
+		if (screen == EDITOR_DEVELOPMENT) {
 			script_distraction_free = !script_distraction_free;
 			set_distraction_free_mode(script_distraction_free);
 		} else {
@@ -6388,18 +6388,18 @@ void EditorNode::_feature_profile_changed() {
 		editor_dock_manager->set_dock_enabled(ImportDock::get_singleton(), !fs_dock_disabled && !profile->is_feature_disabled(EditorFeatureProfile::FEATURE_IMPORT_DOCK));
 		editor_dock_manager->set_dock_enabled(history_dock, !profile->is_feature_disabled(EditorFeatureProfile::FEATURE_HISTORY_DOCK));
 
-		main_editor_buttons[EDITOR_2D]->set_visible(!profile->is_feature_disabled(EditorFeatureProfile::FEATURE_3D));
-		main_editor_buttons[EDITOR_SCRIPT]->set_visible(!profile->is_feature_disabled(EditorFeatureProfile::FEATURE_SCRIPT));
-		if ((profile->is_feature_disabled(EditorFeatureProfile::FEATURE_SCRIPT) && singleton->main_editor_buttons[EDITOR_SCRIPT]->is_pressed())) {
-			editor_select(EDITOR_2D);
+		main_editor_buttons[EDITOR_DESIGNER]->set_visible(!profile->is_feature_disabled(EditorFeatureProfile::FEATURE_3D));
+		main_editor_buttons[EDITOR_DEVELOPMENT]->set_visible(!profile->is_feature_disabled(EditorFeatureProfile::FEATURE_SCRIPT));
+		if ((profile->is_feature_disabled(EditorFeatureProfile::FEATURE_SCRIPT) && singleton->main_editor_buttons[EDITOR_DEVELOPMENT]->is_pressed())) {
+			editor_select(EDITOR_DESIGNER);
 		}
 	} else {
 		editor_dock_manager->set_dock_enabled(ImportDock::get_singleton(), true);
 		editor_dock_manager->set_dock_enabled(NodeDock::get_singleton(), true);
 		editor_dock_manager->set_dock_enabled(FileSystemDock::get_singleton(), true);
 		editor_dock_manager->set_dock_enabled(history_dock, true);
-		main_editor_buttons[EDITOR_2D]->set_visible(true);
-		main_editor_buttons[EDITOR_SCRIPT]->set_visible(true);
+		main_editor_buttons[EDITOR_DESIGNER]->set_visible(true);
+		main_editor_buttons[EDITOR_DEVELOPMENT]->set_visible(true);
 	}
 }
 
@@ -7697,15 +7697,8 @@ EditorNode::EditorNode() {
 	ResourceLoader::set_load_callback(_resource_loaded);
 
 	// Use the Ctrl modifier so F2 can be used to rename nodes in the scene tree dock.
-	ED_SHORTCUT_AND_COMMAND("editor/editor_2d", TTR("Open 2D Editor"), KeyModifierMask::CTRL | Key::F1);
-	ED_SHORTCUT_AND_COMMAND("editor/editor_3d", TTR("Open 3D Editor"), KeyModifierMask::CTRL | Key::F2);
-	ED_SHORTCUT_AND_COMMAND("editor/editor_script", TTR("Open Script Editor"), KeyModifierMask::CTRL | Key::F3);
-	ED_SHORTCUT_AND_COMMAND("editor/editor_assetlib", TTR("Open Asset Library"), KeyModifierMask::CTRL | Key::F4);
-
-	ED_SHORTCUT_OVERRIDE("editor/editor_2d", "macos", KeyModifierMask::META | KeyModifierMask::CTRL | Key::KEY_1);
-	ED_SHORTCUT_OVERRIDE("editor/editor_3d", "macos", KeyModifierMask::META | KeyModifierMask::CTRL | Key::KEY_2);
-	ED_SHORTCUT_OVERRIDE("editor/editor_script", "macos", KeyModifierMask::META | KeyModifierMask::CTRL | Key::KEY_3);
-	ED_SHORTCUT_OVERRIDE("editor/editor_assetlib", "macos", KeyModifierMask::META | KeyModifierMask::CTRL | Key::KEY_4);
+	ED_SHORTCUT_AND_COMMAND("editor/editor_2d", TTR("Open Designer"), KeyModifierMask::CTRL | Key::F1);
+	ED_SHORTCUT_AND_COMMAND("editor/editor_script", TTR("Open Development"), KeyModifierMask::CTRL | Key::F3);
 
 	ED_SHORTCUT_AND_COMMAND("editor/editor_next", TTR("Open the next Editor"));
 	ED_SHORTCUT_AND_COMMAND("editor/editor_prev", TTR("Open the previous Editor"));

@@ -32,6 +32,7 @@
 #define SCRIPT_EDITOR_PLUGIN_H
 
 #include "core/object/script_language.h"
+#include "editor/editor_interface.h"
 #include "editor/plugins/editor_plugin.h"
 #include "scene/gui/dialogs.h"
 #include "scene/gui/panel_container.h"
@@ -603,6 +604,9 @@ public:
 	virtual bool handles(Object *p_object) const override;
 	virtual void make_visible(bool p_visible) override;
 	virtual void selected_notify() override;
+	virtual const Ref<Texture2D> get_icon() const override {
+		return EditorInterface::get_singleton()->get_editor_theme()->get_icon("Script", "EditorIcons");
+	}
 
 	virtual String get_unsaved_status(const String &p_for_scene) const override;
 	virtual void save_external_data() override;

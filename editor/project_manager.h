@@ -36,7 +36,6 @@
 
 class CheckBox;
 class EditorAbout;
-class EditorAssetLibrary;
 class EditorFileDialog;
 class EditorTitleBar;
 class HFlowContainer;
@@ -89,7 +88,6 @@ class ProjectManager : public Control {
 
 	enum MainViewTab {
 		MAIN_VIEW_PROJECTS,
-		MAIN_VIEW_ASSETLIB,
 		MAIN_VIEW_MAX
 	};
 
@@ -105,12 +103,10 @@ class ProjectManager : public Control {
 	void _select_main_view(int p_id);
 
 	VBoxContainer *local_projects_vb = nullptr;
-	EditorAssetLibrary *asset_library = nullptr;
 
 	EditorAbout *about_dialog = nullptr;
 
 	void _show_about();
-	void _open_asset_library_confirmed();
 
 	AcceptDialog *error_dialog = nullptr;
 
@@ -135,7 +131,6 @@ class ProjectManager : public Control {
 	VBoxContainer *empty_list_placeholder = nullptr;
 	Button *empty_list_create_project = nullptr;
 	Button *empty_list_import_project = nullptr;
-	Button *empty_list_open_assetlib = nullptr;
 	Label *empty_list_online_warning = nullptr;
 
 	void _update_list_placeholder();

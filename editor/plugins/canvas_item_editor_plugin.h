@@ -32,6 +32,7 @@
 #define CANVAS_ITEM_EDITOR_PLUGIN_H
 
 #include "editor/plugins/editor_plugin.h"
+#include "editor/editor_interface.h"
 #include "scene/gui/box_container.h"
 
 class AcceptDialog;
@@ -615,6 +616,10 @@ public:
 	virtual Dictionary get_state() const override;
 	virtual void set_state(const Dictionary &p_state) override;
 	virtual void clear() override;
+	virtual const Ref<Texture2D> get_icon() const override
+	{
+		return EditorInterface::get_singleton()->get_editor_theme()->get_icon("2D", "EditorIcons");
+	}
 
 	CanvasItemEditor *get_canvas_item_editor() { return canvas_item_editor; }
 

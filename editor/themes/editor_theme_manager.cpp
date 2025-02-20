@@ -2259,12 +2259,6 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_stylebox(CoreStringName(normal), "EditorHelpBitContent", style);
 	}
 
-	// Asset Library.
-	p_theme->set_stylebox("bg", "AssetLib", p_config.base_empty_style);
-	p_theme->set_stylebox(SceneStringName(panel), "AssetLib", p_config.content_panel_style);
-	p_theme->set_color("status_color", "AssetLib", Color(0.5, 0.5, 0.5)); // FIXME: Use a defined color instead.
-	p_theme->set_icon("dismiss", "AssetLib", p_theme->get_icon(SNAME("Close"), EditorStringName(EditorIcons)));
-
 	// Debugger.
 	{
 		Ref<StyleBoxFlat> debugger_panel_style = p_config.content_panel_style->duplicate();

@@ -1037,7 +1037,7 @@ void EditorProperty::menu_option(int p_option) {
 		} break;
 		case MENU_OPEN_DOCUMENTATION: {
 			ScriptEditor::get_singleton()->goto_help(doc_path);
-			EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);
+			EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_DEVELOPMENT);
 		} break;
 	}
 }
@@ -1297,7 +1297,7 @@ void EditorInspectorCategory::_handle_menu_option(int p_option) {
 	switch (p_option) {
 		case MENU_OPEN_DOCS:
 			ScriptEditor::get_singleton()->goto_help("class:" + doc_class_name);
-			EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);
+			EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_DEVELOPMENT);
 			break;
 	}
 }

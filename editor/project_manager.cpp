@@ -231,7 +231,6 @@ void ProjectManager::_update_theme(bool p_skip_creation) {
 		title_bar_logo->set_icon(get_editor_theme_icon(SNAME("TitleBarLogo")));
 
 		_set_main_view_icon(MAIN_VIEW_PROJECTS, get_editor_theme_icon(SNAME("ProjectList")));
-		_set_main_view_icon(MAIN_VIEW_ASSETLIB, get_editor_theme_icon(SNAME("AssetLib")));
 
 		// Project list.
 		{
@@ -240,7 +239,6 @@ void ProjectManager::_update_theme(bool p_skip_creation) {
 
 			empty_list_create_project->set_icon(get_editor_theme_icon(SNAME("Add")));
 			empty_list_import_project->set_icon(get_editor_theme_icon(SNAME("Load")));
-			empty_list_open_assetlib->set_icon(get_editor_theme_icon(SNAME("AssetLib")));
 
 			empty_list_online_warning->add_theme_font_override(SceneStringName(font), get_theme_font(SNAME("italic"), EditorStringName(EditorFonts)));
 			empty_list_online_warning->add_theme_color_override(SceneStringName(font_color), get_theme_color(SNAME("font_placeholder_color"), EditorStringName(Editor)));
@@ -353,17 +351,6 @@ void ProjectManager::_show_about() {
 	about_dialog->popup_centered(Size2(780, 500) * EDSCALE);
 }
 
-void ProjectManager::_open_asset_library_confirmed() {
-	const int network_mode = EDITOR_GET("network/connection/network_mode");
-	if (network_mode == EditorSettings::NETWORK_OFFLINE) {
-		EditorSettings::get_singleton()->set_setting("network/connection/network_mode", EditorSettings::NETWORK_ONLINE);
-		EditorSettings::get_singleton()->notify_changes();
-		EditorSettings::get_singleton()->save();
-	}
-
-	_select_main_view(MAIN_VIEW_ASSETLIB);
-}
-
 void ProjectManager::_show_error(const String &p_message, const Size2 &p_min_size) {
 	error_dialog->set_text(p_message);
 	error_dialog->popup_centered(p_min_size);
@@ -409,14 +396,10 @@ void ProjectManager::_update_list_placeholder() {
 		return;
 	}
 
-	empty_list_open_assetlib->set_visible(asset_library);
-
 	const int network_mode = EDITOR_GET("network/connection/network_mode");
 	if (network_mode == EditorSettings::NETWORK_OFFLINE) {
-		empty_list_open_assetlib->set_text(TTR("Go Online and Open Asset Library"));
 		empty_list_online_warning->set_visible(true);
 	} else {
-		empty_list_open_assetlib->set_text(TTR("Open Asset Library"));
 		empty_list_online_warning->set_visible(false);
 	}
 
@@ -1348,12 +1331,6 @@ ProjectManager::ProjectManager() {
 				empty_list_import_project->set_theme_type_variation("PanelBackgroundButton");
 				empty_list_actions->add_child(empty_list_import_project);
 				empty_list_import_project->connect(SceneStringName(pressed), callable_mp(this, &ProjectManager::_import_project));
-
-				empty_list_open_assetlib = memnew(Button);
-				empty_list_open_assetlib->set_text(TTR("Open Asset Library"));
-				empty_list_open_assetlib->set_theme_type_variation("PanelBackgroundButton");
-				empty_list_actions->add_child(empty_list_open_assetlib);
-				empty_list_open_assetlib->connect(SceneStringName(pressed), callable_mp(this, &ProjectManager::_open_asset_library_confirmed));
 
 				empty_list_online_warning = memnew(Label);
 				empty_list_online_warning->set_horizontal_alignment(HorizontalAlignment::HORIZONTAL_ALIGNMENT_CENTER);
