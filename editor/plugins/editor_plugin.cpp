@@ -206,8 +206,8 @@ void EditorPlugin::set_force_draw_over_forwarding_enabled() {
 	always_draw_over_forwarding_list->add_plugin(this);
 }
 
-void EditorPlugin::notify_scene_changed(const Node *scn_root) {
-	emit_signal(SNAME("scene_changed"), scn_root);
+void EditorPlugin::notify_scene_changed(const Node *cui_root) {
+	emit_signal(SNAME("scene_changed"), cui_root);
 }
 
 void EditorPlugin::notify_main_screen_changed(const String &screen_name) {

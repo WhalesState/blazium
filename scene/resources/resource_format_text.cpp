@@ -1407,7 +1407,7 @@ void ResourceFormatLoaderText::get_recognized_extensions_for_type(const String &
 	}
 
 	if (ClassDB::is_parent_class("PackedScene", p_type)) {
-		p_extensions->push_back("tscn");
+		p_extensions->push_back("gui");
 	}
 
 	// Don't allow .tres for PackedScenes.
@@ -1417,7 +1417,7 @@ void ResourceFormatLoaderText::get_recognized_extensions_for_type(const String &
 }
 
 void ResourceFormatLoaderText::get_recognized_extensions(List<String> *p_extensions) const {
-	p_extensions->push_back("tscn");
+	p_extensions->push_back("gui");
 	p_extensions->push_back("tres");
 }
 
@@ -1427,7 +1427,7 @@ bool ResourceFormatLoaderText::handles_type(const String &p_type) const {
 
 void ResourceFormatLoaderText::get_classes_used(const String &p_path, HashSet<StringName> *r_classes) {
 	String ext = p_path.get_extension().to_lower();
-	if (ext == "tscn") {
+	if (ext == "gui") {
 		r_classes->insert("PackedScene");
 	}
 
@@ -1447,7 +1447,7 @@ void ResourceFormatLoaderText::get_classes_used(const String &p_path, HashSet<St
 
 String ResourceFormatLoaderText::get_resource_type(const String &p_path) const {
 	String ext = p_path.get_extension().to_lower();
-	if (ext == "tscn") {
+	if (ext == "gui") {
 		return "PackedScene";
 	} else if (ext != "tres") {
 		return String();
@@ -1489,7 +1489,7 @@ String ResourceFormatLoaderText::get_resource_script_class(const String &p_path)
 ResourceUID::ID ResourceFormatLoaderText::get_resource_uid(const String &p_path) const {
 	String ext = p_path.get_extension().to_lower();
 
-	if (ext != "tscn" && ext != "tres") {
+	if (ext != "gui" && ext != "tres") {
 		return ResourceUID::INVALID_ID;
 	}
 
@@ -1681,7 +1681,7 @@ static String _resource_get_class(Ref<Resource> p_resource) {
 }
 
 Error ResourceFormatSaverTextInstance::save(const String &p_path, const Ref<Resource> &p_resource, uint32_t p_flags) {
-	if (p_path.ends_with(".tscn")) {
+	if (p_path.ends_with(".gui")) {
 		packed_scene = p_resource;
 	}
 
@@ -2091,7 +2091,7 @@ Error ResourceLoaderText::set_uid(Ref<FileAccess> p_f, ResourceUID::ID p_uid) {
 }
 
 Error ResourceFormatSaverText::save(const Ref<Resource> &p_resource, const String &p_path, uint32_t p_flags) {
-	if (p_path.ends_with(".tscn") && !Ref<PackedScene>(p_resource).is_valid()) {
+	if (p_path.ends_with(".gui") && !Ref<PackedScene>(p_resource).is_valid()) {
 		return ERR_FILE_UNRECOGNIZED;
 	}
 
@@ -2101,7 +2101,7 @@ Error ResourceFormatSaverText::save(const Ref<Resource> &p_resource, const Strin
 
 Error ResourceFormatSaverText::set_uid(const String &p_path, ResourceUID::ID p_uid) {
 	String lc = p_path.to_lower();
-	if (!lc.ends_with(".tscn") && !lc.ends_with(".tres")) {
+	if (!lc.ends_with(".gui") && !lc.ends_with(".tres")) {
 		return ERR_FILE_UNRECOGNIZED;
 	}
 
@@ -2134,7 +2134,7 @@ bool ResourceFormatSaverText::recognize(const Ref<Resource> &p_resource) const {
 
 void ResourceFormatSaverText::get_recognized_extensions(const Ref<Resource> &p_resource, List<String> *p_extensions) const {
 	if (Ref<PackedScene>(p_resource).is_valid()) {
-		p_extensions->push_back("tscn"); // Text scene.
+		p_extensions->push_back("gui"); // Text scene.
 	} else {
 		p_extensions->push_back("tres"); // Text resource.
 	}

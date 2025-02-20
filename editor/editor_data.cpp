@@ -865,7 +865,7 @@ String EditorData::get_scene_title(int p_idx, bool p_always_strip_extension) con
 		return basename;
 	}
 
-	// Return the filename including the extension if there's ambiguity (e.g. both `foo.tscn` and `foo.scn` are being edited).
+	// Return the filename including the extension if there's ambiguity (e.g. both `foo.gui` and `foo.cui` are being edited).
 	for (int i = 0; i < edited_scene.size(); i++) {
 		if (i == p_idx) {
 			// Don't compare the edited scene against itself.

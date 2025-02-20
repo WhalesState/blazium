@@ -3298,9 +3298,9 @@ int Main::start() {
 		} else if (E->get().length() && E->get()[0] != '-' && positional_arg.is_empty()) {
 			positional_arg = E->get();
 
-			if (E->get().ends_with(".scn") ||
-					E->get().ends_with(".tscn") ||
-					E->get().ends_with(".escn") ||
+			if (E->get().ends_with(".cui") ||
+					E->get().ends_with(".gui") ||
+					E->get().ends_with(".ecui") ||
 					E->get().ends_with(".res") ||
 					E->get().ends_with(".tres")) {
 				// Only consider the positional argument to be a scene path if it ends with
@@ -3658,14 +3658,14 @@ int Main::start() {
 					Node *n = nullptr;
 					if (ResourceLoader::get_resource_type(info.path) == "PackedScene") {
 						// Cache the scene reference before loading it (for cyclic references)
-						Ref<PackedScene> scn;
-						scn.instantiate();
-						scn->set_path(info.path);
-						scn->reload_from_file();
-						ERR_CONTINUE_MSG(!scn.is_valid(), vformat("Failed to instantiate an autoload, can't load from path: %s.", info.path));
+						Ref<PackedScene> cui;
+						cui.instantiate();
+						cui->set_path(info.path);
+						cui->reload_from_file();
+						ERR_CONTINUE_MSG(!cui.is_valid(), vformat("Failed to instantiate an autoload, can't load from path: %s.", info.path));
 
-						if (scn.is_valid()) {
-							n = scn->instantiate();
+						if (cui.is_valid()) {
+							n = cui->instantiate();
 						}
 					} else {
 						Ref<Resource> res = ResourceLoader::load(info.path);

@@ -81,12 +81,12 @@ uint32_t Shape::pathCoords(const Point** pts) const noexcept
 }
 
 
-Result Shape::appendPath(const PathCommand *cmds, uint32_t cmdCnt, const Point* pts, uint32_t ptsCnt) noexcept
+Result Shape::appendPath(const PathCommand *cmds, uint32_t cmdCnt, const Point* pts, uint32_t pguit) noexcept
 {
-    if (cmdCnt == 0 || ptsCnt == 0 || !cmds || !pts) return Result::InvalidArguments;
+    if (cmdCnt == 0 || pguit == 0 || !cmds || !pts) return Result::InvalidArguments;
 
-    pImpl->grow(cmdCnt, ptsCnt);
-    pImpl->append(cmds, cmdCnt, pts, ptsCnt);
+    pImpl->grow(cmdCnt, pguit);
+    pImpl->append(cmds, cmdCnt, pts, pguit);
 
     pImpl->flag |= RenderUpdateFlag::Path;
 

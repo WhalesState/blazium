@@ -535,7 +535,7 @@ void SceneImportSettingsDialog::_update_view_gizmos() {
 			Ref<ImporterMesh> mesh;
 			mesh.instantiate();
 			// ResourceImporterScene::get_collision_shapes() expects ImporterMesh, not Mesh.
-			// TODO: Duplicate code with EditorSceneFormatImporterESCN::import_scene()
+			// TODO: Duplicate code with EditorSceneFormatImporterEcui::import_scene()
 			// Consider making a utility function to convert from Mesh to ImporterMesh.
 			Ref<Mesh> mesh_3d_mesh = mesh_node->get_mesh();
 			Ref<ArrayMesh> array_mesh_3d_mesh = mesh_3d_mesh;

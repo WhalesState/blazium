@@ -810,9 +810,9 @@ String EditorExportPlatform::_export_customize(const String &p_path, LocalVector
 		}
 
 		if (modified || p_force_save) {
-			// If modified, save it again. This is also used for TSCN -> SCN conversion on export.
+			// If modified, save it again. This is also used for gui -> cui conversion on export.
 
-			String base_file = p_path.get_file().get_basename() + ".scn"; // use SCN for saving (binary) and repack (If conversting, TSCN PackedScene representation is inefficient, so repacking is also desired).
+			String base_file = p_path.get_file().get_basename() + ".cui"; // use cui for saving (binary) and repack (If conversting, gui PackedScene representation is inefficient, so repacking is also desired).
 			save_path = export_base_path.path_join("export-" + p_path.md5_text() + "-" + base_file);
 
 			Ref<PackedScene> s;
@@ -1322,7 +1322,7 @@ Error EditorExportPlatform::export_project_files(const Ref<EditorExportPreset> &
 			// Just store it as it comes.
 
 			// Customization only happens if plugins did not take care of it before.
-			bool force_binary = convert_text_to_binary && (path.get_extension().to_lower() == "tres" || path.get_extension().to_lower() == "tscn");
+			bool force_binary = convert_text_to_binary && (path.get_extension().to_lower() == "tres" || path.get_extension().to_lower() == "gui");
 			String export_path = _export_customize(path, customize_resources_plugins, customize_scenes_plugins, export_cache, export_base_path, force_binary);
 
 			if (export_path != path) {

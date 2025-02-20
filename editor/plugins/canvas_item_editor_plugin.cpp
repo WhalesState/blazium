@@ -6098,10 +6098,10 @@ bool CanvasItemEditorViewport::can_drop_data(const Point2 &p_point, const Varian
 		String error_message;
 
 		if (ClassDB::is_parent_class(res_type, "PackedScene")) {
-			Ref<PackedScene> scn = ResourceLoader::load(path);
-			ERR_CONTINUE(scn.is_null());
+			Ref<PackedScene> cui = ResourceLoader::load(path);
+			ERR_CONTINUE(cui.is_null());
 
-			Node *instantiated_scene = scn->instantiate(PackedScene::GEN_EDIT_STATE_INSTANCE);
+			Node *instantiated_scene = cui->instantiate(PackedScene::GEN_EDIT_STATE_INSTANCE);
 			if (!instantiated_scene) {
 				continue;
 			}

@@ -158,7 +158,7 @@ class ResourceCache {
 	static Mutex lock;
 	static HashMap<String, Resource *> resources;
 #ifdef TOOLS_ENABLED
-	static HashMap<String, HashMap<String, String>> resource_path_cache; // Each tscn has a set of resource paths and IDs.
+	static HashMap<String, HashMap<String, String>> resource_path_cache; // Each gui has a set of resource paths and IDs.
 	static RWLock path_cache_lock;
 #endif // TOOLS_ENABLED
 	friend void unregister_core_types();

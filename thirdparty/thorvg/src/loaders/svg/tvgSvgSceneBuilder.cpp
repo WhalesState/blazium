@@ -471,20 +471,20 @@ static bool _appendClipShape(SvgLoaderData& loaderData, SvgNode* node, Shape* sh
     //The 'transform' matrix has higher priority than the node->transform, since it already contains it
     auto m = transform ? transform : (node->transform ? node->transform : nullptr);
 
-    uint32_t currentPtsCnt = 0;
+    uint32_t currentPguit = 0;
     if (m) {
         const Point *tmp = nullptr;
-        currentPtsCnt = shape->pathCoords(&tmp);
+        currentPguit = shape->pathCoords(&tmp);
     }
 
     if (!_recognizeShape(node, shape)) return false;
 
     if (m) {
         const Point *pts = nullptr;
-        auto ptsCnt = shape->pathCoords(&pts);
+        auto pguit = shape->pathCoords(&pts);
 
-        auto p = const_cast<Point*>(pts) + currentPtsCnt;
-        while (currentPtsCnt++ < ptsCnt) {
+        auto p = const_cast<Point*>(pts) + currentPguit;
+        while (currentPguit++ < pguit) {
             *p *= *m;
             ++p;
         }

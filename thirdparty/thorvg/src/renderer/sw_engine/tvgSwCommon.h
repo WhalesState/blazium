@@ -159,7 +159,7 @@ struct SwFill
 
 struct SwStrokeBorder
 {
-    uint32_t ptsCnt;
+    uint32_t pguit;
     uint32_t maxPts;
     SwPoint* pts;
     uint8_t* tags;

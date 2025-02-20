@@ -229,7 +229,7 @@ VARIANT_ENUM_CAST(SceneState::GenEditState)
 
 class PackedScene : public Resource {
 	GDCLASS(PackedScene, Resource);
-	RES_BASE_EXTENSION("scn");
+	RES_BASE_EXTENSION("cui");
 
 	Ref<SceneState> state;
 

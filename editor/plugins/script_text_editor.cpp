@@ -491,7 +491,7 @@ String ScriptTextEditor::get_name() {
 		const String &script_name = script->get_name();
 		if (!script_name.is_empty()) {
 			// If the built-in script has a custom resource name defined,
-			// display the built-in script name as follows: `ResourceName (scene_file.tscn)`
+			// display the built-in script name as follows: `ResourceName (scene_file.gui)`
 			name = vformat("%s (%s)", script_name, name.get_slice("::", 0));
 		}
 	}

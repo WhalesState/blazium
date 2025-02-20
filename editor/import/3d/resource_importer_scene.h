@@ -313,8 +313,8 @@ public:
 	static Transform3D get_collision_shapes_transform(const M &p_options);
 };
 
-class EditorSceneFormatImporterESCN : public EditorSceneFormatImporter {
-	GDCLASS(EditorSceneFormatImporterESCN, EditorSceneFormatImporter);
+class EditorSceneFormatImporterEcui : public EditorSceneFormatImporter {
+	GDCLASS(EditorSceneFormatImporterEcui, EditorSceneFormatImporter);
 
 public:
 	virtual uint32_t get_import_flags() const override;

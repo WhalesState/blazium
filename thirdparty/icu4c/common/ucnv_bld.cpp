@@ -267,7 +267,7 @@ ucnv_enableCleanup() {
 }
 
 static UBool U_CALLCONV
-isCnvAcceptable(void * /*context*/,
+icuivAcceptable(void * /*context*/,
                 const char * /*type*/, const char * /*name*/,
                 const UDataInfo *pInfo) {
     return (UBool)(
@@ -351,7 +351,7 @@ static UConverterSharedData *createConverterFromFile(UConverterLoadArgs *pArgs, 
 
     UTRACE_DATA2(UTRACE_OPEN_CLOSE, "load converter %s from package %s", pArgs->name, pArgs->pkg);
 
-    data = udata_openChoice(pArgs->pkg, DATA_TYPE, pArgs->name, isCnvAcceptable, nullptr, err);
+    data = udata_openChoice(pArgs->pkg, DATA_TYPE, pArgs->name, icuivAcceptable, nullptr, err);
     if(U_FAILURE(*err))
     {
         UTRACE_EXIT_STATUS(*err);

@@ -4809,7 +4809,7 @@ void AnimationTrackEditor::_update_step_spinbox() {
 		if (animation->get_step() == 0) {
 			step->set_value(0);
 		} else {
-			// The value stored within tscn cannot restored the original FPS due to lack of precision,
+			// The value stored within gui cannot restored the original FPS due to lack of precision,
 			// so the value should be limited to integer.
 			step->set_value(Math::round(1.0 / animation->get_step()));
 		}

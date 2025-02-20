@@ -32,7 +32,7 @@
 static int32_t initEngineCnt = false;
 static int32_t rendererCnt = 0;
 static SwMpool* globalMpool = nullptr;
-static uint32_t threadsCnt = 0;
+static uint32_t threadcuit = 0;
 
 struct SwTask : Task
 {
@@ -593,7 +593,7 @@ bool SwRenderer::mempool(bool shared)
             mpool = globalMpool;
         }
     } else {
-        if (sharedMpool) mpool = mpoolInit(threadsCnt);
+        if (sharedMpool) mpool = mpoolInit(threadcuit);
     }
 
     sharedMpool = shared;
@@ -819,7 +819,7 @@ bool SwRenderer::init(uint32_t threads)
 {
     if ((initEngineCnt++) > 0) return true;
 
-    threadsCnt = threads;
+    threadcuit = threads;
 
     //Share the memory pool among the renderer
     globalMpool = mpoolInit(threads);

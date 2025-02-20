@@ -423,12 +423,12 @@ PackedStringArray EditorInterface::get_open_scenes() const {
 	PackedStringArray ret;
 	Vector<EditorData::EditedScene> scenes = EditorNode::get_editor_data().get_edited_scenes();
 
-	int scns_amount = scenes.size();
-	for (int idx_scn = 0; idx_scn < scns_amount; idx_scn++) {
-		if (scenes[idx_scn].root == nullptr) {
+	int cuis_amount = scenes.size();
+	for (int idx_cui = 0; idx_cui < cuis_amount; idx_cui++) {
+		if (scenes[idx_cui].root == nullptr) {
 			continue;
 		}
-		ret.push_back(scenes[idx_scn].root->get_scene_file_path());
+		ret.push_back(scenes[idx_cui].root->get_scene_file_path());
 	}
 	return ret;
 }
@@ -437,12 +437,12 @@ Array EditorInterface::get_open_scenes_roots() const {
 	Array ret;
 	Vector<EditorData::EditedScene> scenes = EditorNode::get_editor_data().get_edited_scenes();
 
-	int scns_amount = scenes.size();
-	for (int idx_scn = 0; idx_scn < scns_amount; idx_scn++) {
-		if (scenes[idx_scn].root == nullptr) {
+	int cuis_amount = scenes.size();
+	for (int idx_cui = 0; idx_cui < cuis_amount; idx_cui++) {
+		if (scenes[idx_cui].root == nullptr) {
 			continue;
 		}
-		ret.push_back(scenes[idx_scn].root);
+		ret.push_back(scenes[idx_cui].root);
 	}
 	return ret;
 }

@@ -839,7 +839,7 @@ static const char *language_list[][2] = {
 	{ "sba", "Ngambay" },
 	{ "sbp", "Sangu" },
 	{ "sc", "Sardinian" },
-	{ "scn", "Sicilian" },
+	{ "cui", "Sicilian" },
 	{ "sco", "Scots" },
 	{ "sd", "Sindhi" },
 	{ "sdc", "Sassarese Sardinian" },

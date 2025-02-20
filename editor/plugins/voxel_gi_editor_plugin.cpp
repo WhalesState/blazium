@@ -169,7 +169,7 @@ void VoxelGIEditorPlugin::_voxel_gi_save_path_and_bake(const String &p_path) {
 		voxel_gi->bake();
 		// Ensure the VoxelGIData is always saved to an external resource.
 		// This avoids bloating the scene file with large binary data,
-		// which would be serialized as Base64 if the scene is a `.tscn` file.
+		// which would be serialized as Base64 if the scene is a `.gui` file.
 		Ref<VoxelGIData> voxel_gi_data = voxel_gi->get_probe_data();
 		ERR_FAIL_COND(voxel_gi_data.is_null());
 		voxel_gi_data->set_path(p_path);

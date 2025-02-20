@@ -184,7 +184,7 @@ const char *RenamesMap3To4::gdscript_function_renames[][2] = {
 	// { "get_v_offset", "get_drag_vertical_offset" }, // Camera2D -- Breaks PathFollow, Camera.
 	// { "get_v_scroll", "get_v_scroll_bar" }, // ItemList -- Breaks TextView.
 	// { "has_network_peer", "has_multiplayer_peer" }, // MultiplayerAPI -- Breaks SceneTree.
-	// { "instance", "instantiate" }, // PackedScene, ClassDB -- Breaks FileSystemDock signal, and also .tscn files ("[instance=ExtResource( 17 )]"). This is implemented as custom rule.
+	// { "instance", "instantiate" }, // PackedScene, ClassDB -- Breaks FileSystemDock signal, and also .gui files ("[instance=ExtResource( 17 )]"). This is implemented as custom rule.
 	// { "is_listening", "is_bound"}, // PacketPeerUDP -- Breaks TCPServer, UDPServer.
 	// { "is_refusing_new_network_connections", "is_refusing_new_connections"}, // MultiplayerAPI -- Breaks SceneTree.
 	// { "is_valid", "has_valid_event" }, // Shortcut -- Breaks Callable, and more.

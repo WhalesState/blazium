@@ -594,7 +594,7 @@ bool EditorExportPlatformAndroid::_should_compress_asset(const String &p_path, c
 		// Godot-specific:
 		".webp", // Same reasoning as .png
 		".cfb", // Don't let small config files slow-down startup
-		".scn", // Binary scenes are usually already compressed
+		".cui", // Binary scenes are usually already compressed
 		".ctex", // Streamable textures are usually already compressed
 		// Trailer for easier processing
 		nullptr

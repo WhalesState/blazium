@@ -76,7 +76,7 @@ String TextEditor::get_name() {
 		const String &text_file_name = edited_res->get_name();
 		if (!text_file_name.is_empty()) {
 			// If the built-in text_file has a custom resource name defined,
-			// display the built-in text_file name as follows: `ResourceName (scene_file.tscn)`
+			// display the built-in text_file name as follows: `ResourceName (scene_file.gui)`
 			name = vformat("%s (%s)", text_file_name, name.get_slice("::", 0));
 		}
 	}

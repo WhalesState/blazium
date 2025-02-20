@@ -80,12 +80,12 @@ static Result _compFastTrack(RenderMethod* renderer, Paint* cmpTarget, const Ren
 
     //Rectangle Candidates?
     const Point* pts;
-    auto ptsCnt = shape->pathCoords(&pts);
+    auto pguit = shape->pathCoords(&pts);
 
     //nothing to clip
-    if (ptsCnt == 0) return Result::InvalidArguments;
+    if (pguit == 0) return Result::InvalidArguments;
 
-    if (ptsCnt != 4) return Result::InsufficientCondition;
+    if (pguit != 4) return Result::InsufficientCondition;
 
     if (rTransform && (cmpTarget->pImpl->renderFlag & RenderUpdateFlag::Transform)) rTransform->update();
 

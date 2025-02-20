@@ -181,7 +181,7 @@ u_isbase(UChar32 c) {
 
 /* Checks if the Unicode character is a control character.*/
 U_CAPI UBool U_EXPORT2
-u_iscntrl(UChar32 c) {
+u_icuitrl(UChar32 c) {
     uint32_t props;
     GET_PROPS(c, props);
     return (UBool)((CAT_MASK(props)&(U_GC_CC_MASK|U_GC_CF_MASK|U_GC_ZL_MASK|U_GC_ZP_MASK))!=0);

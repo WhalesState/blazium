@@ -399,14 +399,14 @@ Node *EditorAutoloadSettings::_create_autoload(const String &p_path) {
 	Node *n = nullptr;
 	if (ResourceLoader::get_resource_type(p_path) == "PackedScene") {
 		// Cache the scene reference before loading it (for cyclic references)
-		Ref<PackedScene> scn;
-		scn.instantiate();
-		scn->set_path(p_path);
-		scn->reload_from_file();
-		ERR_FAIL_COND_V_MSG(!scn.is_valid(), nullptr, vformat("Failed to create an autoload, can't load from path: %s.", p_path));
+		Ref<PackedScene> cui;
+		cui.instantiate();
+		cui->set_path(p_path);
+		cui->reload_from_file();
+		ERR_FAIL_COND_V_MSG(!cui.is_valid(), nullptr, vformat("Failed to create an autoload, can't load from path: %s.", p_path));
 
-		if (scn.is_valid()) {
-			n = scn->instantiate();
+		if (cui.is_valid()) {
+			n = cui->instantiate();
 		}
 	} else {
 		Ref<Resource> res = ResourceLoader::load(p_path);

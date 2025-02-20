@@ -257,7 +257,7 @@ void ResourceImporterScene::get_recognized_extensions(List<String> *p_extensions
 }
 
 String ResourceImporterScene::get_save_extension() const {
-	return animation_importer ? "res" : "scn";
+	return animation_importer ? "res" : "cui";
 }
 
 String ResourceImporterScene::get_resource_type() const {
@@ -3114,9 +3114,9 @@ Error ResourceImporterScene::import(const String &p_source_file, const String &p
 	} else {
 		Ref<PackedScene> packer = memnew(PackedScene);
 		packer->pack(scene);
-		print_verbose("Saving scene to: " + p_save_path + ".scn");
-		err = ResourceSaver::save(packer, p_save_path + ".scn", flags); //do not take over, let the changed files reload themselves
-		ERR_FAIL_COND_V_MSG(err != OK, err, "Cannot save scene to file '" + p_save_path + ".scn'.");
+		print_verbose("Saving scene to: " + p_save_path + ".cui");
+		err = ResourceSaver::save(packer, p_save_path + ".cui", flags); //do not take over, let the changed files reload themselves
+		ERR_FAIL_COND_V_MSG(err != OK, err, "Cannot save scene to file '" + p_save_path + ".cui'.");
 	}
 
 	memdelete(scene);
@@ -3202,15 +3202,15 @@ void ResourceImporterScene::get_scene_importer_extensions(List<String> *p_extens
 
 ///////////////////////////////////////
 
-uint32_t EditorSceneFormatImporterESCN::get_import_flags() const {
+uint32_t EditorSceneFormatImporterEcui::get_import_flags() const {
 	return IMPORT_SCENE;
 }
 
-void EditorSceneFormatImporterESCN::get_extensions(List<String> *r_extensions) const {
-	r_extensions->push_back("escn");
+void EditorSceneFormatImporterEcui::get_extensions(List<String> *r_extensions) const {
+	r_extensions->push_back("ecui");
 }
 
-Node *EditorSceneFormatImporterESCN::import_scene(const String &p_path, uint32_t p_flags, const HashMap<StringName, Variant> &p_options, List<String> *r_missing_deps, Error *r_err) {
+Node *EditorSceneFormatImporterEcui::import_scene(const String &p_path, uint32_t p_flags, const HashMap<StringName, Variant> &p_options, List<String> *r_missing_deps, Error *r_err) {
 	Error error;
 	Ref<PackedScene> ps = ResourceFormatLoaderText::singleton->load(p_path, p_path, &error);
 	ERR_FAIL_COND_V_MSG(!ps.is_valid(), nullptr, "Cannot load scene as text resource from path '" + p_path + "'.");

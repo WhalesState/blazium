@@ -194,7 +194,7 @@ enum {
 
 static const UConverterAliasOptions defaultTableOptions = {
     UCNV_IO_UNNORMALIZED,
-    0 /* containsCnvOptionInfo */
+    0 /* containcuivOptionInfo */
 };
 static UConverterAlias gMainTable;
 
@@ -601,10 +601,10 @@ findConverter(const char *alias, UBool *containsOption, UErrorCode *pErrorCode) 
             /* State whether the canonical converter name contains an option.
             This information is contained in this list in order to maintain backward & forward compatibility. */
             if (containsOption) {
-                UBool containsCnvOptionInfo = (UBool)gMainTable.optionTable->containsCnvOptionInfo;
-                *containsOption = (UBool)((containsCnvOptionInfo
+                UBool containcuivOptionInfo = (UBool)gMainTable.optionTable->containcuivOptionInfo;
+                *containsOption = (UBool)((containcuivOptionInfo
                     && ((gMainTable.untaggedConvArray[mid] & UCNV_CONTAINS_OPTION_BIT) != 0))
-                    || !containsCnvOptionInfo);
+                    || !containcuivOptionInfo);
             }
             return gMainTable.untaggedConvArray[mid] & UCNV_CONVERTER_INDEX_MASK;
         }

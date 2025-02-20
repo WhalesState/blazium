@@ -3801,11 +3801,11 @@ void ScriptEditor::_on_find_in_files_result_selected(const String &fpath, int li
 			shader_editor->make_visible(true);
 			shader_editor->get_shader_editor(res)->goto_line_selection(line_number - 1, begin, end);
 			return;
-		} else if (fpath.get_extension() == "tscn") {
+		} else if (fpath.get_extension() == "gui") {
 			Ref<FileAccess> f = FileAccess::open(fpath, FileAccess::READ);
 			bool is_script_found = false;
 
-			// Starting from top of the tscn file.
+			// Starting from top of the gui file.
 			int scr_start_line = 1;
 
 			String scr_header = "[sub_resource type=\"GDScript\" id=\"";

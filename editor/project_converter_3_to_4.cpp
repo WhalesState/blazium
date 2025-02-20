@@ -143,7 +143,7 @@ public:
 	RegEx color_hexadecimal_full_constructor = RegEx("Color\\(\"#?([a-fA-F0-9]{2})([a-fA-F0-9]{6})\\b");
 
 	// Classes.
-	LocalVector<RegEx *> class_tscn_regexes;
+	LocalVector<RegEx *> class_gui_regexes;
 	LocalVector<RegEx *> class_gd_regexes;
 	LocalVector<RegEx *> class_shader_regexes;
 
@@ -161,11 +161,11 @@ public:
 
 	LocalVector<RegEx *> class_regexes;
 
-	RegEx class_temp_tscn = RegEx("\\bTEMP_RENAMED_CLASS.tscn\\b");
+	RegEx class_temp_gui = RegEx("\\bTEMP_RENAMED_CLASS.gui\\b");
 	RegEx class_temp_gd = RegEx("\\bTEMP_RENAMED_CLASS.gd\\b");
 	RegEx class_temp_shader = RegEx("\\bTEMP_RENAMED_CLASS.shader\\b");
 
-	LocalVector<String> class_temp_tscn_renames;
+	LocalVector<String> class_temp_gui_renames;
 	LocalVector<String> class_temp_gd_renames;
 	LocalVector<String> class_temp_shader_renames;
 
@@ -252,13 +252,13 @@ public:
 		{
 			for (unsigned int current_index = 0; RenamesMap3To4::class_renames[current_index][0]; current_index++) {
 				const String class_name = RenamesMap3To4::class_renames[current_index][0];
-				class_tscn_regexes.push_back(memnew(RegEx(String("\\b") + class_name + ".tscn\\b")));
+				class_gui_regexes.push_back(memnew(RegEx(String("\\b") + class_name + ".gui\\b")));
 				class_gd_regexes.push_back(memnew(RegEx(String("\\b") + class_name + ".gd\\b")));
 				class_shader_regexes.push_back(memnew(RegEx(String("\\b") + class_name + ".shader\\b")));
 
 				class_regexes.push_back(memnew(RegEx(String("\\b") + class_name + "\\b")));
 
-				class_temp_tscn_renames.push_back(class_name + ".tscn");
+				class_temp_gui_renames.push_back(class_name + ".gui");
 				class_temp_gd_renames.push_back(class_name + ".gd");
 				class_temp_shader_renames.push_back(class_name + ".shader");
 			}
@@ -268,8 +268,8 @@ public:
 		for (RegEx *regex : color_regexes) {
 			memdelete(regex);
 		}
-		for (unsigned int i = 0; i < class_tscn_regexes.size(); i++) {
-			memdelete(class_tscn_regexes[i]);
+		for (unsigned int i = 0; i < class_gui_regexes.size(); i++) {
+			memdelete(class_gui_regexes[i]);
 			memdelete(class_gd_regexes[i]);
 			memdelete(class_shader_regexes[i]);
 			memdelete(class_regexes[i]);
@@ -391,7 +391,7 @@ bool ProjectConverter3To4::convert() {
 		}
 
 		if (file_size < uint64_t(maximum_file_size)) {
-			// ".tscn" must work exactly the same as ".gd" files because they may contain built-in Scripts.
+			// ".gui" must work exactly the same as ".gd" files because they may contain built-in Scripts.
 			if (file_name.ends_with(".gd")) {
 				fix_tool_declaration(source_lines, reg_container);
 
@@ -414,7 +414,7 @@ bool ProjectConverter3To4::convert() {
 				custom_rename(source_lines, "\\.shader", ".gdshader");
 
 				convert_hexadecimal_colors(source_lines, reg_container);
-			} else if (file_name.ends_with(".tscn")) {
+			} else if (file_name.ends_with(".gui")) {
 				fix_pause_mode(source_lines, reg_container);
 
 				rename_classes(source_lines, reg_container); // Using only specialized function.
@@ -604,7 +604,7 @@ bool ProjectConverter3To4::validate_conversion() {
 				changed_elements.append_array(check_for_rename_common(RenamesMap3To4::theme_override_renames, reg_container.theme_override_regexes, lines));
 
 				changed_elements.append_array(check_for_custom_rename(lines, "\\.shader", ".gdshader"));
-			} else if (file_name.ends_with(".tscn")) {
+			} else if (file_name.ends_with(".gui")) {
 				changed_elements.append_array(check_for_rename_classes(lines, reg_container));
 
 				changed_elements.append_array(check_for_rename_common(RenamesMap3To4::enum_renames, reg_container.enum_regexes, lines));
@@ -716,7 +716,7 @@ Vector<String> ProjectConverter3To4::check_for_files() {
 					directories_to_check.append(current_dir.path_join(file_name) + "/");
 				} else {
 					bool proper_extension = false;
-					if (file_name.ends_with(".gd") || file_name.ends_with(".shader") || file_name.ends_with(".gdshader") || file_name.ends_with(".tscn") || file_name.ends_with(".tres") || file_name.ends_with(".godot") || file_name.ends_with(".cs") || file_name.ends_with(".csproj") || file_name.ends_with(".import"))
+					if (file_name.ends_with(".gd") || file_name.ends_with(".shader") || file_name.ends_with(".gdshader") || file_name.ends_with(".gui") || file_name.ends_with(".tres") || file_name.ends_with(".godot") || file_name.ends_with(".cs") || file_name.ends_with(".csproj") || file_name.ends_with(".import"))
 						proper_extension = true;
 
 					if (proper_extension) {
@@ -891,7 +891,7 @@ bool ProjectConverter3To4::test_conversion(RegExContainer &reg_container) {
 	valid = valid && test_conversion_with_regex("extends CSGBox", "extends CSGBox3D", &ProjectConverter3To4::rename_classes, "classes", reg_container);
 	valid = valid && test_conversion_with_regex("CSGBox", "CSGBox3D", &ProjectConverter3To4::rename_classes, "classes", reg_container);
 	valid = valid && test_conversion_with_regex("Spatial", "Node3D", &ProjectConverter3To4::rename_classes, "classes", reg_container);
-	valid = valid && test_conversion_with_regex("Spatial.tscn", "Spatial.tscn", &ProjectConverter3To4::rename_classes, "classes", reg_container);
+	valid = valid && test_conversion_with_regex("Spatial.gui", "Spatial.gui", &ProjectConverter3To4::rename_classes, "classes", reg_container);
 	valid = valid && test_conversion_with_regex("Spatial.gd", "Spatial.gd", &ProjectConverter3To4::rename_classes, "classes", reg_container);
 	valid = valid && test_conversion_with_regex("Spatial.shader", "Spatial.shader", &ProjectConverter3To4::rename_classes, "classes", reg_container);
 	valid = valid && test_conversion_with_regex("Spatial.other", "Node3D.other", &ProjectConverter3To4::rename_classes, "classes", reg_container);
@@ -1545,10 +1545,10 @@ void ProjectConverter3To4::rename_classes(Vector<SourceLine> &source_lines, cons
 			for (unsigned int current_index = 0; RenamesMap3To4::class_renames[current_index][0]; current_index++) {
 				if (line.contains(RenamesMap3To4::class_renames[current_index][0])) {
 					bool found_ignored_items = false;
-					// Renaming Spatial.tscn to TEMP_RENAMED_CLASS.tscn.
+					// Renaming Spatial.gui to TEMP_RENAMED_CLASS.gui.
 					if (line.contains(String(RenamesMap3To4::class_renames[current_index][0]) + ".")) {
 						found_ignored_items = true;
-						line = reg_container.class_tscn_regexes[current_index]->sub(line, "TEMP_RENAMED_CLASS.tscn", true);
+						line = reg_container.class_gui_regexes[current_index]->sub(line, "TEMP_RENAMED_CLASS.gui", true);
 						line = reg_container.class_gd_regexes[current_index]->sub(line, "TEMP_RENAMED_CLASS.gd", true);
 						line = reg_container.class_shader_regexes[current_index]->sub(line, "TEMP_RENAMED_CLASS.shader", true);
 					}
@@ -1556,9 +1556,9 @@ void ProjectConverter3To4::rename_classes(Vector<SourceLine> &source_lines, cons
 					// Causal renaming Spatial -> Node3D.
 					line = reg_container.class_regexes[current_index]->sub(line, RenamesMap3To4::class_renames[current_index][1], true);
 
-					// Restore Spatial.tscn from TEMP_RENAMED_CLASS.tscn.
+					// Restore Spatial.gui from TEMP_RENAMED_CLASS.gui.
 					if (found_ignored_items) {
-						line = reg_container.class_temp_tscn.sub(line, reg_container.class_temp_tscn_renames[current_index], true);
+						line = reg_container.class_temp_gui.sub(line, reg_container.class_temp_gui_renames[current_index], true);
 						line = reg_container.class_temp_gd.sub(line, reg_container.class_temp_gd_renames[current_index], true);
 						line = reg_container.class_temp_shader.sub(line, reg_container.class_temp_shader_renames[current_index], true);
 					}
@@ -1579,10 +1579,10 @@ Vector<String> ProjectConverter3To4::check_for_rename_classes(Vector<String> &li
 				if (line.contains(RenamesMap3To4::class_renames[current_index][0])) {
 					String old_line = line;
 					bool found_ignored_items = false;
-					// Renaming Spatial.tscn to TEMP_RENAMED_CLASS.tscn.
+					// Renaming Spatial.gui to TEMP_RENAMED_CLASS.gui.
 					if (line.contains(String(RenamesMap3To4::class_renames[current_index][0]) + ".")) {
 						found_ignored_items = true;
-						line = reg_container.class_tscn_regexes[current_index]->sub(line, "TEMP_RENAMED_CLASS.tscn", true);
+						line = reg_container.class_gui_regexes[current_index]->sub(line, "TEMP_RENAMED_CLASS.gui", true);
 						line = reg_container.class_gd_regexes[current_index]->sub(line, "TEMP_RENAMED_CLASS.gd", true);
 						line = reg_container.class_shader_regexes[current_index]->sub(line, "TEMP_RENAMED_CLASS.shader", true);
 					}
@@ -1593,9 +1593,9 @@ Vector<String> ProjectConverter3To4::check_for_rename_classes(Vector<String> &li
 						found_renames.append(line_formatter(current_line, RenamesMap3To4::class_renames[current_index][0], RenamesMap3To4::class_renames[current_index][1], old_line));
 					}
 
-					// Restore Spatial.tscn from TEMP_RENAMED_CLASS.tscn.
+					// Restore Spatial.gui from TEMP_RENAMED_CLASS.gui.
 					if (found_ignored_items) {
-						line = reg_container.class_temp_tscn.sub(line, reg_container.class_temp_tscn_renames[current_index], true);
+						line = reg_container.class_temp_gui.sub(line, reg_container.class_temp_gui_renames[current_index], true);
 						line = reg_container.class_temp_gd.sub(line, reg_container.class_temp_gd_renames[current_index], true);
 						line = reg_container.class_temp_shader.sub(line, reg_container.class_temp_shader_renames[current_index], true);
 					}
@@ -1654,7 +1654,7 @@ bool ProjectConverter3To4::contains_function_call(const String &line, const Stri
 	return (previous_char < '0' || previous_char > '9') && (previous_char < 'a' || previous_char > 'z') && (previous_char < 'A' || previous_char > 'Z') && previous_char != '_' && previous_char != '$' && previous_char != '@';
 }
 
-// TODO, this function should run only on all ".gd" files and also on lines in ".tscn" files which are parts of built-in Scripts.
+// TODO, this function should run only on all ".gd" files and also on lines in ".gui" files which are parts of built-in Scripts.
 void ProjectConverter3To4::process_gdscript_line(String &line, const RegExContainer &reg_container, bool builtin) {
 	// In this and other functions, reg.sub() is used only after checking lines with str.contains().
 	// With longer lines, doing so can sometimes be significantly faster.

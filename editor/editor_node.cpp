@@ -213,9 +213,9 @@ void EditorNode::disambiguate_filenames(const Vector<String> p_full_paths, Vecto
 				int difference = full_path_size - scene_name_size;
 
 				// Find just the parent folder of the current path and append it.
-				// If the current name is foo.tscn, and the full path is /some/folder/foo.tscn
+				// If the current name is foo.gui, and the full path is /some/folder/foo.gui
 				// then slash_idx is the second '/', so that we select just "folder", and
-				// append that to yield "folder/foo.tscn".
+				// append that to yield "folder/foo.gui".
 				if (difference > 0) {
 					String parent = full_path.substr(0, difference);
 					int slash_idx = parent.rfind("/");
@@ -6721,9 +6721,9 @@ EditorNode::EditorNode() {
 			import_obj2.instantiate();
 			ResourceImporterScene::add_scene_importer(import_obj2);
 
-			Ref<EditorSceneFormatImporterESCN> import_escn;
-			import_escn.instantiate();
-			ResourceImporterScene::add_scene_importer(import_escn);
+			Ref<EditorSceneFormatImporterEcui> import_ecui;
+			import_ecui.instantiate();
+			ResourceImporterScene::add_scene_importer(import_ecui);
 		}
 
 		Ref<ResourceImporterBitMap> import_bitmap;

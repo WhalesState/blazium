@@ -327,7 +327,7 @@ namespace embree
     }
     
     template<int N>
-      static VirtualCurveIntersector::Intersectors DiscNiIntersectors()
+      static VirtualCurveIntersector::Intersectors DicuiiIntersectors()
     {
       VirtualCurveIntersector::Intersectors intersectors;
       intersectors.intersect1 = (VirtualCurveIntersector::Intersect1Ty) &DiscMiIntersector1<N,true>::intersect;
@@ -346,7 +346,7 @@ namespace embree
     }
     
     template<int N>
-      static VirtualCurveIntersector::Intersectors DiscNiMBIntersectors()
+      static VirtualCurveIntersector::Intersectors DicuiiMBIntersectors()
     {
       VirtualCurveIntersector::Intersectors intersectors;
       intersectors.intersect1 = (VirtualCurveIntersector::Intersect1Ty) &DiscMiMBIntersector1<N,true>::intersect;
@@ -365,7 +365,7 @@ namespace embree
     }
     
     template<int N>
-      static VirtualCurveIntersector::Intersectors OrientedDiscNiIntersectors()
+      static VirtualCurveIntersector::Intersectors OrientedDicuiiIntersectors()
     {
       VirtualCurveIntersector::Intersectors intersectors;
       intersectors.intersect1 = (VirtualCurveIntersector::Intersect1Ty) &OrientedDiscMiIntersector1<N,true>::intersect;
@@ -384,7 +384,7 @@ namespace embree
     }
     
     template<int N>
-      static VirtualCurveIntersector::Intersectors OrientedDiscNiMBIntersectors()
+      static VirtualCurveIntersector::Intersectors OrientedDicuiiMBIntersectors()
     {
       VirtualCurveIntersector::Intersectors intersectors;
       intersectors.intersect1 = (VirtualCurveIntersector::Intersect1Ty) &OrientedDiscMiMBIntersector1<N,true>::intersect;

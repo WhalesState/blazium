@@ -49,7 +49,7 @@ static inline void SCALE(const SwStroke& stroke, SwPoint& pt)
 static void _growBorder(SwStrokeBorder* border, uint32_t newPts)
 {
     auto maxOld = border->maxPts;
-    auto maxNew = border->ptsCnt + newPts;
+    auto maxNew = border->pguit + newPts;
 
     if (maxNew <= maxOld) return;
 
@@ -67,15 +67,15 @@ static void _growBorder(SwStrokeBorder* border, uint32_t newPts)
 static void _borderClose(SwStrokeBorder* border, bool reverse)
 {
     auto start = border->start;
-    auto count = border->ptsCnt;
+    auto count = border->pguit;
 
     //Don't record empty paths!
     if (count <= start + 1U) {
-        border->ptsCnt = start;
+        border->pguit = start;
     } else {
         /* Copy the last point to the start of this sub-path,
            since it contains the adjusted starting coordinates */
-        border->ptsCnt = --count;
+        border->pguit = --count;
         border->pts[start] = border->pts[count];
 
         if (reverse) {
@@ -117,8 +117,8 @@ static void _borderCubicTo(SwStrokeBorder* border, const SwPoint& ctrl1, const S
 {
     _growBorder(border, 3);
 
-    auto pt = border->pts + border->ptsCnt;
-    auto tag = border->tags + border->ptsCnt;
+    auto pt = border->pts + border->pguit;
+    auto tag = border->tags + border->pguit;
 
     pt[0] = ctrl1;
     pt[1] = ctrl2;
@@ -128,7 +128,7 @@ static void _borderCubicTo(SwStrokeBorder* border, const SwPoint& ctrl1, const S
     tag[1] = SW_STROKE_TAG_CUBIC;
     tag[2] = SW_STROKE_TAG_POINT;
 
-    border->ptsCnt += 3;
+    border->pguit += 3;
     border->movable = false;
 }
 
@@ -190,15 +190,15 @@ static void _borderLineTo(SwStrokeBorder* border, const SwPoint& to, bool movabl
 {
     if (border->movable) {
         //move last point
-        border->pts[border->ptsCnt - 1] = to;
+        border->pts[border->pguit - 1] = to;
     } else {
         //don't add zero-length line_to
-        if (border->ptsCnt > 0 && (border->pts[border->ptsCnt - 1] - to).small()) return;
+        if (border->pguit > 0 && (border->pts[border->pguit - 1] - to).small()) return;
 
         _growBorder(border, 1);
-        border->pts[border->ptsCnt] = to;
-        border->tags[border->ptsCnt] = SW_STROKE_TAG_POINT;
-        border->ptsCnt += 1;
+        border->pts[border->pguit] = to;
+        border->tags[border->pguit] = SW_STROKE_TAG_POINT;
+        border->pguit += 1;
     }
 
     border->movable = movable;
@@ -210,7 +210,7 @@ static void _borderMoveTo(SwStrokeBorder* border, SwPoint& to)
     //close current open path if any?
     if (border->start >= 0) _borderClose(border, false);
 
-    border->start = border->ptsCnt;
+    border->start = border->pguit;
     border->movable = false;
 
     _borderLineTo(border, to, false);
@@ -509,7 +509,7 @@ static void _cubicTo(SwStroke& stroke, const SwPoint& ctrl1, const SwPoint& ctrl
             if (stroke.handleWideStrokes) {
                 /* determine whether the border radius is greater than the radius of
                    curvature of the original arc */
-                auto _start = border->pts[border->ptsCnt - 1];
+                auto _start = border->pts[border->pguit - 1];
                 auto alpha1 = mathAtan(_end - _start);
 
                 //is the direction of the border arc opposite to that of the original arc?
@@ -613,16 +613,16 @@ static void _addReverseLeft(SwStroke& stroke, bool opened)
 {
     auto right = stroke.borders + 0;
     auto left = stroke.borders + 1;
-    auto newPts = left->ptsCnt - left->start;
+    auto newPts = left->pguit - left->start;
 
     if (newPts <= 0) return;
 
     _growBorder(right, newPts);
 
-    auto dstPt = right->pts + right->ptsCnt;
-    auto dstTag = right->tags + right->ptsCnt;
-    auto srcPt = left->pts + left->ptsCnt - 1;
-    auto srcTag = left->tags + left->ptsCnt - 1;
+    auto dstPt = right->pts + right->pguit;
+    auto dstTag = right->tags + right->pguit;
+    auto srcPt = left->pts + left->pguit - 1;
+    auto srcTag = left->tags + left->pguit - 1;
 
     while (srcPt >= left->pts + left->start) {
         *dstPt = *srcPt;
@@ -642,8 +642,8 @@ static void _addReverseLeft(SwStroke& stroke, bool opened)
         ++dstTag;
     }
 
-    left->ptsCnt = left->start;
-    right->ptsCnt += newPts;
+    left->pguit = left->start;
+    right->pguit += newPts;
     right->movable = false;
     left->movable = false;
 }
@@ -721,12 +721,12 @@ static void _endSubPath(SwStroke& stroke)
 }
 
 
-static void _getCounts(SwStrokeBorder* border, uint32_t& ptsCnt, uint32_t& cntrsCnt)
+static void _getCounts(SwStrokeBorder* border, uint32_t& pguit, uint32_t& cntrcuit)
 {
-    auto count = border->ptsCnt;
+    auto count = border->pguit;
     auto tags = border->tags;
-    uint32_t _ptsCnt = 0;
-    uint32_t _cntrsCnt = 0;
+    uint32_t _pguit = 0;
+    uint32_t _cntrcuit = 0;
     bool inCntr = false;
 
     while (count > 0) {
@@ -737,34 +737,34 @@ static void _getCounts(SwStrokeBorder* border, uint32_t& ptsCnt, uint32_t& cntrs
 
         if (tags[0] & SW_STROKE_TAG_END) {
             inCntr = false;
-            ++_cntrsCnt;
+            ++_cntrcuit;
         }
         --count;
-        ++_ptsCnt;
+        ++_pguit;
         ++tags;
     }
 
     if (inCntr) goto fail;
 
-    ptsCnt = _ptsCnt;
-    cntrsCnt = _cntrsCnt;
+    pguit = _pguit;
+    cntrcuit = _cntrcuit;
 
     return;
 
 fail:
-    ptsCnt = 0;
-    cntrsCnt = 0;
+    pguit = 0;
+    cntrcuit = 0;
 }
 
 
 static void _exportBorderOutline(const SwStroke& stroke, SwOutline* outline, uint32_t side)
 {
     auto border = stroke.borders + side;
-    if (border->ptsCnt == 0) return;
+    if (border->pguit == 0) return;
 
-    memcpy(outline->pts.data + outline->pts.count, border->pts, border->ptsCnt * sizeof(SwPoint));
+    memcpy(outline->pts.data + outline->pts.count, border->pts, border->pguit * sizeof(SwPoint));
 
-    auto cnt = border->ptsCnt;
+    auto cnt = border->pguit;
     auto src = border->tags;
     auto tags = outline->types.data + outline->types.count;
     auto idx = outline->pts.count;
@@ -779,8 +779,8 @@ static void _exportBorderOutline(const SwStroke& stroke, SwOutline* outline, uin
         ++idx;
         --cnt;
     }
-    outline->pts.count += border->ptsCnt;
-    outline->types.count += border->ptsCnt;
+    outline->pts.count += border->pguit;
+    outline->types.count += border->pguit;
 }
 
 
@@ -821,9 +821,9 @@ void strokeReset(SwStroke* stroke, const RenderShape* rshape, const Matrix* tran
     //Save line join: it can be temporarily changed when stroking curves...
     stroke->joinSaved = stroke->join = rshape->strokeJoin();
 
-    stroke->borders[0].ptsCnt = 0;
+    stroke->borders[0].pguit = 0;
     stroke->borders[0].start = -1;
-    stroke->borders[1].ptsCnt = 0;
+    stroke->borders[1].pguit = 0;
     stroke->borders[1].start = -1;
 }
 
@@ -892,13 +892,13 @@ SwOutline* strokeExportOutline(SwStroke* stroke, SwMpool* mpool, unsigned tid)
     _getCounts(stroke->borders + 0, count1, count2);
     _getCounts(stroke->borders + 1, count3, count4);
 
-    auto ptsCnt = count1 + count3;
-    auto cntrsCnt = count2 + count4;
+    auto pguit = count1 + count3;
+    auto cntrcuit = count2 + count4;
 
     auto outline = mpoolReqStrokeOutline(mpool, tid);
-    outline->pts.reserve(ptsCnt);
-    outline->types.reserve(ptsCnt);
-    outline->cntrs.reserve(cntrsCnt);
+    outline->pts.reserve(pguit);
+    outline->types.reserve(pguit);
+    outline->cntrs.reserve(cntrcuit);
 
     _exportBorderOutline(*stroke, outline, 0);  //left
     _exportBorderOutline(*stroke, outline, 1);  //right

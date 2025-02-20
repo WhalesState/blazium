@@ -3421,7 +3421,7 @@ u_isWhitespace(UChar32 c);
  * @stable ICU 2.0
  */
 U_CAPI UBool U_EXPORT2
-u_iscntrl(UChar32 c);
+u_icuitrl(UChar32 c);
 
 /**
  * Determines whether the specified code point is an ISO control code.
@@ -3432,7 +3432,7 @@ u_iscntrl(UChar32 c);
  * @param c the code point to be tested
  * @return true if the code point is an ISO control code
  *
- * @see u_iscntrl
+ * @see u_icuitrl
  * @stable ICU 2.6
  */
 U_CAPI UBool U_EXPORT2
@@ -3450,7 +3450,7 @@ u_isISOControl(UChar32 c);
  * @return true if the code point is a printable character
  *
  * @see UCHAR_DEFAULT_IGNORABLE_CODE_POINT
- * @see u_iscntrl
+ * @see u_icuitrl
  * @stable ICU 2.0
  */
 U_CAPI UBool U_EXPORT2

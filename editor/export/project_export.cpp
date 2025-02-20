@@ -1424,7 +1424,7 @@ ProjectExportDialog::ProjectExportDialog() {
 	enc_in_filters = memnew(LineEdit);
 	enc_in_filters->connect(SceneStringName(text_changed), callable_mp(this, &ProjectExportDialog::_enc_filters_changed));
 	sec_vb->add_margin_child(
-			TTR("Filters to include files/folders\n(comma-separated, e.g: *.tscn, *.tres, scenes/*)"),
+			TTR("Filters to include files/folders\n(comma-separated, e.g: *.gui, *.tres, scenes/*)"),
 			enc_in_filters);
 
 	enc_ex_filters = memnew(LineEdit);

@@ -285,29 +285,29 @@ TEST_CASE("[String] Testing for empty string") {
 }
 
 TEST_CASE("[String] Contains") {
-	String s = "C:\\Godot\\project\\string_test.tscn";
+	String s = "C:\\Godot\\project\\string_test.gui";
 	CHECK(s.contains(":\\"));
 	CHECK(s.contains("Godot"));
 	CHECK(s.contains(String("project\\string_test")));
-	CHECK(s.contains(String("\\string_test.tscn")));
+	CHECK(s.contains(String("\\string_test.gui")));
 
 	CHECK(!s.contains("://"));
 	CHECK(!s.contains("Godoh"));
 	CHECK(!s.contains(String("project\\string test")));
-	CHECK(!s.contains(String("\\char_test.tscn")));
+	CHECK(!s.contains(String("\\char_test.gui")));
 }
 
 TEST_CASE("[String] Contains case insensitive") {
-	String s = "C:\\Godot\\project\\string_test.tscn";
+	String s = "C:\\Godot\\project\\string_test.gui";
 	CHECK(s.containsn("Godot"));
 	CHECK(s.containsn("godot"));
 	CHECK(s.containsn(String("Project\\string_test")));
-	CHECK(s.containsn(String("\\string_Test.tscn")));
+	CHECK(s.containsn(String("\\string_Test.gui")));
 
 	CHECK(!s.containsn("Godoh"));
 	CHECK(!s.containsn("godoh"));
 	CHECK(!s.containsn(String("project\\string test")));
-	CHECK(!s.containsn(String("\\char_test.tscn")));
+	CHECK(!s.containsn(String("\\char_test.gui")));
 }
 
 TEST_CASE("[String] Test chr") {
@@ -1589,12 +1589,12 @@ TEST_CASE("[String] dedent") {
 }
 
 TEST_CASE("[String] Path functions") {
-	static const char *path[8] = { "C:\\Godot\\project\\test.tscn", "/Godot/project/test.xscn", "../Godot/project/test.scn", "Godot\\test.doc", "C:\\test.", "res://test", "user://test", "/.test" };
+	static const char *path[8] = { "C:\\Godot\\project\\test.gui", "/Godot/project/test.xcui", "../Godot/project/test.cui", "Godot\\test.doc", "C:\\test.", "res://test", "user://test", "/.test" };
 	static const char *base_dir[8] = { "C:\\Godot\\project", "/Godot/project", "../Godot/project", "Godot", "C:\\", "res://", "user://", "/" };
 	static const char *base_name[8] = { "C:\\Godot\\project\\test", "/Godot/project/test", "../Godot/project/test", "Godot\\test", "C:\\test", "res://test", "user://test", "/" };
-	static const char *ext[8] = { "tscn", "xscn", "scn", "doc", "", "", "", "test" };
-	static const char *file[8] = { "test.tscn", "test.xscn", "test.scn", "test.doc", "test.", "test", "test", ".test" };
-	static const char *simplified[8] = { "C:/Godot/project/test.tscn", "/Godot/project/test.xscn", "Godot/project/test.scn", "Godot/test.doc", "C:/test.", "res://test", "user://test", "/.test" };
+	static const char *ext[8] = { "gui", "xcui", "cui", "doc", "", "", "", "test" };
+	static const char *file[8] = { "test.gui", "test.xcui", "test.cui", "test.doc", "test.", "test", "test", ".test" };
+	static const char *simplified[8] = { "C:/Godot/project/test.gui", "/Godot/project/test.xcui", "Godot/project/test.cui", "Godot/test.doc", "C:/test.", "res://test", "user://test", "/.test" };
 	static const bool abs[8] = { true, true, false, false, true, true, true, true };
 
 	for (int i = 0; i < 8; i++) {
@@ -1608,7 +1608,7 @@ TEST_CASE("[String] Path functions") {
 		CHECK(String(path[i]).simplify_path().get_base_dir().path_join(file[i]) == String(path[i]).simplify_path());
 	}
 
-	static const char *file_name[3] = { "test.tscn", "test://.xscn", "?tes*t.scn" };
+	static const char *file_name[3] = { "test.gui", "test://.xcui", "?tes*t.cui" };
 	static const bool valid[3] = { true, false, false };
 	for (int i = 0; i < 3; i++) {
 		CHECK(String(file_name[i]).is_valid_filename() == valid[i]);
