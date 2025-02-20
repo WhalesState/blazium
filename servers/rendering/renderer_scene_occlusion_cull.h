@@ -198,7 +198,7 @@ public:
 	static RendererSceneOcclusionCull *get_singleton() { return singleton; }
 
 	void _print_warning() {
-		WARN_PRINT_ONCE("Occlusion culling is disabled at build-time.");
+		// WARN_PRINT_ONCE("Occlusion culling is disabled at build-time.");
 	}
 
 	virtual bool is_occluder(RID p_rid) { return false; }

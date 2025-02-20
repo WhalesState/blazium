@@ -952,8 +952,8 @@ Error GDExtensionResourceLoader::load_gdextension_resource(const String &p_path,
 		return ERR_INVALID_DATA;
 	}
 
-	if (compatibility_minimum[0] < 4 || (compatibility_minimum[0] == 4 && compatibility_minimum[1] == 0)) {
-		ERR_PRINT(vformat("GDExtension's compatibility_minimum (%d.%d.%d) must be at least 4.1.0: %s", compatibility_minimum[0], compatibility_minimum[1], compatibility_minimum[2], p_path));
+	if (compatibility_minimum[0] < 1 || (compatibility_minimum[0] == 1 && compatibility_minimum[1] == 0)) {
+		ERR_PRINT(vformat("GDExtension's compatibility_minimum (%d.%d.%d) must be at least 1.1.0: %s", compatibility_minimum[0], compatibility_minimum[1], compatibility_minimum[2], p_path));
 		return ERR_INVALID_DATA;
 	}
 

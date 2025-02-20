@@ -48,7 +48,6 @@
 #include "editor/engine_update_label.h"
 #include "editor/gui/editor_file_dialog.h"
 #include "editor/gui/editor_title_bar.h"
-#include "editor/plugins/asset_library_editor_plugin.h"
 #include "editor/project_manager/project_dialog.h"
 #include "editor/project_manager/project_list.h"
 #include "editor/project_manager/project_tag.h"
@@ -71,6 +70,7 @@
 #include "scene/theme/theme_db.h"
 #include "servers/display_server.h"
 #include "servers/navigation_server_3d.h"
+#include "servers/physics_server_3d.h"
 #include "servers/physics_server_2d.h"
 
 #include <fstream>
@@ -274,12 +274,6 @@ void ProjectManager::_update_theme(bool p_skip_creation) {
 			erase_btn->add_theme_constant_override("h_separation", get_theme_constant(SNAME("sidebar_button_icon_separation"), SNAME("ProjectManager")));
 			erase_missing_btn->add_theme_constant_override("h_separation", get_theme_constant(SNAME("sidebar_button_icon_separation"), SNAME("ProjectManager")));
 		}
-
-		// Asset library popup.
-		if (asset_library) {
-			// Removes extra border margins.
-			asset_library->add_theme_style_override(SceneStringName(panel), memnew(StyleBoxEmpty));
-		}
 	}
 }
 
@@ -367,7 +361,6 @@ void ProjectManager::_open_asset_library_confirmed() {
 		EditorSettings::get_singleton()->save();
 	}
 
-	asset_library->disable_community_support();
 	_select_main_view(MAIN_VIEW_ASSETLIB);
 }
 
@@ -1416,20 +1409,6 @@ ProjectManager::ProjectManager() {
 			erase_missing_btn->connect(SceneStringName(pressed), callable_mp(this, &ProjectManager::_erase_missing_projects));
 			project_list_sidebar->add_child(erase_missing_btn);
 		}
-	}
-
-	// Asset library view.
-	if (AssetLibraryEditorPlugin::is_available()) {
-		asset_library = memnew(EditorAssetLibrary(true));
-		asset_library->set_name("AssetLibraryTab");
-		_add_main_view(MAIN_VIEW_ASSETLIB, TTR("Asset Library"), Ref<Texture2D>(), asset_library);
-		asset_library->connect("install_asset", callable_mp(this, &ProjectManager::_install_project));
-	} else {
-		VBoxContainer *asset_library_filler = memnew(VBoxContainer);
-		asset_library_filler->set_name("AssetLibraryTab");
-		Button *asset_library_toggle = _add_main_view(MAIN_VIEW_ASSETLIB, TTR("Asset Library"), Ref<Texture2D>(), asset_library_filler);
-		asset_library_toggle->set_disabled(true);
-		asset_library_toggle->set_tooltip_text(TTR("Asset Library not available (due to using Web editor, or because SSL support disabled)."));
 	}
 
 	// Footer bar.

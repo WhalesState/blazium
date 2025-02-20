@@ -1,9 +1,9 @@
-short_name = "godot"
-name = "Godot Engine"
-major = 4
-minor = 3
-patch = 0
+short_name = "lithium-ide"
+name = "Lithium IDE"
+major = 1
+minor = 1
+patch = 1
 status = "stable"
 module_config = ""
-website = "https://godotengine.org"
-docs = "4.3"
+website = "https://LithiumIDE.com"
+docs = "1.1.1"

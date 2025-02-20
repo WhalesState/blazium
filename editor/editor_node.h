@@ -128,8 +128,7 @@ class EditorNode : public Node {
 public:
 	enum EditorTable {
 		EDITOR_2D = 0,
-		EDITOR_SCRIPT,
-		EDITOR_ASSETLIB
+		EDITOR_SCRIPT
 	};
 
 	enum SceneNameCasing {
