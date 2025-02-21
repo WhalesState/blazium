@@ -33,8 +33,8 @@
 
 #include "editor/editor_translation_parser.h"
 
-class PackedSceneEditorTranslationParserPlugin : public EditorTranslationParserPlugin {
-	GDCLASS(PackedSceneEditorTranslationParserPlugin, EditorTranslationParserPlugin);
+class UserInterfaceEditorTranslationParserPlugin : public EditorTranslationParserPlugin {
+	GDCLASS(UserInterfaceEditorTranslationParserPlugin, EditorTranslationParserPlugin);
 
 	// Scene Node's properties that contain translation strings.
 	HashSet<String> lookup_properties;
@@ -46,7 +46,7 @@ public:
 	bool match_property(const String &p_property_name, const String &p_node_type);
 	virtual void get_recognized_extensions(List<String> *r_extensions) const override;
 
-	PackedSceneEditorTranslationParserPlugin();
+	UserInterfaceEditorTranslationParserPlugin();
 };
 
 #endif // PACKED_SCENE_TRANSLATION_PARSER_PLUGIN_H

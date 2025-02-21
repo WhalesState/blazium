@@ -237,7 +237,7 @@ void SceneDebugger::_save_node(ObjectID id, const String &p_path) {
 	// Root node cannot ever be unique name in its own Scene!
 	copy->set_unique_name_in_owner(false);
 
-	Ref<PackedScene> ps = memnew(PackedScene);
+	Ref<UserInterface> ps = memnew(UserInterface);
 	ps->pack(copy);
 	ResourceSaver::save(ps, p_path);
 
@@ -824,7 +824,7 @@ void LiveEditor::_instance_node_func(const NodePath &p_parent, const String &p_p
 		return;
 	}
 
-	Ref<PackedScene> ps = ResourceLoader::load(p_path);
+	Ref<UserInterface> ps = ResourceLoader::load(p_path);
 
 	if (!ps.is_valid()) {
 		return;

@@ -189,7 +189,7 @@ void TileSetEditor::_update_sources_list(int force_selected_id) {
 		// Scene collection source.
 		TileSetScenesCollectionSource *scene_collection_source = Object::cast_to<TileSetScenesCollectionSource>(source);
 		if (scene_collection_source) {
-			texture = get_editor_theme_icon(SNAME("PackedScene"));
+			texture = get_editor_theme_icon(SNAME("UserInterface"));
 			if (item_text.is_empty()) {
 				if (scene_collection_source->get_scene_tiles_count() > 0) {
 					item_text = vformat(TTR("Scene Collection Source (ID: %d)"), source_id);

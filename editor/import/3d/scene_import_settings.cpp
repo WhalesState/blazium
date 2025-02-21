@@ -387,7 +387,7 @@ void SceneImportSettingsDialog::_fill_scene(Node *p_node, TreeItem *p_parent_ite
 	item->set_text(0, p_node->get_name());
 
 	if (p_node == scene) {
-		icon = get_editor_theme_icon(SNAME("PackedScene"));
+		icon = get_editor_theme_icon(SNAME("UserInterface"));
 		item->set_text(0, TTR("Scene"));
 	}
 

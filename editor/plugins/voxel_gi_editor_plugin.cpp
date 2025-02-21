@@ -56,7 +56,7 @@ void VoxelGIEditorPlugin::_bake() {
 				int srpos = path.find("::");
 				if (srpos != -1) {
 					String base = path.substr(0, srpos);
-					if (ResourceLoader::get_resource_type(base) == "PackedScene") {
+					if (ResourceLoader::get_resource_type(base) == "UserInterface") {
 						if (!get_tree()->get_edited_scene_root() || get_tree()->get_edited_scene_root()->get_scene_file_path() != base) {
 							EditorNode::get_singleton()->show_warning(TTR("Voxel GI data is not local to the scene."));
 							return;

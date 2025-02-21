@@ -1,9 +1,9 @@
 short_name = "lithium-ide"
 name = "Lithium IDE"
 major = 1
-minor = 1
-patch = 1
-status = "stable"
+minor = 2
+patch = 0
+status = "Beta"
 module_config = ""
 website = "https://LithiumIDE.com"
-docs = "1.1.1"
+docs = "1.2.0"

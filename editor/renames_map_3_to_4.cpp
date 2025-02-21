@@ -184,7 +184,7 @@ const char *RenamesMap3To4::gdscript_function_renames[][2] = {
 	// { "get_v_offset", "get_drag_vertical_offset" }, // Camera2D -- Breaks PathFollow, Camera.
 	// { "get_v_scroll", "get_v_scroll_bar" }, // ItemList -- Breaks TextView.
 	// { "has_network_peer", "has_multiplayer_peer" }, // MultiplayerAPI -- Breaks SceneTree.
-	// { "instance", "instantiate" }, // PackedScene, ClassDB -- Breaks FileSystemDock signal, and also .gui files ("[instance=ExtResource( 17 )]"). This is implemented as custom rule.
+	// { "instance", "instantiate" }, // UserInterface, ClassDB -- Breaks FileSystemDock signal, and also .gui files ("[instance=ExtResource( 17 )]"). This is implemented as custom rule.
 	// { "is_listening", "is_bound"}, // PacketPeerUDP -- Breaks TCPServer, UDPServer.
 	// { "is_refusing_new_network_connections", "is_refusing_new_connections"}, // MultiplayerAPI -- Breaks SceneTree.
 	// { "is_valid", "has_valid_event" }, // Shortcut -- Breaks Callable, and more.
@@ -235,7 +235,7 @@ const char *RenamesMap3To4::gdscript_function_renames[][2] = {
 	{ "can_be_hidden", "_can_be_hidden" }, // EditorNode3DGizmoPlugin
 	{ "can_drop_data", "_can_drop_data" }, // Control
 	{ "can_generate_small_preview", "_can_generate_small_preview" }, // EditorResourcePreviewGenerator
-	{ "can_instance", "can_instantiate" }, // PackedScene, Script
+	{ "can_instance", "can_instantiate" }, // UserInterface, Script
 	{ "canvas_light_set_scale", "canvas_light_set_texture_scale" }, // RenderingServer
 	{ "capture_get_device", "get_input_device" }, // AudioServer
 	{ "capture_get_device_list", "get_input_device_list" }, // AudioServer
@@ -661,7 +661,7 @@ const char *RenamesMap3To4::csharp_function_renames[][2] = {
 	{ "CanDropData", "_CanDropData" }, // Control
 	{ "CanDropDataFw", "_CanDropDataFw" }, // ScriptEditor
 	{ "CanGenerateSmallPreview", "_CanGenerateSmallPreview" }, // EditorResourcePreviewGenerator
-	{ "CanInstance", "CanInstantiate" }, // PackedScene, Script
+	{ "CanInstance", "CanInstantiate" }, // UserInterface, Script
 	{ "CanvasLightSetScale", "CanvasLightSetTextureScale" }, // RenderingServer
 	{ "CaptureGetDevice", "GetInputDevice" }, // AudioServer
 	{ "CaptureGetDeviceList", "GetInputDeviceList" }, // AudioServer

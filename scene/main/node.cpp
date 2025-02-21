@@ -2646,12 +2646,12 @@ Node *Node::_duplicate(int p_flags, HashMap<const Node *, Node *> *r_duplimap) c
 		node = nip;
 
 	} else if ((p_flags & DUPLICATE_USE_INSTANTIATION) && !get_scene_file_path().is_empty()) {
-		Ref<PackedScene> res = ResourceLoader::load(get_scene_file_path());
+		Ref<UserInterface> res = ResourceLoader::load(get_scene_file_path());
 		ERR_FAIL_COND_V(res.is_null(), nullptr);
-		PackedScene::GenEditState edit_state = PackedScene::GEN_EDIT_STATE_DISABLED;
+		UserInterface::GenEditState edit_state = UserInterface::GEN_EDIT_STATE_DISABLED;
 #ifdef TOOLS_ENABLED
 		if (p_flags & DUPLICATE_FROM_EDITOR) {
-			edit_state = PackedScene::GEN_EDIT_STATE_INSTANCE;
+			edit_state = UserInterface::GEN_EDIT_STATE_INSTANCE;
 		}
 #endif
 		node = res->instantiate(edit_state);

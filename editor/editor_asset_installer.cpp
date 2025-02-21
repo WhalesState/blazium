@@ -622,8 +622,8 @@ void EditorAssetInstaller::_notification(int p_what) {
 				extension_icon_map["ogg"] = get_editor_theme_icon(SNAME("AudioStreamOggVorbis"));
 				extension_icon_map["mp3"] = get_editor_theme_icon(SNAME("AudioStreamMP3"));
 
-				extension_icon_map["cui"] = get_editor_theme_icon(SNAME("PackedScene"));
-				extension_icon_map["gui"] = get_editor_theme_icon(SNAME("PackedScene"));
+				extension_icon_map["cui"] = get_editor_theme_icon(SNAME("UserInterface"));
+				extension_icon_map["gui"] = get_editor_theme_icon(SNAME("UserInterface"));
 
 				extension_icon_map["gdshader"] = get_editor_theme_icon(SNAME("Shader"));
 				extension_icon_map["gdshaderinc"] = get_editor_theme_icon(SNAME("TextFile"));
@@ -637,7 +637,7 @@ void EditorAssetInstaller::_notification(int p_what) {
 				extension_icon_map["res"] = get_editor_theme_icon(SNAME("Resource"));
 				extension_icon_map["tres"] = get_editor_theme_icon(SNAME("Resource"));
 				extension_icon_map["atlastex"] = get_editor_theme_icon(SNAME("AtlasTexture"));
-				// By default, OBJ files are imported as Mesh resources rather than PackedScenes.
+				// By default, OBJ files are imported as Mesh resources rather than UserInterfaces.
 				extension_icon_map["obj"] = get_editor_theme_icon(SNAME("MeshItem"));
 
 				extension_icon_map["txt"] = get_editor_theme_icon(SNAME("TextFile"));

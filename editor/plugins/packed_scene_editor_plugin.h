@@ -35,10 +35,10 @@
 #include "editor/plugins/editor_plugin.h"
 #include "scene/gui/box_container.h"
 
-class PackedSceneEditor : public VBoxContainer {
-	GDCLASS(PackedSceneEditor, VBoxContainer);
+class UserInterfaceEditor : public VBoxContainer {
+	GDCLASS(UserInterfaceEditor, VBoxContainer);
 
-	Ref<PackedScene> packed_scene;
+	Ref<UserInterface> packed_scene;
 	Button *open_scene_button;
 
 	void _on_open_scene_pressed();
@@ -47,22 +47,22 @@ protected:
 	void _notification(int p_what);
 
 public:
-	PackedSceneEditor(Ref<PackedScene> &p_packed_scene);
+	UserInterfaceEditor(Ref<UserInterface> &p_packed_scene);
 };
 
-class EditorInspectorPluginPackedScene : public EditorInspectorPlugin {
-	GDCLASS(EditorInspectorPluginPackedScene, EditorInspectorPlugin);
+class EditorInspectorPluginUserInterface : public EditorInspectorPlugin {
+	GDCLASS(EditorInspectorPluginUserInterface, EditorInspectorPlugin);
 
 public:
 	virtual bool can_handle(Object *p_object) override;
 	virtual void parse_begin(Object *p_object) override;
 };
 
-class PackedSceneEditorPlugin : public EditorPlugin {
-	GDCLASS(PackedSceneEditorPlugin, EditorPlugin);
+class UserInterfaceEditorPlugin : public EditorPlugin {
+	GDCLASS(UserInterfaceEditorPlugin, EditorPlugin);
 
 public:
-	PackedSceneEditorPlugin();
+	UserInterfaceEditorPlugin();
 };
 
 #endif // PACKED_SCENE_EDITOR_PLUGIN_H

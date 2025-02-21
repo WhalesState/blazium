@@ -71,15 +71,15 @@ public:
 	EditorBitmapPreviewPlugin();
 };
 
-class EditorPackedScenePreviewPlugin : public EditorResourcePreviewGenerator {
-	GDCLASS(EditorPackedScenePreviewPlugin, EditorResourcePreviewGenerator);
+class EditorUserInterfacePreviewPlugin : public EditorResourcePreviewGenerator {
+	GDCLASS(EditorUserInterfacePreviewPlugin, EditorResourcePreviewGenerator);
 
 public:
 	virtual bool handles(const String &p_type) const override;
 	virtual Ref<Texture2D> generate(const Ref<Resource> &p_from, const Size2 &p_size, Dictionary &p_metadata) const override;
 	virtual Ref<Texture2D> generate_from_path(const String &p_path, const Size2 &p_size, Dictionary &p_metadata) const override;
 
-	EditorPackedScenePreviewPlugin();
+	EditorUserInterfacePreviewPlugin();
 };
 
 class EditorMaterialPreviewPlugin : public EditorResourcePreviewGenerator {

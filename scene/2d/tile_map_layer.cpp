@@ -1265,7 +1265,7 @@ void TileMapLayer::_scenes_update_cell(CellData &r_cell_data) {
 		if (source->has_tile(c.get_atlas_coords()) && source->has_alternative_tile(c.get_atlas_coords(), c.alternative_tile)) {
 			TileSetScenesCollectionSource *scenes_collection_source = Object::cast_to<TileSetScenesCollectionSource>(source);
 			if (scenes_collection_source) {
-				Ref<PackedScene> packed_scene = scenes_collection_source->get_scene_tile_scene(c.alternative_tile);
+				Ref<UserInterface> packed_scene = scenes_collection_source->get_scene_tile_scene(c.alternative_tile);
 				if (packed_scene.is_valid()) {
 					Node *scene = packed_scene->instantiate();
 					Control *scene_as_control = Object::cast_to<Control>(scene);

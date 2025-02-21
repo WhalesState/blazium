@@ -54,7 +54,7 @@ protected:
 		ClassDB::bind_method(D_METHOD("set_reference_array_property", "reference_array_property"), &_TestInstancePlaceholderNode::set_reference_array_property);
 		ClassDB::bind_method(D_METHOD("get_reference_array_property"), &_TestInstancePlaceholderNode::get_reference_array_property);
 
-		// The hint string value "24/34:Node" is determined from existing PackedScenes with typed Array properties.
+		// The hint string value "24/34:Node" is determined from existing UserInterfaces with typed Array properties.
 		ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "reference_array_property", PROPERTY_HINT_TYPE_STRING, "24/34:Node"), "set_reference_array_property", "get_reference_array_property");
 	}
 
@@ -111,7 +111,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instantiate from placeholder with no
 		scene->set_int_property(12);
 
 		// Pack the scene.
-		PackedScene *packed_scene = memnew(PackedScene);
+		UserInterface *packed_scene = memnew(UserInterface);
 		const Error err = packed_scene->pack(scene);
 		REQUIRE(err == OK);
 
@@ -139,7 +139,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instantiate from placeholder with no
 		referenced->set_owner(scene);
 		scene->set_reference_property(referenced);
 		// Pack the scene.
-		PackedScene *packed_scene = memnew(PackedScene);
+		UserInterface *packed_scene = memnew(UserInterface);
 		const Error err = packed_scene->pack(scene);
 		REQUIRE(err == OK);
 
@@ -176,7 +176,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instantiate from placeholder with no
 		node_array.push_back(referenced2);
 		scene->set_reference_array_property(node_array);
 		// Pack the scene.
-		PackedScene *packed_scene = memnew(PackedScene);
+		UserInterface *packed_scene = memnew(UserInterface);
 		const Error err = packed_scene->pack(scene);
 		REQUIRE(err == OK);
 
@@ -220,7 +220,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instantiate from placeholder with ov
 		scene->set_int_property(12);
 
 		// Pack the scene.
-		PackedScene *packed_scene = memnew(PackedScene);
+		UserInterface *packed_scene = memnew(UserInterface);
 		packed_scene->pack(scene);
 
 		// Instantiate the scene.
@@ -249,7 +249,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instantiate from placeholder with ov
 		referenced->set_owner(scene);
 		scene->set_reference_property(referenced);
 		// Pack the scene.
-		PackedScene *packed_scene = memnew(PackedScene);
+		UserInterface *packed_scene = memnew(UserInterface);
 		const Error err = packed_scene->pack(scene);
 		REQUIRE(err == OK);
 
@@ -304,7 +304,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instantiate from placeholder with ov
 
 		scene->set_reference_array_property(referenced_array);
 		// Pack the scene.
-		PackedScene *packed_scene = memnew(PackedScene);
+		UserInterface *packed_scene = memnew(UserInterface);
 		const Error err = packed_scene->pack(scene);
 		REQUIRE(err == OK);
 
@@ -334,7 +334,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instantiate from placeholder with ov
 }
 
 #ifdef TOOLS_ENABLED
-TEST_CASE("[SceneTree][InstancePlaceholder] Instance a PackedScene containing an InstancePlaceholder with no overrides") {
+TEST_CASE("[SceneTree][InstancePlaceholder] Instance a UserInterface containing an InstancePlaceholder with no overrides") {
 	GDREGISTER_CLASS(_TestInstancePlaceholderNode);
 
 	// Create the internal scene.
@@ -347,7 +347,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instance a PackedScene containing an
 	internal->set_reference_property(referenced);
 
 	// Pack the internal scene.
-	PackedScene *internal_scene = memnew(PackedScene);
+	UserInterface *internal_scene = memnew(UserInterface);
 	Error err = internal_scene->pack(internal);
 	REQUIRE(err == OK);
 
@@ -355,7 +355,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instance a PackedScene containing an
 	err = ResourceSaver::save(internal_scene, internal_path);
 	REQUIRE(err == OK);
 
-	Ref<PackedScene> internal_scene_loaded = ResourceLoader::load(internal_path, "PackedScene", ResourceFormatLoader::CacheMode::CACHE_MODE_IGNORE, &err);
+	Ref<UserInterface> internal_scene_loaded = ResourceLoader::load(internal_path, "UserInterface", ResourceFormatLoader::CacheMode::CACHE_MODE_IGNORE, &err);
 	REQUIRE(err == OK);
 
 	// Create the main scene.
@@ -364,7 +364,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instance a PackedScene containing an
 	Node *overriding = memnew(Node);
 	overriding->set_name("OverridingReference");
 
-	_TestInstancePlaceholderNode *internal_created = Object::cast_to<_TestInstancePlaceholderNode>(internal_scene_loaded->instantiate(PackedScene::GEN_EDIT_STATE_MAIN_INHERITED));
+	_TestInstancePlaceholderNode *internal_created = Object::cast_to<_TestInstancePlaceholderNode>(internal_scene_loaded->instantiate(UserInterface::GEN_EDIT_STATE_MAIN_INHERITED));
 	internal_created->set_scene_instance_load_placeholder(true);
 	root->add_child(internal_created);
 	internal_created->set_owner(root);
@@ -376,7 +376,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instance a PackedScene containing an
 	internal_created->set("reference_property", NodePath("OriginalReference"));
 
 	// Pack the main scene.
-	PackedScene *main_scene = memnew(PackedScene);
+	UserInterface *main_scene = memnew(UserInterface);
 	err = main_scene->pack(root);
 	REQUIRE(err == OK);
 
@@ -385,7 +385,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instance a PackedScene containing an
 	REQUIRE(err == OK);
 
 	// // Instantiate the scene.
-	Ref<PackedScene> main_scene_loaded = ResourceLoader::load(main_path, "PackedScene", ResourceFormatLoader::CacheMode::CACHE_MODE_IGNORE, &err);
+	Ref<UserInterface> main_scene_loaded = ResourceLoader::load(main_path, "UserInterface", ResourceFormatLoader::CacheMode::CACHE_MODE_IGNORE, &err);
 	REQUIRE(err == OK);
 
 	Node *instanced_main_node = main_scene_loaded->instantiate();
@@ -409,7 +409,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instance a PackedScene containing an
 	DirAccess::remove_file_or_error(main_path);
 }
 
-TEST_CASE("[SceneTree][InstancePlaceholder] Instance a PackedScene containing an InstancePlaceholder with overrides") {
+TEST_CASE("[SceneTree][InstancePlaceholder] Instance a UserInterface containing an InstancePlaceholder with overrides") {
 	GDREGISTER_CLASS(_TestInstancePlaceholderNode);
 
 	// Create the internal scene.
@@ -436,7 +436,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instance a PackedScene containing an
 	internal->set_reference_array_property(referenced_array);
 
 	// Pack the internal scene.
-	PackedScene *internal_scene = memnew(PackedScene);
+	UserInterface *internal_scene = memnew(UserInterface);
 	Error err = internal_scene->pack(internal);
 	REQUIRE(err == OK);
 
@@ -444,7 +444,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instance a PackedScene containing an
 	err = ResourceSaver::save(internal_scene, internal_path);
 	REQUIRE(err == OK);
 
-	Ref<PackedScene> internal_scene_loaded = ResourceLoader::load(internal_path, "PackedScene", ResourceFormatLoader::CacheMode::CACHE_MODE_IGNORE, &err);
+	Ref<UserInterface> internal_scene_loaded = ResourceLoader::load(internal_path, "UserInterface", ResourceFormatLoader::CacheMode::CACHE_MODE_IGNORE, &err);
 	REQUIRE(err == OK);
 
 	// Create the main scene.
@@ -455,7 +455,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instance a PackedScene containing an
 	Node *array_ext = memnew(Node);
 	array_ext->set_name("ExternalArrayMember");
 
-	_TestInstancePlaceholderNode *internal_created = Object::cast_to<_TestInstancePlaceholderNode>(internal_scene_loaded->instantiate(PackedScene::GEN_EDIT_STATE_MAIN_INHERITED));
+	_TestInstancePlaceholderNode *internal_created = Object::cast_to<_TestInstancePlaceholderNode>(internal_scene_loaded->instantiate(UserInterface::GEN_EDIT_STATE_MAIN_INHERITED));
 	internal_created->set_scene_instance_load_placeholder(true);
 	root->add_child(internal_created);
 	internal_created->set_owner(root);
@@ -477,7 +477,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instance a PackedScene containing an
 	internal_created->set_reference_array_property(override_array);
 
 	// Pack the main scene.
-	PackedScene *main_scene = memnew(PackedScene);
+	UserInterface *main_scene = memnew(UserInterface);
 	err = main_scene->pack(root);
 	REQUIRE(err == OK);
 
@@ -486,7 +486,7 @@ TEST_CASE("[SceneTree][InstancePlaceholder] Instance a PackedScene containing an
 	REQUIRE(err == OK);
 
 	// // Instantiate the scene.
-	Ref<PackedScene> main_scene_loaded = ResourceLoader::load(main_path, "PackedScene", ResourceFormatLoader::CacheMode::CACHE_MODE_IGNORE, &err);
+	Ref<UserInterface> main_scene_loaded = ResourceLoader::load(main_path, "UserInterface", ResourceFormatLoader::CacheMode::CACHE_MODE_IGNORE, &err);
 	REQUIRE(err == OK);
 
 	Node *instanced_main_node = main_scene_loaded->instantiate();

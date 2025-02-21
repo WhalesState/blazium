@@ -48,7 +48,7 @@ void SurfaceUpgradeTool::_add_files(EditorFileSystemDirectory *p_dir, Vector<Str
 	for (int i = 0; i < p_dir->get_file_count(); i++) {
 		if (p_dir->get_file_type(i) == "Mesh" ||
 				p_dir->get_file_type(i) == "ArrayMesh" ||
-				p_dir->get_file_type(i) == "PackedScene") {
+				p_dir->get_file_type(i) == "UserInterface") {
 			if (FileAccess::exists(p_dir->get_file_path(i) + ".import")) {
 				r_reimport_paths.append(p_dir->get_file_path(i) + ".import");
 			} else {

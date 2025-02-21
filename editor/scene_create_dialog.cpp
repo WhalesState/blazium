@@ -257,7 +257,7 @@ SceneCreateDialog::SceneCreateDialog() {
 		scene_name_edit->connect("text_submitted", callable_mp(this, &SceneCreateDialog::accept_create).unbind(1));
 
 		List<String> extensions;
-		Ref<PackedScene> sd = memnew(PackedScene);
+		Ref<UserInterface> sd = memnew(UserInterface);
 		ResourceSaver::get_recognized_extensions(sd, &extensions);
 
 		scene_extension_picker = memnew(OptionButton);

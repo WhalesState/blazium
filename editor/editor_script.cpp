@@ -50,9 +50,9 @@ void EditorScript::add_root_node(Node *p_node) {
 
 	const String &scene_path = p_node->get_scene_file_path();
 	if (!scene_path.is_empty()) {
-		Ref<PackedScene> scene = ResourceLoader::load(scene_path);
+		Ref<UserInterface> scene = ResourceLoader::load(scene_path);
 		if (scene.is_valid()) {
-			memfree(scene->instantiate(PackedScene::GEN_EDIT_STATE_INSTANCE)); // Ensure node cache.
+			memfree(scene->instantiate(UserInterface::GEN_EDIT_STATE_INSTANCE)); // Ensure node cache.
 
 			p_node->set_scene_inherited_state(scene->get_state());
 			p_node->set_scene_file_path(String());

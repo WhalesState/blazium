@@ -5740,7 +5740,7 @@ bool TileSetScenesCollectionSource::has_alternative_tile(const Vector2i p_atlas_
 	return scenes.has(p_alternative_tile);
 }
 
-int TileSetScenesCollectionSource::create_scene_tile(Ref<PackedScene> p_packed_scene, int p_id_override) {
+int TileSetScenesCollectionSource::create_scene_tile(Ref<UserInterface> p_packed_scene, int p_id_override) {
 	ERR_FAIL_COND_V_MSG(p_id_override >= 0 && scenes.has(p_id_override), INVALID_TILE_ALTERNATIVE, vformat("Cannot create scene tile. Another scene tile exists with id %d.", p_id_override));
 
 	int new_scene_id = p_id_override >= 0 ? p_id_override : next_scene_id;
@@ -5774,7 +5774,7 @@ void TileSetScenesCollectionSource::set_scene_tile_id(int p_id, int p_new_id) {
 	_try_emit_changed();
 }
 
-void TileSetScenesCollectionSource::set_scene_tile_scene(int p_id, Ref<PackedScene> p_packed_scene) {
+void TileSetScenesCollectionSource::set_scene_tile_scene(int p_id, Ref<UserInterface> p_packed_scene) {
 	ERR_FAIL_COND(!scenes.has(p_id));
 	if (p_packed_scene.is_valid()) {
 		// Check if it extends CanvasItem.
@@ -5787,19 +5787,19 @@ void TileSetScenesCollectionSource::set_scene_tile_scene(int p_id, Ref<PackedSce
 			type = scene_state->get_node_type(0);
 			scene_state = scene_state->get_base_scene_state();
 		}
-		ERR_FAIL_COND_EDMSG(type.is_empty(), vformat("Invalid PackedScene for TileSetScenesCollectionSource: %s. Could not get the type of the root node.", p_packed_scene->get_path()));
+		ERR_FAIL_COND_EDMSG(type.is_empty(), vformat("Invalid UserInterface for TileSetScenesCollectionSource: %s. Could not get the type of the root node.", p_packed_scene->get_path()));
 		bool extends_correct_class = ClassDB::is_parent_class(type, "CanvasItem");
-		ERR_FAIL_COND_EDMSG(!extends_correct_class, vformat("Invalid PackedScene for TileSetScenesCollectionSource: %s. Root node should extend CanvasItem. Found %s instead.", p_packed_scene->get_path(), type));
+		ERR_FAIL_COND_EDMSG(!extends_correct_class, vformat("Invalid UserInterface for TileSetScenesCollectionSource: %s. Root node should extend CanvasItem. Found %s instead.", p_packed_scene->get_path(), type));
 
 		scenes[p_id].scene = p_packed_scene;
 	} else {
-		scenes[p_id].scene = Ref<PackedScene>();
+		scenes[p_id].scene = Ref<UserInterface>();
 	}
 	_try_emit_changed();
 }
 
-Ref<PackedScene> TileSetScenesCollectionSource::get_scene_tile_scene(int p_id) const {
-	ERR_FAIL_COND_V(!scenes.has(p_id), Ref<PackedScene>());
+Ref<UserInterface> TileSetScenesCollectionSource::get_scene_tile_scene(int p_id) const {
+	ERR_FAIL_COND_V(!scenes.has(p_id), Ref<UserInterface>());
 	return scenes[p_id].scene;
 }
 

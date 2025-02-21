@@ -257,8 +257,8 @@ public:
 		TILE_OFFSET_AXIS_VERTICAL,
 	};
 
-	struct PackedSceneSource {
-		Ref<PackedScene> scene;
+	struct UserInterfaceSource {
+		Ref<UserInterface> scene;
 		Vector2 offset;
 	};
 
@@ -778,7 +778,7 @@ class TileSetScenesCollectionSource : public TileSetSource {
 
 private:
 	struct SceneData {
-		Ref<PackedScene> scene;
+		Ref<UserInterface> scene;
 		bool display_placeholder = false;
 	};
 	Vector<int> scenes_ids;
@@ -813,10 +813,10 @@ public:
 	int get_scene_tiles_count() { return get_alternative_tiles_count(Vector2i()); }
 	int get_scene_tile_id(int p_index) { return get_alternative_tile_id(Vector2i(), p_index); };
 	bool has_scene_tile_id(int p_id) { return has_alternative_tile(Vector2i(), p_id); };
-	int create_scene_tile(Ref<PackedScene> p_packed_scene = Ref<PackedScene>(), int p_id_override = -1);
+	int create_scene_tile(Ref<UserInterface> p_packed_scene = Ref<UserInterface>(), int p_id_override = -1);
 	void set_scene_tile_id(int p_id, int p_new_id);
-	void set_scene_tile_scene(int p_id, Ref<PackedScene> p_packed_scene);
-	Ref<PackedScene> get_scene_tile_scene(int p_id) const;
+	void set_scene_tile_scene(int p_id, Ref<UserInterface> p_packed_scene);
+	Ref<UserInterface> get_scene_tile_scene(int p_id) const;
 	void set_scene_tile_display_placeholder(int p_id, bool p_packed_scene);
 	bool get_scene_tile_display_placeholder(int p_id) const;
 	void remove_scene_tile(int p_id);

@@ -201,7 +201,7 @@ void register_editor_types() {
 	EditorPlugins::add_by_type<MaterialEditorPlugin>();
 	EditorPlugins::add_by_type<NavigationObstacle3DEditorPlugin>();
 	EditorPlugins::add_by_type<OccluderInstance3DEditorPlugin>();
-	EditorPlugins::add_by_type<PackedSceneEditorPlugin>();
+	EditorPlugins::add_by_type<UserInterfaceEditorPlugin>();
 	EditorPlugins::add_by_type<ResourcePreloaderEditorPlugin>();
 	EditorPlugins::add_by_type<ShaderEditorPlugin>();
 	EditorPlugins::add_by_type<ShaderFileEditorPlugin>();

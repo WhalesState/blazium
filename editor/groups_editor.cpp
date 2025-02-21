@@ -202,7 +202,7 @@ void GroupsEditor::_update_tree() {
 
 	TreeItem *local_root = tree->create_item(root);
 	local_root->set_text(0, TTR("Scene Groups"));
-	local_root->set_icon(0, get_editor_theme_icon(SNAME("PackedScene")));
+	local_root->set_icon(0, get_editor_theme_icon(SNAME("UserInterface")));
 	local_root->set_custom_bg_color(0, get_theme_color(SNAME("prop_subsection"), EditorStringName(Editor)));
 	local_root->set_selectable(0, false);
 
@@ -463,7 +463,7 @@ void GroupsEditor::_item_mouse_selected(const Vector2 &p_pos, MouseButton p_mous
 		if (ti->get_meta("__local")) {
 			menu->add_icon_item(get_editor_theme_icon(SNAME("Environment")), TTR("Convert to Global Group"), CONVERT_GROUP);
 		} else {
-			menu->add_icon_item(get_editor_theme_icon(SNAME("PackedScene")), TTR("Convert to Scene Group"), CONVERT_GROUP);
+			menu->add_icon_item(get_editor_theme_icon(SNAME("UserInterface")), TTR("Convert to Scene Group"), CONVERT_GROUP);
 		}
 
 		String group_name = ti->get_meta("__name");

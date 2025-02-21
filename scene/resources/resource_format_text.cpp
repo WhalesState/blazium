@@ -190,8 +190,8 @@ Error ResourceLoaderText::_parse_ext_resource(VariantParser::Stream *p_stream, R
 	return err;
 }
 
-Ref<PackedScene> ResourceLoaderText::_parse_node_tag(VariantParser::ResourceParser &parser) {
-	Ref<PackedScene> packed_scene = ResourceLoader::get_resource_ref_override(local_path);
+Ref<UserInterface> ResourceLoaderText::_parse_node_tag(VariantParser::ResourceParser &parser) {
+	Ref<UserInterface> packed_scene = ResourceLoader::get_resource_ref_override(local_path);
 	if (packed_scene.is_null()) {
 		packed_scene.instantiate();
 	}
@@ -249,7 +249,7 @@ Ref<PackedScene> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePars
 					error = ERR_FILE_CORRUPT;
 					error_text = "Instance Placeholder can't be used for inheritance.";
 					_printerr();
-					return Ref<PackedScene>();
+					return Ref<UserInterface>();
 				}
 
 				instance = path_v | SceneState::FLAG_INSTANCE_IS_PLACEHOLDER;
@@ -287,7 +287,7 @@ Ref<PackedScene> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePars
 						// Resource loading error, just skip it.
 					} else if (error != ERR_FILE_EOF) {
 						ERR_PRINT(vformat("Parse Error: %s. [Resource file %s:%d]", error_names[error], res_path, lines));
-						return Ref<PackedScene>();
+						return Ref<UserInterface>();
 					} else {
 						error = OK;
 						return packed_scene;
@@ -308,25 +308,25 @@ Ref<PackedScene> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePars
 			if (!next_tag.fields.has("from")) {
 				error = ERR_FILE_CORRUPT;
 				error_text = "missing 'from' field from connection tag";
-				return Ref<PackedScene>();
+				return Ref<UserInterface>();
 			}
 
 			if (!next_tag.fields.has("to")) {
 				error = ERR_FILE_CORRUPT;
 				error_text = "missing 'to' field from connection tag";
-				return Ref<PackedScene>();
+				return Ref<UserInterface>();
 			}
 
 			if (!next_tag.fields.has("signal")) {
 				error = ERR_FILE_CORRUPT;
 				error_text = "missing 'signal' field from connection tag";
-				return Ref<PackedScene>();
+				return Ref<UserInterface>();
 			}
 
 			if (!next_tag.fields.has("method")) {
 				error = ERR_FILE_CORRUPT;
 				error_text = "missing 'method' field from connection tag";
-				return Ref<PackedScene>();
+				return Ref<UserInterface>();
 			}
 
 			NodePath from = next_tag.fields["from"];
@@ -368,7 +368,7 @@ Ref<PackedScene> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePars
 			if (error) {
 				if (error != ERR_FILE_EOF) {
 					_printerr();
-					return Ref<PackedScene>();
+					return Ref<UserInterface>();
 				} else {
 					error = OK;
 					return packed_scene;
@@ -379,7 +379,7 @@ Ref<PackedScene> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePars
 				error = ERR_FILE_CORRUPT;
 				error_text = "missing 'path' field from editable tag";
 				_printerr();
-				return Ref<PackedScene>();
+				return Ref<UserInterface>();
 			}
 
 			NodePath path = next_tag.fields["path"];
@@ -391,7 +391,7 @@ Ref<PackedScene> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePars
 			if (error) {
 				if (error != ERR_FILE_EOF) {
 					_printerr();
-					return Ref<PackedScene>();
+					return Ref<UserInterface>();
 				} else {
 					error = OK;
 					return packed_scene;
@@ -400,7 +400,7 @@ Ref<PackedScene> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePars
 		} else {
 			error = ERR_FILE_CORRUPT;
 			_printerr();
-			return Ref<PackedScene>();
+			return Ref<UserInterface>();
 		}
 	}
 }
@@ -799,7 +799,7 @@ Error ResourceLoaderText::load() {
 			return error;
 		}
 
-		Ref<PackedScene> packed_scene = _parse_node_tag(rp);
+		Ref<UserInterface> packed_scene = _parse_node_tag(rp);
 
 		if (!packed_scene.is_valid()) {
 			return error;
@@ -1311,7 +1311,7 @@ String ResourceLoaderText::recognize(Ref<FileAccess> p_f) {
 	}
 
 	if (tag.name == "gd_scene") {
-		return "PackedScene";
+		return "UserInterface";
 	}
 
 	if (tag.name != "gd_resource") {
@@ -1406,12 +1406,12 @@ void ResourceFormatLoaderText::get_recognized_extensions_for_type(const String &
 		return;
 	}
 
-	if (ClassDB::is_parent_class("PackedScene", p_type)) {
+	if (ClassDB::is_parent_class("UserInterface", p_type)) {
 		p_extensions->push_back("gui");
 	}
 
-	// Don't allow .tres for PackedScenes.
-	if (p_type != "PackedScene") {
+	// Don't allow .tres for UserInterfaces.
+	if (p_type != "UserInterface") {
 		p_extensions->push_back("tres");
 	}
 }
@@ -1428,7 +1428,7 @@ bool ResourceFormatLoaderText::handles_type(const String &p_type) const {
 void ResourceFormatLoaderText::get_classes_used(const String &p_path, HashSet<StringName> *r_classes) {
 	String ext = p_path.get_extension().to_lower();
 	if (ext == "gui") {
-		r_classes->insert("PackedScene");
+		r_classes->insert("UserInterface");
 	}
 
 	// ...for anything else must test...
@@ -1448,7 +1448,7 @@ void ResourceFormatLoaderText::get_classes_used(const String &p_path, HashSet<St
 String ResourceFormatLoaderText::get_resource_type(const String &p_path) const {
 	String ext = p_path.get_extension().to_lower();
 	if (ext == "gui") {
-		return "PackedScene";
+		return "UserInterface";
 	} else if (ext != "tres") {
 		return String();
 	}
@@ -1711,7 +1711,7 @@ Error ResourceFormatSaverTextInstance::save(const String &p_path, const Ref<Reso
 				continue;
 			}
 
-			Ref<PackedScene> instance = packed_scene->get_state()->get_node_instance(i);
+			Ref<UserInterface> instance = packed_scene->get_state()->get_node_instance(i);
 			if (instance.is_valid() && !external_resources.has(instance)) {
 				int index = external_resources.size() + 1;
 				external_resources[instance] = itos(index) + "_" + Resource::generate_scene_unique_id(); // Keep the order for improved thread loading performance.
@@ -1939,7 +1939,7 @@ Error ResourceFormatSaverTextInstance::save(const String &p_path, const Ref<Reso
 			int index = state->get_node_index(i);
 			NodePath path = state->get_node_path(i, true);
 			NodePath owner = state->get_node_owner_path(i);
-			Ref<PackedScene> instance = state->get_node_instance(i);
+			Ref<UserInterface> instance = state->get_node_instance(i);
 			String instance_placeholder = state->get_node_instance_placeholder(i);
 			Vector<StringName> groups = state->get_node_groups(i);
 			Vector<String> deferred_node_paths = state->get_node_deferred_nodepath_properties(i);
@@ -2091,7 +2091,7 @@ Error ResourceLoaderText::set_uid(Ref<FileAccess> p_f, ResourceUID::ID p_uid) {
 }
 
 Error ResourceFormatSaverText::save(const Ref<Resource> &p_resource, const String &p_path, uint32_t p_flags) {
-	if (p_path.ends_with(".gui") && !Ref<PackedScene>(p_resource).is_valid()) {
+	if (p_path.ends_with(".gui") && !Ref<UserInterface>(p_resource).is_valid()) {
 		return ERR_FILE_UNRECOGNIZED;
 	}
 
@@ -2133,7 +2133,7 @@ bool ResourceFormatSaverText::recognize(const Ref<Resource> &p_resource) const {
 }
 
 void ResourceFormatSaverText::get_recognized_extensions(const Ref<Resource> &p_resource, List<String> *p_extensions) const {
-	if (Ref<PackedScene>(p_resource).is_valid()) {
+	if (Ref<UserInterface>(p_resource).is_valid()) {
 		p_extensions->push_back("gui"); // Text scene.
 	} else {
 		p_extensions->push_back("tres"); // Text resource.

@@ -35,15 +35,15 @@
 
 #include "tests/test_macros.h"
 
-namespace TestPackedScene {
+namespace TestUserInterface {
 
-TEST_CASE("[PackedScene] Pack Scene and Retrieve State") {
+TEST_CASE("[UserInterface] Pack Scene and Retrieve State") {
 	// Create a scene to pack.
 	Node *scene = memnew(Node);
 	scene->set_name("TestScene");
 
 	// Pack the scene.
-	PackedScene packed_scene;
+	UserInterface packed_scene;
 	const Error err = packed_scene.pack(scene);
 	CHECK(err == OK);
 
@@ -56,13 +56,13 @@ TEST_CASE("[PackedScene] Pack Scene and Retrieve State") {
 	memdelete(scene);
 }
 
-TEST_CASE("[PackedScene] Clear Packed Scene") {
+TEST_CASE("[UserInterface] Clear Packed Scene") {
 	// Create a scene to pack.
 	Node *scene = memnew(Node);
 	scene->set_name("TestScene");
 
 	// Pack the scene.
-	PackedScene packed_scene;
+	UserInterface packed_scene;
 	packed_scene.pack(scene);
 
 	// Clear the packed scene.
@@ -75,13 +75,13 @@ TEST_CASE("[PackedScene] Clear Packed Scene") {
 	memdelete(scene);
 }
 
-TEST_CASE("[PackedScene] Can Instantiate Packed Scene") {
+TEST_CASE("[UserInterface] Can Instantiate Packed Scene") {
 	// Create a scene to pack.
 	Node *scene = memnew(Node);
 	scene->set_name("TestScene");
 
 	// Pack the scene.
-	PackedScene packed_scene;
+	UserInterface packed_scene;
 	packed_scene.pack(scene);
 
 	// Check if the packed scene can be instantiated.
@@ -91,13 +91,13 @@ TEST_CASE("[PackedScene] Can Instantiate Packed Scene") {
 	memdelete(scene);
 }
 
-TEST_CASE("[PackedScene] Instantiate Packed Scene") {
+TEST_CASE("[UserInterface] Instantiate Packed Scene") {
 	// Create a scene to pack.
 	Node *scene = memnew(Node);
 	scene->set_name("TestScene");
 
 	// Pack the scene.
-	PackedScene packed_scene;
+	UserInterface packed_scene;
 	packed_scene.pack(scene);
 
 	// Instantiate the packed scene.
@@ -109,7 +109,7 @@ TEST_CASE("[PackedScene] Instantiate Packed Scene") {
 	memdelete(instance);
 }
 
-TEST_CASE("[PackedScene] Instantiate Packed Scene With Children") {
+TEST_CASE("[UserInterface] Instantiate Packed Scene With Children") {
 	// Create a scene to pack.
 	Node *scene = memnew(Node);
 	scene->set_name("TestScene");
@@ -131,7 +131,7 @@ TEST_CASE("[PackedScene] Instantiate Packed Scene With Children") {
 	scene->add_child(child3);
 
 	// Pack the scene.
-	PackedScene packed_scene;
+	UserInterface packed_scene;
 	packed_scene.pack(scene);
 
 	// Instantiate the packed scene.
@@ -150,13 +150,13 @@ TEST_CASE("[PackedScene] Instantiate Packed Scene With Children") {
 	memdelete(instance);
 }
 
-TEST_CASE("[PackedScene] Set Path") {
+TEST_CASE("[UserInterface] Set Path") {
 	// Create a scene to pack.
 	Node *scene = memnew(Node);
 	scene->set_name("TestScene");
 
 	// Pack the scene.
-	PackedScene packed_scene;
+	UserInterface packed_scene;
 	packed_scene.pack(scene);
 
 	// Set a new path for the packed scene.
@@ -171,13 +171,13 @@ TEST_CASE("[PackedScene] Set Path") {
 	memdelete(scene);
 }
 
-TEST_CASE("[PackedScene] Replace State") {
+TEST_CASE("[UserInterface] Replace State") {
 	// Create a scene to pack.
 	Node *scene = memnew(Node);
 	scene->set_name("TestScene");
 
 	// Pack the scene.
-	PackedScene packed_scene;
+	UserInterface packed_scene;
 	packed_scene.pack(scene);
 
 	// Create another scene state to replace with.
@@ -195,13 +195,13 @@ TEST_CASE("[PackedScene] Replace State") {
 	memdelete(scene);
 }
 
-TEST_CASE("[PackedScene] Recreate State") {
+TEST_CASE("[UserInterface] Recreate State") {
 	// Create a scene to pack.
 	Node *scene = memnew(Node);
 	scene->set_name("TestScene");
 
 	// Pack the scene.
-	PackedScene packed_scene;
+	UserInterface packed_scene;
 	packed_scene.pack(scene);
 
 	// Recreate the state.
@@ -215,6 +215,6 @@ TEST_CASE("[PackedScene] Recreate State") {
 	memdelete(scene);
 }
 
-} // namespace TestPackedScene
+} // namespace TestUserInterface
 
 #endif // TEST_PACKED_SCENE_H

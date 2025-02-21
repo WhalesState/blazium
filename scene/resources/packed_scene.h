@@ -163,7 +163,7 @@ public:
 
 	Ref<SceneState> get_base_scene_state() const;
 
-	void update_instance_resource(String p_path, Ref<PackedScene> p_packed_scene);
+	void update_instance_resource(String p_path, Ref<UserInterface> p_packed_scene);
 
 	//unbuild API
 
@@ -172,7 +172,7 @@ public:
 	StringName get_node_name(int p_idx) const;
 	NodePath get_node_path(int p_idx, bool p_for_parent = false) const;
 	NodePath get_node_owner_path(int p_idx) const;
-	Ref<PackedScene> get_node_instance(int p_idx) const;
+	Ref<UserInterface> get_node_instance(int p_idx) const;
 	String get_node_instance_placeholder(int p_idx) const;
 	bool is_node_instance_placeholder(int p_idx) const;
 	Vector<StringName> get_node_groups(int p_idx) const;
@@ -227,8 +227,8 @@ public:
 
 VARIANT_ENUM_CAST(SceneState::GenEditState)
 
-class PackedScene : public Resource {
-	GDCLASS(PackedScene, Resource);
+class UserInterface : public Resource {
+	GDCLASS(UserInterface, Resource);
 	RES_BASE_EXTENSION("cui");
 
 	Ref<SceneState> state;
@@ -274,9 +274,9 @@ public:
 #endif
 	Ref<SceneState> get_state() const;
 
-	PackedScene();
+	UserInterface();
 };
 
-VARIANT_ENUM_CAST(PackedScene::GenEditState)
+VARIANT_ENUM_CAST(UserInterface::GenEditState)
 
 #endif // PACKED_SCENE_H

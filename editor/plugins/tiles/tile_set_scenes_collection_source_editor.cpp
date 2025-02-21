@@ -190,7 +190,7 @@ void TileSetScenesCollectionSourceEditor::SceneTileProxyObject::_get_property_li
 	}
 
 	p_list->push_back(PropertyInfo(Variant::INT, "id", PROPERTY_HINT_NONE, ""));
-	p_list->push_back(PropertyInfo(Variant::OBJECT, "scene", PROPERTY_HINT_RESOURCE_TYPE, "PackedScene"));
+	p_list->push_back(PropertyInfo(Variant::OBJECT, "scene", PROPERTY_HINT_RESOURCE_TYPE, "UserInterface"));
 	p_list->push_back(PropertyInfo(Variant::BOOL, "display_placeholder", PROPERTY_HINT_NONE, ""));
 }
 
@@ -231,7 +231,7 @@ void TileSetScenesCollectionSourceEditor::_scene_thumbnail_done(const String &p_
 }
 
 void TileSetScenesCollectionSourceEditor::_scenes_list_item_activated(int p_index) {
-	Ref<PackedScene> packed_scene = tile_set_scenes_collection_source->get_scene_tile_scene(scene_tiles_list->get_item_metadata(p_index));
+	Ref<UserInterface> packed_scene = tile_set_scenes_collection_source->get_scene_tile_scene(scene_tiles_list->get_item_metadata(p_index));
 	if (packed_scene.is_valid()) {
 		EditorNode::get_singleton()->open_request(packed_scene->get_path());
 	}
@@ -252,7 +252,7 @@ void TileSetScenesCollectionSourceEditor::_source_add_pressed() {
 }
 
 void TileSetScenesCollectionSourceEditor::_scene_file_selected(const String &p_path) {
-	Ref<PackedScene> scene = ResourceLoader::load(p_path);
+	Ref<UserInterface> scene = ResourceLoader::load(p_path);
 
 	int scene_id = tile_set_scenes_collection_source->get_next_scene_tile_id();
 	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
@@ -322,7 +322,7 @@ void TileSetScenesCollectionSourceEditor::_update_scenes_list() {
 	for (int i = 0; i < tile_set_scenes_collection_source->get_scene_tiles_count(); i++) {
 		int scene_id = tile_set_scenes_collection_source->get_scene_tile_id(i);
 
-		Ref<PackedScene> scene = tile_set_scenes_collection_source->get_scene_tile_scene(scene_id);
+		Ref<UserInterface> scene = tile_set_scenes_collection_source->get_scene_tile_scene(scene_id);
 
 		int item_index = 0;
 		if (scene.is_valid()) {
@@ -330,7 +330,7 @@ void TileSetScenesCollectionSourceEditor::_update_scenes_list() {
 			Variant udata = i;
 			EditorResourcePreview::get_singleton()->queue_edited_resource_preview(scene, this, "_scene_thumbnail_done", udata);
 		} else {
-			item_index = scene_tiles_list->add_item(TTR("Tile with Invalid Scene"), get_editor_theme_icon(SNAME("PackedScene")));
+			item_index = scene_tiles_list->add_item(TTR("Tile with Invalid Scene"), get_editor_theme_icon(SNAME("UserInterface")));
 		}
 		scene_tiles_list->set_item_metadata(item_index, scene_id);
 
@@ -454,7 +454,7 @@ void TileSetScenesCollectionSourceEditor::_drop_data_fw(const Point2 &p_point, c
 		Dictionary d = p_data;
 		Vector<String> files = d["files"];
 		for (int i = 0; i < files.size(); i++) {
-			Ref<PackedScene> resource = ResourceLoader::load(files[i]);
+			Ref<UserInterface> resource = ResourceLoader::load(files[i]);
 			if (resource.is_valid()) {
 				int scene_id = tile_set_scenes_collection_source->get_next_scene_tile_id();
 				EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
@@ -490,7 +490,7 @@ bool TileSetScenesCollectionSourceEditor::_can_drop_data_fw(const Point2 &p_poin
 			for (int i = 0; i < files.size(); i++) {
 				String ftype = EditorFileSystem::get_singleton()->get_file_type(files[i]);
 
-				if (!ClassDB::is_parent_class(ftype, "PackedScene")) {
+				if (!ClassDB::is_parent_class(ftype, "UserInterface")) {
 					return false;
 				}
 			}

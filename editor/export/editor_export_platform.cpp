@@ -789,10 +789,10 @@ String EditorExportPlatform::_export_customize(const String &p_path, LocalVector
 
 	String save_path;
 
-	if (type == "PackedScene") { // Its a scene.
-		Ref<PackedScene> ps = ResourceLoader::load(p_path, "PackedScene", ResourceFormatLoader::CACHE_MODE_IGNORE);
+	if (type == "UserInterface") { // Its a scene.
+		Ref<UserInterface> ps = ResourceLoader::load(p_path, "UserInterface", ResourceFormatLoader::CACHE_MODE_IGNORE);
 		ERR_FAIL_COND_V(ps.is_null(), p_path);
-		Node *node = ps->instantiate(PackedScene::GEN_EDIT_STATE_INSTANCE); // Make sure the child scene root gets the correct inheritance chain.
+		Node *node = ps->instantiate(UserInterface::GEN_EDIT_STATE_INSTANCE); // Make sure the child scene root gets the correct inheritance chain.
 		ERR_FAIL_NULL_V(node, p_path);
 		if (!customize_scenes_plugins.is_empty()) {
 			for (Ref<EditorExportPlugin> &plugin : customize_scenes_plugins) {
@@ -812,10 +812,10 @@ String EditorExportPlatform::_export_customize(const String &p_path, LocalVector
 		if (modified || p_force_save) {
 			// If modified, save it again. This is also used for gui -> cui conversion on export.
 
-			String base_file = p_path.get_file().get_basename() + ".cui"; // use cui for saving (binary) and repack (If conversting, gui PackedScene representation is inefficient, so repacking is also desired).
+			String base_file = p_path.get_file().get_basename() + ".cui"; // use cui for saving (binary) and repack (If conversting, gui UserInterface representation is inefficient, so repacking is also desired).
 			save_path = export_base_path.path_join("export-" + p_path.md5_text() + "-" + base_file);
 
-			Ref<PackedScene> s;
+			Ref<UserInterface> s;
 			s.instantiate();
 			s->pack(node);
 			Error err = ResourceSaver::save(s, save_path);
@@ -940,7 +940,7 @@ Error EditorExportPlatform::export_project_files(const Ref<EditorExportPreset> &
 
 		Vector<String> files = p_preset->get_files_to_export();
 		for (int i = 0; i < files.size(); i++) {
-			if (scenes_only && ResourceLoader::get_resource_type(files[i]) != "PackedScene") {
+			if (scenes_only && ResourceLoader::get_resource_type(files[i]) != "UserInterface") {
 				continue;
 			}
 

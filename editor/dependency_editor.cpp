@@ -298,7 +298,7 @@ void DependencyEditorOwners::_list_rmb_clicked(int p_item, const Vector2 &p_pos,
 
 		for (int i = 0; i < selected_items.size(); i++) {
 			int item_idx = selected_items[i];
-			if (ResourceLoader::get_resource_type(owners->get_item_text(item_idx)) != "PackedScene") {
+			if (ResourceLoader::get_resource_type(owners->get_item_text(item_idx)) != "UserInterface") {
 				only_scenes_selected = false;
 				break;
 			}
@@ -321,7 +321,7 @@ void DependencyEditorOwners::_list_rmb_clicked(int p_item, const Vector2 &p_pos,
 void DependencyEditorOwners::_select_file(int p_idx) {
 	String fpath = owners->get_item_text(p_idx);
 
-	if (ResourceLoader::get_resource_type(fpath) == "PackedScene") {
+	if (ResourceLoader::get_resource_type(fpath) == "UserInterface") {
 		EditorNode::get_singleton()->open_request(fpath);
 	} else {
 		EditorNode::get_singleton()->load_resource(fpath);

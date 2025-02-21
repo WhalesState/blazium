@@ -531,7 +531,7 @@ TEST_CASE("[SceneTree][Node]Exported node checks") {
 
 #ifdef TOOLS_ENABLED
 	SUBCASE("Saving instance with exported nodes should not store the unchanged property") {
-		Ref<PackedScene> ps;
+		Ref<UserInterface> ps;
 		ps.instantiate();
 		ps->pack(node);
 
@@ -540,11 +540,11 @@ TEST_CASE("[SceneTree][Node]Exported node checks") {
 
 		Node *root = memnew(Node);
 
-		Node *sub_child = ps->instantiate(PackedScene::GEN_EDIT_STATE_MAIN);
+		Node *sub_child = ps->instantiate(UserInterface::GEN_EDIT_STATE_MAIN);
 		root->add_child(sub_child);
 		sub_child->set_owner(root);
 
-		Ref<PackedScene> ps2;
+		Ref<UserInterface> ps2;
 		ps2.instantiate();
 		ps2->pack(root);
 
@@ -566,7 +566,7 @@ TEST_CASE("[SceneTree][Node]Exported node checks") {
 	}
 
 	SUBCASE("Saving instance with exported nodes should store property if changed") {
-		Ref<PackedScene> ps;
+		Ref<UserInterface> ps;
 		ps.instantiate();
 		ps->pack(node);
 
@@ -575,7 +575,7 @@ TEST_CASE("[SceneTree][Node]Exported node checks") {
 
 		Node *root = memnew(Node);
 
-		Node *sub_child = ps->instantiate(PackedScene::GEN_EDIT_STATE_MAIN);
+		Node *sub_child = ps->instantiate(UserInterface::GEN_EDIT_STATE_MAIN);
 		root->add_child(sub_child);
 		sub_child->set_owner(root);
 
@@ -585,7 +585,7 @@ TEST_CASE("[SceneTree][Node]Exported node checks") {
 		children.append(sub_child->get_child(1));
 		sub_child->set("exported_nodes", children);
 
-		Ref<PackedScene> ps2;
+		Ref<UserInterface> ps2;
 		ps2.instantiate();
 		ps2->pack(root);
 

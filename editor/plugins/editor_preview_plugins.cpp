@@ -251,15 +251,15 @@ EditorBitmapPreviewPlugin::EditorBitmapPreviewPlugin() {
 
 ///////////////////////////////////////////////////////////////////////////
 
-bool EditorPackedScenePreviewPlugin::handles(const String &p_type) const {
-	return ClassDB::is_parent_class(p_type, "PackedScene");
+bool EditorUserInterfacePreviewPlugin::handles(const String &p_type) const {
+	return ClassDB::is_parent_class(p_type, "UserInterface");
 }
 
-Ref<Texture2D> EditorPackedScenePreviewPlugin::generate(const Ref<Resource> &p_from, const Size2 &p_size, Dictionary &p_metadata) const {
+Ref<Texture2D> EditorUserInterfacePreviewPlugin::generate(const Ref<Resource> &p_from, const Size2 &p_size, Dictionary &p_metadata) const {
 	return generate_from_path(p_from->get_path(), p_size, p_metadata);
 }
 
-Ref<Texture2D> EditorPackedScenePreviewPlugin::generate_from_path(const String &p_path, const Size2 &p_size, Dictionary &p_metadata) const {
+Ref<Texture2D> EditorUserInterfacePreviewPlugin::generate_from_path(const String &p_path, const Size2 &p_size, Dictionary &p_metadata) const {
 	String temp_path = EditorPaths::get_singleton()->get_cache_dir();
 	String cache_base = ProjectSettings::get_singleton()->globalize_path(p_path).md5_text();
 	cache_base = temp_path.path_join("resthumb-" + cache_base);
@@ -284,7 +284,7 @@ Ref<Texture2D> EditorPackedScenePreviewPlugin::generate_from_path(const String &
 	}
 }
 
-EditorPackedScenePreviewPlugin::EditorPackedScenePreviewPlugin() {
+EditorUserInterfacePreviewPlugin::EditorUserInterfacePreviewPlugin() {
 }
 
 //////////////////////////////////////////////////////////////////

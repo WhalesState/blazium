@@ -900,7 +900,7 @@ bool ProjectExportDialog::_fill_tree(EditorFileSystemDirectory *p_dir, TreeItem 
 
 	for (int i = 0; i < p_dir->get_file_count(); i++) {
 		String type = p_dir->get_file_type(i);
-		if (p_export_filter == EditorExportPreset::EXPORT_SELECTED_SCENES && type != "PackedScene") {
+		if (p_export_filter == EditorExportPreset::EXPORT_SELECTED_SCENES && type != "UserInterface") {
 			continue;
 		}
 		if (type == "TextFile") {

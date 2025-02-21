@@ -163,7 +163,7 @@ void EditorDebuggerNode::_text_editor_stack_goto(const ScriptEditorDebugger *p_d
 		if (j > -1) { // If the script is named, the string is "name (file)", so we need to extract the path.
 			file = file.substr(j + 1, file.find(")", i) - j - 1);
 		}
-		Ref<PackedScene> ps = ResourceLoader::load(file.get_slice("::", 0));
+		Ref<UserInterface> ps = ResourceLoader::load(file.get_slice("::", 0));
 		stack_script = ResourceLoader::load(file);
 	}
 	const int line = p_debugger->get_stack_script_line() - 1;
@@ -186,7 +186,7 @@ void EditorDebuggerNode::_text_editor_stack_clear(const ScriptEditorDebugger *p_
 		if (j > -1) { // If the script is named, the string is "name (file)", so we need to extract the path.
 			file = file.substr(j + 1, file.find(")", i) - j - 1);
 		}
-		Ref<PackedScene> ps = ResourceLoader::load(file.get_slice("::", 0));
+		Ref<UserInterface> ps = ResourceLoader::load(file.get_slice("::", 0));
 		stack_script = ResourceLoader::load(file);
 	}
 	emit_signal(SNAME("clear_execution"), stack_script);

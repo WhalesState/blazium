@@ -3656,9 +3656,9 @@ int Main::start() {
 					const ProjectSettings::AutoloadInfo &info = E.value;
 
 					Node *n = nullptr;
-					if (ResourceLoader::get_resource_type(info.path) == "PackedScene") {
+					if (ResourceLoader::get_resource_type(info.path) == "UserInterface") {
 						// Cache the scene reference before loading it (for cyclic references)
-						Ref<PackedScene> cui;
+						Ref<UserInterface> cui;
 						cui.instantiate();
 						cui->set_path(info.path);
 						cui->reload_from_file();
@@ -3889,7 +3889,7 @@ int Main::start() {
 
 			if (!game_path.is_empty()) {
 				Node *scene = nullptr;
-				Ref<PackedScene> scenedata = ResourceLoader::load(local_game_path);
+				Ref<UserInterface> scenedata = ResourceLoader::load(local_game_path);
 				if (scenedata.is_valid()) {
 					scene = scenedata->instantiate();
 				}

@@ -261,7 +261,7 @@ String ResourceImporterScene::get_save_extension() const {
 }
 
 String ResourceImporterScene::get_resource_type() const {
-	return animation_importer ? "AnimationLibrary" : "PackedScene";
+	return animation_importer ? "AnimationLibrary" : "UserInterface";
 }
 
 int ResourceImporterScene::get_format_version() const {
@@ -3112,7 +3112,7 @@ Error ResourceImporterScene::import(const String &p_source_file, const String &p
 		ERR_FAIL_COND_V_MSG(err != OK, err, "Cannot save animation to file '" + p_save_path + ".res'.");
 
 	} else {
-		Ref<PackedScene> packer = memnew(PackedScene);
+		Ref<UserInterface> packer = memnew(UserInterface);
 		packer->pack(scene);
 		print_verbose("Saving scene to: " + p_save_path + ".cui");
 		err = ResourceSaver::save(packer, p_save_path + ".cui", flags); //do not take over, let the changed files reload themselves
@@ -3212,7 +3212,7 @@ void EditorSceneFormatImporterEcui::get_extensions(List<String> *r_extensions) c
 
 Node *EditorSceneFormatImporterEcui::import_scene(const String &p_path, uint32_t p_flags, const HashMap<StringName, Variant> &p_options, List<String> *r_missing_deps, Error *r_err) {
 	Error error;
-	Ref<PackedScene> ps = ResourceFormatLoaderText::singleton->load(p_path, p_path, &error);
+	Ref<UserInterface> ps = ResourceFormatLoaderText::singleton->load(p_path, p_path, &error);
 	ERR_FAIL_COND_V_MSG(!ps.is_valid(), nullptr, "Cannot load scene as text resource from path '" + p_path + "'.");
 	Node *scene = ps->instantiate();
 	TypedArray<Node> nodes = scene->find_children("*", "MeshInstance3D");

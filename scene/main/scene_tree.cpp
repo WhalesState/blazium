@@ -1418,7 +1418,7 @@ void SceneTree::_flush_scene_change() {
 
 Error SceneTree::change_scene_to_file(const String &p_path) {
 	ERR_FAIL_COND_V_MSG(!Thread::is_main_thread(), ERR_INVALID_PARAMETER, "Changing scene can only be done from the main thread.");
-	Ref<PackedScene> new_scene = ResourceLoader::load(p_path);
+	Ref<UserInterface> new_scene = ResourceLoader::load(p_path);
 	if (new_scene.is_null()) {
 		return ERR_CANT_OPEN;
 	}
@@ -1426,7 +1426,7 @@ Error SceneTree::change_scene_to_file(const String &p_path) {
 	return change_scene_to_packed(new_scene);
 }
 
-Error SceneTree::change_scene_to_packed(const Ref<PackedScene> &p_scene) {
+Error SceneTree::change_scene_to_packed(const Ref<UserInterface> &p_scene) {
 	ERR_FAIL_COND_V_MSG(p_scene.is_null(), ERR_INVALID_PARAMETER, "Can't change to a null scene. Use unload_current_scene() if you wish to unload it.");
 
 	Node *new_scene = p_scene->instantiate();

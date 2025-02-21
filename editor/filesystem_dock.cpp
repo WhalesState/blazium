@@ -1191,7 +1191,7 @@ void FileSystemDock::_select_file(const String &p_path, bool p_select_in_favorit
 
 		String resource_type = ResourceLoader::get_resource_type(fpath);
 
-		if (resource_type == "PackedScene" || resource_type == "AnimationLibrary") {
+		if (resource_type == "UserInterface" || resource_type == "AnimationLibrary") {
 			bool is_imported = false;
 
 			{
@@ -1208,7 +1208,7 @@ void FileSystemDock::_select_file(const String &p_path, bool p_select_in_favorit
 
 			if (is_imported) {
 				SceneImportSettingsDialog::get_singleton()->open_settings(p_path, resource_type == "AnimationLibrary");
-			} else if (resource_type == "PackedScene") {
+			} else if (resource_type == "UserInterface") {
 				EditorNode::get_singleton()->open_request(fpath);
 			} else {
 				EditorNode::get_singleton()->load_resource(fpath);
@@ -1433,7 +1433,7 @@ void FileSystemDock::_try_move_item(const FileOrFolder &p_item, const String &p_
 		// Update scene if it is open.
 		for (int i = 0; i < file_changed_paths.size(); ++i) {
 			String new_item_path = p_item.is_file ? new_path : file_changed_paths[i].replace_first(old_path, new_path);
-			if (ResourceLoader::get_resource_type(new_item_path) == "PackedScene" && EditorNode::get_singleton()->is_scene_open(file_changed_paths[i])) {
+			if (ResourceLoader::get_resource_type(new_item_path) == "UserInterface" && EditorNode::get_singleton()->is_scene_open(file_changed_paths[i])) {
 				EditorData *ed = &EditorNode::get_editor_data();
 				for (int j = 0; j < ed->get_edited_scene_count(); j++) {
 					if (ed->get_scene_path(j) == file_changed_paths[i]) {
@@ -1600,7 +1600,7 @@ void FileSystemDock::_update_dependencies_after_move(const HashMap<String, Strin
 		print_verbose("Remapping dependencies for: " + file);
 		const Error err = ResourceLoader::rename_dependencies(file, p_renames);
 		if (err == OK) {
-			if (ResourceLoader::get_resource_type(file) == "PackedScene") {
+			if (ResourceLoader::get_resource_type(file) == "UserInterface") {
 				if (file == edited_scene_path) {
 					scenes_to_reload.push_front(file);
 				} else {
@@ -2137,7 +2137,7 @@ void FileSystemDock::_file_option(int p_option, const Vector<String> &p_selected
 				}
 			} else if (ClassDB::is_parent_class(resource_type, "AudioStream")) {
 				external_program = EDITOR_GET("filesystem/external_programs/audio_editor");
-			} else if (resource_type == "PackedScene") {
+			} else if (resource_type == "UserInterface") {
 				external_program = EDITOR_GET("filesystem/external_programs/3d_model_editor");
 			}
 
@@ -2323,7 +2323,7 @@ void FileSystemDock::_file_option(int p_option, const Vector<String> &p_selected
 			Vector<String> paths;
 			for (int i = 0; i < p_selected.size(); i++) {
 				const String &fpath = p_selected[i];
-				if (EditorFileSystem::get_singleton()->get_file_type(fpath) == "PackedScene") {
+				if (EditorFileSystem::get_singleton()->get_file_type(fpath) == "UserInterface") {
 					paths.push_back(fpath);
 				}
 			}
@@ -2568,7 +2568,7 @@ void FileSystemDock::_resource_created() {
 	Resource *r = Object::cast_to<Resource>(c);
 	ERR_FAIL_NULL(r);
 
-	PackedScene *scene = Object::cast_to<PackedScene>(r);
+	UserInterface *scene = Object::cast_to<UserInterface>(r);
 	if (scene) {
 		Node *node = memnew(Node);
 		node->set_name("Node");
@@ -3105,7 +3105,7 @@ void FileSystemDock::_file_and_folders_fill_popup(PopupMenu *p_popup, const Vect
 		} else {
 			filenames.push_back(fpath);
 			all_folders = false;
-			all_files_scenes &= (EditorFileSystem::get_singleton()->get_file_type(fpath) == "PackedScene");
+			all_files_scenes &= (EditorFileSystem::get_singleton()->get_file_type(fpath) == "UserInterface");
 		}
 
 		// Check if in favorites.
@@ -3156,7 +3156,7 @@ void FileSystemDock::_file_and_folders_fill_popup(PopupMenu *p_popup, const Vect
 		p_popup->set_item_icon(p_popup->get_item_index(FILE_NEW), get_editor_theme_icon(SNAME("Add")));
 
 		new_menu->add_icon_item(get_editor_theme_icon(SNAME("Folder")), TTR("Folder..."), FILE_NEW_FOLDER);
-		new_menu->add_icon_item(get_editor_theme_icon(SNAME("PackedScene")), TTR("Scene..."), FILE_NEW_SCENE);
+		new_menu->add_icon_item(get_editor_theme_icon(SNAME("UserInterface")), TTR("Scene..."), FILE_NEW_SCENE);
 		new_menu->add_icon_item(get_editor_theme_icon(SNAME("Script")), TTR("Script..."), FILE_NEW_SCRIPT);
 		new_menu->add_icon_item(get_editor_theme_icon(SNAME("Object")), TTR("Resource..."), FILE_NEW_RESOURCE);
 		new_menu->add_icon_item(get_editor_theme_icon(SNAME("TextFile")), TTR("TextFile..."), FILE_NEW_TEXTFILE);
@@ -3331,7 +3331,7 @@ void FileSystemDock::_tree_empty_click(const Vector2 &p_pos, MouseButton p_butto
 	tree_popup->clear();
 	tree_popup->reset_size();
 	tree_popup->add_icon_item(get_editor_theme_icon(SNAME("Folder")), TTR("New Folder..."), FILE_NEW_FOLDER);
-	tree_popup->add_icon_item(get_editor_theme_icon(SNAME("PackedScene")), TTR("New Scene..."), FILE_NEW_SCENE);
+	tree_popup->add_icon_item(get_editor_theme_icon(SNAME("UserInterface")), TTR("New Scene..."), FILE_NEW_SCENE);
 	tree_popup->add_icon_item(get_editor_theme_icon(SNAME("Script")), TTR("New Script..."), FILE_NEW_SCRIPT);
 	tree_popup->add_icon_item(get_editor_theme_icon(SNAME("Object")), TTR("New Resource..."), FILE_NEW_RESOURCE);
 	tree_popup->add_icon_item(get_editor_theme_icon(SNAME("TextFile")), TTR("New TextFile..."), FILE_NEW_TEXTFILE);
@@ -3396,7 +3396,7 @@ void FileSystemDock::_file_list_empty_clicked(const Vector2 &p_pos, MouseButton 
 	file_list_popup->reset_size();
 
 	file_list_popup->add_icon_item(get_editor_theme_icon(SNAME("Folder")), TTR("New Folder..."), FILE_NEW_FOLDER);
-	file_list_popup->add_icon_item(get_editor_theme_icon(SNAME("PackedScene")), TTR("New Scene..."), FILE_NEW_SCENE);
+	file_list_popup->add_icon_item(get_editor_theme_icon(SNAME("UserInterface")), TTR("New Scene..."), FILE_NEW_SCENE);
 	file_list_popup->add_icon_item(get_editor_theme_icon(SNAME("Script")), TTR("New Script..."), FILE_NEW_SCRIPT);
 	file_list_popup->add_icon_item(get_editor_theme_icon(SNAME("Object")), TTR("New Resource..."), FILE_NEW_RESOURCE);
 	file_list_popup->add_icon_item(get_editor_theme_icon(SNAME("TextFile")), TTR("New TextFile..."), FILE_NEW_TEXTFILE);

@@ -211,7 +211,7 @@ void TileMapLayerEditorTilesPlugin::_update_tile_set_sources_list() {
 		// Scene collection source.
 		TileSetScenesCollectionSource *scene_collection_source = Object::cast_to<TileSetScenesCollectionSource>(source);
 		if (scene_collection_source) {
-			texture = tiles_bottom_panel->get_editor_theme_icon(SNAME("PackedScene"));
+			texture = tiles_bottom_panel->get_editor_theme_icon(SNAME("UserInterface"));
 			if (item_text.is_empty()) {
 				if (scene_collection_source->get_scene_tiles_count() > 0) {
 					item_text = vformat(TTR("Scene Collection Source (ID: %d)"), source_id);
@@ -421,7 +421,7 @@ void TileMapLayerEditorTilesPlugin::_update_scenes_collection_view() {
 	for (int i = 0; i < scenes_collection_source->get_scene_tiles_count(); i++) {
 		int scene_id = scenes_collection_source->get_scene_tile_id(i);
 
-		Ref<PackedScene> scene = scenes_collection_source->get_scene_tile_scene(scene_id);
+		Ref<UserInterface> scene = scenes_collection_source->get_scene_tile_scene(scene_id);
 
 		int item_index = 0;
 		if (scene.is_valid()) {
@@ -429,7 +429,7 @@ void TileMapLayerEditorTilesPlugin::_update_scenes_collection_view() {
 			Variant udata = i;
 			EditorResourcePreview::get_singleton()->queue_edited_resource_preview(scene, this, "_scene_thumbnail_done", udata);
 		} else {
-			item_index = scene_tiles_list->add_item(TTR("Tile with Invalid Scene"), tiles_bottom_panel->get_editor_theme_icon(SNAME("PackedScene")));
+			item_index = scene_tiles_list->add_item(TTR("Tile with Invalid Scene"), tiles_bottom_panel->get_editor_theme_icon(SNAME("UserInterface")));
 		}
 		scene_tiles_list->set_item_metadata(item_index, scene_id);
 

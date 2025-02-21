@@ -234,7 +234,7 @@ void GroupSettingsEditor::_modify_references(const StringName &p_name, const Str
 	}
 
 	for (const String &E : scenes) {
-		Ref<PackedScene> packed_scene = ResourceLoader::load(E);
+		Ref<UserInterface> packed_scene = ResourceLoader::load(E);
 		progress.step(E, step++);
 		ERR_CONTINUE(packed_scene.is_null());
 		if (p_is_rename) {

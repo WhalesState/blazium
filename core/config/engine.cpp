@@ -158,7 +158,7 @@ Dictionary Engine::get_author_info() const {
 
 	dict["lead_developers"] = "Hamid.Memar (MemarDesign™ LLC.)";
 	dict["project_managers"] = "Hamid.Memar";
-	dict["founders"] = "Hamid.Memar";
+	dict["founders"] = "None";
 	dict["developers"] = "Hamid.Memar";
 
 	return dict;

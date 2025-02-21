@@ -1374,7 +1374,7 @@ bool SceneTreeEditor::can_drop_data_fw(const Point2 &p_point, const Variant &p_d
 		bool audio_drop = true;
 		for (int i = 0; i < files.size(); i++) {
 			String ftype = EditorFileSystem::get_singleton()->get_file_type(files[i]);
-			if (ftype != "PackedScene") {
+			if (ftype != "UserInterface") {
 				scene_drop = false;
 			}
 			if (audio_drop && !ClassDB::is_parent_class(ftype, "AudioStream")) {

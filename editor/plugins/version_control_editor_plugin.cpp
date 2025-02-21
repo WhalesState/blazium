@@ -546,7 +546,7 @@ void VersionControlEditorPlugin::_cell_button_pressed(Object *p_item, int p_colu
 		}
 
 		file_path = "res://" + file_path;
-		if (ResourceLoader::get_resource_type(file_path) == "PackedScene") {
+		if (ResourceLoader::get_resource_type(file_path) == "UserInterface") {
 			EditorNode::get_singleton()->open_request(file_path);
 		} else if (file_path.ends_with(".gd")) {
 			EditorNode::get_singleton()->load_resource(file_path);

@@ -49,7 +49,7 @@ void EditorAutoloadSettings::_notification(int p_what) {
 		case NOTIFICATION_ENTER_TREE: {
 			List<String> afn;
 			ResourceLoader::get_recognized_extensions_for_type("Script", &afn);
-			ResourceLoader::get_recognized_extensions_for_type("PackedScene", &afn);
+			ResourceLoader::get_recognized_extensions_for_type("UserInterface", &afn);
 
 			for (const String &E : afn) {
 				file_dialog->add_filter("*." + E);
@@ -357,7 +357,7 @@ void EditorAutoloadSettings::_autoload_activated() {
 }
 
 void EditorAutoloadSettings::_autoload_open(const String &fpath) {
-	if (ResourceLoader::get_resource_type(fpath) == "PackedScene") {
+	if (ResourceLoader::get_resource_type(fpath) == "UserInterface") {
 		EditorNode::get_singleton()->open_request(fpath);
 	} else {
 		EditorNode::get_singleton()->load_resource(fpath);
@@ -397,9 +397,9 @@ void EditorAutoloadSettings::_autoload_text_changed(const String &p_name) {
 
 Node *EditorAutoloadSettings::_create_autoload(const String &p_path) {
 	Node *n = nullptr;
-	if (ResourceLoader::get_resource_type(p_path) == "PackedScene") {
+	if (ResourceLoader::get_resource_type(p_path) == "UserInterface") {
 		// Cache the scene reference before loading it (for cyclic references)
-		Ref<PackedScene> cui;
+		Ref<UserInterface> cui;
 		cui.instantiate();
 		cui->set_path(p_path);
 		cui->reload_from_file();

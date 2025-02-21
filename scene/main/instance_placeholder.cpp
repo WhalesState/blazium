@@ -70,7 +70,7 @@ String InstancePlaceholder::get_instance_path() const {
 	return path;
 }
 
-Node *InstancePlaceholder::create_instance(bool p_replace, const Ref<PackedScene> &p_custom_scene) {
+Node *InstancePlaceholder::create_instance(bool p_replace, const Ref<UserInterface> &p_custom_scene) {
 	ERR_FAIL_COND_V(!is_inside_tree(), nullptr);
 
 	Node *base = get_parent();
@@ -78,11 +78,11 @@ Node *InstancePlaceholder::create_instance(bool p_replace, const Ref<PackedScene
 		return nullptr;
 	}
 
-	Ref<PackedScene> ps;
+	Ref<UserInterface> ps;
 	if (p_custom_scene.is_valid()) {
 		ps = p_custom_scene;
 	} else {
-		ps = ResourceLoader::load(path, "PackedScene");
+		ps = ResourceLoader::load(path, "UserInterface");
 	}
 
 	if (!ps.is_valid()) {

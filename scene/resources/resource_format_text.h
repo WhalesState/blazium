@@ -110,7 +110,7 @@ class ResourceLoaderText {
 
 	Ref<Resource> resource;
 
-	Ref<PackedScene> _parse_node_tag(VariantParser::ResourceParser &parser);
+	Ref<UserInterface> _parse_node_tag(VariantParser::ResourceParser &parser);
 
 public:
 	Ref<Resource> get_resource();
@@ -152,7 +152,7 @@ public:
 class ResourceFormatSaverTextInstance {
 	String local_path;
 
-	Ref<PackedScene> packed_scene;
+	Ref<UserInterface> packed_scene;
 
 	bool takeover_paths = false;
 	bool relative_paths = false;
