@@ -1787,10 +1787,6 @@ bool Engine::is_editor_hint() const {
 	return ::Engine::get_singleton()->is_editor_hint();
 }
 
-String Engine::get_write_movie_path() const {
-	return ::Engine::get_singleton()->get_write_movie_path();
-}
-
 void Engine::set_print_error_messages(bool p_enabled) {
 	::Engine::get_singleton()->set_print_error_messages(p_enabled);
 }
@@ -1856,8 +1852,6 @@ void Engine::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_script_language", "index"), &Engine::get_script_language);
 
 	ClassDB::bind_method(D_METHOD("is_editor_hint"), &Engine::is_editor_hint);
-
-	ClassDB::bind_method(D_METHOD("get_write_movie_path"), &Engine::get_write_movie_path);
 
 	ClassDB::bind_method(D_METHOD("set_print_error_messages", "enabled"), &Engine::set_print_error_messages);
 	ClassDB::bind_method(D_METHOD("is_printing_error_messages"), &Engine::is_printing_error_messages);

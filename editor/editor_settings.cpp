@@ -458,7 +458,7 @@ void EditorSettings::_load_defaults(Ref<ConfigFile> p_extra_config) {
 	EDITOR_SETTING(Variant::INT, PROPERTY_HINT_ENUM, "interface/editor/show_update_spinner", 0, "Auto (Enabled),Enabled,Disabled")
 #else
 	EDITOR_SETTING(Variant::INT, PROPERTY_HINT_ENUM, "interface/editor/show_internal_errors_in_toast_notifications", 0, "Auto (Disabled),Enabled,Disabled")
-	EDITOR_SETTING(Variant::INT, PROPERTY_HINT_ENUM, "interface/editor/show_update_spinner", 0, "Auto (Disabled),Enabled,Disabled")
+	EDITOR_SETTING(Variant::INT, PROPERTY_HINT_ENUM, "interface/editor/show_update_spinner", 1, "Auto (Disabled),Enabled,Disabled")
 #endif
 
 	EDITOR_SETTING_USAGE(Variant::INT, PROPERTY_HINT_RANGE, "interface/editor/low_processor_mode_sleep_usec", 6900, "1,100000,1", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_RESTART_IF_CHANGED)

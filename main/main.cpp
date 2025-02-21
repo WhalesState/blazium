@@ -64,11 +64,10 @@
 #include "scene/register_scene_types.h"
 #include "scene/resources/component.h"
 #include "scene/theme/theme_db.h"
+#include "servers/audio/audio_driver_dummy.h"
 #include "servers/audio_server.h"
 #include "servers/camera_server.h"
 #include "servers/display_server.h"
-#include "servers/movie_writer/movie_writer.h"
-#include "servers/movie_writer/movie_writer_mjpeg.h"
 #include "servers/register_server_types.h"
 #include "servers/rendering/rendering_server_default.h"
 #include "servers/text/text_server_dummy.h"
@@ -218,7 +217,6 @@ static int frame_delay = 0;
 static int audio_output_latency = 0;
 static bool disable_render_loop = false;
 static int fixed_fps = -1;
-static MovieWriter *movie_writer = nullptr;
 static bool disable_vsync = false;
 static bool print_fps = false;
 #ifdef TOOLS_ENABLED
@@ -1385,18 +1383,6 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 				OS::get_singleton()->print("Missing fixed-fps argument, aborting.\n");
 				goto error;
 			}
-		} else if (arg == "--write-movie") {
-			if (N) {
-				Engine::get_singleton()->set_write_movie_path(N->get());
-				N = N->next();
-				if (fixed_fps == -1) {
-					fixed_fps = 60;
-				}
-				OS::get_singleton()->_writing_movie = true;
-			} else {
-				OS::get_singleton()->print("Missing write-movie argument, aborting.\n");
-				goto error;
-			}
 		} else if (arg == "--disable-vsync") {
 			disable_vsync = true;
 		} else if (arg == "--print-fps") {
@@ -2064,12 +2050,6 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 		audio_driver_idx = 0;
 	}
 
-	if (Engine::get_singleton()->get_write_movie_path() != String()) {
-		// Always use dummy driver for audio driver (which is last), also in no threaded mode.
-		audio_driver_idx = AudioDriverManager::get_driver_count() - 1;
-		AudioDriverDummy::get_dummy_singleton()->set_use_threads(false);
-	}
-
 	{
 		window_orientation = DisplayServer::ScreenOrientation(int(GLOBAL_DEF_BASIC("display/window/handheld/orientation", DisplayServer::ScreenOrientation::SCREEN_LANDSCAPE)));
 	}
@@ -2184,7 +2164,6 @@ error:
 	display_driver = "";
 	audio_driver = "";
 	tablet_driver = "";
-	Engine::get_singleton()->set_write_movie_path(String());
 	project_path = "";
 
 	args.clear();
@@ -2546,14 +2525,6 @@ Error Main::setup2(bool p_show_boot_logo) {
 
 		if (profile_gpu || (!editor && bool(GLOBAL_GET("debug/settings/stdout/print_gpu_profile")))) {
 			rendering_server->set_print_gpu_profile(true);
-		}
-
-		if (Engine::get_singleton()->get_write_movie_path() != String()) {
-			movie_writer = MovieWriter::find_writer_for_file(Engine::get_singleton()->get_write_movie_path());
-			if (movie_writer == nullptr) {
-				ERR_PRINT("Can't find movie writer for file type, aborting: " + Engine::get_singleton()->get_write_movie_path());
-				Engine::get_singleton()->set_write_movie_path(String());
-			}
 		}
 
 		OS::get_singleton()->benchmark_end_measure("Servers", "Rendering");
@@ -3633,9 +3604,7 @@ int Main::start() {
 		DisplayServer::get_singleton()->set_icon(icon);
 	}
 
-	if (movie_writer) {
-		movie_writer->begin(DisplayServer::get_singleton()->window_get_size(), fixed_fps, Engine::get_singleton()->get_write_movie_path());
-	}
+	/* Mark : Engine Start */
 
 	if (minimum_time_msec) {
 		uint64_t minimum_time = 1000 * minimum_time_msec;
@@ -3834,9 +3803,7 @@ bool Main::iteration() {
 
 	iterating--;
 
-	if (movie_writer) {
-		movie_writer->add_frame();
-	}
+	/* Mark : Engine Tick */
 
 #ifdef TOOLS_ENABLED
 	bool quit_after_timeout = false;
@@ -3912,9 +3879,7 @@ void Main::cleanup(bool p_force) {
 		TextServerManager::get_singleton()->get_interface(i)->cleanup();
 	}
 
-	if (movie_writer) {
-		movie_writer->end();
-	}
+	/* Mark : Engine End */
 
 	ResourceLoader::clear_thread_load_tasks();
 

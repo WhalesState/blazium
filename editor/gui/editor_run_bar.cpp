@@ -55,22 +55,8 @@ void EditorRunBar::_notification(int p_what) {
 			pause_button->set_icon(get_editor_theme_icon(SNAME("Pause")));
 			stop_button->set_icon(get_editor_theme_icon(SNAME("Stop")));
 
-			if (is_movie_maker_enabled()) {
-				main_panel->add_theme_style_override(SceneStringName(panel), get_theme_stylebox(SNAME("LaunchPadMovieMode"), EditorStringName(EditorStyles)));
-				write_movie_panel->add_theme_style_override(SceneStringName(panel), get_theme_stylebox(SNAME("MovieWriterButtonPressed"), EditorStringName(EditorStyles)));
-			} else {
-				main_panel->add_theme_style_override(SceneStringName(panel), get_theme_stylebox(SNAME("LaunchPadNormal"), EditorStringName(EditorStyles)));
-				write_movie_panel->add_theme_style_override(SceneStringName(panel), get_theme_stylebox(SNAME("MovieWriterButtonNormal"), EditorStringName(EditorStyles)));
-			}
-
-			write_movie_button->set_icon(get_editor_theme_icon(SNAME("MainMovieWrite")));
-			// This button behaves differently, so color it as such.
-			write_movie_button->begin_bulk_theme_override();
-			write_movie_button->add_theme_color_override("icon_normal_color", get_theme_color(SNAME("movie_writer_icon_normal"), EditorStringName(EditorStyles)));
-			write_movie_button->add_theme_color_override("icon_pressed_color", get_theme_color(SNAME("movie_writer_icon_pressed"), EditorStringName(EditorStyles)));
-			write_movie_button->add_theme_color_override("icon_hover_color", get_theme_color(SNAME("movie_writer_icon_hover"), EditorStringName(EditorStyles)));
-			write_movie_button->add_theme_color_override("icon_hover_pressed_color", get_theme_color(SNAME("movie_writer_icon_hover_pressed"), EditorStringName(EditorStyles)));
-			write_movie_button->end_bulk_theme_override();
+			main_panel->add_theme_style_override(SceneStringName(panel), get_theme_stylebox(SNAME("LaunchPadNormal"), EditorStringName(EditorStyles)));
+			run_panel->add_theme_style_override(SceneStringName(panel), get_theme_stylebox(SNAME("MovieWriterButtonNormal"), EditorStringName(EditorStyles)));
 		} break;
 	}
 }
@@ -111,13 +97,13 @@ void EditorRunBar::_update_play_buttons() {
 	}
 }
 
-void EditorRunBar::_write_movie_toggled(bool p_enabled) {
+void EditorRunBar::_highlight_run_panel(bool p_enabled) {
 	if (p_enabled) {
 		add_theme_style_override(SceneStringName(panel), get_theme_stylebox(SNAME("LaunchPadMovieMode"), EditorStringName(EditorStyles)));
-		write_movie_panel->add_theme_style_override(SceneStringName(panel), get_theme_stylebox(SNAME("MovieWriterButtonPressed"), EditorStringName(EditorStyles)));
+		run_panel->add_theme_style_override(SceneStringName(panel), get_theme_stylebox(SNAME("MovieWriterButtonPressed"), EditorStringName(EditorStyles)));
 	} else {
 		add_theme_style_override(SceneStringName(panel), get_theme_stylebox(SNAME("LaunchPadNormal"), EditorStringName(EditorStyles)));
-		write_movie_panel->add_theme_style_override(SceneStringName(panel), get_theme_stylebox(SNAME("MovieWriterButtonNormal"), EditorStringName(EditorStyles)));
+		run_panel->add_theme_style_override(SceneStringName(panel), get_theme_stylebox(SNAME("MovieWriterButtonNormal"), EditorStringName(EditorStyles)));
 	}
 }
 
@@ -158,37 +144,6 @@ void EditorRunBar::_run_scene(const String &p_scene_path) {
 	_reset_play_buttons();
 
 	String write_movie_file;
-	if (is_movie_maker_enabled()) {
-		if (current_mode == RUN_CURRENT) {
-			Node *scene_root = nullptr;
-			if (p_scene_path.is_empty()) {
-				scene_root = get_tree()->get_edited_scene_root();
-			} else {
-				int scene_index = EditorNode::get_editor_data().get_edited_scene_from_path(p_scene_path);
-				if (scene_index >= 0) {
-					scene_root = EditorNode::get_editor_data().get_edited_scene_root(scene_index);
-				}
-			}
-
-			if (scene_root && scene_root->has_meta("movie_file")) {
-				// If the scene file has a movie_file metadata set, use this as file.
-				// Quick workaround if you want to have multiple scenes that write to
-				// multiple movies.
-				write_movie_file = scene_root->get_meta("movie_file");
-			}
-		}
-
-		if (write_movie_file.is_empty()) {
-			write_movie_file = GLOBAL_GET("editor/movie_writer/movie_file");
-		}
-
-		if (write_movie_file.is_empty()) {
-			// TODO: Provide options to directly resolve the issue with a custom dialog.
-			EditorNode::get_singleton()->show_accept(TTR("Movie Maker mode is enabled, but no movie file path has been specified.\nA default movie file path can be specified in the project settings under the Editor > Movie Writer category.\nAlternatively, for running single scenes, a `movie_file` string metadata can be added to the root node,\nspecifying the path to a movie file that will be used when recording that scene."), TTR("OK"));
-			return;
-		}
-	}
-
 	String run_filename;
 	switch (current_mode) {
 		case RUN_CUSTOM: {
@@ -345,14 +300,6 @@ void EditorRunBar::stop_child_process(OS::ProcessID p_pid) {
 	}
 }
 
-void EditorRunBar::set_movie_maker_enabled(bool p_enabled) {
-	write_movie_button->set_pressed(p_enabled);
-}
-
-bool EditorRunBar::is_movie_maker_enabled() const {
-	return write_movie_button->is_pressed();
-}
-
 HBoxContainer *EditorRunBar::get_buttons_container() {
 	return main_hbox;
 }
@@ -435,17 +382,8 @@ EditorRunBar::EditorRunBar() {
 	ED_SHORTCUT_OVERRIDE("editor/run_specific_scene", "macos", KeyModifierMask::META | KeyModifierMask::SHIFT | Key::R);
 	play_custom_scene_button->set_shortcut(ED_GET_SHORTCUT("editor/run_specific_scene"));
 
-	write_movie_panel = memnew(PanelContainer);
-	main_hbox->add_child(write_movie_panel);
-
-	write_movie_button = memnew(Button);
-	write_movie_panel->add_child(write_movie_button);
-	write_movie_button->set_theme_type_variation("RunBarButton");
-	write_movie_button->set_toggle_mode(true);
-	write_movie_button->set_pressed(false);
-	write_movie_button->set_focus_mode(Control::FOCUS_NONE);
-	write_movie_button->set_tooltip_text(TTR("Enable Movie Maker mode.\nThe project will run at stable FPS and the visual and audio output will be recorded to a video file."));
-	write_movie_button->connect("toggled", callable_mp(this, &EditorRunBar::_write_movie_toggled));
+	run_panel = memnew(PanelContainer);
+	main_hbox->add_child(run_panel);
 
 	quick_run = memnew(EditorQuickOpen);
 	add_child(quick_run);

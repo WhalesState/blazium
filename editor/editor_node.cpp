@@ -2886,7 +2886,7 @@ void EditorNode::_menu_option_confirm(int p_option, bool p_confirmed) {
 			_update_update_spinner();
 		} break;
 		case SETTINGS_UPDATE_SPINNER_HIDE: {
-			EditorSettings::get_singleton()->set("interface/editor/show_update_spinner", 2); // Disabled
+			EditorSettings::get_singleton()->set("interface/editor/show_update_spinner", 1);
 			_update_update_spinner();
 		} break;
 		case SETTINGS_PREFERENCES: {

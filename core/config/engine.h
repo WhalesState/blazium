@@ -170,9 +170,6 @@ public:
 	Dictionary get_license_info() const;
 	String get_license_text() const;
 
-	void set_write_movie_path(const String &p_path);
-	String get_write_movie_path() const;
-
 	String get_architecture_name() const;
 
 	void set_shader_cache_path(const String &p_path);

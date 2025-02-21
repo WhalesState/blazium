@@ -39,7 +39,6 @@
 #include "editor/export/editor_export.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/check_button.h"
-#include "servers/movie_writer/movie_writer.h"
 
 ProjectSettingsEditor *ProjectSettingsEditor::singleton = nullptr;
 
@@ -291,7 +290,6 @@ void ProjectSettingsEditor::_add_feature_overrides() {
 	presets.insert("single");
 	presets.insert("32");
 	presets.insert("64");
-	presets.insert("movie");
 
 	EditorExport *ee = EditorExport::get_singleton();
 
@@ -780,6 +778,4 @@ ProjectSettingsEditor::ProjectSettingsEditor(EditorData *p_data) {
 	import_defaults_editor = memnew(ImportDefaultsEditor);
 	import_defaults_editor->set_name(TTR("Import Defaults"));
 	tab_container->add_child(import_defaults_editor);
-
-	MovieWriter::set_extensions_hint(); // ensure extensions are properly displayed.
 }

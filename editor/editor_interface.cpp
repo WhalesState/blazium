@@ -489,14 +489,6 @@ String EditorInterface::get_playing_scene() const {
 	return EditorRunBar::get_singleton()->get_playing_scene();
 }
 
-void EditorInterface::set_movie_maker_enabled(bool p_enabled) {
-	EditorRunBar::get_singleton()->set_movie_maker_enabled(p_enabled);
-}
-
-bool EditorInterface::is_movie_maker_enabled() const {
-	return EditorRunBar::get_singleton()->is_movie_maker_enabled();
-}
-
 #ifdef TOOLS_ENABLED
 void EditorInterface::get_argument_options(const StringName &p_function, int p_idx, List<String> *r_options) const {
 	const String pf = p_function;
@@ -596,11 +588,6 @@ void EditorInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("stop_playing_scene"), &EditorInterface::stop_playing_scene);
 	ClassDB::bind_method(D_METHOD("is_playing_scene"), &EditorInterface::is_playing_scene);
 	ClassDB::bind_method(D_METHOD("get_playing_scene"), &EditorInterface::get_playing_scene);
-
-	ClassDB::bind_method(D_METHOD("set_movie_maker_enabled", "enabled"), &EditorInterface::set_movie_maker_enabled);
-	ClassDB::bind_method(D_METHOD("is_movie_maker_enabled"), &EditorInterface::is_movie_maker_enabled);
-
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "movie_maker_enabled"), "set_movie_maker_enabled", "is_movie_maker_enabled");
 }
 
 void EditorInterface::create() {

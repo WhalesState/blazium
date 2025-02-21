@@ -59,9 +59,6 @@
 #include "debugger/servers_debugger.h"
 #include "display/native_menu.h"
 #include "display_server.h"
-#include "movie_writer/movie_writer.h"
-#include "movie_writer/movie_writer_mjpeg.h"
-#include "movie_writer/movie_writer_pngwav.h"
 #include "rendering/renderer_compositor.h"
 #include "rendering/renderer_rd/framebuffer_cache_rd.h"
 #include "rendering/renderer_rd/storage_rd/render_data_rd.h"
@@ -108,9 +105,6 @@ static bool has_server_feature_callback(const String &p_feature) {
 
 	return false;
 }
-
-static MovieWriterMJPEG *writer_mjpeg = nullptr;
-static MovieWriterPNGWAV *writer_pngwav = nullptr;
 
 void register_server_types() {
 	OS::get_singleton()->benchmark_begin_measure("Servers", "Register Extensions");
@@ -229,8 +223,6 @@ void register_server_types() {
 
 	GDREGISTER_CLASS(CameraFeed);
 
-	GDREGISTER_VIRTUAL_CLASS(MovieWriter);
-
 	ServersDebugger::initialize();
 
 	// Physics 2D
@@ -260,12 +252,6 @@ void register_server_types() {
 	PhysicsServer2DManager::get_singleton()->register_server("GodotPhysics2D", callable_mp_static(_createGodotPhysics2DCallback));
 	PhysicsServer2DManager::get_singleton()->set_default_server("GodotPhysics2D");
 
-	writer_mjpeg = memnew(MovieWriterMJPEG);
-	MovieWriter::add_writer(writer_mjpeg);
-
-	writer_pngwav = memnew(MovieWriterPNGWAV);
-	MovieWriter::add_writer(writer_pngwav);
-
 	OS::get_singleton()->benchmark_end_measure("Servers", "Register Extensions");
 }
 
@@ -274,8 +260,6 @@ void unregister_server_types() {
 
 	ServersDebugger::deinitialize();
 	memdelete(shader_types);
-	memdelete(writer_mjpeg);
-	memdelete(writer_pngwav);
 
 	OS::get_singleton()->benchmark_end_measure("Servers", "Unregister Extensions");
 }
