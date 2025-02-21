@@ -1,5 +1,6 @@
 module_text_server_adv_enabled = "no"
 module_text_server_fb_enabled = "yes"
+module_theora_enabled = "yes"
 openxr = "no"
 builtin_openxr = "no"
 tools = "no"
