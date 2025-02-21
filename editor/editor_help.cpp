@@ -2389,9 +2389,9 @@ static void _add_text_to_rt(const String &p_bbcode, RichTextLabel *p_rt, const C
 
 	// Select the correct code examples.
 	switch ((int)EDITOR_GET("text_editor/help/class_reference_examples")) {
-		case 0: // GDScript
-			bbcode = bbcode.replace("[gdscript", "[codeblock lang=gdscript"); // Tag can have extra arguments.
-			bbcode = bbcode.replace("[/gdscript]", "[/codeblock]");
+		case 0: // C++
+			bbcode = bbcode.replace("[cpp", "[codeblock lang=cpp"); // Tag can have extra arguments.
+			bbcode = bbcode.replace("[/cpp]", "[/codeblock]");
 
 			for (int pos = bbcode.find("[csharp"); pos != -1; pos = bbcode.find("[csharp")) {
 				int end_pos = bbcode.find("[/csharp]");
@@ -2410,25 +2410,25 @@ static void _add_text_to_rt(const String &p_bbcode, RichTextLabel *p_rt, const C
 			bbcode = bbcode.replace("[csharp", "[codeblock lang=csharp"); // Tag can have extra arguments.
 			bbcode = bbcode.replace("[/csharp]", "[/codeblock]");
 
-			for (int pos = bbcode.find("[gdscript"); pos != -1; pos = bbcode.find("[gdscript")) {
-				int end_pos = bbcode.find("[/gdscript]");
+			for (int pos = bbcode.find("[cpp"); pos != -1; pos = bbcode.find("[cpp")) {
+				int end_pos = bbcode.find("[/cpp]");
 				if (end_pos == -1) {
-					WARN_PRINT("Unclosed [gdscript] block or parse fail in code (search for tag errors)");
+					WARN_PRINT("Unclosed [cpp] block or parse fail in code (search for tag errors)");
 					break;
 				}
 
-				bbcode = bbcode.left(pos) + bbcode.substr(end_pos + 11); // 11 is length of "[/gdscript]".
+				bbcode = bbcode.left(pos) + bbcode.substr(end_pos + 11); // 11 is length of "[/cpp]".
 				while (bbcode[pos] == '\n') {
 					bbcode = bbcode.left(pos) + bbcode.substr(pos + 1);
 				}
 			}
 			break;
-		case 2: // GDScript and C#
+		case 2: // C++ and C#
 			bbcode = bbcode.replace("[csharp", "[b]C#:[/b]\n[codeblock lang=csharp"); // Tag can have extra arguments.
-			bbcode = bbcode.replace("[gdscript", "[b]GDScript:[/b]\n[codeblock lang=gdscript"); // Tag can have extra arguments.
+			bbcode = bbcode.replace("[cpp", "[b]C++:[/b]\n[codeblock lang=cpp"); // Tag can have extra arguments.
 
 			bbcode = bbcode.replace("[/csharp]", "[/codeblock]");
-			bbcode = bbcode.replace("[/gdscript]", "[/codeblock]");
+			bbcode = bbcode.replace("[/cpp]", "[/codeblock]");
 			break;
 	}
 
@@ -2671,6 +2671,13 @@ static void _add_text_to_rt(const String &p_bbcode, RichTextLabel *p_rt, const C
 #ifdef MODULE_MONO_ENABLED
 			if (!codeblock_printed && lang == "csharp") {
 				EditorHelpHighlighter::get_singleton()->highlight(p_rt, EditorHelpHighlighter::LANGUAGE_CSHARP, codeblock_text, is_native);
+				codeblock_printed = true;
+			}
+#endif
+
+#ifdef MODULE_JENOVA_ENABLED
+			if (!codeblock_printed && lang == "cpp") {
+				EditorHelpHighlighter::get_singleton()->highlight(p_rt, EditorHelpHighlighter::LANGUAGE_CPP, codeblock_text, is_native);
 				codeblock_printed = true;
 			}
 #endif
@@ -2976,7 +2983,7 @@ void EditorHelp::_notification(int p_what) {
 			if (EditorSettings::get_singleton()->check_changed_settings_in_group("text_editor/help")) {
 				need_update = true;
 			}
-#if defined(MODULE_GDSCRIPT_ENABLED) || defined(MODULE_MONO_ENABLED)
+#if defined(MODULE_GDSCRIPT_ENABLED) || defined(MODULE_MONO_ENABLED) || defined(MODULE_JENOVA_ENABLED)
 			if (!need_update && EditorSettings::get_singleton()->check_changed_settings_in_group("text_editor/theme/highlighting")) {
 				need_update = true;
 			}

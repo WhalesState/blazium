@@ -345,12 +345,13 @@ public:
 	EditorHelpBitTooltip(Control *p_target);
 };
 
-#if defined(MODULE_GDSCRIPT_ENABLED) || defined(MODULE_MONO_ENABLED)
+#if defined(MODULE_GDSCRIPT_ENABLED) || defined(MODULE_MONO_ENABLED) || defined(MODULE_JENOVA_ENABLED)
 class EditorSyntaxHighlighter;
 
 class EditorHelpHighlighter {
 public:
 	enum Language {
+		LANGUAGE_CPP,
 		LANGUAGE_GDSCRIPT,
 		LANGUAGE_CSHARP,
 		LANGUAGE_MAX,

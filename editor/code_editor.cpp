@@ -1034,8 +1034,6 @@ void CodeTextEditor::update_editor_settings() {
 	// Theme: Highlighting
 	completion_font_color = EDITOR_GET("text_editor/theme/highlighting/completion_font_color");
 	completion_string_color = EDITOR_GET("text_editor/theme/highlighting/string_color");
-	completion_string_name_color = EDITOR_GET("text_editor/theme/highlighting/gdscript/string_name_color");
-	completion_node_path_color = EDITOR_GET("text_editor/theme/highlighting/gdscript/node_path_color");
 	completion_comment_color = EDITOR_GET("text_editor/theme/highlighting/comment_color");
 	completion_doc_comment_color = EDITOR_GET("text_editor/theme/highlighting/doc_comment_color");
 
@@ -1743,7 +1741,7 @@ CodeTextEditor::CodeTextEditor() {
 	text_editor = memnew(CodeEdit);
 	add_child(text_editor);
 	text_editor->set_v_size_flags(SIZE_EXPAND_FILL);
-	text_editor->set_structured_text_bidi_override(TextServer::STRUCTURED_TEXT_GDSCRIPT);
+	text_editor->set_structured_text_bidi_override(TextServer::STRUCTURED_TEXT_SCRIPT);
 	text_editor->set_draw_bookmarks_gutter(true);
 
 	text_editor->set_draw_line_numbers(true);

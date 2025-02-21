@@ -637,7 +637,7 @@ void TextServer::_bind_methods() {
 	BIND_ENUM_CONSTANT(STRUCTURED_TEXT_FILE);
 	BIND_ENUM_CONSTANT(STRUCTURED_TEXT_EMAIL);
 	BIND_ENUM_CONSTANT(STRUCTURED_TEXT_LIST);
-	BIND_ENUM_CONSTANT(STRUCTURED_TEXT_GDSCRIPT);
+	BIND_ENUM_CONSTANT(STRUCTURED_TEXT_SCRIPT);
 	BIND_ENUM_CONSTANT(STRUCTURED_TEXT_CUSTOM);
 
 	/* Fixed size scale mode */
@@ -1999,7 +1999,7 @@ TypedArray<Vector3i> TextServer::parse_structured_text(StructuredTextParser p_pa
 				}
 			}
 		} break;
-		case STRUCTURED_TEXT_GDSCRIPT: {
+		case STRUCTURED_TEXT_SCRIPT: {
 			bool in_string_literal = false;
 			bool in_string_literal_single = false;
 			bool in_id = false;
