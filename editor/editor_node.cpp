@@ -4915,7 +4915,7 @@ String EditorNode::_get_system_info() const {
 	} else if (rendering_method == "mobile") {
 		rendering_method = "Mobile";
 	} else if (rendering_method == "gl_compatibility") {
-		rendering_method = "Compatibility";
+		rendering_method = "Antimatter";
 		driver_name = GLOBAL_GET("rendering/gl_compatibility/driver");
 	}
 	if (driver_name == "vulkan") {
@@ -6353,7 +6353,7 @@ void EditorNode::_add_renderer_entry(const String &p_renderer_name, bool p_mark_
 		item_text = TTR("Mobile");
 	}
 	if (p_renderer_name == "gl_compatibility") {
-		item_text = TTR("Compatibility");
+		item_text = TTR("Antimatter");
 	}
 	if (p_mark_overridden) {
 		item_text += " " + TTR("(Overridden)");
