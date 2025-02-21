@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  packed_scene_translation_parser_plugin.h                              */
+/*  component_editor_plugin.h                                          */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,25 +28,41 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef PACKED_SCENE_TRANSLATION_PARSER_PLUGIN_H
-#define PACKED_SCENE_TRANSLATION_PARSER_PLUGIN_H
+#ifndef component_EDITOR_PLUGIN_H
+#define component_EDITOR_PLUGIN_H
 
-#include "editor/editor_translation_parser.h"
+#include "editor/editor_inspector.h"
+#include "editor/plugins/editor_plugin.h"
+#include "scene/gui/box_container.h"
 
-class UserInterfaceEditorTranslationParserPlugin : public EditorTranslationParserPlugin {
-	GDCLASS(UserInterfaceEditorTranslationParserPlugin, EditorTranslationParserPlugin);
+class ComponentEditor : public VBoxContainer {
+	GDCLASS(ComponentEditor, VBoxContainer);
 
-	// Scene Node's properties that contain translation strings.
-	HashSet<String> lookup_properties;
-	// Properties from specific Nodes that should be ignored.
-	HashMap<String, Vector<String>> exception_list;
+	Ref<Component> component;
+	Button *open_scene_button;
+
+	void _on_open_scene_pressed();
+
+protected:
+	void _notification(int p_what);
 
 public:
-	virtual Error parse_file(const String &p_path, Vector<String> *r_ids, Vector<Vector<String>> *r_ids_ctx_plural) override;
-	bool match_property(const String &p_property_name, const String &p_node_type);
-	virtual void get_recognized_extensions(List<String> *r_extensions) const override;
-
-	UserInterfaceEditorTranslationParserPlugin();
+	ComponentEditor(Ref<Component> &p_component);
 };
 
-#endif // PACKED_SCENE_TRANSLATION_PARSER_PLUGIN_H
+class EditorInspectorPluginComponent : public EditorInspectorPlugin {
+	GDCLASS(EditorInspectorPluginComponent, EditorInspectorPlugin);
+
+public:
+	virtual bool can_handle(Object *p_object) override;
+	virtual void parse_begin(Object *p_object) override;
+};
+
+class ComponentEditorPlugin : public EditorPlugin {
+	GDCLASS(ComponentEditorPlugin, EditorPlugin);
+
+public:
+	ComponentEditorPlugin();
+};
+
+#endif // component_EDITOR_PLUGIN_H

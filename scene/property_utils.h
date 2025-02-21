@@ -32,7 +32,7 @@
 #define PROPERTY_UTILS_H
 
 #include "scene/main/node.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 
 class PropertyUtils {
 public:

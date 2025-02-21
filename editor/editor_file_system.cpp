@@ -45,7 +45,7 @@
 #include "editor/editor_resource_preview.h"
 #include "editor/editor_settings.h"
 #include "editor/project_settings_editor.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 
 EditorFileSystem *EditorFileSystem::singleton = nullptr;
 //the name is the version, to keep compatibility with different versions of Godot
@@ -693,7 +693,7 @@ bool EditorFileSystem::_update_scan_actions() {
 				if (ClassDB::is_parent_class(ia.new_file->type, SNAME("Script"))) {
 					_queue_update_script_class(ia.dir->get_file_path(idx), ia.new_file->type, ia.new_file->script_class_name, ia.new_file->script_class_extends, ia.new_file->script_class_icon_path);
 				}
-				if (ia.new_file->type == SNAME("UserInterface")) {
+				if (ia.new_file->type == SNAME("Component")) {
 					_queue_update_scene_groups(ia.dir->get_file_path(idx));
 				}
 
@@ -706,7 +706,7 @@ bool EditorFileSystem::_update_scan_actions() {
 				if (ClassDB::is_parent_class(ia.dir->files[idx]->type, SNAME("Script"))) {
 					_queue_update_script_class(ia.dir->get_file_path(idx), "", "", "", "");
 				}
-				if (ia.dir->files[idx]->type == SNAME("UserInterface")) {
+				if (ia.dir->files[idx]->type == SNAME("Component")) {
 					_queue_update_scene_groups(ia.dir->get_file_path(idx));
 				}
 
@@ -771,7 +771,7 @@ bool EditorFileSystem::_update_scan_actions() {
 				if (ClassDB::is_parent_class(fi->type, SNAME("Script"))) {
 					_queue_update_script_class(full_path, fi->type, fi->script_class_name, fi->script_class_extends, fi->script_class_icon_path);
 				}
-				if (fi->type == SNAME("UserInterface")) {
+				if (fi->type == SNAME("Component")) {
 					_queue_update_scene_groups(full_path);
 				}
 
@@ -1081,7 +1081,7 @@ void EditorFileSystem::_process_file_system(const ScannedDirectory *p_scan_dir, 
 					if (ClassDB::is_parent_class(fi->type, SNAME("Script"))) {
 						_queue_update_script_class(path, fi->type, fi->script_class_name, fi->script_class_extends, fi->script_class_icon_path);
 					}
-					if (fi->type == SNAME("UserInterface")) {
+					if (fi->type == SNAME("Component")) {
 						_queue_update_scene_groups(path);
 					}
 				}
@@ -1928,7 +1928,7 @@ void EditorFileSystem::_update_scene_groups() {
 			continue;
 		}
 
-		const HashSet<StringName> scene_groups = UserInterface::get_scene_groups(path);
+		const HashSet<StringName> scene_groups = Component::get_scene_groups(path);
 		if (!scene_groups.is_empty()) {
 			ProjectSettings::get_singleton()->add_scene_groups_cache(path, scene_groups);
 		}
@@ -1962,7 +1962,7 @@ void EditorFileSystem::_queue_update_scene_groups(const String &p_path) {
 
 void EditorFileSystem::_get_all_scenes(EditorFileSystemDirectory *p_dir, HashSet<String> &r_list) {
 	for (int i = 0; i < p_dir->get_file_count(); i++) {
-		if (p_dir->get_file_type(i) == SNAME("UserInterface")) {
+		if (p_dir->get_file_type(i) == SNAME("Component")) {
 			r_list.insert(p_dir->get_file_path(i));
 		}
 	}
@@ -2007,7 +2007,7 @@ void EditorFileSystem::update_files(const Vector<String> &p_script_paths) {
 						update_files_icon_cache = true;
 					}
 				}
-				if (fs->files[cpos]->type == SNAME("UserInterface")) {
+				if (fs->files[cpos]->type == SNAME("Component")) {
 					_queue_update_scene_groups(file);
 				}
 
@@ -2080,7 +2080,7 @@ void EditorFileSystem::update_files(const Vector<String> &p_script_paths) {
 			if (ClassDB::is_parent_class(fs->files[cpos]->type, SNAME("Script"))) {
 				_queue_update_script_class(file, fs->files[cpos]->type, fs->files[cpos]->script_class_name, fs->files[cpos]->script_class_extends, fs->files[cpos]->script_class_icon_path);
 			}
-			if (fs->files[cpos]->type == SNAME("UserInterface")) {
+			if (fs->files[cpos]->type == SNAME("Component")) {
 				_queue_update_scene_groups(file);
 			}
 

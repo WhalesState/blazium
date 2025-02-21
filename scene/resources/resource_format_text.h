@@ -35,7 +35,7 @@
 #include "core/io/resource_loader.h"
 #include "core/io/resource_saver.h"
 #include "core/variant/variant_parser.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 
 class ResourceLoaderText {
 	bool translation_remapped = false;
@@ -110,7 +110,7 @@ class ResourceLoaderText {
 
 	Ref<Resource> resource;
 
-	Ref<UserInterface> _parse_node_tag(VariantParser::ResourceParser &parser);
+	Ref<Component> _parse_node_tag(VariantParser::ResourceParser &parser);
 
 public:
 	Ref<Resource> get_resource();
@@ -152,7 +152,7 @@ public:
 class ResourceFormatSaverTextInstance {
 	String local_path;
 
-	Ref<UserInterface> packed_scene;
+	Ref<Component> component;
 
 	bool takeover_paths = false;
 	bool relative_paths = false;

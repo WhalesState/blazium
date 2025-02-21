@@ -36,7 +36,7 @@
 #include "editor/scene_tree_dock.h"
 #include "scene/debugger/scene_debugger.h"
 #include "scene/gui/texture_rect.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 #include "servers/display_server.h"
 
 EditorDebuggerTree::EditorDebuggerTree() {
@@ -205,7 +205,7 @@ void EditorDebuggerTree::update_scene_tree(const SceneDebuggerTree *p_tree, int 
 		if (!node.scene_file_path.is_empty()) {
 			String node_scene_file_path = node.scene_file_path;
 			Ref<Texture2D> button_icon = get_editor_theme_icon(SNAME("InstanceOptions"));
-			String tooltip = vformat(TTR("This node has been instantiated from a UserInterface file:\n%s\nClick to open the original file in the Editor."), node_scene_file_path);
+			String tooltip = vformat(TTR("This node has been instantiated from a Component file:\n%s\nClick to open the original file in the Editor."), node_scene_file_path);
 
 			item->set_meta("scene_file_path", node_scene_file_path);
 			item->add_button(0, button_icon, BUTTON_SUBSCENE, false, tooltip);
@@ -331,7 +331,7 @@ void EditorDebuggerTree::_item_menu_id_pressed(int p_option) {
 			file_dialog->set_file_mode(EditorFileDialog::FILE_MODE_SAVE_FILE);
 
 			List<String> extensions;
-			Ref<UserInterface> sd = memnew(UserInterface);
+			Ref<Component> sd = memnew(Component);
 			ResourceSaver::get_recognized_extensions(sd, &extensions);
 			file_dialog->clear_filters();
 			for (const String &extension : extensions) {

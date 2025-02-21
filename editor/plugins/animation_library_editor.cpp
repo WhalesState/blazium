@@ -688,7 +688,7 @@ void AnimationLibraryEditor::update_tree() {
 			int srpos = al_path.find("::");
 			if (srpos != -1) {
 				String base = al_path.substr(0, srpos);
-				if (ResourceLoader::get_resource_type(base) == "UserInterface") {
+				if (ResourceLoader::get_resource_type(base) == "Component") {
 					if (!get_tree()->get_edited_scene_root() || get_tree()->get_edited_scene_root()->get_scene_file_path() != base) {
 						animation_library_is_foreign = true;
 						libitem->set_text(1, TTR("[foreign]"));
@@ -740,7 +740,7 @@ void AnimationLibraryEditor::update_tree() {
 				int srpos = anim_path.find("::");
 				if (srpos != -1) {
 					String base = anim_path.substr(0, srpos);
-					if (ResourceLoader::get_resource_type(base) == "UserInterface") {
+					if (ResourceLoader::get_resource_type(base) == "Component") {
 						if (!get_tree()->get_edited_scene_root() || get_tree()->get_edited_scene_root()->get_scene_file_path() != base) {
 							anitem->set_text(1, TTR("[foreign]"));
 						}

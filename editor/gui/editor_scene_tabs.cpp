@@ -122,7 +122,7 @@ void EditorSceneTabs::_scene_tab_input(const Ref<InputEvent> &p_input) {
 			}
 
 			if ((is_layout_rtl() && mb->get_position().x > tab_buttons) || (!is_layout_rtl() && mb->get_position().x < scene_tabs->get_size().width - tab_buttons)) {
-				EditorNode::get_singleton()->trigger_menu_option(EditorNode::FILE_NEW_SCENE, true);
+				EditorNode::get_singleton()->trigger_menu_option(EditorNode::FILE_NEW_COMPONENT, true);
 			}
 		}
 		if (mb->get_button_index() == MouseButton::RIGHT && mb->is_pressed()) {
@@ -159,7 +159,7 @@ void EditorSceneTabs::_update_context_menu() {
 	int tab_id = scene_tabs->get_hovered_tab();
 	bool no_root_node = !EditorNode::get_editor_data().get_edited_scene_root(tab_id);
 
-	scene_tabs_context_menu->add_shortcut(ED_GET_SHORTCUT("editor/new_scene"), EditorNode::FILE_NEW_SCENE);
+	scene_tabs_context_menu->add_shortcut(ED_GET_SHORTCUT("editor/new_scene"), EditorNode::FILE_NEW_COMPONENT);
 	if (tab_id >= 0) {
 		scene_tabs_context_menu->add_shortcut(ED_GET_SHORTCUT("editor/save_scene"), EditorNode::FILE_SAVE_SCENE);
 		_disable_menu_option_if(EditorNode::FILE_SAVE_SCENE, no_root_node);
@@ -415,7 +415,7 @@ EditorSceneTabs::EditorSceneTabs() {
 	scene_tab_add->set_flat(true);
 	scene_tab_add->set_tooltip_text(TTR("Add a new scene."));
 	scene_tabs->add_child(scene_tab_add);
-	scene_tab_add->connect(SceneStringName(pressed), callable_mp(EditorNode::get_singleton(), &EditorNode::trigger_menu_option).bind(EditorNode::FILE_NEW_SCENE, false));
+	scene_tab_add->connect(SceneStringName(pressed), callable_mp(EditorNode::get_singleton(), &EditorNode::trigger_menu_option).bind(EditorNode::FILE_NEW_COMPONENT, false));
 
 	scene_tab_add_ph = memnew(Control);
 	scene_tab_add_ph->set_mouse_filter(Control::MOUSE_FILTER_IGNORE);

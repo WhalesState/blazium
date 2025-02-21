@@ -127,7 +127,7 @@
 #include "scene/resources/mesh_data_tool.h"
 #include "scene/resources/mesh_texture.h"
 #include "scene/resources/multimesh.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 #include "scene/resources/particle_process_material.h"
 #include "scene/resources/physics_material.h"
 #include "scene/resources/placeholder_textures.h"
@@ -755,7 +755,7 @@ void register_scene_types() {
 	OS::get_singleton()->yield(); // may take time to init
 
 	GDREGISTER_ABSTRACT_CLASS(SceneState);
-	GDREGISTER_CLASS(UserInterface);
+	GDREGISTER_CLASS(Component);
 
 	GDREGISTER_CLASS(SceneTree);
 	GDREGISTER_ABSTRACT_CLASS(SceneTreeTimer); // sorry, you can't create it

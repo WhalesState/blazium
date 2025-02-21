@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  packed_scene_translation_parser_plugin.cpp                            */
+/*  component_translation_parser_plugin.cpp                            */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,28 +28,28 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "packed_scene_translation_parser_plugin.h"
+#include "component_translation_parser_plugin.h"
 
 #include "core/io/resource_loader.h"
 #include "core/object/script_language.h"
 #include "scene/gui/option_button.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 
-void UserInterfaceEditorTranslationParserPlugin::get_recognized_extensions(List<String> *r_extensions) const {
-	ResourceLoader::get_recognized_extensions_for_type("UserInterface", r_extensions);
+void ComponentEditorTranslationParserPlugin::get_recognized_extensions(List<String> *r_extensions) const {
+	ResourceLoader::get_recognized_extensions_for_type("Component", r_extensions);
 }
 
-Error UserInterfaceEditorTranslationParserPlugin::parse_file(const String &p_path, Vector<String> *r_ids, Vector<Vector<String>> *r_ids_ctx_plural) {
+Error ComponentEditorTranslationParserPlugin::parse_file(const String &p_path, Vector<String> *r_ids, Vector<Vector<String>> *r_ids_ctx_plural) {
 	// Parse specific scene Node's properties (see in constructor) that are auto-translated by the engine when set. E.g Label's text property.
 	// These properties are translated with the tr() function in the C++ code when being set or updated.
 
 	Error err;
-	Ref<Resource> loaded_res = ResourceLoader::load(p_path, "UserInterface", ResourceFormatLoader::CACHE_MODE_REUSE, &err);
+	Ref<Resource> loaded_res = ResourceLoader::load(p_path, "Component", ResourceFormatLoader::CACHE_MODE_REUSE, &err);
 	if (err) {
 		ERR_PRINT("Failed to load " + p_path);
 		return err;
 	}
-	Ref<SceneState> state = Ref<UserInterface>(loaded_res)->get_state();
+	Ref<SceneState> state = Ref<Component>(loaded_res)->get_state();
 
 	Vector<String> parsed_strings;
 	Vector<Pair<NodePath, bool>> atr_owners;
@@ -60,7 +60,7 @@ Error UserInterfaceEditorTranslationParserPlugin::parse_file(const String &p_pat
 
 		// Handle instanced scenes.
 		if (node_type.is_empty()) {
-			Ref<UserInterface> instance = state->get_node_instance(i);
+			Ref<Component> instance = state->get_node_instance(i);
 			if (instance.is_valid()) {
 				Ref<SceneState> _state = instance->get_state();
 				node_type = _state->get_node_type(0);
@@ -181,7 +181,7 @@ Error UserInterfaceEditorTranslationParserPlugin::parse_file(const String &p_pat
 	return OK;
 }
 
-bool UserInterfaceEditorTranslationParserPlugin::match_property(const String &p_property_name, const String &p_node_type) {
+bool ComponentEditorTranslationParserPlugin::match_property(const String &p_property_name, const String &p_node_type) {
 	for (const KeyValue<String, Vector<String>> &exception : exception_list) {
 		const String &exception_node_type = exception.key;
 		if (ClassDB::is_parent_class(p_node_type, exception_node_type)) {
@@ -201,7 +201,7 @@ bool UserInterfaceEditorTranslationParserPlugin::match_property(const String &p_
 	return false;
 }
 
-UserInterfaceEditorTranslationParserPlugin::UserInterfaceEditorTranslationParserPlugin() {
+ComponentEditorTranslationParserPlugin::ComponentEditorTranslationParserPlugin() {
 	// Scene Node's properties containing strings that will be fetched for translation.
 	lookup_properties.insert("text");
 	lookup_properties.insert("*_text");

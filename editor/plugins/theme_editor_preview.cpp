@@ -47,7 +47,7 @@
 #include "scene/gui/tab_container.h"
 #include "scene/gui/text_edit.h"
 #include "scene/gui/tree.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 #include "scene/theme/theme_db.h"
 
 constexpr double REFRESH_TIMER = 1.5;
@@ -463,7 +463,7 @@ void SceneThemeEditorPreview::_reload_scene() {
 	}
 
 	if (loaded_scene->get_path().is_empty() || !ResourceLoader::exists(loaded_scene->get_path())) {
-		EditorNode::get_singleton()->show_warning(TTR("Invalid path, the UserInterface resource was probably moved or removed."));
+		EditorNode::get_singleton()->show_warning(TTR("Invalid path, the Component resource was probably moved or removed."));
 		emit_signal(SNAME("scene_invalidated"));
 		return;
 	}
@@ -476,7 +476,7 @@ void SceneThemeEditorPreview::_reload_scene() {
 
 	Node *instance = loaded_scene->instantiate();
 	if (!instance || !Object::cast_to<Control>(instance)) {
-		EditorNode::get_singleton()->show_warning(TTR("Invalid UserInterface resource, must have a Control node at its root."));
+		EditorNode::get_singleton()->show_warning(TTR("Invalid Component resource, must have a Control node at its root."));
 		emit_signal(SNAME("scene_invalidated"));
 		return;
 	}
@@ -502,13 +502,13 @@ void SceneThemeEditorPreview::_bind_methods() {
 bool SceneThemeEditorPreview::set_preview_scene(const String &p_path) {
 	loaded_scene = ResourceLoader::load(p_path);
 	if (loaded_scene.is_null()) {
-		EditorNode::get_singleton()->show_warning(TTR("Invalid file, not a UserInterface resource."));
+		EditorNode::get_singleton()->show_warning(TTR("Invalid file, not a Component resource."));
 		return false;
 	}
 
 	Node *instance = loaded_scene->instantiate();
 	if (!instance || !Object::cast_to<Control>(instance)) {
-		EditorNode::get_singleton()->show_warning(TTR("Invalid UserInterface resource, must have a Control node at its root."));
+		EditorNode::get_singleton()->show_warning(TTR("Invalid Component resource, must have a Control node at its root."));
 		return false;
 	}
 

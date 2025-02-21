@@ -129,7 +129,7 @@ void EditorRunBar::_play_custom_pressed() {
 	if (editor_run.get_status() == EditorRun::STATUS_STOP || current_mode != RunMode::RUN_CUSTOM) {
 		stop_playing();
 
-		quick_run->popup_dialog("UserInterface", true);
+		quick_run->popup_dialog("Component", true);
 		quick_run->set_title(TTR("Quick Run Scene..."));
 		play_custom_scene_button->set_pressed(false);
 	} else {

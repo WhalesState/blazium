@@ -4578,7 +4578,7 @@ void AnimationTrackEditor::_update_tracks() {
 		int srpos = animation->get_path().find("::");
 		if (srpos != -1) {
 			String base = animation->get_path().substr(0, srpos);
-			if (ResourceLoader::get_resource_type(base) == "UserInterface") {
+			if (ResourceLoader::get_resource_type(base) == "Component") {
 				if (!get_tree()->get_edited_scene_root() || get_tree()->get_edited_scene_root()->get_scene_file_path() != base) {
 					file_read_only = true;
 				}

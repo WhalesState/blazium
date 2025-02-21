@@ -40,7 +40,7 @@
 #include "scene/debugger/scene_debugger.h"
 #include "scene/main/multiplayer_api.h"
 #include "scene/main/window.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 #include "viewport.h"
 
 #include <stdint.h>
@@ -2646,12 +2646,12 @@ Node *Node::_duplicate(int p_flags, HashMap<const Node *, Node *> *r_duplimap) c
 		node = nip;
 
 	} else if ((p_flags & DUPLICATE_USE_INSTANTIATION) && !get_scene_file_path().is_empty()) {
-		Ref<UserInterface> res = ResourceLoader::load(get_scene_file_path());
+		Ref<Component> res = ResourceLoader::load(get_scene_file_path());
 		ERR_FAIL_COND_V(res.is_null(), nullptr);
-		UserInterface::GenEditState edit_state = UserInterface::GEN_EDIT_STATE_DISABLED;
+		Component::GenEditState edit_state = Component::GEN_EDIT_STATE_DISABLED;
 #ifdef TOOLS_ENABLED
 		if (p_flags & DUPLICATE_FROM_EDITOR) {
-			edit_state = UserInterface::GEN_EDIT_STATE_INSTANCE;
+			edit_state = Component::GEN_EDIT_STATE_INSTANCE;
 		}
 #endif
 		node = res->instantiate(edit_state);

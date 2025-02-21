@@ -37,7 +37,7 @@
 #include "editor/gui/editor_validation_panel.h"
 #include "editor/scene_tree_dock.h"
 #include "editor/themes/editor_scale.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 
 void GroupSettingsEditor::_notification(int p_what) {
 	switch (p_what) {
@@ -234,16 +234,16 @@ void GroupSettingsEditor::_modify_references(const StringName &p_name, const Str
 	}
 
 	for (const String &E : scenes) {
-		Ref<UserInterface> packed_scene = ResourceLoader::load(E);
+		Ref<Component> component = ResourceLoader::load(E);
 		progress.step(E, step++);
-		ERR_CONTINUE(packed_scene.is_null());
+		ERR_CONTINUE(component.is_null());
 		if (p_is_rename) {
-			if (packed_scene->get_state()->rename_group_references(p_name, p_new_name)) {
-				ResourceSaver::save(packed_scene, E);
+			if (component->get_state()->rename_group_references(p_name, p_new_name)) {
+				ResourceSaver::save(component, E);
 			}
 		} else {
-			if (packed_scene->get_state()->remove_group_references(p_name)) {
-				ResourceSaver::save(packed_scene, E);
+			if (component->get_state()->remove_group_references(p_name)) {
+				ResourceSaver::save(component, E);
 			}
 		}
 	}

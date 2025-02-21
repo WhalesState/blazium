@@ -47,7 +47,7 @@
 #include "scene/gui/label.h"
 #include "scene/gui/texture_rect.h"
 #include "scene/main/window.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 
 Node *SceneTreeEditor::get_scene_node() const {
 	ERR_FAIL_COND_V(!is_inside_tree(), nullptr);
@@ -1374,7 +1374,7 @@ bool SceneTreeEditor::can_drop_data_fw(const Point2 &p_point, const Variant &p_d
 		bool audio_drop = true;
 		for (int i = 0; i < files.size(); i++) {
 			String ftype = EditorFileSystem::get_singleton()->get_file_type(files[i]);
-			if (ftype != "UserInterface") {
+			if (ftype != "Component") {
 				scene_drop = false;
 			}
 			if (audio_drop && !ClassDB::is_parent_class(ftype, "AudioStream")) {

@@ -3593,7 +3593,7 @@ void ThemeEditor::_preview_scene_dialog_cbk(const String &p_path) {
 		return;
 	}
 
-	_add_preview_tab(preview_tab, p_path.get_file(), get_editor_theme_icon(SNAME("UserInterface")));
+	_add_preview_tab(preview_tab, p_path.get_file(), get_editor_theme_icon(SNAME("Component")));
 	preview_tab->connect("scene_invalidated", callable_mp(this, &ThemeEditor::_remove_preview_tab_invalid).bind(preview_tab));
 	preview_tab->connect("scene_reloaded", callable_mp(this, &ThemeEditor::_update_preview_tab).bind(preview_tab));
 }
@@ -3759,7 +3759,7 @@ ThemeEditor::ThemeEditor() {
 	preview_scene_dialog->set_file_mode(EditorFileDialog::FILE_MODE_OPEN_FILE);
 	preview_scene_dialog->set_title(TTR("Select UI Scene:"));
 	List<String> ext;
-	ResourceLoader::get_recognized_extensions_for_type("UserInterface", &ext);
+	ResourceLoader::get_recognized_extensions_for_type("Component", &ext);
 	for (const String &E : ext) {
 		preview_scene_dialog->add_filter("*." + E, TTR("Scene"));
 	}

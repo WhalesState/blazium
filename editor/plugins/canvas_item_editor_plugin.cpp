@@ -60,7 +60,7 @@
 #include "scene/gui/view_panner.h"
 #include "scene/main/canvas_layer.h"
 #include "scene/main/window.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 #include "scene/resources/style_box_texture.h"
 
 #define RULER_WIDTH (15 * EDSCALE)
@@ -5773,7 +5773,7 @@ void CanvasItemEditorViewport::_create_preview(const Vector<String> &files) cons
 			add_preview = true;
 		}
 
-		Ref<UserInterface> scene = res;
+		Ref<Component> scene = res;
 		if (scene.is_valid()) {
 			Node *instance = scene->instantiate();
 			if (instance) {
@@ -5947,12 +5947,12 @@ void CanvasItemEditorViewport::_create_audio_node(Node *p_parent, const String &
 }
 
 bool CanvasItemEditorViewport::_create_instance(Node *p_parent, const String &p_path, const Point2 &p_point) {
-	Ref<UserInterface> sdata = ResourceLoader::load(p_path);
+	Ref<Component> sdata = ResourceLoader::load(p_path);
 	if (!sdata.is_valid()) { // invalid scene
 		return false;
 	}
 
-	Node *instantiated_scene = sdata->instantiate(UserInterface::GEN_EDIT_STATE_INSTANCE);
+	Node *instantiated_scene = sdata->instantiate(Component::GEN_EDIT_STATE_INSTANCE);
 	if (!instantiated_scene) { // Error on instantiation.
 		return false;
 	}
@@ -6014,7 +6014,7 @@ void CanvasItemEditorViewport::_perform_drop_data() {
 			return;
 		}
 
-		Ref<UserInterface> scene = res;
+		Ref<Component> scene = res;
 		if (scene.is_valid()) {
 			// Without root node act the same as "Load Inherited Scene".
 			Error err = EditorNode::get_singleton()->load_scene(path, false, true);
@@ -6040,7 +6040,7 @@ void CanvasItemEditorViewport::_perform_drop_data() {
 			continue;
 		}
 
-		Ref<UserInterface> scene = res;
+		Ref<Component> scene = res;
 		if (scene.is_valid()) {
 			bool success = _create_instance(target_node, path, drop_pos);
 			if (!success) {
@@ -6097,11 +6097,11 @@ bool CanvasItemEditorViewport::can_drop_data(const Point2 &p_point, const Varian
 		const String &res_type = ResourceLoader::get_resource_type(path);
 		String error_message;
 
-		if (ClassDB::is_parent_class(res_type, "UserInterface")) {
-			Ref<UserInterface> cui = ResourceLoader::load(path);
+		if (ClassDB::is_parent_class(res_type, "Component")) {
+			Ref<Component> cui = ResourceLoader::load(path);
 			ERR_CONTINUE(cui.is_null());
 
-			Node *instantiated_scene = cui->instantiate(UserInterface::GEN_EDIT_STATE_INSTANCE);
+			Node *instantiated_scene = cui->instantiate(Component::GEN_EDIT_STATE_INSTANCE);
 			if (!instantiated_scene) {
 				continue;
 			}

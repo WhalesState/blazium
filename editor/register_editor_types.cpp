@@ -80,7 +80,7 @@
 #include "editor/plugins/input_event_editor_plugin.h"
 #include "editor/plugins/light_occluder_2d_editor_plugin.h"
 #include "editor/plugins/line_2d_editor_plugin.h"
-#include "editor/plugins/packed_scene_editor_plugin.h"
+#include "editor/plugins/component_editor_plugin.h"
 #include "editor/plugins/parallax_background_editor_plugin.h"
 #include "editor/plugins/path_2d_editor_plugin.h"
 #include "editor/plugins/polygon_2d_editor_plugin.h"
@@ -174,7 +174,7 @@ void register_editor_types() {
 	EditorPlugins::add_by_type<GradientEditorPlugin>();
 	EditorPlugins::add_by_type<GradientTexture2DEditorPlugin>();
 	EditorPlugins::add_by_type<InputEventEditorPlugin>();
-	EditorPlugins::add_by_type<UserInterfaceEditorPlugin>();
+	EditorPlugins::add_by_type<ComponentEditorPlugin>();
 	EditorPlugins::add_by_type<ResourcePreloaderEditorPlugin>();
 	EditorPlugins::add_by_type<ShaderEditorPlugin>();
 	EditorPlugins::add_by_type<ShaderFileEditorPlugin>();

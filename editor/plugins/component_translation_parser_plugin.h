@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  packed_scene_editor_plugin.cpp                                        */
+/*  component_translation_parser_plugin.h                              */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,53 +28,25 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "packed_scene_editor_plugin.h"
+#ifndef component_TRANSLATION_PARSER_PLUGIN_H
+#define component_TRANSLATION_PARSER_PLUGIN_H
 
-#include "editor/editor_node.h"
-#include "scene/gui/button.h"
-#include "scene/resources/packed_scene.h"
+#include "editor/editor_translation_parser.h"
 
-void UserInterfaceEditor::_on_open_scene_pressed() {
-	// Using deferred call because changing scene updates the Inspector and thus destroys this plugin.
-	callable_mp(EditorNode::get_singleton(), &EditorNode::open_request).call_deferred(packed_scene->get_path());
-}
+class ComponentEditorTranslationParserPlugin : public EditorTranslationParserPlugin {
+	GDCLASS(ComponentEditorTranslationParserPlugin, EditorTranslationParserPlugin);
 
-void UserInterfaceEditor::_notification(int p_what) {
-	switch (p_what) {
-		case NOTIFICATION_ENTER_TREE:
-		case NOTIFICATION_THEME_CHANGED: {
-			open_scene_button->set_icon(get_editor_theme_icon(SNAME("UserInterface")));
-		} break;
-	}
-}
+	// Scene Node's properties that contain translation strings.
+	HashSet<String> lookup_properties;
+	// Properties from specific Nodes that should be ignored.
+	HashMap<String, Vector<String>> exception_list;
 
-UserInterfaceEditor::UserInterfaceEditor(Ref<UserInterface> &p_packed_scene) {
-	packed_scene = p_packed_scene;
+public:
+	virtual Error parse_file(const String &p_path, Vector<String> *r_ids, Vector<Vector<String>> *r_ids_ctx_plural) override;
+	bool match_property(const String &p_property_name, const String &p_node_type);
+	virtual void get_recognized_extensions(List<String> *r_extensions) const override;
 
-	open_scene_button = EditorInspector::create_inspector_action_button(TTR("Open Scene"));
-	open_scene_button->connect(SceneStringName(pressed), callable_mp(this, &UserInterfaceEditor::_on_open_scene_pressed));
-	open_scene_button->set_disabled(!packed_scene->get_path().get_file().is_valid_filename());
-	add_child(open_scene_button);
+	ComponentEditorTranslationParserPlugin();
+};
 
-	add_child(memnew(Control)); // Add padding before the regular properties.
-}
-
-///////////////////////
-
-bool EditorInspectorPluginUserInterface::can_handle(Object *p_object) {
-	return Object::cast_to<UserInterface>(p_object) != nullptr;
-}
-
-void EditorInspectorPluginUserInterface::parse_begin(Object *p_object) {
-	Ref<UserInterface> packed_scene(p_object);
-	UserInterfaceEditor *editor = memnew(UserInterfaceEditor(packed_scene));
-	add_custom_control(editor);
-}
-
-///////////////////////
-
-UserInterfaceEditorPlugin::UserInterfaceEditorPlugin() {
-	Ref<EditorInspectorPluginUserInterface> plugin;
-	plugin.instantiate();
-	add_inspector_plugin(plugin);
-}
+#endif // component_TRANSLATION_PARSER_PLUGIN_H

@@ -618,7 +618,7 @@ public:
 	virtual void clear() override;
 	virtual const Ref<Texture2D> get_icon() const override
 	{
-		return EditorInterface::get_singleton()->get_editor_theme()->get_icon("2D", "EditorIcons");
+		return EditorInterface::get_singleton()->get_editor_theme()->get_icon("Designer", "EditorIcons");
 	}
 
 	CanvasItemEditor *get_canvas_item_editor() { return canvas_item_editor; }

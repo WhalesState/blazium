@@ -62,7 +62,7 @@
 #include "scene/main/window.h"
 #include "scene/property_list_helper.h"
 #include "scene/register_scene_types.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 #include "scene/theme/theme_db.h"
 #include "servers/audio_server.h"
 #include "servers/camera_server.h"
@@ -3338,9 +3338,9 @@ int Main::start() {
 					const ProjectSettings::AutoloadInfo &info = E.value;
 
 					Node *n = nullptr;
-					if (ResourceLoader::get_resource_type(info.path) == "UserInterface") {
+					if (ResourceLoader::get_resource_type(info.path) == "Component") {
 						// Cache the scene reference before loading it (for cyclic references)
-						Ref<UserInterface> cui;
+						Ref<Component> cui;
 						cui.instantiate();
 						cui->set_path(info.path);
 						cui->reload_from_file();
@@ -3571,7 +3571,7 @@ int Main::start() {
 
 			if (!game_path.is_empty()) {
 				Node *scene = nullptr;
-				Ref<UserInterface> scenedata = ResourceLoader::load(local_game_path);
+				Ref<Component> scenedata = ResourceLoader::load(local_game_path);
 				if (scenedata.is_valid()) {
 					scene = scenedata->instantiate();
 				}

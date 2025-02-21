@@ -53,7 +53,7 @@
 #include "scene/resources/image_texture.h"
 #include "scene/resources/material.h"
 #include "scene/resources/mesh.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 #include "scene/resources/world_2d.h"
 #include "servers/display_server.h"
 #include "servers/physics_server_2d.h"
@@ -1383,7 +1383,7 @@ void SceneTree::_flush_scene_change() {
 
 Error SceneTree::change_scene_to_file(const String &p_path) {
 	ERR_FAIL_COND_V_MSG(!Thread::is_main_thread(), ERR_INVALID_PARAMETER, "Changing scene can only be done from the main thread.");
-	Ref<UserInterface> new_scene = ResourceLoader::load(p_path);
+	Ref<Component> new_scene = ResourceLoader::load(p_path);
 	if (new_scene.is_null()) {
 		return ERR_CANT_OPEN;
 	}
@@ -1391,7 +1391,7 @@ Error SceneTree::change_scene_to_file(const String &p_path) {
 	return change_scene_to_packed(new_scene);
 }
 
-Error SceneTree::change_scene_to_packed(const Ref<UserInterface> &p_scene) {
+Error SceneTree::change_scene_to_packed(const Ref<Component> &p_scene) {
 	ERR_FAIL_COND_V_MSG(p_scene.is_null(), ERR_INVALID_PARAMETER, "Can't change to a null scene. Use unload_current_scene() if you wish to unload it.");
 
 	Node *new_scene = p_scene->instantiate();
@@ -1612,7 +1612,7 @@ void SceneTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_current_scene"), &SceneTree::get_current_scene);
 
 	ClassDB::bind_method(D_METHOD("change_scene_to_file", "path"), &SceneTree::change_scene_to_file);
-	ClassDB::bind_method(D_METHOD("change_scene_to_packed", "packed_scene"), &SceneTree::change_scene_to_packed);
+	ClassDB::bind_method(D_METHOD("change_scene_to_packed", "component"), &SceneTree::change_scene_to_packed);
 
 	ClassDB::bind_method(D_METHOD("reload_current_scene"), &SceneTree::reload_current_scene);
 	ClassDB::bind_method(D_METHOD("unload_current_scene"), &SceneTree::unload_current_scene);

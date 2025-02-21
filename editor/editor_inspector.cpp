@@ -49,7 +49,7 @@
 #include "scene/gui/option_button.h"
 #include "scene/gui/texture_rect.h"
 #include "scene/property_utils.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 #include "scene/resources/style_box_flat.h"
 #include "scene/scene_string_names.h"
 

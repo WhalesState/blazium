@@ -33,7 +33,7 @@
 
 #include "scene/main/node.h"
 
-class UserInterface;
+class Component;
 
 class InstancePlaceholder : public Node {
 	GDCLASS(InstancePlaceholder, Node);
@@ -63,7 +63,7 @@ public:
 
 	Dictionary get_stored_values(bool p_with_order = false);
 
-	Node *create_instance(bool p_replace = false, const Ref<UserInterface> &p_custom_scene = Ref<UserInterface>());
+	Node *create_instance(bool p_replace = false, const Ref<Component> &p_custom_scene = Ref<Component>());
 
 	InstancePlaceholder();
 };

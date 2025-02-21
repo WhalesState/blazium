@@ -102,7 +102,7 @@ public:
 class SceneThemeEditorPreview : public ThemeEditorPreview {
 	GDCLASS(SceneThemeEditorPreview, ThemeEditorPreview);
 
-	Ref<UserInterface> loaded_scene;
+	Ref<Component> loaded_scene;
 
 	Button *reload_scene_button = nullptr;
 

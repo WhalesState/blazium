@@ -41,7 +41,7 @@
 #include "editor/plugins/editor_plugin.h"
 #include "editor/plugins/script_editor_plugin.h"
 #include "editor/themes/editor_scale.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 
 void EditorSelectionHistory::cleanup_history() {
 	for (int i = 0; i < history.size(); i++) {
@@ -708,7 +708,7 @@ bool EditorData::check_and_update_scene(int p_idx) {
 	bool must_reload = _find_updated_instances(edited_scene[p_idx].root, edited_scene[p_idx].root, checked_scenes);
 
 	if (must_reload) {
-		Ref<UserInterface> pscene;
+		Ref<Component> pscene;
 		pscene.instantiate();
 
 		EditorProgress ep("update_scene", TTR("Updating Scene"), 2);
@@ -717,7 +717,7 @@ bool EditorData::check_and_update_scene(int p_idx) {
 		Error err = pscene->pack(edited_scene[p_idx].root);
 		ERR_FAIL_COND_V(err != OK, false);
 		ep.step(TTR("Updating scene..."), 1);
-		Node *new_scene = pscene->instantiate(UserInterface::GEN_EDIT_STATE_MAIN);
+		Node *new_scene = pscene->instantiate(Component::GEN_EDIT_STATE_MAIN);
 		ERR_FAIL_NULL_V(new_scene, false);
 
 		// Transfer selection.

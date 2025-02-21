@@ -39,7 +39,7 @@
 
 #undef Window
 
-class UserInterface;
+class Component;
 class Node;
 class Window;
 class Material;
@@ -391,7 +391,7 @@ public:
 	void set_current_scene(Node *p_scene);
 	Node *get_current_scene() const;
 	Error change_scene_to_file(const String &p_path);
-	Error change_scene_to_packed(const Ref<UserInterface> &p_scene);
+	Error change_scene_to_packed(const Ref<Component> &p_scene);
 	Error reload_current_scene();
 	void unload_current_scene();
 

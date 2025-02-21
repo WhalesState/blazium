@@ -210,7 +210,7 @@ void ResourcePreloaderEditor::_update_library() {
 		ti->set_editable(1, false);
 		ti->set_selectable(1, false);
 
-		if (type == "UserInterface") {
+		if (type == "Component") {
 			ti->add_button(1, get_editor_theme_icon(SNAME("InstanceOptions")), BUTTON_OPEN_SCENE, false, TTR("Open in Editor"));
 		} else {
 			ti->add_button(1, get_editor_theme_icon(SNAME("Load")), BUTTON_EDIT_RESOURCE, false, TTR("Open in Editor"));

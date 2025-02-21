@@ -43,7 +43,7 @@
 #include "scene/gui/grid_container.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/option_button.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 
 void SceneCreateDialog::_notification(int p_what) {
 	switch (p_what) {
@@ -257,7 +257,7 @@ SceneCreateDialog::SceneCreateDialog() {
 		scene_name_edit->connect("text_submitted", callable_mp(this, &SceneCreateDialog::accept_create).unbind(1));
 
 		List<String> extensions;
-		Ref<UserInterface> sd = memnew(UserInterface);
+		Ref<Component> sd = memnew(Component);
 		ResourceSaver::get_recognized_extensions(sd, &extensions);
 
 		scene_extension_picker = memnew(OptionButton);

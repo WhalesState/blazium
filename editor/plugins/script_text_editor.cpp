@@ -935,7 +935,7 @@ void ScriptTextEditor::_lookup_symbol(const String &p_symbol, int p_row, int p_c
 		}
 
 		List<String> scene_extensions;
-		ResourceLoader::get_recognized_extensions_for_type("UserInterface", &scene_extensions);
+		ResourceLoader::get_recognized_extensions_for_type("Component", &scene_extensions);
 
 		if (scene_extensions.find(symbol.get_extension())) {
 			EditorNode::get_singleton()->load_scene(symbol);
@@ -1044,7 +1044,7 @@ void ScriptTextEditor::_lookup_symbol(const String &p_symbol, int p_row, int p_c
 		String path = _get_absolute_path(p_symbol);
 		if (FileAccess::exists(path)) {
 			List<String> scene_extensions;
-			ResourceLoader::get_recognized_extensions_for_type("UserInterface", &scene_extensions);
+			ResourceLoader::get_recognized_extensions_for_type("Component", &scene_extensions);
 
 			if (scene_extensions.find(path.get_extension())) {
 				EditorNode::get_singleton()->load_scene(path);

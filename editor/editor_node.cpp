@@ -62,7 +62,7 @@
 #include "scene/main/window.h"
 #include "scene/property_utils.h"
 #include "scene/resources/image_texture.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 #include "scene/resources/portable_compressed_texture.h"
 #include "scene/theme/theme_db.h"
 #include "servers/display_server.h"
@@ -134,7 +134,7 @@
 #include "editor/plugins/editor_preview_plugins.h"
 #include "editor/plugins/editor_resource_conversion_plugin.h"
 #include "editor/plugins/gdextension_export_plugin.h"
-#include "editor/plugins/packed_scene_translation_parser_plugin.h"
+#include "editor/plugins/component_translation_parser_plugin.h"
 #include "editor/plugins/particle_process_material_editor_plugin.h"
 #include "editor/plugins/plugin_config_dialog.h"
 #include "editor/plugins/root_motion_editor_plugin.h"
@@ -997,7 +997,7 @@ void EditorNode::_resources_reimporting(const Vector<String> &p_resources) {
 	scenes_modification_table.clear();
 	List<String> scenes;
 	for (const String &res_path : p_resources) {
-		if (ResourceLoader::get_resource_type(res_path) == "UserInterface") {
+		if (ResourceLoader::get_resource_type(res_path) == "Component") {
 			scenes.push_back(res_path);
 		}
 	}
@@ -1013,7 +1013,7 @@ void EditorNode::_resources_reimported(const Vector<String> &p_resources) {
 
 	for (const String &res_path : p_resources) {
 		String file_type = ResourceLoader::get_resource_type(res_path);
-		if (file_type == "UserInterface") {
+		if (file_type == "Component") {
 			scenes.push_back(res_path);
 			// Reload later if needed, first go with normal resources.
 			continue;
@@ -1289,7 +1289,7 @@ void EditorNode::save_resource(const Ref<Resource> &p_resource) {
 	if (p_resource->is_built_in()) {
 		const String scene_path = p_resource->get_path().get_slice("::", 0);
 		if (!scene_path.is_empty()) {
-			if (ResourceLoader::exists(scene_path) && ResourceLoader::get_resource_type(scene_path) == "UserInterface") {
+			if (ResourceLoader::exists(scene_path) && ResourceLoader::get_resource_type(scene_path) == "Component") {
 				save_scene_if_open(scene_path);
 			} else {
 				// Not a packed scene, so save it as regular resource.
@@ -1333,7 +1333,7 @@ void EditorNode::save_resource_as(const Ref<Resource> &p_resource, const String 
 
 	current_menu_option = RESOURCE_SAVE_AS;
 	List<String> extensions;
-	Ref<UserInterface> sd = memnew(UserInterface);
+	Ref<Component> sd = memnew(Component);
 	ResourceSaver::get_recognized_extensions(p_resource, &extensions);
 	file->clear_filters();
 
@@ -1734,9 +1734,9 @@ int EditorNode::_save_external_resources(bool p_also_save_external_data) {
 		if (!res.is_valid()) {
 			continue; // Maybe it was erased in a thread, who knows.
 		}
-		Ref<UserInterface> ps = res;
+		Ref<Component> ps = res;
 		if (ps.is_valid()) {
-			continue; // Do not save UserInterfaces, this will mess up the editor.
+			continue; // Do not save Components, this will mess up the editor.
 		}
 		ResourceSaver::save(res, res->get_path(), flg);
 		saved++;
@@ -1804,7 +1804,7 @@ void EditorNode::_save_scene(String p_file, int idx) {
 
 	_save_editor_states(p_file, idx);
 
-	Ref<UserInterface> sdata;
+	Ref<Component> sdata;
 
 	if (ResourceCache::has(p_file)) {
 		// Something may be referencing this resource and we are good with that.
@@ -2377,7 +2377,7 @@ void EditorNode::_edit_current(bool p_skip_foreign, bool p_skip_inspector_update
 					}
 				}
 				editable_info = TTR("This resource belongs to a scene that was imported, so it's not editable.\nPlease read the documentation relevant to importing scenes to better understand this workflow.");
-			} else if ((!get_edited_scene() || get_edited_scene()->get_scene_file_path() != base_path) && ResourceLoader::get_resource_type(base_path) == "UserInterface") {
+			} else if ((!get_edited_scene() || get_edited_scene()->get_scene_file_path() != base_path) && ResourceLoader::get_resource_type(base_path) == "Component") {
 				editable_info = TTR("This resource belongs to a scene that was instantiated or inherited.\nChanges to it must be made inside the original scene.");
 			}
 		} else if (current_res->get_path().is_resource_file()) {
@@ -2506,7 +2506,7 @@ void EditorNode::_menu_option_confirm(int p_option, bool p_confirmed) {
 	}
 
 	switch (p_option) {
-		case FILE_NEW_SCENE: {
+		case FILE_NEW_COMPONENT: {
 			new_scene();
 
 		} break;
@@ -2514,7 +2514,7 @@ void EditorNode::_menu_option_confirm(int p_option, bool p_confirmed) {
 		case FILE_OPEN_SCENE: {
 			file->set_file_mode(EditorFileDialog::FILE_MODE_OPEN_FILE);
 			List<String> extensions;
-			ResourceLoader::get_recognized_extensions_for_type("UserInterface", &extensions);
+			ResourceLoader::get_recognized_extensions_for_type("Component", &extensions);
 			file->clear_filters();
 			for (const String &extension : extensions) {
 				file->add_filter("*." + extension, extension.to_upper());
@@ -2534,7 +2534,7 @@ void EditorNode::_menu_option_confirm(int p_option, bool p_confirmed) {
 
 		} break;
 		case FILE_QUICK_OPEN_SCENE: {
-			quick_open->popup_dialog("UserInterface", true);
+			quick_open->popup_dialog("Component", true);
 			quick_open->set_title(TTR("Quick Open Scene..."));
 
 		} break;
@@ -2642,7 +2642,7 @@ void EditorNode::_menu_option_confirm(int p_option, bool p_confirmed) {
 			file->set_file_mode(EditorFileDialog::FILE_MODE_SAVE_FILE);
 
 			List<String> extensions;
-			Ref<UserInterface> sd = memnew(UserInterface);
+			Ref<Component> sd = memnew(Component);
 			ResourceSaver::get_recognized_extensions(sd, &extensions);
 			file->clear_filters();
 			for (const String &extension : extensions) {
@@ -2921,7 +2921,7 @@ void EditorNode::_menu_option_confirm(int p_option, bool p_confirmed) {
 		case SETTINGS_PICK_MAIN_SCENE: {
 			file->set_file_mode(EditorFileDialog::FILE_MODE_OPEN_FILE);
 			List<String> extensions;
-			ResourceLoader::get_recognized_extensions_for_type("UserInterface", &extensions);
+			ResourceLoader::get_recognized_extensions_for_type("Component", &extensions);
 			file->clear_filters();
 			for (const String &extension : extensions) {
 				file->add_filter("*." + extension, extension.to_upper());
@@ -3813,7 +3813,7 @@ Error EditorNode::load_scene(const String &p_scene, bool p_ignore_broken_deps, b
 	dependency_errors.clear();
 
 	Error err;
-	Ref<UserInterface> sdata = ResourceLoader::load(lpath, "", ResourceFormatLoader::CACHE_MODE_REPLACE, &err);
+	Ref<Component> sdata = ResourceLoader::load(lpath, "", ResourceFormatLoader::CACHE_MODE_REPLACE, &err);
 
 	if (!p_ignore_broken_deps && dependency_errors.has(lpath)) {
 		current_menu_option = -1;
@@ -3854,7 +3854,7 @@ Error EditorNode::load_scene(const String &p_scene, bool p_ignore_broken_deps, b
 
 	if (ResourceCache::has(lpath)) {
 		// Used from somewhere else? No problem! Update state and replace sdata.
-		Ref<UserInterface> ps = ResourceCache::get_ref(lpath);
+		Ref<Component> ps = ResourceCache::get_ref(lpath);
 		if (ps.is_valid()) {
 			ps->replace_state(sdata->get_state());
 			ps->set_last_modified_time(sdata->get_last_modified_time());
@@ -3865,7 +3865,7 @@ Error EditorNode::load_scene(const String &p_scene, bool p_ignore_broken_deps, b
 		sdata->set_path(lpath, true); // Take over path.
 	}
 
-	Node *new_scene = sdata->instantiate(p_set_inherited ? UserInterface::GEN_EDIT_STATE_MAIN_INHERITED : UserInterface::GEN_EDIT_STATE_MAIN);
+	Node *new_scene = sdata->instantiate(p_set_inherited ? Component::GEN_EDIT_STATE_MAIN_INHERITED : Component::GEN_EDIT_STATE_MAIN);
 
 	if (!new_scene) {
 		sdata.unref();
@@ -4299,7 +4299,7 @@ bool EditorNode::is_resource_read_only(Ref<Resource> p_resource, bool p_foreign_
 		if (srpos != -1) {
 			String base = path.substr(0, srpos);
 			// If the base resource is a packed scene, we treat it as read-only if it is not the currently edited scene.
-			if (ResourceLoader::get_resource_type(base) == "UserInterface") {
+			if (ResourceLoader::get_resource_type(base) == "Component") {
 				if (!get_tree()->get_edited_scene_root() || get_tree()->get_edited_scene_root()->get_scene_file_path() != base) {
 					// If we have not flagged foreign resources as writable or the base scene the resource is
 					// part was imported, it can be considered read-only.
@@ -4410,10 +4410,10 @@ void EditorNode::_update_recent_scenes() {
 void EditorNode::_quick_opened() {
 	Vector<String> files = quick_open->get_selected_files();
 
-	bool open_scene_dialog = quick_open->get_base_type() == "UserInterface";
+	bool open_scene_dialog = quick_open->get_base_type() == "Component";
 	for (int i = 0; i < files.size(); i++) {
 		const String &res_path = files[i];
-		if (open_scene_dialog || ClassDB::is_parent_class(ResourceLoader::get_resource_type(res_path), "UserInterface")) {
+		if (open_scene_dialog || ClassDB::is_parent_class(ResourceLoader::get_resource_type(res_path), "Component")) {
 			open_request(res_path);
 		} else {
 			load_resource(res_path);
@@ -5150,7 +5150,7 @@ bool EditorNode::ensure_main_scene(bool p_from_native) {
 		return false;
 	}
 
-	if (ResourceLoader::get_resource_type(main_scene) != "UserInterface") {
+	if (ResourceLoader::get_resource_type(main_scene) != "Component") {
 		current_menu_option = -1;
 		pick_main_scene->set_text(vformat(TTR("Selected scene '%s' is not a scene file, select a valid one?\nYou can change it later in \"Project Settings\" under the 'application' category."), main_scene));
 		pick_main_scene->popup_centered();
@@ -5719,18 +5719,18 @@ void EditorNode::reload_instances_with_path_in_edited_scenes() {
 
 	Error err;
 	Array replaced_nodes;
-	HashMap<String, Ref<UserInterface>> local_scene_cache;
+	HashMap<String, Ref<Component>> local_scene_cache;
 
 	// Reload the new instances.
 	for (KeyValue<int, SceneModificationsEntry> &scene_modifications_elem : scenes_modification_table) {
 		for (InstanceModificationsEntry instance_modifications : scene_modifications_elem.value.instance_list) {
 			if (!local_scene_cache.has(instance_modifications.instance_path)) {
-				Ref<UserInterface> instance_scene_packed_scene = ResourceLoader::load(instance_modifications.instance_path, "", ResourceFormatLoader::CACHE_MODE_REPLACE, &err);
+				Ref<Component> instance_scene_component = ResourceLoader::load(instance_modifications.instance_path, "", ResourceFormatLoader::CACHE_MODE_REPLACE, &err);
 
 				ERR_FAIL_COND(err != OK);
-				ERR_FAIL_COND(instance_scene_packed_scene.is_null());
+				ERR_FAIL_COND(instance_scene_component.is_null());
 
-				local_scene_cache[instance_modifications.instance_path] = instance_scene_packed_scene;
+				local_scene_cache[instance_modifications.instance_path] = instance_scene_component;
 			}
 		}
 	}
@@ -5775,15 +5775,15 @@ void EditorNode::reload_instances_with_path_in_edited_scenes() {
 		for (InstanceModificationsEntry instance_modifications : scene_modifications->instance_list) {
 			Node *original_node = instance_modifications.original_node;
 			String original_node_file_path = original_node->get_scene_file_path();
-			Ref<UserInterface> instance_scene_packed_scene = local_scene_cache[instance_modifications.instance_path];
+			Ref<Component> instance_scene_component = local_scene_cache[instance_modifications.instance_path];
 
 			// Load a replacement scene for the node.
-			Ref<UserInterface> current_packed_scene;
-			Ref<UserInterface> base_packed_scene;
+			Ref<Component> current_component;
+			Ref<Component> base_component;
 			if (original_node_file_path == instance_modifications.instance_path) {
 				// If the node file name directly matches the scene we're replacing,
 				// just load it since we already cached it.
-				current_packed_scene = instance_scene_packed_scene;
+				current_component = instance_scene_component;
 			} else {
 				// Otherwise, check the inheritance chain, reloading and caching any scenes
 				// we require along the way.
@@ -5806,19 +5806,19 @@ void EditorNode::reload_instances_with_path_in_edited_scenes() {
 				// Ensure the inheritance chain is loaded in the correct order so that cache can
 				// be properly updated.
 				for (String path : required_load_paths) {
-					if (current_packed_scene.is_valid()) {
-						base_packed_scene = current_packed_scene;
+					if (current_component.is_valid()) {
+						base_component = current_component;
 					}
 					if (!local_scene_cache.find(path)) {
-						current_packed_scene = ResourceLoader::load(path, "", ResourceFormatLoader::CACHE_MODE_REPLACE_DEEP, &err);
-						local_scene_cache[path] = current_packed_scene;
+						current_component = ResourceLoader::load(path, "", ResourceFormatLoader::CACHE_MODE_REPLACE_DEEP, &err);
+						local_scene_cache[path] = current_component;
 					} else {
-						current_packed_scene = local_scene_cache[path];
+						current_component = local_scene_cache[path];
 					}
 				}
 			}
 
-			ERR_FAIL_COND(current_packed_scene.is_null());
+			ERR_FAIL_COND(current_component.is_null());
 
 			// Instantiate early so that caches cleared on load in SceneState can be rebuilt early.
 			Node *instantiated_node = nullptr;
@@ -5851,16 +5851,16 @@ void EditorNode::reload_instances_with_path_in_edited_scenes() {
 			if (!instantiated_node) {
 				// If no base scene was found to create the node, we will use the reimported packed scene directly.
 				// But, when the current edited scene is the reimported scene, it's because it's a inherited scene
-				// of the reimported scene. In that case, we will not instantiate current_packed_scene, because
+				// of the reimported scene. In that case, we will not instantiate current_component, because
 				// we would reinstanciate ourself. Using the base scene is better.
 				if (current_edited_scene == original_node) {
-					if (base_packed_scene.is_valid()) {
-						instantiated_node = base_packed_scene->instantiate(UserInterface::GEN_EDIT_STATE_INSTANCE);
+					if (base_component.is_valid()) {
+						instantiated_node = base_component->instantiate(Component::GEN_EDIT_STATE_INSTANCE);
 					} else {
-						instantiated_node = instance_scene_packed_scene->instantiate(UserInterface::GEN_EDIT_STATE_INSTANCE);
+						instantiated_node = instance_scene_component->instantiate(Component::GEN_EDIT_STATE_INSTANCE);
 					}
 				} else {
-					instantiated_node = current_packed_scene->instantiate(UserInterface::GEN_EDIT_STATE_INSTANCE);
+					instantiated_node = current_component->instantiate(Component::GEN_EDIT_STATE_INSTANCE);
 				}
 			}
 			ERR_FAIL_NULL(instantiated_node);
@@ -5963,7 +5963,7 @@ void EditorNode::reload_instances_with_path_in_edited_scenes() {
 			if (owner) {
 				Ref<SceneState> ss_inst = owner->get_scene_instance_state();
 				if (ss_inst.is_valid()) {
-					ss_inst->update_instance_resource(instance_modifications.instance_path, current_packed_scene);
+					ss_inst->update_instance_resource(instance_modifications.instance_path, current_component);
 				}
 
 				owner->set_editable_instance(instantiated_node, is_editable);
@@ -6808,7 +6808,7 @@ EditorNode::EditorNode() {
 	command_palette->set_title(TTR("Command Palette"));
 	gui_base->add_child(command_palette);
 
-	file_menu->add_shortcut(ED_SHORTCUT_AND_COMMAND("editor/new_scene", TTR("New Scene"), KeyModifierMask::CMD_OR_CTRL + Key::N), FILE_NEW_SCENE);
+	file_menu->add_shortcut(ED_SHORTCUT_AND_COMMAND("editor/new_scene", TTR("New Scene"), KeyModifierMask::CMD_OR_CTRL + Key::N), FILE_NEW_COMPONENT);
 	file_menu->add_shortcut(ED_SHORTCUT_AND_COMMAND("editor/new_inherited_scene", TTR("New Inherited Scene..."), KeyModifierMask::CMD_OR_CTRL + KeyModifierMask::SHIFT + Key::N), FILE_NEW_INHERITED_SCENE);
 	file_menu->add_shortcut(ED_SHORTCUT_AND_COMMAND("editor/open_scene", TTR("Open Scene..."), KeyModifierMask::CMD_OR_CTRL + Key::O), FILE_OPEN_SCENE);
 	file_menu->add_shortcut(ED_SHORTCUT_AND_COMMAND("editor/reopen_closed_scene", TTR("Reopen Closed Scene"), KeyModifierMask::CMD_OR_CTRL + KeyModifierMask::SHIFT + Key::T), FILE_OPEN_PREV);
@@ -7103,7 +7103,7 @@ EditorNode::EditorNode() {
 	history_dock = memnew(HistoryDock);
 
 	// Scene: Top left.
-	editor_dock_manager->add_dock(SceneTreeDock::get_singleton(), TTR("Scene"), EditorDockManager::DOCK_SLOT_LEFT_UR, nullptr, "UserInterface");
+	editor_dock_manager->add_dock(SceneTreeDock::get_singleton(), TTR("Scene"), EditorDockManager::DOCK_SLOT_LEFT_UR, nullptr, "Component");
 
 	// Import: Top left, behind Scene.
 	editor_dock_manager->add_dock(ImportDock::get_singleton(), TTR("Import"), EditorDockManager::DOCK_SLOT_LEFT_UR, nullptr, "FileAccess");
@@ -7286,7 +7286,7 @@ EditorNode::EditorNode() {
 
 	resource_preview->add_preview_generator(Ref<EditorTexturePreviewPlugin>(memnew(EditorTexturePreviewPlugin)));
 	resource_preview->add_preview_generator(Ref<EditorImagePreviewPlugin>(memnew(EditorImagePreviewPlugin)));
-	resource_preview->add_preview_generator(Ref<EditorUserInterfacePreviewPlugin>(memnew(EditorUserInterfacePreviewPlugin)));
+	resource_preview->add_preview_generator(Ref<EditorComponentPreviewPlugin>(memnew(EditorComponentPreviewPlugin)));
 	resource_preview->add_preview_generator(Ref<EditorMaterialPreviewPlugin>(memnew(EditorMaterialPreviewPlugin)));
 	resource_preview->add_preview_generator(Ref<EditorScriptPreviewPlugin>(memnew(EditorScriptPreviewPlugin)));
 	resource_preview->add_preview_generator(Ref<EditorAudioStreamPreviewPlugin>(memnew(EditorAudioStreamPreviewPlugin)));
@@ -7317,9 +7317,9 @@ EditorNode::EditorNode() {
 
 	EditorExport::get_singleton()->add_export_plugin(dedicated_server_export_plugin);
 
-	Ref<UserInterfaceEditorTranslationParserPlugin> packed_scene_translation_parser_plugin;
-	packed_scene_translation_parser_plugin.instantiate();
-	EditorTranslationParser::get_singleton()->add_parser(packed_scene_translation_parser_plugin, EditorTranslationParser::STANDARD);
+	Ref<ComponentEditorTranslationParserPlugin> component_translation_parser_plugin;
+	component_translation_parser_plugin.instantiate();
+	EditorTranslationParser::get_singleton()->add_parser(component_translation_parser_plugin, EditorTranslationParser::STANDARD);
 
 	_edit_current();
 	current = nullptr;

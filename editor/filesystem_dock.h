@@ -139,7 +139,7 @@ private:
 		FILE_NEW_TEXTFILE,
 		FILE_NEW_FOLDER,
 		FILE_NEW_SCRIPT,
-		FILE_NEW_SCENE,
+		FILE_NEW_COMPONENT,
 	};
 
 	HashMap<String, Color> folder_colors;

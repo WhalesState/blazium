@@ -57,7 +57,7 @@
 #include "scene/audio/audio_stream_player.h"
 #include "scene/gui/check_box.h"
 #include "scene/property_utils.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 #include "servers/display_server.h"
 
 #include "modules/modules_enabled.gen.h" // For regex.
@@ -270,7 +270,7 @@ void SceneTreeDock::_perform_instantiate_scenes(const Vector<String> &p_files, N
 	bool error = false;
 
 	for (int i = 0; i < p_files.size(); i++) {
-		Ref<UserInterface> sdata = ResourceLoader::load(p_files[i]);
+		Ref<Component> sdata = ResourceLoader::load(p_files[i]);
 		if (!sdata.is_valid()) {
 			current_option = -1;
 			accept->set_text(vformat(TTR("Error loading scene from %s"), p_files[i]));
@@ -279,7 +279,7 @@ void SceneTreeDock::_perform_instantiate_scenes(const Vector<String> &p_files, N
 			break;
 		}
 
-		Node *instantiated_scene = sdata->instantiate(UserInterface::GEN_EDIT_STATE_INSTANCE);
+		Node *instantiated_scene = sdata->instantiate(Component::GEN_EDIT_STATE_INSTANCE);
 		if (!instantiated_scene) {
 			current_option = -1;
 			accept->set_text(vformat(TTR("Error instantiating scene from %s"), p_files[i]));
@@ -411,14 +411,14 @@ void SceneTreeDock::_replace_with_branch_scene(const String &p_file, Node *base)
 	// `move_child` + `get_index` doesn't really work for internal nodes.
 	ERR_FAIL_COND_MSG(base->get_internal_mode() != INTERNAL_MODE_DISABLED, "Trying to replace internal node, this is not supported.");
 
-	Ref<UserInterface> sdata = ResourceLoader::load(p_file);
+	Ref<Component> sdata = ResourceLoader::load(p_file);
 	if (!sdata.is_valid()) {
 		accept->set_text(vformat(TTR("Error loading scene from %s"), p_file));
 		accept->popup_centered();
 		return;
 	}
 
-	Node *instantiated_scene = sdata->instantiate(UserInterface::GEN_EDIT_STATE_INSTANCE);
+	Node *instantiated_scene = sdata->instantiate(Component::GEN_EDIT_STATE_INSTANCE);
 	if (!instantiated_scene) {
 		accept->set_text(vformat(TTR("Error instantiating scene from %s"), p_file));
 		accept->popup_centered();
@@ -490,9 +490,9 @@ bool SceneTreeDock::_track_inherit(const String &p_target_scene_path, Node *p_de
 		Ref<SceneState> ss = p->get_scene_inherited_state();
 		if (ss.is_valid()) {
 			String path = ss->get_path();
-			Ref<UserInterface> pack_data = ResourceLoader::load(path);
+			Ref<Component> pack_data = ResourceLoader::load(path);
 			if (pack_data.is_valid()) {
-				p = pack_data->instantiate(UserInterface::GEN_EDIT_STATE_INSTANCE);
+				p = pack_data->instantiate(Component::GEN_EDIT_STATE_INSTANCE);
 				if (!p) {
 					continue;
 				}
@@ -590,7 +590,7 @@ void SceneTreeDock::_tool_selected(int p_tool, bool p_confirm_override) {
 				break;
 			}
 
-			quick_open->popup_dialog("UserInterface", true);
+			quick_open->popup_dialog("Component", true);
 			quick_open->set_title(TTR("Instantiate Child Scene"));
 			if (!p_confirm_override) {
 				emit_signal(SNAME("add_node_used"));
@@ -1136,7 +1136,7 @@ void SceneTreeDock::_tool_selected(int p_tool, bool p_confirm_override) {
 			new_scene_from_dialog->set_file_mode(EditorFileDialog::FILE_MODE_SAVE_FILE);
 
 			List<String> extensions;
-			Ref<UserInterface> sd = memnew(UserInterface);
+			Ref<Component> sd = memnew(Component);
 			ResourceSaver::get_recognized_extensions(sd, &extensions);
 			new_scene_from_dialog->clear_filters();
 			for (const String &extension : extensions) {
@@ -3198,7 +3198,7 @@ void SceneTreeDock::_new_scene_from(const String &p_file) {
 		// Root node cannot ever be unique name in its own Scene!
 		copy->set_unique_name_in_owner(false);
 
-		Ref<UserInterface> sdata = memnew(UserInterface);
+		Ref<Component> sdata = memnew(Component);
 		Error err = sdata->pack(copy);
 		memdelete(copy);
 
@@ -3320,7 +3320,7 @@ void SceneTreeDock::_files_dropped(const Vector<String> &p_files, NodePath p_to,
 
 	const String &res_path = p_files[0];
 	const StringName res_type = EditorFileSystem::get_singleton()->get_file_type(res_path);
-	const bool is_dropping_scene = ClassDB::is_parent_class(res_type, "UserInterface");
+	const bool is_dropping_scene = ClassDB::is_parent_class(res_type, "Component");
 
 	// Dropping as property.
 	if (p_type == 0 && p_files.size() == 1 && !is_dropping_scene) {

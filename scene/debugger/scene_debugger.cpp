@@ -37,7 +37,7 @@
 #include "core/templates/local_vector.h"
 #include "scene/main/scene_tree.h"
 #include "scene/main/window.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 
 SceneDebugger *SceneDebugger::singleton = nullptr;
 
@@ -217,7 +217,7 @@ void SceneDebugger::_save_node(ObjectID id, const String &p_path) {
 	// Root node cannot ever be unique name in its own Scene!
 	copy->set_unique_name_in_owner(false);
 
-	Ref<UserInterface> ps = memnew(UserInterface);
+	Ref<Component> ps = memnew(Component);
 	ps->pack(copy);
 	ResourceSaver::save(ps, p_path);
 
@@ -804,7 +804,7 @@ void LiveEditor::_instance_node_func(const NodePath &p_parent, const String &p_p
 		return;
 	}
 
-	Ref<UserInterface> ps = ResourceLoader::load(p_path);
+	Ref<Component> ps = ResourceLoader::load(p_path);
 
 	if (!ps.is_valid()) {
 		return;

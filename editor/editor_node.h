@@ -161,7 +161,7 @@ private:
 	friend class SurfaceUpgradeTool;
 
 	enum MenuOptions {
-		FILE_NEW_SCENE,
+		FILE_NEW_COMPONENT,
 		FILE_NEW_INHERITED_SCENE,
 		FILE_OPEN_SCENE,
 		FILE_SAVE_SCENE,

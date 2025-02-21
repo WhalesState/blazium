@@ -190,10 +190,10 @@ Error ResourceLoaderText::_parse_ext_resource(VariantParser::Stream *p_stream, R
 	return err;
 }
 
-Ref<UserInterface> ResourceLoaderText::_parse_node_tag(VariantParser::ResourceParser &parser) {
-	Ref<UserInterface> packed_scene = ResourceLoader::get_resource_ref_override(local_path);
-	if (packed_scene.is_null()) {
-		packed_scene.instantiate();
+Ref<Component> ResourceLoaderText::_parse_node_tag(VariantParser::ResourceParser &parser) {
+	Ref<Component> component = ResourceLoader::get_resource_ref_override(local_path);
+	if (component.is_null()) {
+		component.instantiate();
 	}
 
 	while (true) {
@@ -207,17 +207,17 @@ Ref<UserInterface> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePa
 			//int base_scene=-1;
 
 			if (next_tag.fields.has("name")) {
-				name = packed_scene->get_state()->add_name(next_tag.fields["name"]);
+				name = component->get_state()->add_name(next_tag.fields["name"]);
 			}
 
 			if (next_tag.fields.has("parent")) {
 				NodePath np = next_tag.fields["parent"];
 				np.prepend_period(); //compatible to how it manages paths internally
-				parent = packed_scene->get_state()->add_node_path(np);
+				parent = component->get_state()->add_node_path(np);
 			}
 
 			if (next_tag.fields.has("type")) {
-				type = packed_scene->get_state()->add_name(next_tag.fields["type"]);
+				type = component->get_state()->add_name(next_tag.fields["type"]);
 			} else {
 				type = SceneState::TYPE_INSTANTIATED; //no type? assume this was instantiated
 			}
@@ -232,10 +232,10 @@ Ref<UserInterface> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePa
 			}
 
 			if (next_tag.fields.has("instance")) {
-				instance = packed_scene->get_state()->add_value(next_tag.fields["instance"]);
+				instance = component->get_state()->add_value(next_tag.fields["instance"]);
 
-				if (packed_scene->get_state()->get_node_count() == 0 && parent == -1) {
-					packed_scene->get_state()->set_base_scene(instance);
+				if (component->get_state()->get_node_count() == 0 && parent == -1) {
+					component->get_state()->set_base_scene(instance);
 					instance = -1;
 				}
 			}
@@ -243,20 +243,20 @@ Ref<UserInterface> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePa
 			if (next_tag.fields.has("instance_placeholder")) {
 				String path = next_tag.fields["instance_placeholder"];
 
-				int path_v = packed_scene->get_state()->add_value(path);
+				int path_v = component->get_state()->add_value(path);
 
-				if (packed_scene->get_state()->get_node_count() == 0) {
+				if (component->get_state()->get_node_count() == 0) {
 					error = ERR_FILE_CORRUPT;
 					error_text = "Instance Placeholder can't be used for inheritance.";
 					_printerr();
-					return Ref<UserInterface>();
+					return Ref<Component>();
 				}
 
 				instance = path_v | SceneState::FLAG_INSTANCE_IS_PLACEHOLDER;
 			}
 
 			if (next_tag.fields.has("owner")) {
-				owner = packed_scene->get_state()->add_node_path(next_tag.fields["owner"]);
+				owner = component->get_state()->add_node_path(next_tag.fields["owner"]);
 			} else {
 				if (parent != -1 && !(type == SceneState::TYPE_INSTANTIATED && instance == -1)) {
 					owner = 0; //if no owner, owner is root
@@ -267,12 +267,12 @@ Ref<UserInterface> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePa
 				index = next_tag.fields["index"];
 			}
 
-			int node_id = packed_scene->get_state()->add_node(parent, owner, type, name, instance, index);
+			int node_id = component->get_state()->add_node(parent, owner, type, name, instance, index);
 
 			if (next_tag.fields.has("groups")) {
 				Array groups = next_tag.fields["groups"];
 				for (const Variant &group : groups) {
-					packed_scene->get_state()->add_node_group(node_id, packed_scene->get_state()->add_name(group));
+					component->get_state()->add_node_group(node_id, component->get_state()->add_name(group));
 				}
 			}
 
@@ -287,18 +287,18 @@ Ref<UserInterface> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePa
 						// Resource loading error, just skip it.
 					} else if (error != ERR_FILE_EOF) {
 						ERR_PRINT(vformat("Parse Error: %s. [Resource file %s:%d]", error_names[error], res_path, lines));
-						return Ref<UserInterface>();
+						return Ref<Component>();
 					} else {
 						error = OK;
-						return packed_scene;
+						return component;
 					}
 				}
 
 				if (!assign.is_empty()) {
 					StringName assign_name = assign;
-					int nameidx = packed_scene->get_state()->add_name(assign_name);
-					int valueidx = packed_scene->get_state()->add_value(value);
-					packed_scene->get_state()->add_node_property(node_id, nameidx, valueidx, path_properties.has(assign_name));
+					int nameidx = component->get_state()->add_name(assign_name);
+					int valueidx = component->get_state()->add_value(value);
+					component->get_state()->add_node_property(node_id, nameidx, valueidx, path_properties.has(assign_name));
 					//it's assignment
 				} else if (!next_tag.name.is_empty()) {
 					break;
@@ -308,25 +308,25 @@ Ref<UserInterface> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePa
 			if (!next_tag.fields.has("from")) {
 				error = ERR_FILE_CORRUPT;
 				error_text = "missing 'from' field from connection tag";
-				return Ref<UserInterface>();
+				return Ref<Component>();
 			}
 
 			if (!next_tag.fields.has("to")) {
 				error = ERR_FILE_CORRUPT;
 				error_text = "missing 'to' field from connection tag";
-				return Ref<UserInterface>();
+				return Ref<Component>();
 			}
 
 			if (!next_tag.fields.has("signal")) {
 				error = ERR_FILE_CORRUPT;
 				error_text = "missing 'signal' field from connection tag";
-				return Ref<UserInterface>();
+				return Ref<Component>();
 			}
 
 			if (!next_tag.fields.has("method")) {
 				error = ERR_FILE_CORRUPT;
 				error_text = "missing 'method' field from connection tag";
-				return Ref<UserInterface>();
+				return Ref<Component>();
 			}
 
 			NodePath from = next_tag.fields["from"];
@@ -351,14 +351,14 @@ Ref<UserInterface> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePa
 
 			Vector<int> bind_ints;
 			for (const Variant &bind : binds) {
-				bind_ints.push_back(packed_scene->get_state()->add_value(bind));
+				bind_ints.push_back(component->get_state()->add_value(bind));
 			}
 
-			packed_scene->get_state()->add_connection(
-					packed_scene->get_state()->add_node_path(from.simplified()),
-					packed_scene->get_state()->add_node_path(to.simplified()),
-					packed_scene->get_state()->add_name(signal),
-					packed_scene->get_state()->add_name(method),
+			component->get_state()->add_connection(
+					component->get_state()->add_node_path(from.simplified()),
+					component->get_state()->add_node_path(to.simplified()),
+					component->get_state()->add_name(signal),
+					component->get_state()->add_name(method),
 					flags,
 					unbinds,
 					bind_ints);
@@ -368,10 +368,10 @@ Ref<UserInterface> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePa
 			if (error) {
 				if (error != ERR_FILE_EOF) {
 					_printerr();
-					return Ref<UserInterface>();
+					return Ref<Component>();
 				} else {
 					error = OK;
-					return packed_scene;
+					return component;
 				}
 			}
 		} else if (next_tag.name == "editable") {
@@ -379,28 +379,28 @@ Ref<UserInterface> ResourceLoaderText::_parse_node_tag(VariantParser::ResourcePa
 				error = ERR_FILE_CORRUPT;
 				error_text = "missing 'path' field from editable tag";
 				_printerr();
-				return Ref<UserInterface>();
+				return Ref<Component>();
 			}
 
 			NodePath path = next_tag.fields["path"];
 
-			packed_scene->get_state()->add_editable_instance(path.simplified());
+			component->get_state()->add_editable_instance(path.simplified());
 
 			error = VariantParser::parse_tag(&stream, lines, error_text, next_tag, &parser);
 
 			if (error) {
 				if (error != ERR_FILE_EOF) {
 					_printerr();
-					return Ref<UserInterface>();
+					return Ref<Component>();
 				} else {
 					error = OK;
-					return packed_scene;
+					return component;
 				}
 			}
 		} else {
 			error = ERR_FILE_CORRUPT;
 			_printerr();
-			return Ref<UserInterface>();
+			return Ref<Component>();
 		}
 	}
 }
@@ -799,22 +799,22 @@ Error ResourceLoaderText::load() {
 			return error;
 		}
 
-		Ref<UserInterface> packed_scene = _parse_node_tag(rp);
+		Ref<Component> component = _parse_node_tag(rp);
 
-		if (!packed_scene.is_valid()) {
+		if (!component.is_valid()) {
 			return error;
 		}
 
 		error = OK;
 		//get it here
-		resource = packed_scene;
+		resource = component;
 		if (cache_mode != ResourceFormatLoader::CACHE_MODE_IGNORE) {
 			if (!ResourceCache::has(res_path)) {
-				packed_scene->set_path(res_path);
+				component->set_path(res_path);
 			}
 		} else {
-			packed_scene->get_state()->set_path(res_path);
-			packed_scene->set_path_cache(res_path);
+			component->get_state()->set_path(res_path);
+			component->set_path_cache(res_path);
 		}
 
 		resource_current++;
@@ -1311,7 +1311,7 @@ String ResourceLoaderText::recognize(Ref<FileAccess> p_f) {
 	}
 
 	if (tag.name == "gd_scene") {
-		return "UserInterface";
+		return "Component";
 	}
 
 	if (tag.name != "gd_resource") {
@@ -1406,12 +1406,12 @@ void ResourceFormatLoaderText::get_recognized_extensions_for_type(const String &
 		return;
 	}
 
-	if (ClassDB::is_parent_class("UserInterface", p_type)) {
+	if (ClassDB::is_parent_class("Component", p_type)) {
 		p_extensions->push_back("gui");
 	}
 
-	// Don't allow .tres for UserInterfaces.
-	if (p_type != "UserInterface") {
+	// Don't allow .tres for Components.
+	if (p_type != "Component") {
 		p_extensions->push_back("tres");
 	}
 }
@@ -1428,7 +1428,7 @@ bool ResourceFormatLoaderText::handles_type(const String &p_type) const {
 void ResourceFormatLoaderText::get_classes_used(const String &p_path, HashSet<StringName> *r_classes) {
 	String ext = p_path.get_extension().to_lower();
 	if (ext == "gui") {
-		r_classes->insert("UserInterface");
+		r_classes->insert("Component");
 	}
 
 	// ...for anything else must test...
@@ -1448,7 +1448,7 @@ void ResourceFormatLoaderText::get_classes_used(const String &p_path, HashSet<St
 String ResourceFormatLoaderText::get_resource_type(const String &p_path) const {
 	String ext = p_path.get_extension().to_lower();
 	if (ext == "gui") {
-		return "UserInterface";
+		return "Component";
 	} else if (ext != "tres") {
 		return String();
 	}
@@ -1682,7 +1682,7 @@ static String _resource_get_class(Ref<Resource> p_resource) {
 
 Error ResourceFormatSaverTextInstance::save(const String &p_path, const Ref<Resource> &p_resource, uint32_t p_flags) {
 	if (p_path.ends_with(".gui")) {
-		packed_scene = p_resource;
+		component = p_resource;
 	}
 
 	Error err;
@@ -1704,14 +1704,14 @@ Error ResourceFormatSaverTextInstance::save(const String &p_path, const Ref<Reso
 	use_compat = true; // _find_resources() changes this.
 	_find_resources(p_resource, true);
 
-	if (packed_scene.is_valid()) {
+	if (component.is_valid()) {
 		// Add instances to external resources if saving a packed scene.
-		for (int i = 0; i < packed_scene->get_state()->get_node_count(); i++) {
-			if (packed_scene->get_state()->is_node_instance_placeholder(i)) {
+		for (int i = 0; i < component->get_state()->get_node_count(); i++) {
+			if (component->get_state()->is_node_instance_placeholder(i)) {
 				continue;
 			}
 
-			Ref<UserInterface> instance = packed_scene->get_state()->get_node_instance(i);
+			Ref<Component> instance = component->get_state()->get_node_instance(i);
 			if (instance.is_valid() && !external_resources.has(instance)) {
 				int index = external_resources.size() + 1;
 				external_resources[instance] = itos(index) + "_" + Resource::generate_scene_unique_id(); // Keep the order for improved thread loading performance.
@@ -1720,8 +1720,8 @@ Error ResourceFormatSaverTextInstance::save(const String &p_path, const Ref<Reso
 	}
 
 	{
-		String title = packed_scene.is_valid() ? "[gd_scene " : "[gd_resource ";
-		if (packed_scene.is_null()) {
+		String title = component.is_valid() ? "[gd_scene " : "[gd_resource ";
+		if (component.is_null()) {
 			title += "type=\"" + _resource_get_class(p_resource) + "\" ";
 			Ref<Script> script = p_resource->get_script();
 			if (script.is_valid() && script->get_global_name()) {
@@ -1840,7 +1840,7 @@ Error ResourceFormatSaverTextInstance::save(const String &p_path, const Ref<Reso
 		ERR_CONTINUE(!resource_set.has(res));
 		bool main = (E->next() == nullptr);
 
-		if (main && packed_scene.is_valid()) {
+		if (main && component.is_valid()) {
 			break; // Save as a scene.
 		}
 
@@ -1930,16 +1930,16 @@ Error ResourceFormatSaverTextInstance::save(const String &p_path, const Ref<Reso
 		}
 	}
 
-	if (packed_scene.is_valid()) {
+	if (component.is_valid()) {
 		// If this is a scene, save nodes and connections!
-		Ref<SceneState> state = packed_scene->get_state();
+		Ref<SceneState> state = component->get_state();
 		for (int i = 0; i < state->get_node_count(); i++) {
 			StringName type = state->get_node_type(i);
 			StringName name = state->get_node_name(i);
 			int index = state->get_node_index(i);
 			NodePath path = state->get_node_path(i, true);
 			NodePath owner = state->get_node_owner_path(i);
-			Ref<UserInterface> instance = state->get_node_instance(i);
+			Ref<Component> instance = state->get_node_instance(i);
 			String instance_placeholder = state->get_node_instance_placeholder(i);
 			Vector<StringName> groups = state->get_node_groups(i);
 			Vector<String> deferred_node_paths = state->get_node_deferred_nodepath_properties(i);
@@ -2091,7 +2091,7 @@ Error ResourceLoaderText::set_uid(Ref<FileAccess> p_f, ResourceUID::ID p_uid) {
 }
 
 Error ResourceFormatSaverText::save(const Ref<Resource> &p_resource, const String &p_path, uint32_t p_flags) {
-	if (p_path.ends_with(".gui") && !Ref<UserInterface>(p_resource).is_valid()) {
+	if (p_path.ends_with(".gui") && !Ref<Component>(p_resource).is_valid()) {
 		return ERR_FILE_UNRECOGNIZED;
 	}
 
@@ -2133,7 +2133,7 @@ bool ResourceFormatSaverText::recognize(const Ref<Resource> &p_resource) const {
 }
 
 void ResourceFormatSaverText::get_recognized_extensions(const Ref<Resource> &p_resource, List<String> *p_extensions) const {
-	if (Ref<UserInterface>(p_resource).is_valid()) {
+	if (Ref<Component>(p_resource).is_valid()) {
 		p_extensions->push_back("gui"); // Text scene.
 	} else {
 		p_extensions->push_back("tres"); // Text resource.

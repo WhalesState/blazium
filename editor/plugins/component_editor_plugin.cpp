@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  packed_scene_editor_plugin.h                                          */
+/*  component_editor_plugin.cpp                                        */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,41 +28,53 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef PACKED_SCENE_EDITOR_PLUGIN_H
-#define PACKED_SCENE_EDITOR_PLUGIN_H
+#include "component_editor_plugin.h"
 
-#include "editor/editor_inspector.h"
-#include "editor/plugins/editor_plugin.h"
-#include "scene/gui/box_container.h"
+#include "editor/editor_node.h"
+#include "scene/gui/button.h"
+#include "scene/resources/component.h"
 
-class UserInterfaceEditor : public VBoxContainer {
-	GDCLASS(UserInterfaceEditor, VBoxContainer);
+void ComponentEditor::_on_open_scene_pressed() {
+	// Using deferred call because changing scene updates the Inspector and thus destroys this plugin.
+	callable_mp(EditorNode::get_singleton(), &EditorNode::open_request).call_deferred(component->get_path());
+}
 
-	Ref<UserInterface> packed_scene;
-	Button *open_scene_button;
+void ComponentEditor::_notification(int p_what) {
+	switch (p_what) {
+		case NOTIFICATION_ENTER_TREE:
+		case NOTIFICATION_THEME_CHANGED: {
+			open_scene_button->set_icon(get_editor_theme_icon(SNAME("Component")));
+		} break;
+	}
+}
 
-	void _on_open_scene_pressed();
+ComponentEditor::ComponentEditor(Ref<Component> &p_component) {
+	component = p_component;
 
-protected:
-	void _notification(int p_what);
+	open_scene_button = EditorInspector::create_inspector_action_button(TTR("Open Scene"));
+	open_scene_button->connect(SceneStringName(pressed), callable_mp(this, &ComponentEditor::_on_open_scene_pressed));
+	open_scene_button->set_disabled(!component->get_path().get_file().is_valid_filename());
+	add_child(open_scene_button);
 
-public:
-	UserInterfaceEditor(Ref<UserInterface> &p_packed_scene);
-};
+	add_child(memnew(Control)); // Add padding before the regular properties.
+}
 
-class EditorInspectorPluginUserInterface : public EditorInspectorPlugin {
-	GDCLASS(EditorInspectorPluginUserInterface, EditorInspectorPlugin);
+///////////////////////
 
-public:
-	virtual bool can_handle(Object *p_object) override;
-	virtual void parse_begin(Object *p_object) override;
-};
+bool EditorInspectorPluginComponent::can_handle(Object *p_object) {
+	return Object::cast_to<Component>(p_object) != nullptr;
+}
 
-class UserInterfaceEditorPlugin : public EditorPlugin {
-	GDCLASS(UserInterfaceEditorPlugin, EditorPlugin);
+void EditorInspectorPluginComponent::parse_begin(Object *p_object) {
+	Ref<Component> component(p_object);
+	ComponentEditor *editor = memnew(ComponentEditor(component));
+	add_custom_control(editor);
+}
 
-public:
-	UserInterfaceEditorPlugin();
-};
+///////////////////////
 
-#endif // PACKED_SCENE_EDITOR_PLUGIN_H
+ComponentEditorPlugin::ComponentEditorPlugin() {
+	Ref<EditorInspectorPluginComponent> plugin;
+	plugin.instantiate();
+	add_inspector_plugin(plugin);
+}

@@ -33,7 +33,7 @@
 #include "core/config/engine.h"
 #include "core/object/script_language.h"
 #include "core/templates/local_vector.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 
 #ifdef TOOLS_ENABLED
 #include "editor/editor_node.h"

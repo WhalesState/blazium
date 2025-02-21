@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  packed_scene.h                                                        */
+/*  component.h                                                        */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef PACKED_SCENE_H
-#define PACKED_SCENE_H
+#ifndef component_H
+#define component_H
 
 #include "core/io/resource.h"
 #include "scene/main/node.h"
@@ -163,7 +163,7 @@ public:
 
 	Ref<SceneState> get_base_scene_state() const;
 
-	void update_instance_resource(String p_path, Ref<UserInterface> p_packed_scene);
+	void update_instance_resource(String p_path, Ref<Component> p_component);
 
 	//unbuild API
 
@@ -172,7 +172,7 @@ public:
 	StringName get_node_name(int p_idx) const;
 	NodePath get_node_path(int p_idx, bool p_for_parent = false) const;
 	NodePath get_node_owner_path(int p_idx) const;
-	Ref<UserInterface> get_node_instance(int p_idx) const;
+	Ref<Component> get_node_instance(int p_idx) const;
 	String get_node_instance_placeholder(int p_idx) const;
 	bool is_node_instance_placeholder(int p_idx) const;
 	Vector<StringName> get_node_groups(int p_idx) const;
@@ -227,8 +227,8 @@ public:
 
 VARIANT_ENUM_CAST(SceneState::GenEditState)
 
-class UserInterface : public Resource {
-	GDCLASS(UserInterface, Resource);
+class Component : public Resource {
+	GDCLASS(Component, Resource);
 	RES_BASE_EXTENSION("cui");
 
 	Ref<SceneState> state;
@@ -274,9 +274,9 @@ public:
 #endif
 	Ref<SceneState> get_state() const;
 
-	UserInterface();
+	Component();
 };
 
-VARIANT_ENUM_CAST(UserInterface::GenEditState)
+VARIANT_ENUM_CAST(Component::GenEditState)
 
-#endif // PACKED_SCENE_H
+#endif // component_H

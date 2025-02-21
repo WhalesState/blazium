@@ -2179,7 +2179,7 @@ Error ResourceFormatSaverBinaryInstance::save(const String &p_path, const Ref<Re
 #ifdef REAL_T_IS_DOUBLE
 		format_flags |= FORMAT_FLAG_REAL_T_IS_DOUBLE;
 #endif
-		if (!p_resource->is_class("UserInterface")) {
+		if (!p_resource->is_class("Component")) {
 			Ref<Script> s = p_resource->get_script();
 			if (s.is_valid()) {
 				script_class = s->get_global_name();

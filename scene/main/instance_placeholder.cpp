@@ -31,7 +31,7 @@
 #include "instance_placeholder.h"
 
 #include "core/io/resource_loader.h"
-#include "scene/resources/packed_scene.h"
+#include "scene/resources/component.h"
 
 bool InstancePlaceholder::_set(const StringName &p_name, const Variant &p_value) {
 	PropSet ps;
@@ -70,7 +70,7 @@ String InstancePlaceholder::get_instance_path() const {
 	return path;
 }
 
-Node *InstancePlaceholder::create_instance(bool p_replace, const Ref<UserInterface> &p_custom_scene) {
+Node *InstancePlaceholder::create_instance(bool p_replace, const Ref<Component> &p_custom_scene) {
 	ERR_FAIL_COND_V(!is_inside_tree(), nullptr);
 
 	Node *base = get_parent();
@@ -78,11 +78,11 @@ Node *InstancePlaceholder::create_instance(bool p_replace, const Ref<UserInterfa
 		return nullptr;
 	}
 
-	Ref<UserInterface> ps;
+	Ref<Component> ps;
 	if (p_custom_scene.is_valid()) {
 		ps = p_custom_scene;
 	} else {
-		ps = ResourceLoader::load(path, "UserInterface");
+		ps = ResourceLoader::load(path, "Component");
 	}
 
 	if (!ps.is_valid()) {

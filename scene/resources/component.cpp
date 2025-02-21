@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  packed_scene.cpp                                                      */
+/*  component.cpp                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,7 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "packed_scene.h"
+#include "component.h"
 
 #include "core/config/engine.h"
 #include "core/config/project_settings.h"
@@ -41,7 +41,7 @@
 #include "scene/main/missing_node.h"
 #include "scene/property_utils.h"
 
-#define PACKED_SCENE_VERSION 3
+#define component_VERSION 3
 
 #ifdef TOOLS_ENABLED
 SceneState::InstantiationWarningNotify SceneState::instantiation_warn_notify = nullptr;
@@ -136,7 +136,7 @@ Node *SceneState::instantiate(GenEditState p_edit_state) const {
 	}
 
 	int nc = nodes.size();
-	ERR_FAIL_COND_V_MSG(nc == 0, nullptr, vformat("Failed to instantiate scene state of \"%s\", node count is 0. Make sure the UserInterface resource is valid.", path));
+	ERR_FAIL_COND_V_MSG(nc == 0, nullptr, vformat("Failed to instantiate scene state of \"%s\", node count is 0. Make sure the Component resource is valid.", path));
 
 	const StringName *snames = nullptr;
 	int sname_count = names.size();
@@ -191,9 +191,9 @@ Node *SceneState::instantiate(GenEditState p_edit_state) const {
 
 		if (i == 0 && base_scene_idx >= 0) {
 			// Scene inheritance on root node.
-			Ref<UserInterface> sdata = props[base_scene_idx];
+			Ref<Component> sdata = props[base_scene_idx];
 			ERR_FAIL_COND_V(!sdata.is_valid(), nullptr);
-			node = sdata->instantiate(p_edit_state == GEN_EDIT_STATE_DISABLED ? UserInterface::GEN_EDIT_STATE_DISABLED : UserInterface::GEN_EDIT_STATE_INSTANCE); //only main gets main edit state
+			node = sdata->instantiate(p_edit_state == GEN_EDIT_STATE_DISABLED ? Component::GEN_EDIT_STATE_DISABLED : Component::GEN_EDIT_STATE_INSTANCE); //only main gets main edit state
 			ERR_FAIL_NULL_V(node, nullptr);
 			if (p_edit_state != GEN_EDIT_STATE_DISABLED) {
 				node->set_scene_inherited_state(sdata->get_state());
@@ -204,9 +204,9 @@ Node *SceneState::instantiate(GenEditState p_edit_state) const {
 			if (n.instance & FLAG_INSTANCE_IS_PLACEHOLDER) {
 				const String scene_path = props[n.instance & FLAG_MASK];
 				if (disable_placeholders) {
-					Ref<UserInterface> sdata = ResourceLoader::load(scene_path, "UserInterface");
+					Ref<Component> sdata = ResourceLoader::load(scene_path, "Component");
 					if (sdata.is_valid()) {
-						node = sdata->instantiate(p_edit_state == GEN_EDIT_STATE_DISABLED ? UserInterface::GEN_EDIT_STATE_DISABLED : UserInterface::GEN_EDIT_STATE_INSTANCE);
+						node = sdata->instantiate(p_edit_state == GEN_EDIT_STATE_DISABLED ? Component::GEN_EDIT_STATE_DISABLED : Component::GEN_EDIT_STATE_INSTANCE);
 						ERR_FAIL_NULL_V(node, nullptr);
 					} else if (ResourceLoader::is_creating_missing_resources_if_class_unavailable_enabled()) {
 						missing_node = memnew(MissingNode);
@@ -224,9 +224,9 @@ Node *SceneState::instantiate(GenEditState p_edit_state) const {
 				node->set_scene_instance_load_placeholder(true);
 			} else {
 				Ref<Resource> res = props[n.instance & FLAG_MASK];
-				Ref<UserInterface> sdata = res;
+				Ref<Component> sdata = res;
 				if (sdata.is_valid()) {
-					node = sdata->instantiate(p_edit_state == GEN_EDIT_STATE_DISABLED ? UserInterface::GEN_EDIT_STATE_DISABLED : UserInterface::GEN_EDIT_STATE_INSTANCE);
+					node = sdata->instantiate(p_edit_state == GEN_EDIT_STATE_DISABLED ? Component::GEN_EDIT_STATE_DISABLED : Component::GEN_EDIT_STATE_INSTANCE);
 					ERR_FAIL_NULL_V_MSG(node, nullptr, vformat("Failed to load scene dependency: \"%s\". Make sure the required scene is valid.", sdata->get_path()));
 				} else if (ResourceLoader::is_creating_missing_resources_if_class_unavailable_enabled()) {
 					missing_node = memnew(MissingNode);
@@ -720,7 +720,7 @@ Error SceneState::_parse_node(Node *p_owner, Node *p_node, int p_parent_idx, Has
 			nd.instance |= FLAG_INSTANCE_IS_PLACEHOLDER;
 		} else {
 			//must instance ourselves
-			Ref<UserInterface> instance = ResourceLoader::load(p_node->get_scene_file_path());
+			Ref<Component> instance = ResourceLoader::load(p_node->get_scene_file_path());
 			if (!instance.is_valid()) {
 				return ERR_CANT_OPEN;
 			}
@@ -1152,7 +1152,7 @@ Error SceneState::pack(Node *p_scene) {
 	// If using scene inheritance, pack the scene it inherits from.
 	if (scene->get_scene_inherited_state().is_valid()) {
 		String scene_path = scene->get_scene_inherited_state()->get_path();
-		Ref<UserInterface> instance = ResourceLoader::load(scene_path);
+		Ref<Component> instance = ResourceLoader::load(scene_path);
 		if (instance.is_valid()) {
 			base_scene_idx = _vm_get_variant(instance, variant_map);
 		}
@@ -1251,7 +1251,7 @@ Error SceneState::copy_from(const Ref<SceneState> &p_scene_state) {
 
 Ref<SceneState> SceneState::get_base_scene_state() const {
 	if (base_scene_idx >= 0) {
-		Ref<UserInterface> ps = variants[base_scene_idx];
+		Ref<Component> ps = variants[base_scene_idx];
 		if (ps.is_valid()) {
 			return ps->get_state();
 		}
@@ -1260,18 +1260,18 @@ Ref<SceneState> SceneState::get_base_scene_state() const {
 	return Ref<SceneState>();
 }
 
-void SceneState::update_instance_resource(String p_path, Ref<UserInterface> p_packed_scene) {
-	ERR_FAIL_COND(p_packed_scene.is_null());
+void SceneState::update_instance_resource(String p_path, Ref<Component> p_component) {
+	ERR_FAIL_COND(p_component.is_null());
 
 	for (const NodeData &nd : nodes) {
 		if (nd.instance >= 0) {
 			if (!(nd.instance & FLAG_INSTANCE_IS_PLACEHOLDER)) {
 				int instance_id = nd.instance & FLAG_MASK;
-				Ref<UserInterface> original_packed_scene = variants[instance_id];
-				if (original_packed_scene.is_valid()) {
-					if (original_packed_scene->get_path() == p_path) {
+				Ref<Component> original_component = variants[instance_id];
+				if (original_component.is_valid()) {
+					if (original_component->get_path() == p_path) {
 						variants.remove_at(instance_id);
-						variants.insert(instance_id, p_packed_scene);
+						variants.insert(instance_id, p_component);
 					}
 				}
 			}
@@ -1423,7 +1423,7 @@ void SceneState::set_bundled_scene(const Dictionary &p_dictionary) {
 		version = p_dictionary["version"];
 	}
 
-	ERR_FAIL_COND_MSG(version > PACKED_SCENE_VERSION, "Save format version too new.");
+	ERR_FAIL_COND_MSG(version > component_VERSION, "Save format version too new.");
 
 	const int node_count = p_dictionary["node_count"];
 	const Vector<int> snodes = p_dictionary["nodes"];
@@ -1609,7 +1609,7 @@ Dictionary SceneState::get_bundled_scene() const {
 		d["base_scene"] = base_scene_idx;
 	}
 
-	d["version"] = PACKED_SCENE_VERSION;
+	d["version"] = component_VERSION;
 
 	return d;
 }
@@ -1642,12 +1642,12 @@ bool SceneState::is_node_instance_placeholder(int p_idx) const {
 	return nodes[p_idx].instance >= 0 && (nodes[p_idx].instance & FLAG_INSTANCE_IS_PLACEHOLDER);
 }
 
-Ref<UserInterface> SceneState::get_node_instance(int p_idx) const {
-	ERR_FAIL_INDEX_V(p_idx, nodes.size(), Ref<UserInterface>());
+Ref<Component> SceneState::get_node_instance(int p_idx) const {
+	ERR_FAIL_INDEX_V(p_idx, nodes.size(), Ref<Component>());
 
 	if (nodes[p_idx].instance >= 0) {
 		if (nodes[p_idx].instance & FLAG_INSTANCE_IS_PLACEHOLDER) {
-			return Ref<UserInterface>();
+			return Ref<Component>();
 		} else {
 			return variants[nodes[p_idx].instance & FLAG_MASK];
 		}
@@ -1657,7 +1657,7 @@ Ref<UserInterface> SceneState::get_node_instance(int p_idx) const {
 		}
 	}
 
-	return Ref<UserInterface>();
+	return Ref<Component>();
 }
 
 String SceneState::get_node_instance_placeholder(int p_idx) const {
@@ -2036,29 +2036,29 @@ SceneState::SceneState() {
 
 ////////////////
 
-void UserInterface::_set_bundled_scene(const Dictionary &p_scene) {
+void Component::_set_bundled_scene(const Dictionary &p_scene) {
 	state->set_bundled_scene(p_scene);
 }
 
-Dictionary UserInterface::_get_bundled_scene() const {
+Dictionary Component::_get_bundled_scene() const {
 	return state->get_bundled_scene();
 }
 
-Error UserInterface::pack(Node *p_scene) {
+Error Component::pack(Node *p_scene) {
 	return state->pack(p_scene);
 }
 
-void UserInterface::clear() {
+void Component::clear() {
 	state->clear();
 }
 
-void UserInterface::reload_from_file() {
+void Component::reload_from_file() {
 	String path = get_path();
 	if (!path.is_resource_file()) {
 		return;
 	}
 
-	Ref<UserInterface> s = ResourceLoader::load(ResourceLoader::path_remap(path), get_class(), ResourceFormatLoader::CACHE_MODE_IGNORE);
+	Ref<Component> s = ResourceLoader::load(ResourceLoader::path_remap(path), get_class(), ResourceFormatLoader::CACHE_MODE_IGNORE);
 	if (!s.is_valid()) {
 		return;
 	}
@@ -2074,11 +2074,11 @@ void UserInterface::reload_from_file() {
 	state->copy_from(loaded_state);
 }
 
-bool UserInterface::can_instantiate() const {
+bool Component::can_instantiate() const {
 	return state->can_instantiate();
 }
 
-Node *UserInterface::instantiate(GenEditState p_edit_state) const {
+Node *Component::instantiate(GenEditState p_edit_state) const {
 #ifndef TOOLS_ENABLED
 	ERR_FAIL_COND_V_MSG(p_edit_state != GEN_EDIT_STATE_DISABLED, nullptr, "Edit state is only for editors, does not work without tools compiled.");
 #endif
@@ -2101,7 +2101,7 @@ Node *UserInterface::instantiate(GenEditState p_edit_state) const {
 	return s;
 }
 
-void UserInterface::replace_state(Ref<SceneState> p_by) {
+void Component::replace_state(Ref<SceneState> p_by) {
 	state = p_by;
 	state->set_path(get_path());
 #ifdef TOOLS_ENABLED
@@ -2109,7 +2109,7 @@ void UserInterface::replace_state(Ref<SceneState> p_by) {
 #endif
 }
 
-void UserInterface::recreate_state() {
+void Component::recreate_state() {
 	state = Ref<SceneState>(memnew(SceneState));
 	state->set_path(get_path());
 #ifdef TOOLS_ENABLED
@@ -2118,11 +2118,11 @@ void UserInterface::recreate_state() {
 }
 
 #ifdef TOOLS_ENABLED
-HashSet<StringName> UserInterface::get_scene_groups(const String &p_path) {
+HashSet<StringName> Component::get_scene_groups(const String &p_path) {
 	{
-		Ref<UserInterface> packed_scene = ResourceCache::get_ref(p_path);
-		if (packed_scene.is_valid()) {
-			return packed_scene->get_state()->get_all_groups();
+		Ref<Component> component = ResourceCache::get_ref(p_path);
+		if (component.is_valid()) {
+			return component->get_state()->get_all_groups();
 		}
 	}
 
@@ -2160,37 +2160,37 @@ HashSet<StringName> UserInterface::get_scene_groups(const String &p_path) {
 		}
 		return ret;
 	} else {
-		Ref<UserInterface> packed_scene = ResourceLoader::load(p_path);
-		ERR_FAIL_COND_V(packed_scene.is_null(), HashSet<StringName>());
-		return packed_scene->get_state()->get_all_groups();
+		Ref<Component> component = ResourceLoader::load(p_path);
+		ERR_FAIL_COND_V(component.is_null(), HashSet<StringName>());
+		return component->get_state()->get_all_groups();
 	}
 }
 #endif
 
-Ref<SceneState> UserInterface::get_state() const {
+Ref<SceneState> Component::get_state() const {
 	return state;
 }
 
-void UserInterface::set_path(const String &p_path, bool p_take_over) {
+void Component::set_path(const String &p_path, bool p_take_over) {
 	state->set_path(p_path);
 	Resource::set_path(p_path, p_take_over);
 }
 
-void UserInterface::set_path_cache(const String &p_path) {
+void Component::set_path_cache(const String &p_path) {
 	state->set_path(p_path);
 	Resource::set_path_cache(p_path);
 }
 
-void UserInterface::reset_state() {
+void Component::reset_state() {
 	clear();
 }
-void UserInterface::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("pack", "path"), &UserInterface::pack);
-	ClassDB::bind_method(D_METHOD("instantiate", "edit_state"), &UserInterface::instantiate, DEFVAL(GEN_EDIT_STATE_DISABLED));
-	ClassDB::bind_method(D_METHOD("can_instantiate"), &UserInterface::can_instantiate);
-	ClassDB::bind_method(D_METHOD("_set_bundled_scene", "scene"), &UserInterface::_set_bundled_scene);
-	ClassDB::bind_method(D_METHOD("_get_bundled_scene"), &UserInterface::_get_bundled_scene);
-	ClassDB::bind_method(D_METHOD("get_state"), &UserInterface::get_state);
+void Component::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("pack", "path"), &Component::pack);
+	ClassDB::bind_method(D_METHOD("instantiate", "edit_state"), &Component::instantiate, DEFVAL(GEN_EDIT_STATE_DISABLED));
+	ClassDB::bind_method(D_METHOD("can_instantiate"), &Component::can_instantiate);
+	ClassDB::bind_method(D_METHOD("_set_bundled_scene", "scene"), &Component::_set_bundled_scene);
+	ClassDB::bind_method(D_METHOD("_get_bundled_scene"), &Component::_get_bundled_scene);
+	ClassDB::bind_method(D_METHOD("get_state"), &Component::get_state);
 
 	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "_bundled"), "_set_bundled_scene", "_get_bundled_scene");
 
@@ -2200,6 +2200,6 @@ void UserInterface::_bind_methods() {
 	BIND_ENUM_CONSTANT(GEN_EDIT_STATE_MAIN_INHERITED);
 }
 
-UserInterface::UserInterface() {
+Component::Component() {
 	state = Ref<SceneState>(memnew(SceneState));
 }
