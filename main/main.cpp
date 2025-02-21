@@ -69,21 +69,13 @@
 #include "servers/display_server.h"
 #include "servers/movie_writer/movie_writer.h"
 #include "servers/movie_writer/movie_writer_mjpeg.h"
-#include "servers/navigation_server_3d.h"
-#include "servers/navigation_server_3d_dummy.h"
 #include "servers/register_server_types.h"
 #include "servers/rendering/rendering_server_default.h"
 #include "servers/text/text_server_dummy.h"
 #include "servers/text_server.h"
 
 // 2D
-#include "servers/navigation_server_2d.h"
-#include "servers/navigation_server_2d_dummy.h"
 #include "servers/physics_server_2d.h"
-
-#ifdef TESTS_ENABLED
-#include "tests/test_main.h"
-#endif
 
 #ifdef TOOLS_ENABLED
 #include "editor/debugger/debug_adapter/debug_adapter_server.h"
@@ -154,10 +146,8 @@ static DisplayServer *display_server = nullptr;
 static RenderingServer *rendering_server = nullptr;
 static TextServerManager *tsman = nullptr;
 static ThemeDB *theme_db = nullptr;
-static NavigationServer2D *navigation_server_2d = nullptr;
 static PhysicsServer2DManager *physics_server_2d_manager = nullptr;
 static PhysicsServer2D *physics_server_2d = nullptr;
-static NavigationServer3D *navigation_server_3d = nullptr;
 
 // We error out if setup2() doesn't turn this true
 static bool _start_success = false;
@@ -220,7 +210,6 @@ static bool use_debug_profiler = false;
 #ifdef DEBUG_ENABLED
 static bool debug_collisions = false;
 static bool debug_paths = false;
-static bool debug_navigation = false;
 static bool debug_avoidance = false;
 static bool debug_canvas_item_redraw = false;
 #endif
@@ -326,41 +315,9 @@ void finalize_display() {
 }
 
 void initialize_navigation_server() {
-	ERR_FAIL_COND(navigation_server_3d != nullptr);
-	ERR_FAIL_COND(navigation_server_2d != nullptr);
-
-	// Init 3D Navigation Server
-	navigation_server_3d = NavigationServer3DManager::new_default_server();
-
-	// Fall back to dummy if no default server has been registered.
-	if (!navigation_server_3d) {
-		navigation_server_3d = memnew(NavigationServer3DDummy);
-	}
-
-	// Should be impossible, but make sure it's not null.
-	ERR_FAIL_NULL_MSG(navigation_server_3d, "Failed to initialize NavigationServer3D.");
-	navigation_server_3d->init();
-
-	// Init 2D Navigation Server
-	navigation_server_2d = NavigationServer2DManager::new_default_server();
-	if (!navigation_server_2d) {
-		navigation_server_2d = memnew(NavigationServer2DDummy);
-	}
-
-	ERR_FAIL_NULL_MSG(navigation_server_2d, "Failed to initialize NavigationServer2D.");
-	navigation_server_2d->init();
 }
 
 void finalize_navigation_server() {
-	ERR_FAIL_NULL(navigation_server_3d);
-	navigation_server_3d->finish();
-	memdelete(navigation_server_3d);
-	navigation_server_3d = nullptr;
-
-	ERR_FAIL_NULL(navigation_server_2d);
-	navigation_server_2d->finish();
-	memdelete(navigation_server_2d);
-	navigation_server_2d = nullptr;
 }
 
 void initialize_theme_db() {
@@ -1390,8 +1347,6 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 			debug_collisions = true;
 		} else if (arg == "--debug-paths") {
 			debug_paths = true;
-		} else if (arg == "--debug-navigation") {
-			debug_navigation = true;
 		} else if (arg == "--debug-avoidance") {
 			debug_avoidance = true;
 		} else if (arg == "--debug-canvas-item-redraw") {
@@ -3342,17 +3297,6 @@ int Main::start() {
 		if (debug_paths) {
 			sml->set_debug_paths_hint(true);
 		}
-		if (debug_navigation) {
-			sml->set_debug_navigation_hint(true);
-			NavigationServer3D::get_singleton()->set_debug_navigation_enabled(true);
-		}
-		if (debug_avoidance) {
-			NavigationServer3D::get_singleton()->set_debug_avoidance_enabled(true);
-		}
-		if (debug_navigation || debug_avoidance) {
-			NavigationServer3D::get_singleton()->set_active(true);
-			NavigationServer3D::get_singleton()->set_debug_enabled(true);
-		}
 		if (debug_canvas_item_redraw) {
 			RenderingServer::get_singleton()->canvas_item_set_debug_redraw(true);
 		}
@@ -3775,9 +3719,6 @@ bool Main::iteration() {
 	bool exit = false;
 
 	// process all our active interfaces
-	NavigationServer2D::get_singleton()->sync();
-	NavigationServer3D::get_singleton()->sync();
-
 	for (int iters = 0; iters < advance.physics_steps; ++iters) {
 		if (Input::get_singleton()->is_agile_input_event_flushing()) {
 			Input::get_singleton()->flush_buffered_events();
@@ -3804,8 +3745,6 @@ bool Main::iteration() {
 		}
 
 		uint64_t navigation_begin = OS::get_singleton()->get_ticks_usec();
-
-		NavigationServer3D::get_singleton()->process(physics_step * time_scale);
 
 		navigation_process_ticks = MAX(navigation_process_ticks, OS::get_singleton()->get_ticks_usec() - navigation_begin); // keep the largest one for reference
 		navigation_process_max = MAX(OS::get_singleton()->get_ticks_usec() - navigation_begin, navigation_process_max);

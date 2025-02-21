@@ -35,7 +35,6 @@
 #include "scene/main/node.h"
 #include "scene/main/scene_tree.h"
 #include "servers/audio_server.h"
-#include "servers/navigation_server_3d.h"
 #include "servers/rendering_server.h"
 
 // 2D
@@ -73,15 +72,6 @@ void Performance::_bind_methods() {
 	BIND_ENUM_CONSTANT(PHYSICS_2D_COLLISION_PAIRS);
 	BIND_ENUM_CONSTANT(PHYSICS_2D_ISLAND_COUNT);
 	BIND_ENUM_CONSTANT(AUDIO_OUTPUT_LATENCY);
-	BIND_ENUM_CONSTANT(NAVIGATION_ACTIVE_MAPS);
-	BIND_ENUM_CONSTANT(NAVIGATION_REGION_COUNT);
-	BIND_ENUM_CONSTANT(NAVIGATION_AGENT_COUNT);
-	BIND_ENUM_CONSTANT(NAVIGATION_LINK_COUNT);
-	BIND_ENUM_CONSTANT(NAVIGATION_POLYGON_COUNT);
-	BIND_ENUM_CONSTANT(NAVIGATION_EDGE_COUNT);
-	BIND_ENUM_CONSTANT(NAVIGATION_EDGE_MERGE_COUNT);
-	BIND_ENUM_CONSTANT(NAVIGATION_EDGE_CONNECTION_COUNT);
-	BIND_ENUM_CONSTANT(NAVIGATION_EDGE_FREE_COUNT);
 	BIND_ENUM_CONSTANT(MONITOR_MAX);
 }
 
@@ -117,17 +107,7 @@ String Performance::get_monitor_name(Monitor p_monitor) const {
 		PNAME("physics_2d/active_objects"),
 		PNAME("physics_2d/collision_pairs"),
 		PNAME("physics_2d/islands"),
-		PNAME("audio/driver/output_latency"),
-		PNAME("navigation/active_maps"),
-		PNAME("navigation/regions"),
-		PNAME("navigation/agents"),
-		PNAME("navigation/links"),
-		PNAME("navigation/polygons"),
-		PNAME("navigation/edges"),
-		PNAME("navigation/edges_merged"),
-		PNAME("navigation/edges_connected"),
-		PNAME("navigation/edges_free"),
-
+		PNAME("audio/driver/output_latency")
 	};
 
 	return names[p_monitor];
@@ -183,25 +163,6 @@ double Performance::get_monitor(Monitor p_monitor) const {
 			return 0;
 		case AUDIO_OUTPUT_LATENCY:
 			return AudioServer::get_singleton()->get_output_latency();
-		case NAVIGATION_ACTIVE_MAPS:
-			return NavigationServer3D::get_singleton()->get_process_info(NavigationServer3D::INFO_ACTIVE_MAPS);
-		case NAVIGATION_REGION_COUNT:
-			return NavigationServer3D::get_singleton()->get_process_info(NavigationServer3D::INFO_REGION_COUNT);
-		case NAVIGATION_AGENT_COUNT:
-			return NavigationServer3D::get_singleton()->get_process_info(NavigationServer3D::INFO_AGENT_COUNT);
-		case NAVIGATION_LINK_COUNT:
-			return NavigationServer3D::get_singleton()->get_process_info(NavigationServer3D::INFO_LINK_COUNT);
-		case NAVIGATION_POLYGON_COUNT:
-			return NavigationServer3D::get_singleton()->get_process_info(NavigationServer3D::INFO_POLYGON_COUNT);
-		case NAVIGATION_EDGE_COUNT:
-			return NavigationServer3D::get_singleton()->get_process_info(NavigationServer3D::INFO_EDGE_COUNT);
-		case NAVIGATION_EDGE_MERGE_COUNT:
-			return NavigationServer3D::get_singleton()->get_process_info(NavigationServer3D::INFO_EDGE_MERGE_COUNT);
-		case NAVIGATION_EDGE_CONNECTION_COUNT:
-			return NavigationServer3D::get_singleton()->get_process_info(NavigationServer3D::INFO_EDGE_CONNECTION_COUNT);
-		case NAVIGATION_EDGE_FREE_COUNT:
-			return NavigationServer3D::get_singleton()->get_process_info(NavigationServer3D::INFO_EDGE_FREE_COUNT);
-
 		default: {
 		}
 	}
@@ -233,17 +194,7 @@ Performance::MonitorType Performance::get_monitor_type(Monitor p_monitor) const 
 		MONITOR_TYPE_QUANTITY,
 		MONITOR_TYPE_QUANTITY,
 		MONITOR_TYPE_QUANTITY,
-		MONITOR_TYPE_TIME,
-		MONITOR_TYPE_QUANTITY,
-		MONITOR_TYPE_QUANTITY,
-		MONITOR_TYPE_QUANTITY,
-		MONITOR_TYPE_QUANTITY,
-		MONITOR_TYPE_QUANTITY,
-		MONITOR_TYPE_QUANTITY,
-		MONITOR_TYPE_QUANTITY,
-		MONITOR_TYPE_QUANTITY,
-		MONITOR_TYPE_QUANTITY,
-
+		MONITOR_TYPE_TIME
 	};
 
 	return types[p_monitor];

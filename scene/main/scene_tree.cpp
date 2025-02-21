@@ -56,7 +56,6 @@
 #include "scene/resources/packed_scene.h"
 #include "scene/resources/world_2d.h"
 #include "servers/display_server.h"
-#include "servers/navigation_server_3d.h"
 #include "servers/physics_server_2d.h"
 #include "window.h"
 #include <stdio.h>

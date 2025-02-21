@@ -80,14 +80,11 @@
 #include "text_server.h"
 
 // 2D physics and navigation.
-#include "navigation_server_2d.h"
 #include "physics_2d/godot_physics_server_2d.h"
 #include "physics_server_2d.h"
 #include "physics_server_2d_wrap_mt.h"
 #include "servers/extensions/physics_server_2d_extension.h"
 
-// 3D physics and navigation (3D navigation is needed for 2D).
-#include "navigation_server_3d.h"
 ShaderTypes *shader_types = nullptr;
 
 static PhysicsServer2D *_createGodotPhysics2DCallback() {
@@ -263,14 +260,6 @@ void register_server_types() {
 	PhysicsServer2DManager::get_singleton()->register_server("GodotPhysics2D", callable_mp_static(_createGodotPhysics2DCallback));
 	PhysicsServer2DManager::get_singleton()->set_default_server("GodotPhysics2D");
 
-	GDREGISTER_ABSTRACT_CLASS(NavigationServer2D);
-	GDREGISTER_CLASS(NavigationPathQueryParameters2D);
-	GDREGISTER_CLASS(NavigationPathQueryResult2D);
-
-	GDREGISTER_ABSTRACT_CLASS(NavigationServer3D);
-	GDREGISTER_CLASS(NavigationPathQueryParameters3D);
-	GDREGISTER_CLASS(NavigationPathQueryResult3D);
-
 	writer_mjpeg = memnew(MovieWriterMJPEG);
 	MovieWriter::add_writer(writer_mjpeg);
 
@@ -298,8 +287,6 @@ void register_server_singletons() {
 	Engine::get_singleton()->add_singleton(Engine::Singleton("CameraServer", CameraServer::get_singleton(), "CameraServer"));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("DisplayServer", DisplayServer::get_singleton(), "DisplayServer"));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("NativeMenu", NativeMenu::get_singleton(), "NativeMenu"));
-	Engine::get_singleton()->add_singleton(Engine::Singleton("NavigationServer2D", NavigationServer2D::get_singleton(), "NavigationServer2D"));
-	Engine::get_singleton()->add_singleton(Engine::Singleton("NavigationServer3D", NavigationServer3D::get_singleton(), "NavigationServer3D"));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("RenderingServer", RenderingServer::get_singleton(), "RenderingServer"));
 
 	Engine::get_singleton()->add_singleton(Engine::Singleton("PhysicsServer2D", PhysicsServer2D::get_singleton(), "PhysicsServer2D"));

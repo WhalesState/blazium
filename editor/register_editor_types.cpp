@@ -80,8 +80,6 @@
 #include "editor/plugins/input_event_editor_plugin.h"
 #include "editor/plugins/light_occluder_2d_editor_plugin.h"
 #include "editor/plugins/line_2d_editor_plugin.h"
-#include "editor/plugins/navigation_link_2d_editor_plugin.h"
-#include "editor/plugins/navigation_obstacle_2d_editor_plugin.h"
 #include "editor/plugins/packed_scene_editor_plugin.h"
 #include "editor/plugins/parallax_background_editor_plugin.h"
 #include "editor/plugins/path_2d_editor_plugin.h"
@@ -98,7 +96,6 @@
 #include "editor/plugins/texture_layered_editor_plugin.h"
 #include "editor/plugins/texture_region_editor_plugin.h"
 #include "editor/plugins/theme_editor_plugin.h"
-#include "editor/plugins/tiles/tiles_editor_plugin.h"
 #include "editor/plugins/version_control_editor_plugin.h"
 #include "editor/plugins/visual_shader_editor_plugin.h"
 #include "editor/register_exporters.h"
@@ -195,15 +192,11 @@ void register_editor_types() {
 	EditorPlugins::add_by_type<CollisionShape2DEditorPlugin>();
 	EditorPlugins::add_by_type<LightOccluder2DEditorPlugin>();
 	EditorPlugins::add_by_type<Line2DEditorPlugin>();
-	EditorPlugins::add_by_type<NavigationLink2DEditorPlugin>();
-	EditorPlugins::add_by_type<NavigationObstacle2DEditorPlugin>();
 	EditorPlugins::add_by_type<ParallaxBackgroundEditorPlugin>();
 	EditorPlugins::add_by_type<Path2DEditorPlugin>();
 	EditorPlugins::add_by_type<Polygon2DEditorPlugin>();
 	EditorPlugins::add_by_type<Cast2DEditorPlugin>();
 	EditorPlugins::add_by_type<Sprite2DEditorPlugin>();
-	EditorPlugins::add_by_type<TileSetEditorPlugin>();
-	EditorPlugins::add_by_type<TileMapEditorPlugin>();
 
 	// For correct doc generation.
 	GLOBAL_DEF("editor/run/main_run_args", "");
