@@ -268,11 +268,6 @@ bool FileSystemDock::_create_tree(TreeItem *p_parent, EditorFileSystemDirectory 
 		List<FileInfo> file_list;
 		for (int i = 0; i < p_dir->get_file_count(); i++) {
 			String file_type = p_dir->get_file_type(i);
-			if (file_type != "TextFile") {
-				// If type is disabled, file won't be displayed.
-				continue;
-			}
-
 			String file_name = p_dir->get_file(i);
 			if (!searched_tokens.is_empty()) {
 				if (!_matches_all_search_tokens(file_name)) {
