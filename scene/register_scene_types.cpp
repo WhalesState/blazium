@@ -227,81 +227,6 @@
 #include "scene/resources/2d/tile_set.h"
 #include "scene/resources/2d/world_boundary_shape_2d.h"
 
-#ifndef _3D_DISABLED
-#include "scene/3d/audio_listener_3d.h"
-#include "scene/3d/audio_stream_player_3d.h"
-#include "scene/3d/bone_attachment_3d.h"
-#include "scene/3d/camera_3d.h"
-#include "scene/3d/cpu_particles_3d.h"
-#include "scene/3d/decal.h"
-#include "scene/3d/fog_volume.h"
-#include "scene/3d/gpu_particles_3d.h"
-#include "scene/3d/gpu_particles_collision_3d.h"
-#include "scene/3d/importer_mesh_instance_3d.h"
-#include "scene/3d/label_3d.h"
-#include "scene/3d/light_3d.h"
-#include "scene/3d/lightmap_gi.h"
-#include "scene/3d/lightmap_probe.h"
-#include "scene/3d/marker_3d.h"
-#include "scene/3d/mesh_instance_3d.h"
-#include "scene/3d/multimesh_instance_3d.h"
-#include "scene/3d/navigation_agent_3d.h"
-#include "scene/3d/navigation_link_3d.h"
-#include "scene/3d/navigation_obstacle_3d.h"
-#include "scene/3d/navigation_region_3d.h"
-#include "scene/3d/node_3d.h"
-#include "scene/3d/occluder_instance_3d.h"
-#include "scene/3d/path_3d.h"
-#include "scene/3d/physical_bone_simulator_3d.h"
-#include "scene/3d/physics/animatable_body_3d.h"
-#include "scene/3d/physics/area_3d.h"
-#include "scene/3d/physics/character_body_3d.h"
-#include "scene/3d/physics/collision_polygon_3d.h"
-#include "scene/3d/physics/collision_shape_3d.h"
-#include "scene/3d/physics/joints/cone_twist_joint_3d.h"
-#include "scene/3d/physics/joints/generic_6dof_joint_3d.h"
-#include "scene/3d/physics/joints/hinge_joint_3d.h"
-#include "scene/3d/physics/joints/joint_3d.h"
-#include "scene/3d/physics/joints/pin_joint_3d.h"
-#include "scene/3d/physics/joints/slider_joint_3d.h"
-#include "scene/3d/physics/kinematic_collision_3d.h"
-#include "scene/3d/physics/physical_bone_3d.h"
-#include "scene/3d/physics/physics_body_3d.h"
-#include "scene/3d/physics/ray_cast_3d.h"
-#include "scene/3d/physics/rigid_body_3d.h"
-#include "scene/3d/physics/shape_cast_3d.h"
-#include "scene/3d/physics/spring_arm_3d.h"
-#include "scene/3d/physics/static_body_3d.h"
-#include "scene/3d/physics/vehicle_body_3d.h"
-#include "scene/3d/reflection_probe.h"
-#include "scene/3d/remote_transform_3d.h"
-#include "scene/3d/skeleton_3d.h"
-#include "scene/3d/skeleton_ik_3d.h"
-#include "scene/3d/skeleton_modifier_3d.h"
-#include "scene/3d/soft_body_3d.h"
-#include "scene/3d/sprite_3d.h"
-#include "scene/3d/visible_on_screen_notifier_3d.h"
-#include "scene/3d/voxel_gi.h"
-#include "scene/3d/world_environment.h"
-#include "scene/animation/root_motion_view.h"
-#include "scene/resources/3d/box_shape_3d.h"
-#include "scene/resources/3d/capsule_shape_3d.h"
-#include "scene/resources/3d/concave_polygon_shape_3d.h"
-#include "scene/resources/3d/convex_polygon_shape_3d.h"
-#include "scene/resources/3d/cylinder_shape_3d.h"
-#include "scene/resources/3d/fog_material.h"
-#include "scene/resources/3d/height_map_shape_3d.h"
-#include "scene/resources/3d/importer_mesh.h"
-#include "scene/resources/3d/mesh_library.h"
-#include "scene/resources/3d/navigation_mesh_source_geometry_data_3d.h"
-#include "scene/resources/3d/primitive_meshes.h"
-#include "scene/resources/3d/separation_ray_shape_3d.h"
-#include "scene/resources/3d/sky_material.h"
-#include "scene/resources/3d/sphere_shape_3d.h"
-#include "scene/resources/3d/world_3d.h"
-#include "scene/resources/3d/world_boundary_shape_3d.h"
-#endif // _3D_DISABLED
-
 static Ref<ResourceFormatSaverText> resource_saver_text;
 static Ref<ResourceFormatLoaderText> resource_loader_text;
 
@@ -527,109 +452,6 @@ void register_scene_types() {
 
 	/* REGISTER 3D */
 
-#ifndef _3D_DISABLED
-	GDREGISTER_CLASS(Node3D);
-	GDREGISTER_ABSTRACT_CLASS(Node3DGizmo);
-	GDREGISTER_CLASS(Skin);
-	GDREGISTER_ABSTRACT_CLASS(SkinReference);
-	GDREGISTER_CLASS(Skeleton3D);
-	GDREGISTER_CLASS(ImporterMesh);
-	GDREGISTER_CLASS(ImporterMeshInstance3D);
-	GDREGISTER_VIRTUAL_CLASS(VisualInstance3D);
-	GDREGISTER_VIRTUAL_CLASS(GeometryInstance3D);
-	GDREGISTER_CLASS(Camera3D);
-	GDREGISTER_CLASS(AudioListener3D);
-	GDREGISTER_CLASS(MeshInstance3D);
-	GDREGISTER_CLASS(OccluderInstance3D);
-	GDREGISTER_ABSTRACT_CLASS(Occluder3D);
-	GDREGISTER_CLASS(ArrayOccluder3D);
-	GDREGISTER_CLASS(QuadOccluder3D);
-	GDREGISTER_CLASS(BoxOccluder3D);
-	GDREGISTER_CLASS(SphereOccluder3D);
-	GDREGISTER_CLASS(PolygonOccluder3D);
-	GDREGISTER_ABSTRACT_CLASS(SpriteBase3D);
-	GDREGISTER_CLASS(Sprite3D);
-	GDREGISTER_CLASS(AnimatedSprite3D);
-	GDREGISTER_CLASS(Label3D);
-	GDREGISTER_ABSTRACT_CLASS(Light3D);
-	GDREGISTER_CLASS(DirectionalLight3D);
-	GDREGISTER_CLASS(OmniLight3D);
-	GDREGISTER_CLASS(SpotLight3D);
-	GDREGISTER_CLASS(ReflectionProbe);
-	GDREGISTER_CLASS(Decal);
-	GDREGISTER_CLASS(VoxelGI);
-	GDREGISTER_CLASS(VoxelGIData);
-	GDREGISTER_CLASS(LightmapGI);
-	GDREGISTER_CLASS(LightmapGIData);
-	GDREGISTER_CLASS(LightmapProbe);
-	GDREGISTER_ABSTRACT_CLASS(Lightmapper);
-	GDREGISTER_CLASS(GPUParticles3D);
-	GDREGISTER_ABSTRACT_CLASS(GPUParticlesCollision3D);
-	GDREGISTER_CLASS(GPUParticlesCollisionBox3D);
-	GDREGISTER_CLASS(GPUParticlesCollisionSphere3D);
-	GDREGISTER_CLASS(GPUParticlesCollisionSDF3D);
-	GDREGISTER_CLASS(GPUParticlesCollisionHeightField3D);
-	GDREGISTER_ABSTRACT_CLASS(GPUParticlesAttractor3D);
-	GDREGISTER_CLASS(GPUParticlesAttractorBox3D);
-	GDREGISTER_CLASS(GPUParticlesAttractorSphere3D);
-	GDREGISTER_CLASS(GPUParticlesAttractorVectorField3D);
-	GDREGISTER_CLASS(CPUParticles3D);
-	GDREGISTER_CLASS(Marker3D);
-	GDREGISTER_CLASS(RootMotionView);
-	GDREGISTER_VIRTUAL_CLASS(SkeletonModifier3D);
-
-	OS::get_singleton()->yield(); // may take time to init
-
-	GDREGISTER_ABSTRACT_CLASS(CollisionObject3D);
-	GDREGISTER_ABSTRACT_CLASS(PhysicsBody3D);
-	GDREGISTER_CLASS(StaticBody3D);
-	GDREGISTER_CLASS(AnimatableBody3D);
-	GDREGISTER_CLASS(RigidBody3D);
-	GDREGISTER_CLASS(KinematicCollision3D);
-	GDREGISTER_CLASS(CharacterBody3D);
-	GDREGISTER_CLASS(SpringArm3D);
-
-	GDREGISTER_CLASS(PhysicalBoneSimulator3D);
-	GDREGISTER_CLASS(PhysicalBone3D);
-	GDREGISTER_CLASS(SoftBody3D);
-
-	GDREGISTER_CLASS(SkeletonIK3D);
-	GDREGISTER_CLASS(BoneAttachment3D);
-
-	GDREGISTER_CLASS(VehicleBody3D);
-	GDREGISTER_CLASS(VehicleWheel3D);
-	GDREGISTER_CLASS(Area3D);
-	GDREGISTER_CLASS(CollisionShape3D);
-	GDREGISTER_CLASS(CollisionPolygon3D);
-	GDREGISTER_CLASS(RayCast3D);
-	GDREGISTER_CLASS(ShapeCast3D);
-	GDREGISTER_CLASS(MultiMeshInstance3D);
-
-	GDREGISTER_CLASS(Curve3D);
-	GDREGISTER_CLASS(Path3D);
-	GDREGISTER_CLASS(PathFollow3D);
-	GDREGISTER_CLASS(VisibleOnScreenNotifier3D);
-	GDREGISTER_CLASS(VisibleOnScreenEnabler3D);
-	GDREGISTER_CLASS(WorldEnvironment);
-	GDREGISTER_CLASS(FogVolume);
-	GDREGISTER_CLASS(FogMaterial);
-	GDREGISTER_CLASS(RemoteTransform3D);
-
-	GDREGISTER_ABSTRACT_CLASS(Joint3D);
-	GDREGISTER_CLASS(PinJoint3D);
-	GDREGISTER_CLASS(HingeJoint3D);
-	GDREGISTER_CLASS(SliderJoint3D);
-	GDREGISTER_CLASS(ConeTwistJoint3D);
-	GDREGISTER_CLASS(Generic6DOFJoint3D);
-
-	GDREGISTER_CLASS(NavigationRegion3D);
-	GDREGISTER_CLASS(NavigationAgent3D);
-	GDREGISTER_CLASS(NavigationObstacle3D);
-	GDREGISTER_CLASS(NavigationLink3D);
-
-	OS::get_singleton()->yield(); // may take time to init
-#endif // _3D_DISABLED
-
 	/* REGISTER SHADER */
 
 	GDREGISTER_CLASS(Shader);
@@ -848,50 +670,6 @@ void register_scene_types() {
 	GDREGISTER_CLASS(MultiMesh);
 	GDREGISTER_CLASS(SurfaceTool);
 	GDREGISTER_CLASS(MeshDataTool);
-
-#ifndef _3D_DISABLED
-	GDREGISTER_CLASS(AudioStreamPlayer3D);
-	GDREGISTER_VIRTUAL_CLASS(PrimitiveMesh);
-	GDREGISTER_CLASS(BoxMesh);
-	GDREGISTER_CLASS(CapsuleMesh);
-	GDREGISTER_CLASS(CylinderMesh);
-	GDREGISTER_CLASS(PlaneMesh);
-	GDREGISTER_CLASS(PrismMesh);
-	GDREGISTER_CLASS(QuadMesh);
-	GDREGISTER_CLASS(SphereMesh);
-	GDREGISTER_CLASS(TextMesh);
-	GDREGISTER_CLASS(TorusMesh);
-	GDREGISTER_CLASS(TubeTrailMesh);
-	GDREGISTER_CLASS(RibbonTrailMesh);
-	GDREGISTER_CLASS(PointMesh);
-	GDREGISTER_ABSTRACT_CLASS(BaseMaterial3D);
-	GDREGISTER_CLASS(StandardMaterial3D);
-	GDREGISTER_CLASS(ORMMaterial3D);
-	GDREGISTER_CLASS(ProceduralSkyMaterial);
-	GDREGISTER_CLASS(PanoramaSkyMaterial);
-	GDREGISTER_CLASS(PhysicalSkyMaterial);
-	SceneTree::add_idle_callback(BaseMaterial3D::flush_changes);
-	BaseMaterial3D::init_shaders();
-
-	GDREGISTER_CLASS(MeshLibrary);
-	GDREGISTER_CLASS(NavigationMeshSourceGeometryData3D);
-
-	OS::get_singleton()->yield(); // may take time to init
-
-	GDREGISTER_ABSTRACT_CLASS(Shape3D);
-	GDREGISTER_CLASS(SeparationRayShape3D);
-	GDREGISTER_CLASS(SphereShape3D);
-	GDREGISTER_CLASS(BoxShape3D);
-	GDREGISTER_CLASS(CapsuleShape3D);
-	GDREGISTER_CLASS(CylinderShape3D);
-	GDREGISTER_CLASS(HeightMapShape3D);
-	GDREGISTER_CLASS(WorldBoundaryShape3D);
-	GDREGISTER_CLASS(ConvexPolygonShape3D);
-	GDREGISTER_CLASS(ConcavePolygonShape3D);
-	GDREGISTER_CLASS(World3D);
-
-	OS::get_singleton()->yield(); // may take time to init
-#endif // _3D_DISABLED
 
 	GDREGISTER_CLASS(PhysicsMaterial);
 	GDREGISTER_CLASS(Compositor);
@@ -1255,15 +1033,6 @@ void unregister_scene_types() {
 
 	ResourceLoader::remove_resource_format_loader(resource_loader_shader_include);
 	resource_loader_shader_include.unref();
-
-	// StandardMaterial3D is not initialized when 3D is disabled, so it shouldn't be cleaned up either
-#ifndef _3D_DISABLED
-	BaseMaterial3D::finish_shaders();
-	PhysicalSkyMaterial::cleanup_shader();
-	PanoramaSkyMaterial::cleanup_shader();
-	ProceduralSkyMaterial::cleanup_shader();
-	FogMaterial::cleanup_shader();
-#endif // _3D_DISABLED
 
 	ParticleProcessMaterial::finish_shaders();
 	CanvasItemMaterial::finish_shaders();

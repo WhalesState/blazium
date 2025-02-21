@@ -221,34 +221,6 @@ void RendererViewport::_configure_3d_render_buffers(Viewport *p_viewport) {
 }
 
 void RendererViewport::_draw_3d(Viewport *p_viewport) {
-#ifndef _3D_DISABLED
-	RENDER_TIMESTAMP("> Render 3D Scene");
-
-	Ref<XRInterface> xr_interface;
-	if (p_viewport->use_xr && XRServer::get_singleton() != nullptr) {
-		xr_interface = XRServer::get_singleton()->get_primary_interface();
-	}
-
-	if (p_viewport->use_occlusion_culling) {
-		if (p_viewport->occlusion_buffer_dirty) {
-			float aspect = p_viewport->size.aspect();
-			int max_size = occlusion_rays_per_thread * WorkerThreadPool::get_singleton()->get_thread_count();
-
-			int viewport_size = p_viewport->size.width * p_viewport->size.height;
-			max_size = CLAMP(max_size, viewport_size / (32 * 32), viewport_size / (2 * 2)); // At least one depth pixel for every 16x16 region. At most one depth pixel for every 2x2 region.
-
-			float height = Math::sqrt(max_size / aspect);
-			Size2i new_size = Size2i(height * aspect, height);
-			RendererSceneOcclusionCull::get_singleton()->buffer_set_size(p_viewport->self, new_size);
-			p_viewport->occlusion_buffer_dirty = false;
-		}
-	}
-
-	float screen_mesh_lod_threshold = p_viewport->mesh_lod_threshold / float(p_viewport->size.width);
-	RSG::scene->render_camera(p_viewport->render_buffers, p_viewport->camera, p_viewport->scenario, p_viewport->self, p_viewport->internal_size, p_viewport->jitter_phase_count, screen_mesh_lod_threshold, p_viewport->shadow_atlas, xr_interface, &p_viewport->render_info);
-
-	RENDER_TIMESTAMP("< Render 3D Scene");
-#endif // _3D_DISABLED
 }
 
 void RendererViewport::_draw_viewport(Viewport *p_viewport) {
@@ -664,19 +636,6 @@ void RendererViewport::_draw_viewport(Viewport *p_viewport) {
 void RendererViewport::draw_viewports(bool p_swap_buffers) {
 	timestamp_vp_map.clear();
 
-#ifndef _3D_DISABLED
-	// get our xr interface in case we need it
-	Ref<XRInterface> xr_interface;
-	XRServer *xr_server = XRServer::get_singleton();
-	if (xr_server != nullptr) {
-		// let our XR server know we're about to render our frames so we can get our frame timing
-		xr_server->pre_render();
-
-		// retrieve the interface responsible for rendering
-		xr_interface = xr_server->get_primary_interface();
-	}
-#endif // _3D_DISABLED
-
 	if (Engine::get_singleton()->is_editor_hint()) {
 		RSG::texture_storage->set_default_clear_color(GLOBAL_GET("rendering/environment/defaults/default_clear_color"));
 	}
@@ -708,36 +667,18 @@ void RendererViewport::draw_viewports(bool p_swap_buffers) {
 
 		bool visible = vp->viewport_to_screen_rect != Rect2();
 
-#ifndef _3D_DISABLED
-		if (vp->use_xr) {
-			if (xr_interface.is_valid()) {
-				// Ignore update mode we have to commit frames to our XR interface
-				visible = true;
+		if (vp->update_mode == RS::VIEWPORT_UPDATE_ALWAYS || vp->update_mode == RS::VIEWPORT_UPDATE_ONCE) {
+		visible = true;
+		}
 
-				// Override our size, make sure it matches our required size and is created as a stereo target
-				Size2 xr_size = xr_interface->get_render_target_size();
-				_viewport_set_size(vp, xr_size.width, xr_size.height, xr_interface->get_view_count());
-			} else {
-				// don't render anything
-				visible = false;
-				vp->size = Size2();
-			}
-		} else
-#endif // _3D_DISABLED
-		{
-			if (vp->update_mode == RS::VIEWPORT_UPDATE_ALWAYS || vp->update_mode == RS::VIEWPORT_UPDATE_ONCE) {
-				visible = true;
-			}
+		if (vp->update_mode == RS::VIEWPORT_UPDATE_WHEN_VISIBLE && RSG::texture_storage->render_target_was_used(vp->render_target)) {
+			visible = true;
+		}
 
-			if (vp->update_mode == RS::VIEWPORT_UPDATE_WHEN_VISIBLE && RSG::texture_storage->render_target_was_used(vp->render_target)) {
+		if (vp->update_mode == RS::VIEWPORT_UPDATE_WHEN_PARENT_VISIBLE) {
+			Viewport *parent = viewport_owner.get_or_null(vp->parent);
+			if (parent && parent->last_pass == draw_viewports_pass) {
 				visible = true;
-			}
-
-			if (vp->update_mode == RS::VIEWPORT_UPDATE_WHEN_PARENT_VISIBLE) {
-				Viewport *parent = viewport_owner.get_or_null(vp->parent);
-				if (parent && parent->last_pass == draw_viewports_pass) {
-					visible = true;
-				}
 			}
 		}
 
@@ -762,45 +703,6 @@ void RendererViewport::draw_viewports(bool p_swap_buffers) {
 		RENDER_TIMESTAMP("> Render Viewport " + itos(i));
 
 		RSG::texture_storage->render_target_set_as_unused(vp->render_target);
-#ifndef _3D_DISABLED
-		if (vp->use_xr && xr_interface.is_valid()) {
-			// Inform XR interface we're about to render its viewport,
-			// if this returns false we don't render.
-			// This usually is a result of the player taking off their headset and OpenXR telling us to skip
-			// rendering frames.
-			if (xr_interface->pre_draw_viewport(vp->render_target)) {
-				RSG::texture_storage->render_target_set_override(vp->render_target,
-						xr_interface->get_color_texture(),
-						xr_interface->get_depth_texture(),
-						xr_interface->get_velocity_texture());
-
-				// render...
-				RSG::scene->set_debug_draw_mode(vp->debug_draw);
-
-				// and draw viewport
-				_draw_viewport(vp);
-
-				// commit our eyes
-				Vector<BlitToScreen> blits = xr_interface->post_draw_viewport(vp->render_target, vp->viewport_to_screen_rect);
-				if (vp->viewport_to_screen != DisplayServer::INVALID_WINDOW_ID) {
-					if (OS::get_singleton()->get_current_rendering_driver_name().begins_with("opengl3")) {
-						if (blits.size() > 0) {
-							RSG::rasterizer->blit_render_targets_to_screen(vp->viewport_to_screen, blits.ptr(), blits.size());
-							RSG::rasterizer->gl_end_frame(p_swap_buffers);
-						}
-					} else if (blits.size() > 0) {
-						if (!blit_to_screen_list.has(vp->viewport_to_screen)) {
-							blit_to_screen_list[vp->viewport_to_screen] = Vector<BlitToScreen>();
-						}
-
-						for (int b = 0; b < blits.size(); b++) {
-							blit_to_screen_list[vp->viewport_to_screen].push_back(blits[b]);
-						}
-					}
-				}
-			}
-		} else
-#endif // _3D_DISABLED
 		{
 			RSG::scene->set_debug_draw_mode(vp->debug_draw);
 

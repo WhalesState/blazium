@@ -88,36 +88,7 @@
 
 // 3D physics and navigation (3D navigation is needed for 2D).
 #include "navigation_server_3d.h"
-#ifndef _3D_DISABLED
-#include "physics_3d/godot_physics_server_3d.h"
-#include "physics_server_3d.h"
-#include "physics_server_3d_wrap_mt.h"
-#include "servers/extensions/physics_server_3d_extension.h"
-#include "xr/xr_body_tracker.h"
-#include "xr/xr_controller_tracker.h"
-#include "xr/xr_face_tracker.h"
-#include "xr/xr_hand_tracker.h"
-#include "xr/xr_interface.h"
-#include "xr/xr_interface_extension.h"
-#include "xr/xr_positional_tracker.h"
-#include "xr_server.h"
-#endif // _3D_DISABLED
-
 ShaderTypes *shader_types = nullptr;
-
-#ifndef _3D_DISABLED
-static PhysicsServer3D *_createGodotPhysics3DCallback() {
-#ifdef THREADS_ENABLED
-	bool using_threads = GLOBAL_GET("physics/3d/run_on_separate_thread");
-#else
-	bool using_threads = false;
-#endif
-
-	PhysicsServer3D *physics_server_3d = memnew(GodotPhysicsServer3D(using_threads));
-
-	return memnew(PhysicsServer3DWrapMT(physics_server_3d, using_threads));
-}
-#endif // _3D_DISABLED
 
 static PhysicsServer2D *_createGodotPhysics2DCallback() {
 #ifdef THREADS_ENABLED
@@ -296,49 +267,6 @@ void register_server_types() {
 	GDREGISTER_CLASS(NavigationPathQueryParameters2D);
 	GDREGISTER_CLASS(NavigationPathQueryResult2D);
 
-#ifndef _3D_DISABLED
-	// Physics 3D
-	GDREGISTER_CLASS(PhysicsServer3DManager);
-	Engine::get_singleton()->add_singleton(Engine::Singleton("PhysicsServer3DManager", PhysicsServer3DManager::get_singleton(), "PhysicsServer3DManager"));
-
-	GDREGISTER_ABSTRACT_CLASS(PhysicsServer3D);
-	GDREGISTER_VIRTUAL_CLASS(PhysicsServer3DExtension);
-	GDREGISTER_VIRTUAL_CLASS(PhysicsDirectBodyState3DExtension);
-	GDREGISTER_VIRTUAL_CLASS(PhysicsDirectSpaceState3DExtension)
-	GDREGISTER_VIRTUAL_CLASS(PhysicsServer3DRenderingServerHandler)
-
-	GDREGISTER_NATIVE_STRUCT(PhysicsServer3DExtensionRayResult, "Vector3 position;Vector3 normal;RID rid;ObjectID collider_id;Object *collider;int shape;int face_index");
-	GDREGISTER_NATIVE_STRUCT(PhysicsServer3DExtensionShapeResult, "RID rid;ObjectID collider_id;Object *collider;int shape");
-	GDREGISTER_NATIVE_STRUCT(PhysicsServer3DExtensionShapeRestInfo, "Vector3 point;Vector3 normal;RID rid;ObjectID collider_id;int shape;Vector3 linear_velocity");
-	GDREGISTER_NATIVE_STRUCT(PhysicsServer3DExtensionMotionCollision, "Vector3 position;Vector3 normal;Vector3 collider_velocity;Vector3 collider_angular_velocity;real_t depth;int local_shape;ObjectID collider_id;RID collider;int collider_shape");
-	GDREGISTER_NATIVE_STRUCT(PhysicsServer3DExtensionMotionResult, "Vector3 travel;Vector3 remainder;real_t collision_depth;real_t collision_safe_fraction;real_t collision_unsafe_fraction;PhysicsServer3DExtensionMotionCollision collisions[32];int collision_count");
-
-	GDREGISTER_ABSTRACT_CLASS(PhysicsDirectBodyState3D);
-	GDREGISTER_ABSTRACT_CLASS(PhysicsDirectSpaceState3D);
-	GDREGISTER_CLASS(PhysicsRayQueryParameters3D);
-	GDREGISTER_CLASS(PhysicsPointQueryParameters3D);
-	GDREGISTER_CLASS(PhysicsShapeQueryParameters3D);
-	GDREGISTER_CLASS(PhysicsTestMotionParameters3D);
-	GDREGISTER_CLASS(PhysicsTestMotionResult3D);
-
-	GLOBAL_DEF(PropertyInfo(Variant::STRING, PhysicsServer3DManager::setting_property_name, PROPERTY_HINT_ENUM, "DEFAULT"), "DEFAULT");
-
-	PhysicsServer3DManager::get_singleton()->register_server("GodotPhysics3D", callable_mp_static(_createGodotPhysics3DCallback));
-	PhysicsServer3DManager::get_singleton()->set_default_server("GodotPhysics3D");
-
-	GDREGISTER_ABSTRACT_CLASS(XRInterface);
-	GDREGISTER_CLASS(XRVRS);
-	GDREGISTER_CLASS(XRBodyTracker);
-	GDREGISTER_CLASS(XRControllerTracker);
-	GDREGISTER_CLASS(XRFaceTracker);
-	GDREGISTER_CLASS(XRHandTracker);
-	GDREGISTER_CLASS(XRInterfaceExtension); // can't register this as virtual because we need a creation function for our extensions.
-	GDREGISTER_CLASS(XRPose);
-	GDREGISTER_CLASS(XRPositionalTracker);
-	GDREGISTER_CLASS(XRServer);
-	GDREGISTER_ABSTRACT_CLASS(XRTracker);
-#endif // _3D_DISABLED
-
 	GDREGISTER_ABSTRACT_CLASS(NavigationServer3D);
 	GDREGISTER_CLASS(NavigationPathQueryParameters3D);
 	GDREGISTER_CLASS(NavigationPathQueryResult3D);
@@ -375,10 +303,6 @@ void register_server_singletons() {
 	Engine::get_singleton()->add_singleton(Engine::Singleton("RenderingServer", RenderingServer::get_singleton(), "RenderingServer"));
 
 	Engine::get_singleton()->add_singleton(Engine::Singleton("PhysicsServer2D", PhysicsServer2D::get_singleton(), "PhysicsServer2D"));
-#ifndef _3D_DISABLED
-	Engine::get_singleton()->add_singleton(Engine::Singleton("PhysicsServer3D", PhysicsServer3D::get_singleton(), "PhysicsServer3D"));
-	Engine::get_singleton()->add_singleton(Engine::Singleton("XRServer", XRServer::get_singleton(), "XRServer"));
-#endif // _3D_DISABLED
 
 	OS::get_singleton()->benchmark_end_measure("Servers", "Register Singletons");
 }

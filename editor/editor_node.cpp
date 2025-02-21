@@ -46,7 +46,6 @@
 #include "core/version.h"
 #include "editor/editor_string_names.h"
 #include "main/main.h"
-#include "scene/3d/bone_attachment_3d.h"
 #include "scene/animation/animation_tree.h"
 #include "scene/gui/color_picker.h"
 #include "scene/gui/dialogs.h"
@@ -112,10 +111,6 @@
 #include "editor/gui/editor_title_bar.h"
 #include "editor/gui/editor_toaster.h"
 #include "editor/history_dock.h"
-#include "editor/import/3d/editor_import_collada.h"
-#include "editor/import/3d/resource_importer_obj.h"
-#include "editor/import/3d/resource_importer_scene.h"
-#include "editor/import/3d/scene_import_settings.h"
 #include "editor/import/audio_stream_import_settings.h"
 #include "editor/import/dynamic_font_import_settings.h"
 #include "editor/import/resource_importer_bitmask.h"
@@ -141,7 +136,6 @@
 #include "editor/plugins/editor_preview_plugins.h"
 #include "editor/plugins/editor_resource_conversion_plugin.h"
 #include "editor/plugins/gdextension_export_plugin.h"
-#include "editor/plugins/material_editor_plugin.h"
 #include "editor/plugins/packed_scene_translation_parser_plugin.h"
 #include "editor/plugins/particle_process_material_editor_plugin.h"
 #include "editor/plugins/plugin_config_dialog.h"
@@ -643,7 +637,6 @@ void EditorNode::_notification(int p_what) {
 			_update_theme(true);
 
 			OS::get_singleton()->set_low_processor_usage_mode_sleep_usec(int(EDITOR_GET("interface/editor/low_processor_mode_sleep_usec")));
-			get_tree()->get_root()->set_as_audio_listener_3d(false);
 			get_tree()->get_root()->set_as_audio_listener_2d(false);
 			get_tree()->get_root()->set_snap_2d_transforms_to_pixel(false);
 			get_tree()->get_root()->set_snap_2d_vertices_to_pixel(false);
@@ -2294,13 +2287,6 @@ void EditorNode::push_item_no_inspector(Object *p_object) {
 }
 
 void EditorNode::save_default_environment() {
-	Ref<Environment> fallback = get_tree()->get_root()->get_world_3d()->get_fallback_environment();
-
-	if (fallback.is_valid() && fallback->get_path().is_resource_file()) {
-		HashMap<Ref<Resource>, bool> processed;
-		_find_and_save_edited_subresources(fallback.ptr(), processed, 0);
-		save_resource_in_path(fallback, fallback->get_path());
-	}
 }
 
 void EditorNode::hide_unused_editors(const Object *p_editing_owner) {
@@ -5716,16 +5702,6 @@ void EditorNode::_file_access_close_error_notify_impl(const String &p_str) {
 // tree so that editor scripts which create transient nodes will have the opportunity
 // to recreate them.
 void EditorNode::_notify_nodes_scene_reimported(Node *p_node, Array p_reimported_nodes) {
-	Skeleton3D *skel_3d = Object::cast_to<Skeleton3D>(p_node);
-	if (skel_3d) {
-		skel_3d->reset_bone_poses();
-	} else {
-		BoneAttachment3D *attachment = Object::cast_to<BoneAttachment3D>(p_node);
-		if (attachment) {
-			attachment->notify_rebind_required();
-		}
-	}
-
 	if (p_node->has_method("_nodes_scene_reimported")) {
 		p_node->call("_nodes_scene_reimported", p_reimported_nodes);
 	}
@@ -6522,7 +6498,6 @@ EditorNode::EditorNode() {
 		}
 
 		// No physics by default if in editor.
-		PhysicsServer3D::get_singleton()->set_active(false);
 		PhysicsServer2D::get_singleton()->set_active(false);
 
 		// No scripting by default if in editor (except for tool).
@@ -6698,33 +6673,9 @@ EditorNode::EditorNode() {
 		import_wav.instantiate();
 		ResourceFormatImporter::get_singleton()->add_importer(import_wav);
 
-		Ref<ResourceImporterOBJ> import_obj;
-		import_obj.instantiate();
-		ResourceFormatImporter::get_singleton()->add_importer(import_obj);
-
 		Ref<ResourceImporterShaderFile> import_shader_file;
 		import_shader_file.instantiate();
 		ResourceFormatImporter::get_singleton()->add_importer(import_shader_file);
-
-		Ref<ResourceImporterScene> import_scene = memnew(ResourceImporterScene(false, true));
-		ResourceFormatImporter::get_singleton()->add_importer(import_scene);
-
-		Ref<ResourceImporterScene> import_animation = memnew(ResourceImporterScene(true, true));
-		ResourceFormatImporter::get_singleton()->add_importer(import_animation);
-
-		{
-			Ref<EditorSceneFormatImporterCollada> import_collada;
-			import_collada.instantiate();
-			ResourceImporterScene::add_scene_importer(import_collada);
-
-			Ref<EditorOBJImporter> import_obj2;
-			import_obj2.instantiate();
-			ResourceImporterScene::add_scene_importer(import_obj2);
-
-			Ref<EditorSceneFormatImporterEcui> import_ecui;
-			import_ecui.instantiate();
-			ResourceImporterScene::add_scene_importer(import_ecui);
-		}
 
 		Ref<ResourceImporterBitMap> import_bitmap;
 		import_bitmap.instantiate();
@@ -6938,7 +6889,6 @@ EditorNode::EditorNode() {
 
 	scene_root = memnew(SubViewport);
 	scene_root->set_embedding_subwindows(true);
-	scene_root->set_disable_3d(true);
 	scene_root->set_disable_input(true);
 	scene_root->set_as_audio_listener_2d(true);
 
@@ -6993,9 +6943,6 @@ EditorNode::EditorNode() {
 
 	project_settings_editor = memnew(ProjectSettingsEditor(&editor_data));
 	gui_base->add_child(project_settings_editor);
-
-	scene_import_settings = memnew(SceneImportSettingsDialog);
-	gui_base->add_child(scene_import_settings);
 
 	audio_stream_import_settings = memnew(AudioStreamImportSettingsDialog);
 	gui_base->add_child(audio_stream_import_settings);
@@ -7567,43 +7514,9 @@ EditorNode::EditorNode() {
 	resource_preview->add_preview_generator(Ref<EditorFontPreviewPlugin>(memnew(EditorFontPreviewPlugin)));
 	resource_preview->add_preview_generator(Ref<EditorGradientPreviewPlugin>(memnew(EditorGradientPreviewPlugin)));
 
-	{
-		Ref<StandardMaterial3DConversionPlugin> spatial_mat_convert;
-		spatial_mat_convert.instantiate();
-		resource_conversion_plugins.push_back(spatial_mat_convert);
-
-		Ref<ORMMaterial3DConversionPlugin> orm_mat_convert;
-		orm_mat_convert.instantiate();
-		resource_conversion_plugins.push_back(orm_mat_convert);
-
-		Ref<CanvasItemMaterialConversionPlugin> canvas_item_mat_convert;
-		canvas_item_mat_convert.instantiate();
-		resource_conversion_plugins.push_back(canvas_item_mat_convert);
-
-		Ref<ParticleProcessMaterialConversionPlugin> particles_mat_convert;
-		particles_mat_convert.instantiate();
-		resource_conversion_plugins.push_back(particles_mat_convert);
-
-		Ref<ProceduralSkyMaterialConversionPlugin> procedural_sky_mat_convert;
-		procedural_sky_mat_convert.instantiate();
-		resource_conversion_plugins.push_back(procedural_sky_mat_convert);
-
-		Ref<PanoramaSkyMaterialConversionPlugin> panorama_sky_mat_convert;
-		panorama_sky_mat_convert.instantiate();
-		resource_conversion_plugins.push_back(panorama_sky_mat_convert);
-
-		Ref<PhysicalSkyMaterialConversionPlugin> physical_sky_mat_convert;
-		physical_sky_mat_convert.instantiate();
-		resource_conversion_plugins.push_back(physical_sky_mat_convert);
-
-		Ref<FogMaterialConversionPlugin> fog_mat_convert;
-		fog_mat_convert.instantiate();
-		resource_conversion_plugins.push_back(fog_mat_convert);
-
-		Ref<VisualShaderConversionPlugin> vshader_convert;
-		vshader_convert.instantiate();
-		resource_conversion_plugins.push_back(vshader_convert);
-	}
+	Ref<VisualShaderConversionPlugin> vshader_convert;
+	vshader_convert.instantiate();
+	resource_conversion_plugins.push_back(vshader_convert);
 
 	update_spinner_step_msec = OS::get_singleton()->get_ticks_msec();
 	update_spinner_step_frame = Engine::get_singleton()->get_frames_drawn();
@@ -7739,8 +7652,6 @@ EditorNode::EditorNode() {
 EditorNode::~EditorNode() {
 	EditorInspector::cleanup_plugins();
 	EditorTranslationParser::get_singleton()->clean_parsers();
-	ResourceImporterScene::clean_up_importer_plugins();
-
 	remove_print_handler(&print_handler);
 	EditorHelp::cleanup_doc();
 #if defined(MODULE_GDSCRIPT_ENABLED) || defined(MODULE_MONO_ENABLED)
@@ -7802,26 +7713,6 @@ bool EditorPluginList::forward_gui_input(const Ref<InputEvent> &p_event) {
 	return discard;
 }
 
-EditorPlugin::AfterGUIInput EditorPluginList::forward_3d_gui_input(Camera3D *p_camera, const Ref<InputEvent> &p_event, bool serve_when_force_input_enabled) {
-	EditorPlugin::AfterGUIInput after = EditorPlugin::AFTER_GUI_INPUT_PASS;
-
-	for (int i = 0; i < plugins_list.size(); i++) {
-		if ((!serve_when_force_input_enabled) && plugins_list[i]->is_input_event_forwarding_always_enabled()) {
-			continue;
-		}
-
-		EditorPlugin::AfterGUIInput current_after = plugins_list[i]->forward_3d_gui_input(p_camera, p_event);
-		if (current_after == EditorPlugin::AFTER_GUI_INPUT_STOP) {
-			after = EditorPlugin::AFTER_GUI_INPUT_STOP;
-		}
-		if (after != EditorPlugin::AFTER_GUI_INPUT_STOP && current_after == EditorPlugin::AFTER_GUI_INPUT_CUSTOM) {
-			after = EditorPlugin::AFTER_GUI_INPUT_CUSTOM;
-		}
-	}
-
-	return after;
-}
-
 void EditorPluginList::forward_canvas_draw_over_viewport(Control *p_overlay) {
 	for (int i = 0; i < plugins_list.size(); i++) {
 		plugins_list[i]->forward_canvas_draw_over_viewport(p_overlay);
@@ -7831,18 +7722,6 @@ void EditorPluginList::forward_canvas_draw_over_viewport(Control *p_overlay) {
 void EditorPluginList::forward_canvas_force_draw_over_viewport(Control *p_overlay) {
 	for (int i = 0; i < plugins_list.size(); i++) {
 		plugins_list[i]->forward_canvas_force_draw_over_viewport(p_overlay);
-	}
-}
-
-void EditorPluginList::forward_3d_draw_over_viewport(Control *p_overlay) {
-	for (int i = 0; i < plugins_list.size(); i++) {
-		plugins_list[i]->forward_3d_draw_over_viewport(p_overlay);
-	}
-}
-
-void EditorPluginList::forward_3d_force_draw_over_viewport(Control *p_overlay) {
-	for (int i = 0; i < plugins_list.size(); i++) {
-		plugins_list[i]->forward_3d_force_draw_over_viewport(p_overlay);
 	}
 }
 

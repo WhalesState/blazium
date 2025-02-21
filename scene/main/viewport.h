@@ -34,13 +34,6 @@
 #include "scene/main/node.h"
 #include "scene/resources/texture.h"
 
-#ifndef _3D_DISABLED
-class Camera3D;
-class CollisionObject3D;
-class AudioListener3D;
-class World3D;
-#endif // _3D_DISABLED
-
 class AudioListener2D;
 class Camera2D;
 class CanvasItem;
@@ -706,85 +699,6 @@ public:
 
 	Camera2D *get_camera_2d() const;
 	void assign_next_enabled_camera_2d(const StringName &p_camera_group);
-
-#ifndef _3D_DISABLED
-private:
-	// 3D audio, camera, physics, and world.
-	bool use_xr = false;
-	friend class AudioListener3D;
-	AudioListener3D *audio_listener_3d = nullptr;
-	HashSet<AudioListener3D *> audio_listener_3d_set;
-	bool is_audio_listener_3d_enabled = false;
-	RID internal_audio_listener_3d;
-	void _update_audio_listener_3d();
-	void _listener_transform_3d_changed_notify();
-	void _audio_listener_3d_set(AudioListener3D *p_listener);
-	bool _audio_listener_3d_add(AudioListener3D *p_listener); //true if first
-	void _audio_listener_3d_remove(AudioListener3D *p_listener);
-	void _audio_listener_3d_make_next_current(AudioListener3D *p_exclude);
-
-	void _collision_object_3d_input_event(CollisionObject3D *p_object, Camera3D *p_camera, const Ref<InputEvent> &p_input_event, const Vector3 &p_pos, const Vector3 &p_normal, int p_shape);
-
-	struct Camera3DOverrideData {
-		Transform3D transform;
-		enum Projection {
-			PROJECTION_PERSPECTIVE,
-			PROJECTION_ORTHOGONAL
-		};
-		Projection projection = Projection::PROJECTION_PERSPECTIVE;
-		real_t fov = 0.0;
-		real_t size = 0.0;
-		real_t z_near = 0.0;
-		real_t z_far = 0.0;
-		RID rid;
-
-		operator bool() const {
-			return rid != RID();
-		}
-	} camera_3d_override;
-
-	friend class Camera3D;
-	Camera3D *camera_3d = nullptr;
-	HashSet<Camera3D *> camera_3d_set;
-	void _camera_3d_transform_changed_notify();
-	void _camera_3d_set(Camera3D *p_camera);
-	bool _camera_3d_add(Camera3D *p_camera); //true if first
-	void _camera_3d_remove(Camera3D *p_camera);
-	void _camera_3d_make_next_current(Camera3D *p_exclude);
-
-	Ref<World3D> world_3d;
-	Ref<World3D> own_world_3d;
-	void _own_world_3d_changed();
-	void _propagate_enter_world_3d(Node *p_node);
-	void _propagate_exit_world_3d(Node *p_node);
-
-public:
-	AudioListener3D *get_audio_listener_3d() const;
-	void set_as_audio_listener_3d(bool p_enable);
-	bool is_audio_listener_3d() const;
-
-	Camera3D *get_camera_3d() const;
-	void enable_camera_3d_override(bool p_enable);
-	bool is_camera_3d_override_enabled() const;
-
-	void set_camera_3d_override_transform(const Transform3D &p_transform);
-	Transform3D get_camera_3d_override_transform() const;
-
-	void set_camera_3d_override_perspective(real_t p_fovy_degrees, real_t p_z_near, real_t p_z_far);
-	void set_camera_3d_override_orthogonal(real_t p_size, real_t p_z_near, real_t p_z_far);
-
-	void set_disable_3d(bool p_disable);
-	bool is_3d_disabled() const;
-
-	void set_world_3d(const Ref<World3D> &p_world_3d);
-	Ref<World3D> get_world_3d() const;
-	Ref<World3D> find_world_3d() const;
-	void set_use_own_world_3d(bool p_use_own_world_3d);
-	bool is_using_own_world_3d() const;
-
-	void set_use_xr(bool p_use_xr);
-	bool is_using_xr();
-#endif // _3D_DISABLED
 
 	Viewport();
 	~Viewport();

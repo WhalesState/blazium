@@ -58,10 +58,6 @@
 #include "servers/display_server.h"
 #include "servers/navigation_server_3d.h"
 #include "servers/physics_server_2d.h"
-#ifndef _3D_DISABLED
-#include "scene/resources/3d/world_3d.h"
-#include "servers/physics_server_3d.h"
-#endif // _3D_DISABLED
 #include "window.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -543,33 +539,6 @@ bool SceneTree::process(double p_time) {
 
 	_call_idle_callbacks();
 
-#ifdef TOOLS_ENABLED
-#ifndef _3D_DISABLED
-	if (Engine::get_singleton()->is_editor_hint()) {
-		//simple hack to reload fallback environment if it changed from editor
-		String env_path = GLOBAL_GET(SNAME("rendering/environment/defaults/default_environment"));
-		env_path = env_path.strip_edges(); //user may have added a space or two
-		String cpath;
-		Ref<Environment> fallback = get_root()->get_world_3d()->get_fallback_environment();
-		if (fallback.is_valid()) {
-			cpath = fallback->get_path();
-		}
-		if (cpath != env_path) {
-			if (!env_path.is_empty()) {
-				fallback = ResourceLoader::load(env_path);
-				if (fallback.is_null()) {
-					//could not load fallback, set as empty
-					ProjectSettings::get_singleton()->set("rendering/environment/defaults/default_environment", "");
-				}
-			} else {
-				fallback.unref();
-			}
-			get_root()->get_world_3d()->set_fallback_environment(fallback);
-		}
-	}
-#endif // _3D_DISABLED
-#endif // TOOLS_ENABLED
-
 	return _quit;
 }
 
@@ -893,9 +862,6 @@ void SceneTree::set_pause(bool p_enabled) {
 		return;
 	}
 	paused = p_enabled;
-#ifndef _3D_DISABLED
-	PhysicsServer3D::get_singleton()->set_active(!p_enabled);
-#endif // _3D_DISABLED
 	PhysicsServer2D::get_singleton()->set_active(!p_enabled);
 	if (get_root()) {
 		get_root()->_propagate_pause_notification(p_enabled);
@@ -1752,13 +1718,6 @@ SceneTree::SceneTree() {
 		root->set_wrap_controls(true);
 	}
 
-#ifndef _3D_DISABLED
-	if (!root->get_world_3d().is_valid()) {
-		root->set_world_3d(Ref<World3D>(memnew(World3D)));
-	}
-	root->set_as_audio_listener_3d(true);
-#endif // _3D_DISABLED
-
 	set_physics_interpolation_enabled(GLOBAL_DEF("physics/common/physics_interpolation", false));
 
 	// Initialize network state.
@@ -1837,39 +1796,6 @@ SceneTree::SceneTree() {
 	root->set_sdf_oversize(sdf_oversize);
 	Viewport::SDFScale sdf_scale = Viewport::SDFScale(int(GLOBAL_DEF(PropertyInfo(Variant::INT, "rendering/2d/sdf/scale", PROPERTY_HINT_ENUM, "100%,50%,25%"), 1)));
 	root->set_sdf_scale(sdf_scale);
-
-#ifndef _3D_DISABLED
-	{ // Load default fallback environment.
-		// Get possible extensions.
-		List<String> exts;
-		ResourceLoader::get_recognized_extensions_for_type("Environment", &exts);
-		String ext_hint;
-		for (const String &E : exts) {
-			if (!ext_hint.is_empty()) {
-				ext_hint += ",";
-			}
-			ext_hint += "*." + E;
-		}
-		// Get path.
-		String env_path = GLOBAL_DEF(PropertyInfo(Variant::STRING, "rendering/environment/defaults/default_environment", PROPERTY_HINT_FILE, ext_hint), "");
-		// Setup property.
-		env_path = env_path.strip_edges();
-		if (!env_path.is_empty()) {
-			Ref<Environment> env = ResourceLoader::load(env_path);
-			if (env.is_valid()) {
-				root->get_world_3d()->set_fallback_environment(env);
-			} else {
-				if (Engine::get_singleton()->is_editor_hint()) {
-					// File was erased, clear the field.
-					ProjectSettings::get_singleton()->set("rendering/environment/defaults/default_environment", "");
-				} else {
-					// File was erased, notify user.
-					ERR_PRINT("Default Environment as specified in the project setting \"rendering/environment/defaults/default_environment\" could not be loaded.");
-				}
-			}
-		}
-	}
-#endif // _3D_DISABLED
 
 	root->set_physics_object_picking(GLOBAL_DEF("physics/common/enable_object_picking", true));
 

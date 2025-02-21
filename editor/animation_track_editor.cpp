@@ -43,7 +43,6 @@
 #include "editor/inspector_dock.h"
 #include "editor/plugins/animation_player_editor_plugin.h"
 #include "editor/themes/editor_scale.h"
-#include "scene/3d/mesh_instance_3d.h"
 #include "scene/animation/animation_player.h"
 #include "scene/animation/tween.h"
 #include "scene/gui/check_box.h"
@@ -5258,16 +5257,6 @@ void AnimationTrackEditor::_insert_key_from_track(float p_ofs, int p_track) {
 			}
 
 			id.value = base->get_scale();
-		} break;
-		case Animation::TYPE_BLEND_SHAPE: {
-			MeshInstance3D *base = Object::cast_to<MeshInstance3D>(node);
-
-			if (!base) {
-				EditorNode::get_singleton()->show_warning(TTR("Track is not of type MeshInstance3D, can't insert key"));
-				return;
-			}
-
-			id.value = base->get_blend_shape_value(base->find_blend_shape_by_name(id.path.get_subname(0)));
 		} break;
 		case Animation::TYPE_VALUE: {
 			NodePath bp;

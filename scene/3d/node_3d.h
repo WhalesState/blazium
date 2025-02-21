@@ -32,7 +32,6 @@
 #define NODE_3D_H
 
 #include "scene/main/node.h"
-#include "scene/resources/3d/world_3d.h"
 
 class Node3DGizmo : public RefCounted {
 	GDCLASS(Node3DGizmo, RefCounted);
@@ -168,8 +167,6 @@ public:
 	};
 
 	Node3D *get_parent_node_3d() const;
-
-	Ref<World3D> get_world_3d() const;
 
 	void set_position(const Vector3 &p_position);
 

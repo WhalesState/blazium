@@ -32,7 +32,6 @@
 #define EDITOR_PLUGIN_H
 
 #include "core/io/config_file.h"
-#include "scene/3d/camera_3d.h"
 #include "scene/gui/control.h"
 
 class Node3D;
@@ -112,9 +111,6 @@ protected:
 	GDVIRTUAL1R(bool, _forward_canvas_gui_input, Ref<InputEvent>)
 	GDVIRTUAL1(_forward_canvas_draw_over_viewport, Control *)
 	GDVIRTUAL1(_forward_canvas_force_draw_over_viewport, Control *)
-	GDVIRTUAL2R(int, _forward_3d_gui_input, Camera3D *, Ref<InputEvent>)
-	GDVIRTUAL1(_forward_3d_draw_over_viewport, Control *)
-	GDVIRTUAL1(_forward_3d_force_draw_over_viewport, Control *)
 	GDVIRTUAL0RC(String, _get_plugin_name)
 	GDVIRTUAL0RC(Ref<Texture2D>, _get_plugin_icon)
 	GDVIRTUAL0RC(bool, _has_main_screen)
@@ -174,10 +170,6 @@ public:
 	virtual void forward_canvas_draw_over_viewport(Control *p_overlay);
 	virtual void forward_canvas_force_draw_over_viewport(Control *p_overlay);
 
-	virtual EditorPlugin::AfterGUIInput forward_3d_gui_input(Camera3D *p_camera, const Ref<InputEvent> &p_event);
-	virtual void forward_3d_draw_over_viewport(Control *p_overlay);
-	virtual void forward_3d_force_draw_over_viewport(Control *p_overlay);
-
 	virtual String get_name() const;
 	virtual const Ref<Texture2D> get_icon() const;
 	virtual String get_plugin_version() const;
@@ -225,12 +217,6 @@ public:
 
 	void add_inspector_plugin(const Ref<EditorInspectorPlugin> &p_plugin);
 	void remove_inspector_plugin(const Ref<EditorInspectorPlugin> &p_plugin);
-
-	void add_scene_format_importer_plugin(const Ref<EditorSceneFormatImporter> &p_importer, bool p_first_priority = false);
-	void remove_scene_format_importer_plugin(const Ref<EditorSceneFormatImporter> &p_importer);
-
-	void add_scene_post_import_plugin(const Ref<EditorScenePostImportPlugin> &p_importer, bool p_first_priority = false);
-	void remove_scene_post_import_plugin(const Ref<EditorScenePostImportPlugin> &p_importer);
 
 	void add_autoload_singleton(const String &p_name, const String &p_path);
 	void remove_autoload_singleton(const String &p_name);
