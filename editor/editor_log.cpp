@@ -553,7 +553,7 @@ EditorLog::EditorLog() {
 	type_filter_map.insert(MSG_TYPE_EDITOR, editor_filter);
 
 	add_message(VERSION_FULL_NAME " Copyright Hamid.Memar (c) 2024-2025, All Rights Reserved.");
-	add_message(" Powered by Jenova Framework");
+	add_message("Powered by Jenova Framework (https://github.com/Jenova-Framework)");
 
 	eh.errfunc = _error_handler;
 	eh.userdata = this;
