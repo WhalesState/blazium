@@ -33,11 +33,11 @@
 #include "core/object/script_language.h"
 #include "editor/debugger/debug_adapter/debug_adapter_server.h"
 #include "editor/editor_command_palette.h"
-#include "editor/editor_feature_profile.h"
 #include "editor/editor_file_system.h"
 #include "editor/editor_interface.h"
 #include "editor/editor_node.h"
 #include "editor/editor_paths.h"
+#include "editor/editor_help.h"
 #include "editor/editor_resource_picker.h"
 #include "editor/editor_resource_preview.h"
 #include "editor/editor_script.h"
@@ -137,7 +137,6 @@ void register_editor_types() {
 	GDREGISTER_CLASS(EditorInspectorPlugin);
 	GDREGISTER_CLASS(EditorProperty);
 	GDREGISTER_CLASS(ScriptCreateDialog);
-	GDREGISTER_CLASS(EditorFeatureProfile);
 	GDREGISTER_CLASS(EditorSpinSlider);
 	GDREGISTER_CLASS(EditorResourcePicker);
 	GDREGISTER_CLASS(EditorScriptPicker);

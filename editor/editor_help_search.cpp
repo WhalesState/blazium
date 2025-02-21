@@ -31,7 +31,6 @@
 #include "editor_help_search.h"
 
 #include "core/os/keyboard.h"
-#include "editor/editor_feature_profile.h"
 #include "editor/editor_node.h"
 #include "editor/editor_settings.h"
 #include "editor/editor_string_names.h"
@@ -380,27 +379,6 @@ void EditorHelpSearch::TreeCache::clear() {
 	item_cache.clear();
 }
 
-bool EditorHelpSearch::Runner::_is_class_disabled_by_feature_profile(const StringName &p_class) {
-	Ref<EditorFeatureProfile> profile = EditorFeatureProfileManager::get_singleton()->get_current_profile();
-	if (profile.is_null()) {
-		return false;
-	}
-
-	StringName class_name = p_class;
-	while (class_name != StringName()) {
-		if (!ClassDB::class_exists(class_name)) {
-			return false;
-		}
-
-		if (profile->is_class_disabled(class_name)) {
-			return true;
-		}
-		class_name = ClassDB::get_parent_class(class_name);
-	}
-
-	return false;
-}
-
 bool EditorHelpSearch::Runner::_slice() {
 	bool phase_done = false;
 	switch (phase) {
@@ -474,7 +452,7 @@ bool EditorHelpSearch::Runner::_phase_match_classes() {
 		class_doc = nullptr;
 	}
 
-	if (class_doc && !_is_class_disabled_by_feature_profile(class_doc->name)) {
+	if (class_doc) {
 		ClassMatch match;
 		match.doc = class_doc;
 

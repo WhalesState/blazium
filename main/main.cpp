@@ -3426,7 +3426,7 @@ int Main::start() {
 			sml->get_root()->add_child(editor_node);
 
 			if (!_export_preset.is_empty()) {
-				editor_node->export_preset(_export_preset, positional_arg, export_debug, export_pack_only, install_android_build_template);
+				editor_node->export_preset(_export_preset, positional_arg, export_debug, export_pack_only);
 				game_path = ""; // Do not load anything.
 			}
 

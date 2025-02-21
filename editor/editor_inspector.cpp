@@ -33,7 +33,6 @@
 
 #include "core/os/keyboard.h"
 #include "editor/doc_tools.h"
-#include "editor/editor_feature_profile.h"
 #include "editor/editor_node.h"
 #include "editor/editor_property_name_processor.h"
 #include "editor/editor_settings.h"
@@ -47,6 +46,7 @@
 #include "editor/themes/editor_theme_manager.h"
 #include "scene/gui/margin_container.h"
 #include "scene/gui/spin_box.h"
+#include "scene/gui/option_button.h"
 #include "scene/gui/texture_rect.h"
 #include "scene/property_utils.h"
 #include "scene/resources/packed_scene.h"
@@ -2739,28 +2739,6 @@ void EditorInspector::_parse_added_editors(VBoxContainer *current_vbox, EditorIn
 	ped->added_editors.clear();
 }
 
-bool EditorInspector::_is_property_disabled_by_feature_profile(const StringName &p_property) {
-	Ref<EditorFeatureProfile> profile = EditorFeatureProfileManager::get_singleton()->get_current_profile();
-	if (profile.is_null()) {
-		return false;
-	}
-
-	StringName class_name = object->get_class();
-
-	while (class_name != StringName()) {
-		if (profile->is_class_property_disabled(class_name, p_property)) {
-			return true;
-		}
-		if (profile->is_class_disabled(class_name)) {
-			//won't see properties of a disabled class
-			return true;
-		}
-		class_name = ClassDB::get_parent_class(class_name);
-	}
-
-	return false;
-}
-
 void EditorInspector::update_tree() {
 	// Store currently selected and focused elements to restore after the update.
 	// TODO: Can be useful to store more context for the focusable, such as the caret position in LineEdit.
@@ -3004,7 +2982,7 @@ void EditorInspector::update_tree() {
 
 			continue;
 
-		} else if (p.name.begins_with("metadata/_") || !(p.usage & PROPERTY_USAGE_EDITOR) || _is_property_disabled_by_feature_profile(p.name) ||
+		} else if (p.name.begins_with("metadata/_") || !(p.usage & PROPERTY_USAGE_EDITOR) ||
 				(filter.is_empty() && restrict_to_basic && !(p.usage & PROPERTY_USAGE_EDITOR_BASIC_SETTING))) {
 			// Ignore properties that are not supposed to be in the inspector.
 			continue;
@@ -4096,7 +4074,6 @@ void EditorInspector::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_READY: {
-			EditorFeatureProfileManager::get_singleton()->connect("current_feature_profile_changed", callable_mp(this, &EditorInspector::_feature_profile_changed));
 			set_process(is_visible_in_tree());
 			add_theme_style_override(SceneStringName(panel), get_theme_stylebox(SceneStringName(panel), SNAME("Tree")));
 			if (!sub_inspector) {
@@ -4231,10 +4208,6 @@ void EditorInspector::set_object_class(const String &p_class) {
 
 String EditorInspector::get_object_class() const {
 	return object_class;
-}
-
-void EditorInspector::_feature_profile_changed() {
-	update_tree();
 }
 
 void EditorInspector::set_restrict_to_basic_settings(bool p_restrict) {

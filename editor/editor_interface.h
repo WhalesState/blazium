@@ -121,9 +121,6 @@ public:
 	void popup_dialog_centered_ratio(Window *p_dialog, float p_ratio = 0.8);
 	void popup_dialog_centered_clamped(Window *p_dialog, const Size2i &p_size = Size2i(), float p_fallback_ratio = 0.75);
 
-	String get_current_feature_profile() const;
-	void set_current_feature_profile(const String &p_profile_name);
-
 	// Editor dialogs.
 
 	void popup_node_selector(const Callable &p_callback, const TypedArray<StringName> &p_valid_types = TypedArray<StringName>());

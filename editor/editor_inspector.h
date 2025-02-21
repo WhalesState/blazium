@@ -572,10 +572,6 @@ class EditorInspector : public ScrollContainer {
 
 	void _vscroll_changed(double);
 
-	void _feature_profile_changed();
-
-	bool _is_property_disabled_by_feature_profile(const StringName &p_property);
-
 	ConfirmationDialog *add_meta_dialog = nullptr;
 	LineEdit *add_meta_name = nullptr;
 	OptionButton *add_meta_type = nullptr;

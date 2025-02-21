@@ -98,7 +98,6 @@ class CreateDialog : public ConfirmationDialog {
 	bool can_drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from) const;
 	void drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from);
 
-	bool _is_class_disabled_by_feature_profile(const StringName &p_class) const;
 	void _load_favorites_and_history();
 
 protected:

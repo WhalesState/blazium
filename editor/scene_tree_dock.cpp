@@ -36,7 +36,6 @@
 #include "core/object/class_db.h"
 #include "core/os/keyboard.h"
 #include "editor/debugger/editor_debugger_node.h"
-#include "editor/editor_feature_profile.h"
 #include "editor/editor_node.h"
 #include "editor/editor_paths.h"
 #include "editor/editor_quick_open.h"
@@ -1519,8 +1518,6 @@ void SceneTreeDock::_notification(int p_what) {
 				break;
 			}
 			first_enter = false;
-
-			EditorFeatureProfileManager::get_singleton()->connect("current_feature_profile_changed", callable_mp(this, &SceneTreeDock::_feature_profile_changed));
 
 			CanvasItemEditorPlugin *canvas_item_plugin = Object::cast_to<CanvasItemEditorPlugin>(editor_data->get_editor_by_name("2D"));
 			if (canvas_item_plugin) {
@@ -4149,31 +4146,6 @@ void SceneTreeDock::_update_create_root_dialog() {
 void SceneTreeDock::_favorite_root_selected(const String &p_class) {
 	selected_favorite_root = p_class;
 	_tool_selected(TOOL_CREATE_FAVORITE);
-}
-
-void SceneTreeDock::_feature_profile_changed() {
-	Ref<EditorFeatureProfile> profile = EditorFeatureProfileManager::get_singleton()->get_current_profile();
-
-	if (profile.is_valid()) {
-		profile_allow_editing = !profile->is_feature_disabled(EditorFeatureProfile::FEATURE_SCENE_TREE);
-		profile_allow_script_editing = !profile->is_feature_disabled(EditorFeatureProfile::FEATURE_SCRIPT);
-		bool profile_allow_3d = !profile->is_feature_disabled(EditorFeatureProfile::FEATURE_3D);
-
-		button_3d->set_visible(profile_allow_3d);
-		button_add->set_visible(profile_allow_editing);
-		button_instance->set_visible(profile_allow_editing);
-		scene_tree->set_can_rename(profile_allow_editing);
-
-	} else {
-		button_3d->set_visible(true);
-		button_add->set_visible(true);
-		button_instance->set_visible(true);
-		scene_tree->set_can_rename(true);
-		profile_allow_editing = true;
-		profile_allow_script_editing = true;
-	}
-
-	_update_script_button();
 }
 
 void SceneTreeDock::_clear_clipboard() {

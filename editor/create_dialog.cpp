@@ -32,7 +32,6 @@
 
 #include "core/object/class_db.h"
 #include "core/os/keyboard.h"
-#include "editor/editor_feature_profile.h"
 #include "editor/editor_node.h"
 #include "editor/editor_paths.h"
 #include "editor/editor_settings.h"
@@ -112,17 +111,7 @@ bool CreateDialog::_is_type_preferred(const String &p_type) const {
 	return EditorNode::get_editor_data().script_class_is_parent(p_type, preferred_search_result_type);
 }
 
-bool CreateDialog::_is_class_disabled_by_feature_profile(const StringName &p_class) const {
-	Ref<EditorFeatureProfile> profile = EditorFeatureProfileManager::get_singleton()->get_current_profile();
-
-	return !profile.is_null() && profile->is_class_disabled(p_class);
-}
-
 bool CreateDialog::_should_hide_type(const StringName &p_type) const {
-	if (_is_class_disabled_by_feature_profile(p_type)) {
-		return true;
-	}
-
 	if (is_base_type_node && p_type.operator String().begins_with("Editor")) {
 		return true; // Do not show editor nodes.
 	}
@@ -699,10 +688,6 @@ void CreateDialog::_save_and_update_favorite_list() {
 				}
 				f->store_line(l);
 
-				if (_is_class_disabled_by_feature_profile(name)) {
-					continue;
-				}
-
 				TreeItem *ti = favorites->create_item(root);
 				ti->set_text(0, l);
 				ti->set_icon(0, EditorNode::get_singleton()->get_class_icon(name));
@@ -721,7 +706,7 @@ void CreateDialog::_load_favorites_and_history() {
 			String l = f->get_line().strip_edges();
 			String name = l.get_slicec(' ', 0);
 
-			if (EditorNode::get_editor_data().is_type_recognized(name) && !_is_class_disabled_by_feature_profile(name)) {
+			if (EditorNode::get_editor_data().is_type_recognized(name)) {
 				recent->add_item(l, EditorNode::get_singleton()->get_class_icon(name));
 			}
 		}

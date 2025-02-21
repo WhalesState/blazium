@@ -79,7 +79,6 @@
 #include "editor/editor_command_palette.h"
 #include "editor/editor_data.h"
 #include "editor/editor_dock_manager.h"
-#include "editor/editor_feature_profile.h"
 #include "editor/editor_folding.h"
 #include "editor/editor_help.h"
 #include "editor/editor_inspector.h"
@@ -147,7 +146,6 @@
 #include "editor/project_settings_editor.h"
 #include "editor/register_exporters.h"
 #include "editor/scene_tree_dock.h"
-#include "editor/surface_upgrade_tool.h"
 #include "editor/themes/editor_scale.h"
 #include "editor/themes/editor_theme_manager.h"
 #include "editor/window_wrapper.h"
@@ -597,14 +595,7 @@ void EditorNode::_notification(int p_what) {
 				requested_first_scan = false;
 
 				OS::get_singleton()->benchmark_begin_measure("Editor", "First Scan");
-
-				if (run_surface_upgrade_tool) {
-					run_surface_upgrade_tool = false;
-					SurfaceUpgradeTool::get_singleton()->connect("upgrade_finished", callable_mp(EditorFileSystem::get_singleton(), &EditorFileSystem::scan), CONNECT_ONE_SHOT);
-					SurfaceUpgradeTool::get_singleton()->finish_upgrade();
-				} else {
-					EditorFileSystem::get_singleton()->scan();
-				}
+				EditorFileSystem::get_singleton()->scan();
 			}
 		} break;
 
@@ -673,8 +664,6 @@ void EditorNode::_notification(int p_what) {
 
 			RenderingServer::get_singleton()->viewport_set_disable_2d(get_scene_root()->get_viewport_rid(), true);
 			RenderingServer::get_singleton()->viewport_set_environment_mode(get_viewport()->get_viewport_rid(), RenderingServer::VIEWPORT_ENVIRONMENT_DISABLED);
-
-			feature_profile_manager->notify_changed();
 
 			_select_default_main_screen_plugin();
 
@@ -971,9 +960,6 @@ void EditorNode::_fs_changed() {
 				} else { // Normal project export.
 					String config_error;
 					bool missing_templates;
-					if (export_defer.android_build_template) {
-						export_template_manager->install_android_template(export_preset);
-					}
 					if (!platform->can_export(export_preset, config_error, missing_templates, export_defer.debug)) {
 						ERR_PRINT(vformat("Cannot export project with preset \"%s\" due to configuration errors:\n%s", preset_name, config_error));
 						err = missing_templates ? ERR_FILE_NOT_FOUND : ERR_UNCONFIGURED;
@@ -1079,10 +1065,6 @@ void EditorNode::_sources_changed(bool p_exist) {
 
 			OS::get_singleton()->benchmark_end_measure("Editor", "Load Scene");
 			OS::get_singleton()->benchmark_dump();
-		}
-
-		if (SurfaceUpgradeTool::get_singleton()->is_show_requested()) {
-			SurfaceUpgradeTool::get_singleton()->show_popup();
 		}
 
 		// Start preview thread now that it's safe.
@@ -2148,32 +2130,13 @@ void EditorNode::_dialog_action(String p_file) {
 	}
 }
 
-bool EditorNode::_is_class_editor_disabled_by_feature_profile(const StringName &p_class) {
-	Ref<EditorFeatureProfile> profile = EditorFeatureProfileManager::get_singleton()->get_current_profile();
-	if (profile.is_null()) {
-		return false;
-	}
 
-	StringName class_name = p_class;
-
-	while (class_name != StringName()) {
-		if (profile->is_class_disabled(class_name)) {
-			return true;
-		}
-		if (profile->is_class_editor_disabled(class_name)) {
-			return true;
-		}
-		class_name = ClassDB::get_parent_class(class_name);
-	}
-
-	return false;
-}
 
 void EditorNode::edit_item(Object *p_object, Object *p_editing_owner) {
 	ERR_FAIL_NULL(p_editing_owner);
 
 	// Editing for this type of object may be disabled by user's feature profile.
-	if (!p_object || _is_class_editor_disabled_by_feature_profile(p_object->get_class())) {
+	if (!p_object) {
 		// Nothing to edit, clean up the owner context and return.
 		hide_unused_editors(p_editing_owner);
 		return;
@@ -2537,19 +2500,6 @@ void EditorNode::_edit_current(bool p_skip_foreign, bool p_skip_inspector_update
 	InspectorDock::get_singleton()->update(current_obj);
 }
 
-void EditorNode::_android_build_source_selected(const String &p_file) {
-	export_template_manager->install_android_template_from_file(p_file, android_export_preset);
-}
-
-void EditorNode::_android_export_preset_selected(int p_index) {
-	if (p_index >= 0) {
-		android_export_preset = EditorExport::get_singleton()->get_export_preset(choose_android_export_profile->get_item_id(p_index));
-	} else {
-		android_export_preset.unref();
-	}
-	install_android_build_template_message->set_text(vformat(TTR(INSTALL_ANDROID_BUILD_TEMPLATE_MESSAGE), export_template_manager->get_android_build_directory(android_export_preset)));
-}
-
 void EditorNode::_menu_option_confirm(int p_option, bool p_confirmed) {
 	if (!p_confirmed) { // FIXME: this may be a hack.
 		current_menu_option = (MenuOptions)p_option;
@@ -2841,57 +2791,10 @@ void EditorNode::_menu_option_confirm(int p_option, bool p_confirmed) {
 		case RUN_SETTINGS: {
 			project_settings_editor->popup_project_settings();
 		} break;
-		case FILE_INSTALL_ANDROID_SOURCE: {
-			if (p_confirmed) {
-				if (export_template_manager->is_android_template_installed(android_export_preset)) {
-					remove_android_build_template->set_text(vformat(TTR(REMOVE_ANDROID_BUILD_TEMPLATE_MESSAGE), export_template_manager->get_android_build_directory(android_export_preset)));
-					remove_android_build_template->popup_centered();
-				} else if (!export_template_manager->can_install_android_template(android_export_preset)) {
-					gradle_build_manage_templates->popup_centered();
-				} else {
-					export_template_manager->install_android_template(android_export_preset);
-				}
-			} else {
-				bool has_custom_gradle_build = false;
-				choose_android_export_profile->clear();
-				for (int i = 0; i < EditorExport::get_singleton()->get_export_preset_count(); i++) {
-					Ref<EditorExportPreset> export_preset = EditorExport::get_singleton()->get_export_preset(i);
-					if (export_preset->get_platform()->get_class_name() == "EditorExportPlatformAndroid" && (bool)export_preset->get("gradle_build/use_gradle_build")) {
-						choose_android_export_profile->add_item(export_preset->get_name(), i);
-						String gradle_build_directory = export_preset->get("gradle_build/gradle_build_directory");
-						String android_source_template = export_preset->get("gradle_build/android_source_template");
-						if (!android_source_template.is_empty() || (gradle_build_directory != "" && gradle_build_directory != "res://android")) {
-							has_custom_gradle_build = true;
-						}
-					}
-				}
-				_android_export_preset_selected(choose_android_export_profile->get_item_count() >= 1 ? 0 : -1);
-
-				if (choose_android_export_profile->get_item_count() > 1 && has_custom_gradle_build) {
-					// If there's multiple options and at least one of them uses a custom gradle build then prompt the user to choose.
-					choose_android_export_profile->show();
-					install_android_build_template->popup_centered();
-				} else {
-					choose_android_export_profile->hide();
-
-					if (export_template_manager->is_android_template_installed(android_export_preset)) {
-						remove_android_build_template->set_text(vformat(TTR(REMOVE_ANDROID_BUILD_TEMPLATE_MESSAGE), export_template_manager->get_android_build_directory(android_export_preset)));
-						remove_android_build_template->popup_centered();
-					} else if (export_template_manager->can_install_android_template(android_export_preset)) {
-						install_android_build_template->popup_centered();
-					} else {
-						gradle_build_manage_templates->popup_centered();
-					}
-				}
-			}
-		} break;
 		case RUN_USER_DATA_FOLDER: {
 			// Ensure_user_data_dir() to prevent the edge case: "Open User Data Folder" won't work after the project was renamed in ProjectSettingsEditor unless the project is saved.
 			OS::get_singleton()->ensure_user_data_dir();
 			OS::get_singleton()->shell_show_in_file_manager(OS::get_singleton()->get_user_data_dir(), true);
-		} break;
-		case FILE_EXPLORE_ANDROID_BUILD_TEMPLATES: {
-			OS::get_singleton()->shell_show_in_file_manager(ProjectSettings::get_singleton()->globalize_path(export_template_manager->get_android_build_directory(android_export_preset).get_base_dir()), true);
 		} break;
 		case FILE_QUIT:
 		case RUN_PROJECT_MANAGER:
@@ -3002,13 +2905,6 @@ void EditorNode::_menu_option_confirm(int p_option, bool p_confirmed) {
 #if !defined(ANDROID_ENABLED) && !defined(WEB_ENABLED)
 			fbx_importer_manager->show_dialog();
 #endif
-		} break;
-		case SETTINGS_INSTALL_ANDROID_BUILD_TEMPLATE: {
-			gradle_build_manage_templates->hide();
-			file_android_build_source->popup_centered_ratio();
-		} break;
-		case SETTINGS_MANAGE_FEATURE_PROFILES: {
-			feature_profile_manager->popup_centered_clamped(Size2(900, 800) * EDSCALE, 0.8);
 		} break;
 		case SETTINGS_TOGGLE_FULLSCREEN: {
 			DisplayServer::WindowMode mode = DisplayServer::get_singleton()->window_get_mode();
@@ -3188,12 +3084,6 @@ void EditorNode::_tool_menu_option(int p_idx) {
 	switch (tool_menu->get_item_id(p_idx)) {
 		case TOOLS_ORPHAN_RESOURCES: {
 			orphan_resources->show();
-		} break;
-		case TOOLS_BUILD_PROFILE_MANAGER: {
-			build_profile_manager->popup_centered_clamped(Size2(700, 800) * EDSCALE, 0.8);
-		} break;
-		case TOOLS_SURFACE_UPGRADE: {
-			surface_upgrade_dialog->popup_on_demand();
 		} break;
 		case TOOLS_CUSTOM: {
 			if (tool_menu->get_item_submenu(p_idx) == "") {
@@ -5013,12 +4903,11 @@ void EditorNode::_begin_first_scan() {
 	requested_first_scan = true;
 }
 
-Error EditorNode::export_preset(const String &p_preset, const String &p_path, bool p_debug, bool p_pack_only, bool p_android_build_template) {
+Error EditorNode::export_preset(const String &p_preset, const String &p_path, bool p_debug, bool p_pack_only) {
 	export_defer.preset = p_preset;
 	export_defer.path = p_path;
 	export_defer.debug = p_debug;
 	export_defer.pack_only = p_pack_only;
-	export_defer.android_build_template = p_android_build_template;
 	cmdline_export_mode = true;
 	return OK;
 }
@@ -6340,31 +6229,6 @@ void EditorNode::_resource_loaded(Ref<Resource> p_resource, const String &p_path
 	singleton->editor_folding.load_resource_folding(p_resource, p_path);
 }
 
-void EditorNode::_feature_profile_changed() {
-	Ref<EditorFeatureProfile> profile = feature_profile_manager->get_current_profile();
-	if (profile.is_valid()) {
-		editor_dock_manager->set_dock_enabled(NodeDock::get_singleton(), !profile->is_feature_disabled(EditorFeatureProfile::FEATURE_NODE_DOCK));
-		// The Import dock is useless without the FileSystem dock. Ensure the configuration is valid.
-		bool fs_dock_disabled = profile->is_feature_disabled(EditorFeatureProfile::FEATURE_FILESYSTEM_DOCK);
-		editor_dock_manager->set_dock_enabled(FileSystemDock::get_singleton(), !fs_dock_disabled);
-		editor_dock_manager->set_dock_enabled(ImportDock::get_singleton(), !fs_dock_disabled && !profile->is_feature_disabled(EditorFeatureProfile::FEATURE_IMPORT_DOCK));
-		editor_dock_manager->set_dock_enabled(history_dock, !profile->is_feature_disabled(EditorFeatureProfile::FEATURE_HISTORY_DOCK));
-
-		main_editor_buttons[EDITOR_DESIGNER]->set_visible(!profile->is_feature_disabled(EditorFeatureProfile::FEATURE_3D));
-		main_editor_buttons[EDITOR_DEVELOPMENT]->set_visible(!profile->is_feature_disabled(EditorFeatureProfile::FEATURE_SCRIPT));
-		if ((profile->is_feature_disabled(EditorFeatureProfile::FEATURE_SCRIPT) && singleton->main_editor_buttons[EDITOR_DEVELOPMENT]->is_pressed())) {
-			editor_select(EDITOR_DESIGNER);
-		}
-	} else {
-		editor_dock_manager->set_dock_enabled(ImportDock::get_singleton(), true);
-		editor_dock_manager->set_dock_enabled(NodeDock::get_singleton(), true);
-		editor_dock_manager->set_dock_enabled(FileSystemDock::get_singleton(), true);
-		editor_dock_manager->set_dock_enabled(history_dock, true);
-		main_editor_buttons[EDITOR_DESIGNER]->set_visible(true);
-		main_editor_buttons[EDITOR_DEVELOPMENT]->set_visible(true);
-	}
-}
-
 void EditorNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("push_item", "object", "property", "inspector_only"), &EditorNode::push_item, DEFVAL(""), DEFVAL(false));
 
@@ -6524,50 +6388,41 @@ EditorNode::EditorNode() {
 	_update_vsync_mode();
 
 	// Warm up the surface upgrade tool as early as possible.
-	surface_upgrade_tool = memnew(SurfaceUpgradeTool);
-	run_surface_upgrade_tool = EditorSettings::get_singleton()->get_project_metadata("surface_upgrade_tool", "run_on_restart", false);
-	if (run_surface_upgrade_tool) {
-		SurfaceUpgradeTool::get_singleton()->begin_upgrade();
-	}
 
-	{
-		bool agile_input_event_flushing = EDITOR_GET("input/buffering/agile_event_flushing");
-		bool use_accumulated_input = EDITOR_GET("input/buffering/use_accumulated_input");
+	bool agile_input_event_flushing = EDITOR_GET("input/buffering/agile_event_flushing");
+	bool use_accumulated_input = EDITOR_GET("input/buffering/use_accumulated_input");
 
-		Input::get_singleton()->set_agile_input_event_flushing(agile_input_event_flushing);
-		Input::get_singleton()->set_use_accumulated_input(use_accumulated_input);
-	}
+	Input::get_singleton()->set_agile_input_event_flushing(agile_input_event_flushing);
+	Input::get_singleton()->set_use_accumulated_input(use_accumulated_input);
 
-	{
-		int display_scale = EDITOR_GET("interface/editor/display_scale");
+	int display_scale = EDITOR_GET("interface/editor/display_scale");
 
-		switch (display_scale) {
-			case 0:
-				// Try applying a suitable display scale automatically.
-				EditorScale::set_scale(EditorSettings::get_singleton()->get_auto_display_scale());
-				break;
-			case 1:
-				EditorScale::set_scale(0.75);
-				break;
-			case 2:
-				EditorScale::set_scale(1.0);
-				break;
-			case 3:
-				EditorScale::set_scale(1.25);
-				break;
-			case 4:
-				EditorScale::set_scale(1.5);
-				break;
-			case 5:
-				EditorScale::set_scale(1.75);
-				break;
-			case 6:
-				EditorScale::set_scale(2.0);
-				break;
-			default:
-				EditorScale::set_scale(EDITOR_GET("interface/editor/custom_display_scale"));
-				break;
-		}
+	switch (display_scale) {
+		case 0:
+			// Try applying a suitable display scale automatically.
+			EditorScale::set_scale(EditorSettings::get_singleton()->get_auto_display_scale());
+			break;
+		case 1:
+			EditorScale::set_scale(0.75);
+			break;
+		case 2:
+			EditorScale::set_scale(1.0);
+			break;
+		case 3:
+			EditorScale::set_scale(1.25);
+			break;
+		case 4:
+			EditorScale::set_scale(1.5);
+			break;
+		case 5:
+			EditorScale::set_scale(1.75);
+			break;
+		case 6:
+			EditorScale::set_scale(2.0);
+			break;
+		default:
+			EditorScale::set_scale(EDITOR_GET("interface/editor/custom_display_scale"));
+			break;
 	}
 
 	// Define a minimum window size to prevent UI elements from overlapping or being cut off.
@@ -6932,15 +6787,8 @@ EditorNode::EditorNode() {
 	export_template_manager = memnew(ExportTemplateManager);
 	gui_base->add_child(export_template_manager);
 
-	feature_profile_manager = memnew(EditorFeatureProfileManager);
-	gui_base->add_child(feature_profile_manager);
-
-	build_profile_manager = memnew(EditorBuildProfileManager);
-	gui_base->add_child(build_profile_manager);
-
 	about = memnew(EditorAbout);
 	gui_base->add_child(about);
-	feature_profile_manager->connect("current_feature_profile_changed", callable_mp(this, &EditorNode::_feature_profile_changed));
 
 #if !defined(ANDROID_ENABLED) && !defined(WEB_ENABLED)
 	fbx_importer_manager = memnew(FBXImporterManager);
@@ -6984,7 +6832,7 @@ EditorNode::EditorNode() {
 	file_menu->add_separator();
 	export_as_menu = memnew(PopupMenu);
 	file_menu->add_submenu_node_item(TTR("Export As..."), export_as_menu);
-	export_as_menu->add_shortcut(ED_SHORTCUT("editor/export_as_mesh_library", TTR("MeshLibrary...")), FILE_EXPORT_MESH_LIBRARY);
+	/* Export as Menu*/
 	export_as_menu->connect("index_pressed", callable_mp(this, &EditorNode::_export_as_menu_option));
 
 	file_menu->add_separator();
@@ -7029,7 +6877,6 @@ EditorNode::EditorNode() {
 	project_menu->add_separator();
 	project_menu->add_shortcut(ED_SHORTCUT_AND_COMMAND("editor/export", TTR("Export..."), Key::NONE, TTR("Export")), FILE_EXPORT_PROJECT);
 #ifndef ANDROID_ENABLED
-	project_menu->add_item(TTR("Install Android Build Template..."), FILE_INSTALL_ANDROID_SOURCE);
 	project_menu->add_item(TTR("Open User Data Folder"), RUN_USER_DATA_FOLDER);
 #endif
 
@@ -7039,8 +6886,6 @@ EditorNode::EditorNode() {
 	tool_menu->connect("index_pressed", callable_mp(this, &EditorNode::_tool_menu_option));
 	project_menu->add_submenu_node_item(TTR("Tools"), tool_menu);
 	tool_menu->add_shortcut(ED_SHORTCUT_AND_COMMAND("editor/orphan_resource_explorer", TTR("Orphan Resource Explorer...")), TOOLS_ORPHAN_RESOURCES);
-	tool_menu->add_shortcut(ED_SHORTCUT_AND_COMMAND("editor/engine_compilation_configuration_editor", TTR("Engine Compilation Configuration Editor...")), TOOLS_BUILD_PROFILE_MANAGER);
-	tool_menu->add_shortcut(ED_SHORTCUT_AND_COMMAND("editor/upgrade_mesh_surfaces", TTR("Upgrade Mesh Surfaces...")), TOOLS_SURFACE_UPGRADE);
 
 	project_menu->add_separator();
 	project_menu->add_shortcut(ED_SHORTCUT("editor/reload_current_project", TTR("Reload Current Project")), RELOAD_CURRENT_PROJECT);
@@ -7121,7 +6966,6 @@ EditorNode::EditorNode() {
 	settings_menu->add_separator();
 #endif
 
-	settings_menu->add_item(TTR("Manage Editor Features..."), SETTINGS_MANAGE_FEATURE_PROFILES);
 #ifndef ANDROID_ENABLED
 	settings_menu->add_item(TTR("Manage Export Templates..."), SETTINGS_MANAGE_EXPORT_TEMPLATES);
 #endif
@@ -7318,9 +7162,6 @@ EditorNode::EditorNode() {
 	orphan_resources = memnew(OrphanResourcesDialog);
 	gui_base->add_child(orphan_resources);
 
-	surface_upgrade_dialog = memnew(SurfaceUpgradeDialog);
-	gui_base->add_child(surface_upgrade_dialog);
-
 	confirmation = memnew(ConfirmationDialog);
 	gui_base->add_child(confirmation);
 	confirmation->connect(SceneStringName(confirmed), callable_mp(this, &EditorNode::_menu_confirm_current));
@@ -7332,45 +7173,6 @@ EditorNode::EditorNode() {
 	save_confirmation->connect(SceneStringName(confirmed), callable_mp(this, &EditorNode::_menu_confirm_current));
 	save_confirmation->connect("custom_action", callable_mp(this, &EditorNode::_discard_changes));
 	save_confirmation->connect("canceled", callable_mp(this, &EditorNode::_cancel_close_scene_tab));
-
-	gradle_build_manage_templates = memnew(ConfirmationDialog);
-	gradle_build_manage_templates->set_text(TTR("Android build template is missing, please install relevant templates."));
-	gradle_build_manage_templates->set_ok_button_text(TTR("Manage Templates"));
-	gradle_build_manage_templates->add_button(TTR("Install from file"))->connect(SceneStringName(pressed), callable_mp(this, &EditorNode::_menu_option).bind(SETTINGS_INSTALL_ANDROID_BUILD_TEMPLATE));
-	gradle_build_manage_templates->connect(SceneStringName(confirmed), callable_mp(this, &EditorNode::_menu_option).bind(SETTINGS_MANAGE_EXPORT_TEMPLATES));
-	gui_base->add_child(gradle_build_manage_templates);
-
-	file_android_build_source = memnew(EditorFileDialog);
-	file_android_build_source->set_title(TTR("Select Android sources file"));
-	file_android_build_source->set_access(EditorFileDialog::ACCESS_FILESYSTEM);
-	file_android_build_source->set_file_mode(EditorFileDialog::FILE_MODE_OPEN_FILE);
-	file_android_build_source->add_filter("*.zip");
-	file_android_build_source->connect("file_selected", callable_mp(this, &EditorNode::_android_build_source_selected));
-	gui_base->add_child(file_android_build_source);
-
-	{
-		VBoxContainer *vbox = memnew(VBoxContainer);
-		install_android_build_template_message = memnew(Label);
-		install_android_build_template_message->set_autowrap_mode(TextServer::AUTOWRAP_WORD_SMART);
-		install_android_build_template_message->set_custom_minimum_size(Size2(300 * EDSCALE, 1));
-		vbox->add_child(install_android_build_template_message);
-
-		choose_android_export_profile = memnew(OptionButton);
-		choose_android_export_profile->connect(SceneStringName(item_selected), callable_mp(this, &EditorNode::_android_export_preset_selected));
-		vbox->add_child(choose_android_export_profile);
-
-		install_android_build_template = memnew(ConfirmationDialog);
-		install_android_build_template->set_ok_button_text(TTR("Install"));
-		install_android_build_template->connect(SceneStringName(confirmed), callable_mp(this, &EditorNode::_menu_confirm_current));
-		install_android_build_template->add_child(vbox);
-		install_android_build_template->set_min_size(Vector2(500.0 * EDSCALE, 0));
-		gui_base->add_child(install_android_build_template);
-	}
-
-	remove_android_build_template = memnew(ConfirmationDialog);
-	remove_android_build_template->set_ok_button_text(TTR("Show in File Manager"));
-	remove_android_build_template->connect(SceneStringName(confirmed), callable_mp(this, &EditorNode::_menu_option).bind(FILE_EXPLORE_ANDROID_BUILD_TEMPLATES));
-	gui_base->add_child(remove_android_build_template);
 
 	file_templates = memnew(EditorFileDialog);
 	file_templates->set_title(TTR("Import Templates From ZIP File"));
@@ -7641,7 +7443,6 @@ EditorNode::~EditorNode() {
 	memdelete(editor_plugins_force_over);
 	memdelete(editor_plugins_force_input_forwarding);
 	memdelete(progress_hb);
-	memdelete(surface_upgrade_tool);
 	memdelete(editor_dock_manager);
 
 	EditorSettings::destroy();

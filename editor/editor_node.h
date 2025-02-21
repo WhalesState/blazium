@@ -84,7 +84,6 @@ class EditorDockManager;
 class EditorExport;
 class EditorExportPreset;
 class EditorExtensionManager;
-class EditorFeatureProfileManager;
 class EditorFileDialog;
 class EditorFolding;
 class EditorInspector;
@@ -118,8 +117,6 @@ class ProjectSettingsEditor;
 class RunSettingsDialog;
 class SceneImportSettingsDialog;
 class ScriptCreateDialog;
-class SurfaceUpgradeTool;
-class SurfaceUpgradeDialog;
 class WindowWrapper;
 
 class EditorNode : public Node {
@@ -176,9 +173,6 @@ private:
 		FILE_RUN_SCENE,
 		FILE_SHOW_IN_FILESYSTEM,
 		FILE_EXPORT_PROJECT,
-		FILE_EXPORT_MESH_LIBRARY,
-		FILE_INSTALL_ANDROID_SOURCE,
-		FILE_EXPLORE_ANDROID_BUILD_TEMPLATES,
 		FILE_SAVE_OPTIMIZED,
 		FILE_OPEN_RECENT,
 		FILE_OPEN_OLD_SCENE,
@@ -196,8 +190,6 @@ private:
 		EDIT_REDO,
 		EDIT_RELOAD_SAVED_SCENE,
 		TOOLS_ORPHAN_RESOURCES,
-		TOOLS_BUILD_PROFILE_MANAGER,
-		TOOLS_SURFACE_UPGRADE,
 		TOOLS_CUSTOM,
 		RESOURCE_SAVE,
 		RESOURCE_SAVE_AS,
@@ -222,8 +214,6 @@ private:
 		SETTINGS_EDITOR_CONFIG_FOLDER,
 		SETTINGS_MANAGE_EXPORT_TEMPLATES,
 		SETTINGS_MANAGE_FBX_IMPORTER,
-		SETTINGS_MANAGE_FEATURE_PROFILES,
-		SETTINGS_INSTALL_ANDROID_BUILD_TEMPLATE,
 		SETTINGS_PICK_MAIN_SCENE,
 		SETTINGS_TOGGLE_FULLSCREEN,
 		SETTINGS_HELP,
@@ -262,7 +252,6 @@ private:
 		String path;
 		bool debug = false;
 		bool pack_only = false;
-		bool android_build_template = false;
 	} export_defer;
 
 	static EditorNode *singleton;
@@ -393,22 +382,12 @@ private:
 	PopupMenu *editor_layouts = nullptr;
 	EditorLayoutsDialog *layout_dialog = nullptr;
 
-	ConfirmationDialog *gradle_build_manage_templates = nullptr;
-	ConfirmationDialog *install_android_build_template = nullptr;
-	ConfirmationDialog *remove_android_build_template = nullptr;
-	Label *install_android_build_template_message = nullptr;
-	OptionButton *choose_android_export_profile = nullptr;
-	Ref<EditorExportPreset> android_export_preset;
-
 	PopupMenu *vcs_actions_menu = nullptr;
 	EditorFileDialog *file = nullptr;
 	ExportTemplateManager *export_template_manager = nullptr;
-	EditorFeatureProfileManager *feature_profile_manager = nullptr;
-	EditorBuildProfileManager *build_profile_manager = nullptr;
 	EditorFileDialog *file_templates = nullptr;
 	EditorFileDialog *file_export_lib = nullptr;
 	EditorFileDialog *file_script = nullptr;
-	EditorFileDialog *file_android_build_source = nullptr;
 	String current_path;
 	MenuButton *update_spinner = nullptr;
 
@@ -484,10 +463,6 @@ private:
 
 	HashMap<String, Ref<Texture2D>> icon_type_cache;
 
-	SurfaceUpgradeTool *surface_upgrade_tool = nullptr;
-	SurfaceUpgradeDialog *surface_upgrade_dialog = nullptr;
-	bool run_surface_upgrade_tool = false;
-
 	static EditorBuildCallback build_callbacks[MAX_BUILD_CALLBACKS];
 	static EditorPluginInitializeCallback plugin_init_callbacks[MAX_INIT_CALLBACKS];
 	static int build_callback_count;
@@ -534,9 +509,6 @@ private:
 	void _menu_option(int p_option);
 	void _menu_confirm_current();
 	void _menu_option_confirm(int p_option, bool p_confirmed);
-
-	void _android_build_source_selected(const String &p_file);
-	void _android_export_preset_selected(int p_index);
 
 	void _request_screenshot();
 	void _screenshot(bool p_use_utc = false);
@@ -659,9 +631,6 @@ private:
 	void _reload_modified_scenes();
 	void _reload_project_settings();
 	void _resave_scenes(String p_str);
-
-	void _feature_profile_changed();
-	bool _is_class_editor_disabled_by_feature_profile(const StringName &p_class);
 
 	Ref<Texture2D> _get_class_or_script_icon(const String &p_class, const Ref<Script> &p_script, const String &p_fallback = "Object", bool p_fallback_script_to_theme = false);
 
@@ -883,7 +852,7 @@ public:
 
 	void _copy_warning(const String &p_str);
 
-	Error export_preset(const String &p_preset, const String &p_path, bool p_debug, bool p_pack_only, bool p_android_build_template);
+	Error export_preset(const String &p_preset, const String &p_path, bool p_debug, bool p_pack_only);
 	bool is_project_exporting() const;
 
 	Control *get_gui_base() { return gui_base; }
