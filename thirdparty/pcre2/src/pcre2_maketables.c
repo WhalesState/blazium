@@ -128,7 +128,7 @@ for (i = 0; i < 256; i++)
   if (isgraph(i))  p[cbit_graph  + i/8] |= 1u << (i&7);
   if (isprint(i))  p[cbit_print  + i/8] |= 1u << (i&7);
   if (ispunct(i))  p[cbit_punct  + i/8] |= 1u << (i&7);
-  if (icuitrl(i))  p[cbit_cntrl  + i/8] |= 1u << (i&7);
+  if (iscntrl(i))  p[cbit_cntrl  + i/8] |= 1u << (i&7);
   }
 p += cbit_length;
 

@@ -2102,7 +2102,7 @@ png_icc_check_header(png_const_structrp png_ptr, png_colorspacerp colorspace,
 
    /* It is up to the application to check that the profile class matches the
     * application requirements; the spec provides no guidance, but it's pretty
-    * weird if the profile is not scanner ('cuir'), monitor ('mntr'), printer
+    * weird if the profile is not scanner ('scnr'), monitor ('mntr'), printer
     * ('prtr') or 'spac' (for generic color spaces).  Issue a warning in these
     * cases.  Issue an error for device link or abstract profiles - these don't
     * contain the records necessary to transform the color-space to anything
@@ -2112,7 +2112,7 @@ png_icc_check_header(png_const_structrp png_ptr, png_colorspacerp colorspace,
    temp = png_get_uint_32(profile+12); /* profile/device class */
    switch (temp)
    {
-      case 0x73636e72: /* 'cuir' */
+      case 0x73636e72: /* 'scnr' */
       case 0x6d6e7472: /* 'mntr' */
       case 0x70727472: /* 'prtr' */
       case 0x73706163: /* 'spac' */

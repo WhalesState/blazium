@@ -554,7 +554,7 @@ switch (class_index)
   case 2: return isalpha(c);
   case 3: return 1;
   case 4: return c == CHAR_HT || c == CHAR_SPACE;
-  case 5: return icuitrl(c);
+  case 5: return iscntrl(c);
   case 6: return isdigit(c);
   case 7: return isgraph(c);
   case 8: return islower(c);

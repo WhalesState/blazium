@@ -2899,7 +2899,7 @@ static const char CNS_11643_1992_Plane_6_STR[] = "\x1B\x24\x2B\x4C";
 static const char CNS_11643_1992_Plane_7_STR[] = "\x1B\x24\x2B\x4D";
 
 /********************** ISO2022-CN Data **************************/
-static const char* const escSeqCharcui[10] ={
+static const char* const escSeqCharsCN[10] ={
         SHIFT_IN_STR,                   /* 0 ASCII */
         GB_2312_80_STR,                 /* 1 GB2312_1 */
         ISO_IR_165_STR,                 /* 2 ISO_IR_165 */
@@ -3131,10 +3131,10 @@ getTrail:
                     /* write the designation sequence if necessary */
                     if(cs != pFromU2022State->cs[g]) {
                         if(cs < CNS_11643) {
-                            uprv_memcpy(buffer, escSeqCharcui[cs], 4);
+                            uprv_memcpy(buffer, escSeqCharsCN[cs], 4);
                         } else {
                             U_ASSERT(cs >= CNS_11643_1);
-                            uprv_memcpy(buffer, escSeqCharcui[CNS_11643 + (cs - CNS_11643_1)], 4);
+                            uprv_memcpy(buffer, escSeqCharsCN[CNS_11643 + (cs - CNS_11643_1)], 4);
                         }
                         len = 4;
                         pFromU2022State->cs[g] = cs;

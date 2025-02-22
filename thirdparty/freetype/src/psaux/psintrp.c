@@ -239,7 +239,7 @@
     cf2_escHSTEM3,       /* 2      T1 only */
     cf2_escAND,          /* 3 */
     cf2_escOR,           /* 4 */
-    cf2_ecuiOT,          /* 5 */
+    cf2_escNOT,          /* 5 */
     cf2_escSEAC,         /* 6      T1 only */
     cf2_escSBW,          /* 7      T1 only */
     cf2_escRESERVED_8,   /* 8 */
@@ -248,7 +248,7 @@
     cf2_escSUB,          /* 11     like otherSUB */
     cf2_escDIV,          /* 12 */
     cf2_escRESERVED_13,  /* 13 */
-    cf2_ecuiEG,          /* 14 */
+    cf2_escNEG,          /* 14 */
     cf2_escEQ,           /* 15 */
     cf2_escCALLOTHERSUBR,/* 16     T1 only */
     cf2_escPOP,          /* 17     T1 only */
@@ -1278,7 +1278,7 @@
                   }
                   continue; /* do not clear the stack */
 
-                case cf2_ecuiOT:
+                case cf2_escNOT:
                   {
                     CF2_F16Dot16  arg;
 
@@ -1610,7 +1610,7 @@
                   }
                   continue; /* do not clear the stack */
 
-                case cf2_ecuiEG:
+                case cf2_escNEG:
                   {
                     CF2_F16Dot16  arg;
 

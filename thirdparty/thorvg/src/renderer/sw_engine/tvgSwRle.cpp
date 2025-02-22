@@ -230,7 +230,7 @@ struct RleWorker
 
     Cell* cells;
     ptrdiff_t maxCells;
-    ptrdiff_t cellcuit;
+    ptrdiff_t cellsCnt;
 
     SwPoint pos;
 
@@ -382,7 +382,7 @@ static void _horizLine(RleWorker& rw, SwCoord x, SwCoord y, SwCoord area, SwCoor
 
 static void _sweep(RleWorker& rw)
 {
-    if (rw.cellcuit == 0) return;
+    if (rw.cellsCnt == 0) return;
 
     for (int y = 0; y < rw.yCnt; ++y) {
         auto cover = 0;
@@ -417,9 +417,9 @@ static Cell* _findCell(RleWorker& rw)
         pcell = &cell->next;
     }
 
-    if (rw.cellcuit >= rw.maxCells) longjmp(rw.jmpBuf, 1);
+    if (rw.cellsCnt >= rw.maxCells) longjmp(rw.jmpBuf, 1);
 
-    auto cell = rw.cells + rw.cellcuit++;
+    auto cell = rw.cells + rw.cellsCnt++;
     cell->x = x;
     cell->area = 0;
     cell->cover = 0;
@@ -731,7 +731,7 @@ static int _genRle(RleWorker& rw)
 }
 
 
-static SwSpan* _intersectSpansRegion(const SwRleData *clip, const SwRleData *target, SwSpan *outSpans, uint32_t outSpancuit)
+static SwSpan* _intersectSpansRegion(const SwRleData *clip, const SwRleData *target, SwSpan *outSpans, uint32_t outSpansCnt)
 {
     auto out = outSpans;
     auto spans = target->spans;
@@ -752,7 +752,7 @@ static SwSpan* _intersectSpansRegion(const SwRleData *clip, const SwRleData *tar
 
         //Try clipping with all clip spans which have a same y coordinate.
         auto temp = clipSpans;
-        while(temp < clipEnd && outSpancuit > 0 && temp->y == clipSpans->y) {
+        while(temp < clipEnd && outSpansCnt > 0 && temp->y == clipSpans->y) {
             auto sx1 = spans->x;
             auto sx2 = sx1 + spans->len;
             auto cx1 = temp->x;
@@ -773,7 +773,7 @@ static SwSpan* _intersectSpansRegion(const SwRleData *clip, const SwRleData *tar
                 out->len = len;
                 out->coverage = (uint8_t)(((spans->coverage * temp->coverage) + 0xff) >> 8);
                 ++out;
-                --outSpancuit;
+                --outSpansCnt;
             }
             ++temp;
         }
@@ -783,7 +783,7 @@ static SwSpan* _intersectSpansRegion(const SwRleData *clip, const SwRleData *tar
 }
 
 
-static SwSpan* _intersectSpansRect(const SwBBox *bbox, const SwRleData *targetRle, SwSpan *outSpans, uint32_t outSpancuit)
+static SwSpan* _intersectSpansRect(const SwBBox *bbox, const SwRleData *targetRle, SwSpan *outSpans, uint32_t outSpansCnt)
 {
     auto out = outSpans;
     auto spans = targetRle->spans;
@@ -793,7 +793,7 @@ static SwSpan* _intersectSpansRect(const SwBBox *bbox, const SwRleData *targetRl
     auto maxx = minx + static_cast<int16_t>(bbox->max.x - bbox->min.x) - 1;
     auto maxy = miny + static_cast<int16_t>(bbox->max.y - bbox->min.y) - 1;
 
-    while (outSpancuit > 0 && spans < end) {
+    while (outSpansCnt > 0 && spans < end) {
         if (spans->y > maxy) {
             spans = end;
             break;
@@ -814,7 +814,7 @@ static SwSpan* _intersectSpansRect(const SwBBox *bbox, const SwRleData *targetRl
             out->y = spans->y;
             out->coverage = spans->coverage;
             ++out;
-            --outSpancuit;
+            --outSpansCnt;
         }
         ++spans;
     }
@@ -889,7 +889,7 @@ SwRleData* rleRender(SwRleData* rle, const SwOutline* outline, const SwBBox& ren
     rw.yCells = reinterpret_cast<Cell**>(buffer);
     rw.cells = nullptr;
     rw.maxCells = 0;
-    rw.cellcuit = 0;
+    rw.cellsCnt = 0;
     rw.area = 0;
     rw.cover = 0;
     rw.invalid = true;
@@ -947,7 +947,7 @@ SwRleData* rleRender(SwRleData* rle, const SwOutline* outline, const SwBBox& ren
             for (int y = 0; y < rw.yCnt; ++y)
                 rw.yCells[y] = nullptr;
 
-            rw.cellcuit = 0;
+            rw.cellsCnt = 0;
             rw.invalid = true;
             rw.cellMin.y = band->min;
             rw.cellMax.y = band->max;

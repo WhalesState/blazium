@@ -911,11 +911,11 @@ public:
      * @param[in] cmds The array of the commands in the sub-path.
      * @param[in] cmdCnt The number of the sub-path's commands.
      * @param[in] pts The array of the two-dimensional points.
-     * @param[in] pguit The number of the points in the @p pts array.
+     * @param[in] ptsCnt The number of the points in the @p pts array.
      *
      * @note The interface is designed for optimal path setting if the caller has a completed path commands already.
      */
-    Result appendPath(const PathCommand* cmds, uint32_t cmdCnt, const Point* pts, uint32_t pguit) noexcept;
+    Result appendPath(const PathCommand* cmds, uint32_t cmdCnt, const Point* pts, uint32_t ptsCnt) noexcept;
 
     /**
      * @brief Sets the stroke width for all of the figures from the path.

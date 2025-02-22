@@ -310,7 +310,7 @@
 #define u_isalpha U_ICU_ENTRY_POINT_RENAME(u_isalpha)
 #define u_isbase U_ICU_ENTRY_POINT_RENAME(u_isbase)
 #define u_isblank U_ICU_ENTRY_POINT_RENAME(u_isblank)
-#define u_icuitrl U_ICU_ENTRY_POINT_RENAME(u_icuitrl)
+#define u_iscntrl U_ICU_ENTRY_POINT_RENAME(u_iscntrl)
 #define u_isdefined U_ICU_ENTRY_POINT_RENAME(u_isdefined)
 #define u_isdigit U_ICU_ENTRY_POINT_RENAME(u_isdigit)
 #define u_isgraph U_ICU_ENTRY_POINT_RENAME(u_isgraph)

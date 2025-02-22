@@ -35,7 +35,7 @@ enum {
 
 typedef struct {
     uint16_t stringNormalizationType;
-    uint16_t containcuivOptionInfo;
+    uint16_t containsCnvOptionInfo;
 } UConverterAliasOptions;
 
 typedef struct UConverterAlias {

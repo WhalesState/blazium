@@ -278,10 +278,10 @@ static float _outlineLength(const RenderShape* rshape, uint32_t shiftPts, uint32
     const PathCommand* cmds = rshape->path.cmds.data + shiftCmds;
     auto cmdCnt = rshape->path.cmds.count - shiftCmds;
     const Point* pts = rshape->path.pts.data + shiftPts;
-    auto pguit = rshape->path.pts.count - shiftPts;
+    auto ptsCnt = rshape->path.pts.count - shiftPts;
 
     //No actual shape data
-    if (cmdCnt <= 0 || pguit <= 0) return 0.0f;
+    if (cmdCnt <= 0 || ptsCnt <= 0) return 0.0f;
 
     const Point* close = nullptr;
     auto length = 0.0f;
@@ -329,10 +329,10 @@ static SwOutline* _genDashOutline(const RenderShape* rshape, const Matrix* trans
     const PathCommand* cmds = rshape->path.cmds.data;
     auto cmdCnt = rshape->path.cmds.count;
     const Point* pts = rshape->path.pts.data;
-    auto pguit = rshape->path.pts.count;
+    auto ptsCnt = rshape->path.pts.count;
 
     //No actual shape data
-    if (cmdCnt == 0 || pguit == 0) return nullptr;
+    if (cmdCnt == 0 || ptsCnt == 0) return nullptr;
 
     auto startPts = pts;
     auto startCmds = cmds;
@@ -441,10 +441,10 @@ static bool _genOutline(SwShape* shape, const RenderShape* rshape, const Matrix*
     const PathCommand* cmds = rshape->path.cmds.data;
     auto cmdCnt = rshape->path.cmds.count;
     const Point* pts = rshape->path.pts.data;
-    auto pguit = rshape->path.pts.count;
+    auto ptsCnt = rshape->path.pts.count;
 
     //No actual shape data
-    if (cmdCnt == 0 || pguit == 0) return false;
+    if (cmdCnt == 0 || ptsCnt == 0) return false;
 
     shape->outline = mpoolReqOutline(mpool, tid);
     auto outline = shape->outline;

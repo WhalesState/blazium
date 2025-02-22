@@ -152,23 +152,23 @@ struct Shape::Impl
         rs.path.cmds.reserve(cmdCnt);
     }
 
-    void reservePts(uint32_t pguit)
+    void reservePts(uint32_t ptsCnt)
     {
-        rs.path.pts.reserve(pguit);
+        rs.path.pts.reserve(ptsCnt);
     }
 
-    void grow(uint32_t cmdCnt, uint32_t pguit)
+    void grow(uint32_t cmdCnt, uint32_t ptsCnt)
     {
         rs.path.cmds.grow(cmdCnt);
-        rs.path.pts.grow(pguit);
+        rs.path.pts.grow(ptsCnt);
     }
 
-    void append(const PathCommand* cmds, uint32_t cmdCnt, const Point* pts, uint32_t pguit)
+    void append(const PathCommand* cmds, uint32_t cmdCnt, const Point* pts, uint32_t ptsCnt)
     {
         memcpy(rs.path.cmds.end(), cmds, sizeof(PathCommand) * cmdCnt);
-        memcpy(rs.path.pts.end(), pts, sizeof(Point) * pguit);
+        memcpy(rs.path.pts.end(), pts, sizeof(Point) * ptsCnt);
         rs.path.cmds.count += cmdCnt;
-        rs.path.pts.count += pguit;
+        rs.path.pts.count += ptsCnt;
     }
 
     void moveTo(float x, float y)
