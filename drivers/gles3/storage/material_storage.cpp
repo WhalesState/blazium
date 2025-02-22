@@ -1096,17 +1096,11 @@ MaterialStorage *MaterialStorage::get_singleton() {
 MaterialStorage::MaterialStorage() {
 	singleton = this;
 
-	shader_data_request_func[RS::SHADER_SPATIAL] = _create_scene_shader_func;
-	shader_data_request_func[RS::SHADER_element] = _create_canvas_shader_func;
+	shader_data_request_func[RS::SHADER_ELEMENT] = _create_canvas_shader_func;
 	shader_data_request_func[RS::SHADER_PARTICLES] = _create_particles_shader_func;
-	shader_data_request_func[RS::SHADER_SKY] = _create_sky_shader_func;
-	shader_data_request_func[RS::SHADER_FOG] = nullptr;
 
-	material_data_request_func[RS::SHADER_SPATIAL] = _create_scene_material_func;
-	material_data_request_func[RS::SHADER_element] = _create_canvas_material_func;
+	material_data_request_func[RS::SHADER_ELEMENT] = _create_canvas_material_func;
 	material_data_request_func[RS::SHADER_PARTICLES] = _create_particles_material_func;
-	material_data_request_func[RS::SHADER_SKY] = _create_sky_material_func;
-	material_data_request_func[RS::SHADER_FOG] = nullptr;
 
 	static_assert(sizeof(GlobalShaderUniforms::Value) == 16);
 
@@ -2169,15 +2163,9 @@ void MaterialStorage::shader_set_code(RID p_shader, const String &p_code) {
 
 	RS::ShaderMode new_mode;
 	if (mode_string == "element") {
-		new_mode = RS::SHADER_element;
+		new_mode = RS::SHADER_ELEMENT;
 	} else if (mode_string == "particles") {
 		new_mode = RS::SHADER_PARTICLES;
-	} else if (mode_string == "spatial") {
-		new_mode = RS::SHADER_SPATIAL;
-	} else if (mode_string == "sky") {
-		new_mode = RS::SHADER_SKY;
-		//} else if (mode_string == "fog") {
-		//	new_mode = RS::SHADER_FOG;
 	} else {
 		new_mode = RS::SHADER_MAX;
 		ERR_PRINT("shader type " + mode_string + " not supported in OpenGL renderer");
@@ -2575,7 +2563,7 @@ void CanvasShaderData::set_code(const String &p_code) {
 	actions.usage_flag_pointers["CUSTOM1"] = &uses_custom1;
 
 	actions.uniforms = &uniforms;
-	Error err = MaterialStorage::get_singleton()->shaders.compiler_canvas.compile(RS::SHADER_element, code, &actions, path, gen_code);
+	Error err = MaterialStorage::get_singleton()->shaders.compiler_canvas.compile(RS::SHADER_ELEMENT, code, &actions, path, gen_code);
 	ERR_FAIL_COND_MSG(err != OK, "Shader compilation failed.");
 
 	if (version.is_null()) {
@@ -2701,90 +2689,7 @@ GLES3::MaterialData *GLES3::_create_canvas_material_func(ShaderData *p_shader) {
 // SKY SHADER
 
 void SkyShaderData::set_code(const String &p_code) {
-	// Initialize and compile the shader.
-
 	code = p_code;
-	valid = false;
-	ubo_size = 0;
-	uniforms.clear();
-
-	uses_time = false;
-	uses_position = false;
-	uses_half_res = false;
-	uses_quarter_res = false;
-	uses_light = false;
-
-	if (code.is_empty()) {
-		return; // Just invalid, but no error.
-	}
-
-	ShaderCompiler::GeneratedCode gen_code;
-
-	ShaderCompiler::IdentifierActions actions;
-	actions.entry_point_stages["sky"] = ShaderCompiler::STAGE_FRAGMENT;
-
-	actions.render_mode_flags["use_half_res_pass"] = &uses_half_res;
-	actions.render_mode_flags["use_quarter_res_pass"] = &uses_quarter_res;
-
-	actions.usage_flag_pointers["TIME"] = &uses_time;
-	actions.usage_flag_pointers["POSITION"] = &uses_position;
-	actions.usage_flag_pointers["LIGHT0_ENABLED"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT0_ENERGY"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT0_DIRECTION"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT0_COLOR"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT0_SIZE"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT1_ENABLED"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT1_ENERGY"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT1_DIRECTION"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT1_COLOR"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT1_SIZE"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT2_ENABLED"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT2_ENERGY"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT2_DIRECTION"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT2_COLOR"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT2_SIZE"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT3_ENABLED"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT3_ENERGY"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT3_DIRECTION"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT3_COLOR"] = &uses_light;
-	actions.usage_flag_pointers["LIGHT3_SIZE"] = &uses_light;
-
-	actions.uniforms = &uniforms;
-
-	Error err = MaterialStorage::get_singleton()->shaders.compiler_sky.compile(RS::SHADER_SKY, code, &actions, path, gen_code);
-	ERR_FAIL_COND_MSG(err != OK, "Shader compilation failed.");
-
-	if (version.is_null()) {
-		version = MaterialStorage::get_singleton()->shaders.sky_shader.version_create();
-	}
-
-#if 0
-	print_line("**compiling shader:");
-	print_line("**defines:\n");
-	for (int i = 0; i < gen_code.defines.size(); i++) {
-		print_line(gen_code.defines[i]);
-	}
-
-	HashMap<String, String>::Iterator el = gen_code.code.begin();
-	while (el) {
-		print_line("\n**code " + el->key + ":\n" + el->value);
-		++el;
-	}
-
-	print_line("\n**uniforms:\n" + gen_code.uniforms);
-	print_line("\n**vertex_globals:\n" + gen_code.stage_globals[ShaderCompiler::STAGE_VERTEX]);
-	print_line("\n**fragment_globals:\n" + gen_code.stage_globals[ShaderCompiler::STAGE_FRAGMENT]);
-#endif
-
-	LocalVector<ShaderGLES3::TextureUniformData> texture_uniform_data = get_texture_uniform_data(gen_code.texture_uniforms);
-
-	MaterialStorage::get_singleton()->shaders.sky_shader.version_set_code(version, gen_code.code, gen_code.uniforms, gen_code.stage_globals[ShaderCompiler::STAGE_VERTEX], gen_code.stage_globals[ShaderCompiler::STAGE_FRAGMENT], gen_code.defines, texture_uniform_data);
-	ERR_FAIL_COND(!MaterialStorage::get_singleton()->shaders.sky_shader.version_is_valid(version));
-
-	ubo_size = gen_code.uniform_total_size;
-	ubo_offsets = gen_code.uniform_offsets;
-	texture_uniforms = gen_code.texture_uniforms;
-
 	valid = true;
 }
 
@@ -2843,217 +2748,7 @@ void SkyMaterialData::bind_uniforms() {
 // Scene SHADER
 
 void SceneShaderData::set_code(const String &p_code) {
-	// Initialize and compile the shader.
-
 	code = p_code;
-	valid = false;
-	ubo_size = 0;
-	uniforms.clear();
-
-	uses_point_size = false;
-	uses_alpha = false;
-	uses_alpha_clip = false;
-	uses_blend_alpha = false;
-	uses_depth_prepass_alpha = false;
-	uses_discard = false;
-	uses_roughness = false;
-	uses_normal = false;
-	uses_particle_trails = false;
-	wireframe = false;
-
-	unshaded = false;
-	uses_vertex = false;
-	uses_position = false;
-	uses_sss = false;
-	uses_transmittance = false;
-	uses_screen_texture = false;
-	uses_screen_texture_mipmaps = false;
-	uses_depth_texture = false;
-	uses_normal_texture = false;
-	uses_time = false;
-	uses_vertex_time = false;
-	uses_fragment_time = false;
-	writes_modelview_or_projection = false;
-	uses_world_coordinates = false;
-	uses_tangent = false;
-	uses_color = false;
-	uses_uv = false;
-	uses_uv2 = false;
-	uses_custom0 = false;
-	uses_custom1 = false;
-	uses_custom2 = false;
-	uses_custom3 = false;
-	uses_bones = false;
-	uses_weights = false;
-
-	if (code.is_empty()) {
-		return; // Just invalid, but no error.
-	}
-
-	ShaderCompiler::GeneratedCode gen_code;
-
-	// Actual enums set further down after compilation.
-	int blend_modei = BLEND_MODE_MIX;
-	int depth_testi = DEPTH_TEST_ENABLED;
-	int alpha_antialiasing_modei = ALPHA_ANTIALIASING_OFF;
-	int cull_modei = CULL_BACK;
-	int depth_drawi = DEPTH_DRAW_OPAQUE;
-
-	ShaderCompiler::IdentifierActions actions;
-	actions.entry_point_stages["vertex"] = ShaderCompiler::STAGE_VERTEX;
-	actions.entry_point_stages["fragment"] = ShaderCompiler::STAGE_FRAGMENT;
-	actions.entry_point_stages["light"] = ShaderCompiler::STAGE_FRAGMENT;
-
-	actions.render_mode_values["blend_add"] = Pair<int *, int>(&blend_modei, BLEND_MODE_ADD);
-	actions.render_mode_values["blend_mix"] = Pair<int *, int>(&blend_modei, BLEND_MODE_MIX);
-	actions.render_mode_values["blend_sub"] = Pair<int *, int>(&blend_modei, BLEND_MODE_SUB);
-	actions.render_mode_values["blend_mul"] = Pair<int *, int>(&blend_modei, BLEND_MODE_MUL);
-	actions.render_mode_values["blend_premul_alpha"] = Pair<int *, int>(&blend_modei, BLEND_MODE_PREMULT_ALPHA);
-
-	actions.render_mode_values["alpha_to_coverage"] = Pair<int *, int>(&alpha_antialiasing_modei, ALPHA_ANTIALIASING_ALPHA_TO_COVERAGE);
-	actions.render_mode_values["alpha_to_coverage_and_one"] = Pair<int *, int>(&alpha_antialiasing_modei, ALPHA_ANTIALIASING_ALPHA_TO_COVERAGE_AND_TO_ONE);
-
-	actions.render_mode_values["depth_draw_never"] = Pair<int *, int>(&depth_drawi, DEPTH_DRAW_DISABLED);
-	actions.render_mode_values["depth_draw_opaque"] = Pair<int *, int>(&depth_drawi, DEPTH_DRAW_OPAQUE);
-	actions.render_mode_values["depth_draw_always"] = Pair<int *, int>(&depth_drawi, DEPTH_DRAW_ALWAYS);
-
-	actions.render_mode_values["depth_test_disabled"] = Pair<int *, int>(&depth_testi, DEPTH_TEST_DISABLED);
-
-	actions.render_mode_values["cull_disabled"] = Pair<int *, int>(&cull_modei, CULL_DISABLED);
-	actions.render_mode_values["cull_front"] = Pair<int *, int>(&cull_modei, CULL_FRONT);
-	actions.render_mode_values["cull_back"] = Pair<int *, int>(&cull_modei, CULL_BACK);
-
-	actions.render_mode_flags["unshaded"] = &unshaded;
-	actions.render_mode_flags["wireframe"] = &wireframe;
-	actions.render_mode_flags["particle_trails"] = &uses_particle_trails;
-	actions.render_mode_flags["world_vertex_coords"] = &uses_world_coordinates;
-
-	actions.usage_flag_pointers["ALPHA"] = &uses_alpha;
-	actions.usage_flag_pointers["ALPHA_SCISSOR_THRESHOLD"] = &uses_alpha_clip;
-	// Use alpha clip pipeline for alpha hash/dither.
-	// This prevents sorting issues inherent to alpha blending and allows such materials to cast shadows.
-	actions.usage_flag_pointers["ALPHA_HASH_SCALE"] = &uses_alpha_clip;
-	actions.render_mode_flags["depth_prepass_alpha"] = &uses_depth_prepass_alpha;
-
-	actions.usage_flag_pointers["SSS_STRENGTH"] = &uses_sss;
-	actions.usage_flag_pointers["SSS_TRANSMITTANCE_DEPTH"] = &uses_transmittance;
-
-	actions.usage_flag_pointers["DISCARD"] = &uses_discard;
-	actions.usage_flag_pointers["TIME"] = &uses_time;
-	actions.usage_flag_pointers["ROUGHNESS"] = &uses_roughness;
-	actions.usage_flag_pointers["NORMAL"] = &uses_normal;
-	actions.usage_flag_pointers["NORMAL_MAP"] = &uses_normal;
-
-	actions.usage_flag_pointers["POINT_SIZE"] = &uses_point_size;
-	actions.usage_flag_pointers["POINT_COORD"] = &uses_point_size;
-
-	actions.write_flag_pointers["MODELVIEW_MATRIX"] = &writes_modelview_or_projection;
-	actions.write_flag_pointers["PROJECTION_MATRIX"] = &writes_modelview_or_projection;
-	actions.write_flag_pointers["VERTEX"] = &uses_vertex;
-	actions.write_flag_pointers["POSITION"] = &uses_position;
-
-	actions.usage_flag_pointers["TANGENT"] = &uses_tangent;
-	actions.usage_flag_pointers["BINORMAL"] = &uses_tangent;
-	actions.usage_flag_pointers["ANISOTROPY"] = &uses_tangent;
-	actions.usage_flag_pointers["ANISOTROPY_FLOW"] = &uses_tangent;
-	actions.usage_flag_pointers["COLOR"] = &uses_color;
-	actions.usage_flag_pointers["UV"] = &uses_uv;
-	actions.usage_flag_pointers["UV2"] = &uses_uv2;
-	actions.usage_flag_pointers["CUSTOM0"] = &uses_custom0;
-	actions.usage_flag_pointers["CUSTOM1"] = &uses_custom1;
-	actions.usage_flag_pointers["CUSTOM2"] = &uses_custom2;
-	actions.usage_flag_pointers["CUSTOM3"] = &uses_custom3;
-	actions.usage_flag_pointers["BONE_INDICES"] = &uses_bones;
-	actions.usage_flag_pointers["BONE_WEIGHTS"] = &uses_weights;
-
-	actions.uniforms = &uniforms;
-
-	Error err = MaterialStorage::get_singleton()->shaders.compiler_scene.compile(RS::SHADER_SPATIAL, code, &actions, path, gen_code);
-	ERR_FAIL_COND_MSG(err != OK, "Shader compilation failed.");
-
-	if (version.is_null()) {
-		version = MaterialStorage::get_singleton()->shaders.scene_shader.version_create();
-	}
-
-	blend_mode = BlendMode(blend_modei);
-	alpha_antialiasing_mode = AlphaAntiAliasing(alpha_antialiasing_modei);
-	depth_draw = DepthDraw(depth_drawi);
-	depth_test = DepthTest(depth_testi);
-	cull_mode = Cull(cull_modei);
-
-	vertex_input_mask = RS::ARRAY_FORMAT_VERTEX | RS::ARRAY_FORMAT_NORMAL; // We can always read vertices and normals.
-	vertex_input_mask |= uses_tangent << RS::ARRAY_TANGENT;
-	vertex_input_mask |= uses_color << RS::ARRAY_COLOR;
-	vertex_input_mask |= uses_uv << RS::ARRAY_TEX_UV;
-	vertex_input_mask |= uses_uv2 << RS::ARRAY_TEX_UV2;
-	vertex_input_mask |= uses_custom0 << RS::ARRAY_CUSTOM0;
-	vertex_input_mask |= uses_custom1 << RS::ARRAY_CUSTOM1;
-	vertex_input_mask |= uses_custom2 << RS::ARRAY_CUSTOM2;
-	vertex_input_mask |= uses_custom3 << RS::ARRAY_CUSTOM3;
-	vertex_input_mask |= uses_bones << RS::ARRAY_BONES;
-	vertex_input_mask |= uses_weights << RS::ARRAY_WEIGHTS;
-
-	uses_screen_texture = gen_code.uses_screen_texture;
-	uses_screen_texture_mipmaps = gen_code.uses_screen_texture_mipmaps;
-	uses_depth_texture = gen_code.uses_depth_texture;
-	uses_normal_texture = gen_code.uses_normal_roughness_texture;
-	uses_vertex_time = gen_code.uses_vertex_time;
-	uses_fragment_time = gen_code.uses_fragment_time;
-
-#ifdef DEBUG_ENABLED
-	if (uses_particle_trails) {
-		WARN_PRINT_ONCE_ED("Particle trails are only available when using the Antimatter+ or Mobile rendering backends.");
-	}
-
-	if (uses_sss) {
-		WARN_PRINT_ONCE_ED("Sub-surface scattering is only available when using the Antimatter+ rendering backend.");
-	}
-
-	if (uses_transmittance) {
-		WARN_PRINT_ONCE_ED("Transmittance is only available when using the Antimatter+ rendering backend.");
-	}
-
-	if (uses_normal_texture) {
-		WARN_PRINT_ONCE_ED("Reading from the normal-roughness texture is only available when using the Antimatter+ or Mobile rendering backends.");
-	}
-#endif
-
-#if 0
-	print_line("**compiling shader:");
-	print_line("**defines:\n");
-	for (int i = 0; i < gen_code.defines.size(); i++) {
-		print_line(gen_code.defines[i]);
-	}
-
-	HashMap<String, String>::Iterator el = gen_code.code.begin();
-	while (el) {
-		print_line("\n**code " + el->key + ":\n" + el->value);
-		++el;
-	}
-
-	print_line("\n**uniforms:\n" + gen_code.uniforms);
-	print_line("\n**vertex_globals:\n" + gen_code.stage_globals[ShaderCompiler::STAGE_VERTEX]);
-	print_line("\n**fragment_globals:\n" + gen_code.stage_globals[ShaderCompiler::STAGE_FRAGMENT]);
-#endif
-
-	LocalVector<ShaderGLES3::TextureUniformData> texture_uniform_data = get_texture_uniform_data(gen_code.texture_uniforms);
-
-	MaterialStorage::get_singleton()->shaders.scene_shader.version_set_code(version, gen_code.code, gen_code.uniforms, gen_code.stage_globals[ShaderCompiler::STAGE_VERTEX], gen_code.stage_globals[ShaderCompiler::STAGE_FRAGMENT], gen_code.defines, texture_uniform_data);
-	ERR_FAIL_COND(!MaterialStorage::get_singleton()->shaders.scene_shader.version_is_valid(version));
-
-	ubo_size = gen_code.uniform_total_size;
-	ubo_offsets = gen_code.uniform_offsets;
-	texture_uniforms = gen_code.texture_uniforms;
-
-	// If any form of Alpha Antialiasing is enabled, set the blend mode to alpha to coverage.
-	if (alpha_antialiasing_mode != ALPHA_ANTIALIASING_OFF) {
-		blend_mode = BLEND_MODE_ALPHA_TO_COVERAGE;
-	}
-
-	if (blend_mode == BLEND_MODE_ADD || blend_mode == BLEND_MODE_SUB || blend_mode == BLEND_MODE_MUL) {
-		uses_blend_alpha = true; // Force alpha used because of blend.
-	}
-
 	valid = true;
 }
 

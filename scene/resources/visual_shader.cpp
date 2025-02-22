@@ -2477,7 +2477,7 @@ void VisualShader::_update_shader() const {
 	Vector<VisualShader::DefaultTextureParam> default_tex_params;
 	HashSet<StringName> classes;
 	HashMap<int, int> insertion_pos;
-	static const char *shader_mode_str[Shader::MODE_MAX] = { "spatial", "element", "particles", "sky", "fog" };
+	static const char *shader_mode_str[Shader::MODE_MAX] = { "element", "particles" };
 
 	global_code += String() + "shader_type " + shader_mode_str[shader_mode] + ";\n";
 

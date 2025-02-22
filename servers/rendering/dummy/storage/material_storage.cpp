@@ -70,15 +70,9 @@ void MaterialStorage::shader_set_code(RID p_shader, const String &p_code) {
 
 	RS::ShaderMode new_mode;
 	if (mode_string == "element") {
-		new_mode = RS::SHADER_element;
+		new_mode = RS::SHADER_ELEMENT;
 	} else if (mode_string == "particles") {
 		new_mode = RS::SHADER_PARTICLES;
-	} else if (mode_string == "spatial") {
-		new_mode = RS::SHADER_SPATIAL;
-	} else if (mode_string == "sky") {
-		new_mode = RS::SHADER_SKY;
-	} else if (mode_string == "fog") {
-		new_mode = RS::SHADER_FOG;
 	} else {
 		new_mode = RS::SHADER_MAX;
 		ERR_FAIL_MSG("Shader type " + mode_string + " not supported in Dummy renderer.");

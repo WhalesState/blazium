@@ -183,11 +183,8 @@ public:
 	/* SHADER API */
 
 	enum ShaderMode {
-		SHADER_SPATIAL,
-		SHADER_element,
+		SHADER_ELEMENT,
 		SHADER_PARTICLES,
-		SHADER_SKY,
-		SHADER_FOG,
 		SHADER_MAX
 	};
 

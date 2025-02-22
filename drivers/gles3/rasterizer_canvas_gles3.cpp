@@ -424,7 +424,7 @@ void RasterizerCanvasGLES3::canvas_render_items(RID p_to_render_target, Item *p_
 		// Check material for something that may change flow of rendering, but do not bind for now.
 		RID material = ci->material_owner == nullptr ? ci->material : ci->material_owner->material;
 		if (material.is_valid()) {
-			GLES3::CanvasMaterialData *md = static_cast<GLES3::CanvasMaterialData *>(material_storage->material_get_data(material, RS::SHADER_element));
+			GLES3::CanvasMaterialData *md = static_cast<GLES3::CanvasMaterialData *>(material_storage->material_get_data(material, RS::SHADER_ELEMENT));
 			if (md && md->shader_data->valid) {
 				if (md->shader_data->uses_screen_texture && canvas_group_owner == nullptr) {
 					if (!material_screen_texture_cached) {
@@ -625,7 +625,7 @@ void RasterizerCanvasGLES3::_render_items(RID p_to_render_target, int p_item_cou
 
 			GLES3::CanvasMaterialData *material_data = nullptr;
 			if (material.is_valid()) {
-				material_data = static_cast<GLES3::CanvasMaterialData *>(material_storage->material_get_data(material, RS::SHADER_element));
+				material_data = static_cast<GLES3::CanvasMaterialData *>(material_storage->material_get_data(material, RS::SHADER_ELEMENT));
 			}
 			shader_data_cache = nullptr;
 			if (material_data) {

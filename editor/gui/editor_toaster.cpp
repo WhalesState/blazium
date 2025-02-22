@@ -45,10 +45,10 @@ void EditorToaster::_notification(int p_what) {
 		case NOTIFICATION_INTERNAL_PROCESS: {
 			double delta = get_process_delta_time();
 
-			// Check if one element is hovered, if so, don't elapse time.
+			// Check if one _element is hovered, if so, don't elapse time.
 			bool hovered = false;
-			for (const KeyValue<Control *, Toast> &element : toasts) {
-				if (Rect2(Vector2(), element.key->get_size()).has_point(element.key->get_local_mouse_position())) {
+			for (const KeyValue<Control *, Toast> &_element : toasts) {
+				if (Rect2(Vector2(), _element.key->get_size()).has_point(_element.key->get_local_mouse_position())) {
 					hovered = true;
 					break;
 				}
@@ -56,47 +56,47 @@ void EditorToaster::_notification(int p_what) {
 
 			// Elapses the time and remove toasts if needed.
 			if (!hovered) {
-				for (const KeyValue<Control *, Toast> &element : toasts) {
-					if (!element.value.popped || element.value.duration <= 0) {
+				for (const KeyValue<Control *, Toast> &_element : toasts) {
+					if (!_element.value.popped || _element.value.duration <= 0) {
 						continue;
 					}
-					toasts[element.key].remaining_time -= delta;
-					if (toasts[element.key].remaining_time < 0) {
-						close(element.key);
+					toasts[_element.key].remaining_time -= delta;
+					if (toasts[_element.key].remaining_time < 0) {
+						close(_element.key);
 					}
-					element.key->queue_redraw();
+					_element.key->queue_redraw();
 				}
 			} else {
 				// Reset the timers when hovered.
-				for (const KeyValue<Control *, Toast> &element : toasts) {
-					if (!element.value.popped || element.value.duration <= 0) {
+				for (const KeyValue<Control *, Toast> &_element : toasts) {
+					if (!_element.value.popped || _element.value.duration <= 0) {
 						continue;
 					}
-					toasts[element.key].remaining_time = element.value.duration;
-					element.key->queue_redraw();
+					toasts[_element.key].remaining_time = _element.value.duration;
+					_element.key->queue_redraw();
 				}
 			}
 
 			// Change alpha over time.
 			bool needs_update = false;
-			for (const KeyValue<Control *, Toast> &element : toasts) {
-				Color modulate_fade = element.key->get_modulate();
+			for (const KeyValue<Control *, Toast> &_element : toasts) {
+				Color modulate_fade = _element.key->get_modulate();
 
 				// Change alpha over time.
-				if (element.value.popped && modulate_fade.a < 1.0) {
+				if (_element.value.popped && modulate_fade.a < 1.0) {
 					modulate_fade.a += delta * 3;
-					element.key->set_modulate(modulate_fade);
-				} else if (!element.value.popped && modulate_fade.a > 0.0) {
+					_element.key->set_modulate(modulate_fade);
+				} else if (!_element.value.popped && modulate_fade.a > 0.0) {
 					modulate_fade.a -= delta * 2;
-					element.key->set_modulate(modulate_fade);
+					_element.key->set_modulate(modulate_fade);
 				}
 
-				// Hide element if it is not visible anymore.
-				if (modulate_fade.a <= 0.0 && element.key->is_visible()) {
-					element.key->hide();
+				// Hide _element if it is not visible anymore.
+				if (modulate_fade.a <= 0.0 && _element.key->is_visible()) {
+					_element.key->hide();
 					needs_update = true;
-				} else if (modulate_fade.a > 0.0 && !element.key->is_visible()) {
-					element.key->show();
+				} else if (modulate_fade.a > 0.0 && !_element.key->is_visible()) {
+					_element.key->show();
 					needs_update = true;
 				}
 			}
@@ -147,7 +147,7 @@ void EditorToaster::_notification(int p_what) {
 }
 
 void EditorToaster::_error_handler(void *p_self, const char *p_func, const char *p_file, int p_line, const char *p_error, const char *p_errorexp, bool p_editor_notify, ErrorHandlerType p_type) {
-	// This may be called from a thread. Since we will deal with non-thread-safe elements,
+	// This may be called from a thread. Since we will deal with non-thread-safe _elements,
 	// we have to put it in the queue for safety.
 	callable_mp_static(&EditorToaster::_error_handler_impl).call_deferred(String::utf8(p_file), p_line, String::utf8(p_error), String::utf8(p_errorexp), p_editor_notify, p_type);
 }
@@ -190,8 +190,8 @@ void EditorToaster::_update_vbox_position() {
 
 void EditorToaster::_update_disable_notifications_button() {
 	bool any_visible = false;
-	for (KeyValue<Control *, Toast> element : toasts) {
-		if (element.key->is_visible()) {
+	for (KeyValue<Control *, Toast> _element : toasts) {
+		if (_element.key->is_visible()) {
 			any_visible = true;
 			break;
 		}
@@ -253,13 +253,13 @@ void EditorToaster::_auto_hide_or_free_toasts() {
 void EditorToaster::_draw_button() {
 	bool has_one = false;
 	Severity highest_severity = SEVERITY_INFO;
-	for (const KeyValue<Control *, Toast> &element : toasts) {
-		if (!element.key->is_visible()) {
+	for (const KeyValue<Control *, Toast> &_element : toasts) {
+		if (!_element.key->is_visible()) {
 			continue;
 		}
 		has_one = true;
-		if (element.value.severity > highest_severity) {
-			highest_severity = element.value.severity;
+		if (_element.value.severity > highest_severity) {
+			highest_severity = _element.value.severity;
 		}
 	}
 
@@ -414,9 +414,9 @@ void EditorToaster::_popup_str(const String &p_message, Severity p_severity, con
 	is_processing_error = true;
 	// Check if we already have a popup with the given message.
 	Control *control = nullptr;
-	for (KeyValue<Control *, Toast> element : toasts) {
-		if (element.value.message == p_message && element.value.severity == p_severity && element.value.tooltip == p_tooltip) {
-			control = element.key;
+	for (KeyValue<Control *, Toast> _element : toasts) {
+		if (_element.value.message == p_message && _element.value.severity == p_severity && _element.value.tooltip == p_tooltip) {
+			control = _element.key;
 			break;
 		}
 	}

@@ -2288,11 +2288,8 @@ void RenderingServer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("shader_set_default_texture_parameter", "shader", "name", "texture", "index"), &RenderingServer::shader_set_default_texture_parameter, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("shader_get_default_texture_parameter", "shader", "name", "index"), &RenderingServer::shader_get_default_texture_parameter, DEFVAL(0));
 
-	BIND_ENUM_CONSTANT(SHADER_SPATIAL);
-	BIND_ENUM_CONSTANT(SHADER_element);
+	BIND_ENUM_CONSTANT(SHADER_ELEMENT);
 	BIND_ENUM_CONSTANT(SHADER_PARTICLES);
-	BIND_ENUM_CONSTANT(SHADER_SKY);
-	BIND_ENUM_CONSTANT(SHADER_FOG);
 	BIND_ENUM_CONSTANT(SHADER_MAX);
 
 	/* MATERIAL */
