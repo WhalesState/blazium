@@ -1728,9 +1728,6 @@ SceneTree::SceneTree() {
 	const int msaa_mode_2d = GLOBAL_DEF_BASIC(PropertyInfo(Variant::INT, "rendering/anti_aliasing/quality/msaa_2d", PROPERTY_HINT_ENUM, String::utf8("Disabled (Fastest),2× (Average),4× (Slow),8× (Slowest)")), 0);
 	root->set_msaa_2d(Viewport::MSAA(msaa_mode_2d));
 
-	const int msaa_mode_3d = GLOBAL_DEF_BASIC(PropertyInfo(Variant::INT, "rendering/anti_aliasing/quality/msaa_3d", PROPERTY_HINT_ENUM, String::utf8("Disabled (Fastest),2× (Average),4× (Slow),8× (Slowest)")), 0);
-	root->set_msaa_3d(Viewport::MSAA(msaa_mode_3d));
-
 	const bool transparent_background = GLOBAL_DEF("rendering/viewport/transparent_background", false);
 	root->set_transparent_background(transparent_background);
 
