@@ -315,7 +315,7 @@ void RendererEnvironmentStorage::environment_set_ssr(RID p_env, bool p_enable, i
 	Environment *env = environment_owner.get_or_null(p_env);
 	ERR_FAIL_NULL(env);
 #ifdef DEBUG_ENABLED
-	if (OS::get_singleton()->get_current_rendering_method() != "forward_plus" && p_enable) {
+	if (OS::get_singleton()->get_current_rendering_method() != "antimatter_vk" && p_enable) {
 		WARN_PRINT_ONCE_ED("Screen-space reflections (SSR) can only be enabled when using the Forward+ rendering backend.");
 	}
 #endif
@@ -362,7 +362,7 @@ void RendererEnvironmentStorage::environment_set_ssao(RID p_env, bool p_enable, 
 	Environment *env = environment_owner.get_or_null(p_env);
 	ERR_FAIL_NULL(env);
 #ifdef DEBUG_ENABLED
-	if (OS::get_singleton()->get_current_rendering_method() != "forward_plus" && p_enable) {
+	if (OS::get_singleton()->get_current_rendering_method() != "antimatter_vk" && p_enable) {
 		WARN_PRINT_ONCE_ED("Screen-space ambient occlusion (SSAO) can only be enabled when using the Forward+ rendering backend.");
 	}
 #endif
@@ -437,7 +437,7 @@ void RendererEnvironmentStorage::environment_set_ssil(RID p_env, bool p_enable, 
 	Environment *env = environment_owner.get_or_null(p_env);
 	ERR_FAIL_NULL(env);
 #ifdef DEBUG_ENABLED
-	if (OS::get_singleton()->get_current_rendering_method() != "forward_plus" && p_enable) {
+	if (OS::get_singleton()->get_current_rendering_method() != "antimatter_vk" && p_enable) {
 		WARN_PRINT_ONCE_ED("Screen-space indirect lighting (SSIL) can only be enabled when using the Forward+ rendering backend.");
 	}
 #endif
@@ -484,7 +484,7 @@ void RendererEnvironmentStorage::environment_set_sdfgi(RID p_env, bool p_enable,
 	Environment *env = environment_owner.get_or_null(p_env);
 	ERR_FAIL_NULL(env);
 #ifdef DEBUG_ENABLED
-	if (OS::get_singleton()->get_current_rendering_method() != "forward_plus" && p_enable) {
+	if (OS::get_singleton()->get_current_rendering_method() != "antimatter_vk" && p_enable) {
 		WARN_PRINT_ONCE_ED("SDFGI can only be enabled when using the Forward+ rendering backend.");
 	}
 #endif

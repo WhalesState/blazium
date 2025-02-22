@@ -230,7 +230,7 @@ void RendererViewport::_draw_viewport(Viewport *p_viewport) {
 		timestamp_vp_map[rt_id] = p_viewport->self;
 	}
 
-	if (OS::get_singleton()->get_current_rendering_method() == "gl_compatibility") {
+	if (OS::get_singleton()->get_current_rendering_method() == "antimatter_gl") {
 		// This is currently needed for GLES to keep the current window being rendered to up to date
 		DisplayServer::get_singleton()->gl_window_make_current(p_viewport->viewport_to_screen);
 	}
@@ -801,8 +801,8 @@ void RendererViewport::viewport_set_use_xr(RID p_viewport, bool p_use_xr) {
 void RendererViewport::viewport_set_scaling_3d_mode(RID p_viewport, RS::ViewportScaling3DMode p_mode) {
 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
 	ERR_FAIL_NULL(viewport);
-	ERR_FAIL_COND_EDMSG(p_mode == RS::VIEWPORT_SCALING_3D_MODE_FSR && OS::get_singleton()->get_current_rendering_method() != "forward_plus", "FSR1 is only available when using the Forward+ renderer.");
-	ERR_FAIL_COND_EDMSG(p_mode == RS::VIEWPORT_SCALING_3D_MODE_FSR2 && OS::get_singleton()->get_current_rendering_method() != "forward_plus", "FSR2 is only available when using the Forward+ renderer.");
+	ERR_FAIL_COND_EDMSG(p_mode == RS::VIEWPORT_SCALING_3D_MODE_FSR && OS::get_singleton()->get_current_rendering_method() != "antimatter_vk", "FSR1 is only available when using the Forward+ renderer.");
+	ERR_FAIL_COND_EDMSG(p_mode == RS::VIEWPORT_SCALING_3D_MODE_FSR2 && OS::get_singleton()->get_current_rendering_method() != "antimatter_vk", "FSR2 is only available when using the Forward+ renderer.");
 
 	if (viewport->scaling_3d_mode == p_mode) {
 		return;
@@ -1187,7 +1187,7 @@ void RendererViewport::viewport_set_screen_space_aa(RID p_viewport, RS::Viewport
 void RendererViewport::viewport_set_use_taa(RID p_viewport, bool p_use_taa) {
 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
 	ERR_FAIL_NULL(viewport);
-	ERR_FAIL_COND_EDMSG(OS::get_singleton()->get_current_rendering_method() != "forward_plus", "TAA is only available when using the Forward+ renderer.");
+	ERR_FAIL_COND_EDMSG(OS::get_singleton()->get_current_rendering_method() != "antimatter_vk", "TAA is only available when using the Forward+ renderer.");
 
 	if (viewport->use_taa == p_use_taa) {
 		return;

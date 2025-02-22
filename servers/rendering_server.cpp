@@ -3516,7 +3516,7 @@ void RenderingServer::init() {
 	GLOBAL_DEF(PropertyInfo(Variant::INT, "rendering/2d/shadow_atlas/size", PROPERTY_HINT_RANGE, "128,16384"), 2048);
 
 	// Number of commands that can be drawn per frame.
-	GLOBAL_DEF_RST(PropertyInfo(Variant::INT, "rendering/gl_compatibility/item_buffer_size", PROPERTY_HINT_RANGE, "128,1048576,1"), 16384);
+	GLOBAL_DEF_RST(PropertyInfo(Variant::INT, "rendering/antimatter_gl/item_buffer_size", PROPERTY_HINT_RANGE, "128,1048576,1"), 16384);
 
 	GLOBAL_DEF("rendering/shader_compiler/shader_cache/enabled", true);
 	GLOBAL_DEF("rendering/shader_compiler/shader_cache/compress", true);

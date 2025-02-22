@@ -2968,13 +2968,13 @@ void EditorNode::_menu_option_confirm(int p_option, bool p_confirmed) {
 		} break;
 		case SET_RENDERER_NAME_SAVE_AND_RESTART: {
 			ProjectSettings::get_singleton()->set("rendering/renderer/rendering_method", renderer_request);
-			if (renderer_request == "mobile" || renderer_request == "gl_compatibility") {
+			if (renderer_request == "mobile" || renderer_request == "antimatter_gl") {
 				// Also change the mobile override if changing to a compatible rendering method.
 				// This prevents visual discrepancies between desktop and mobile platforms.
 				ProjectSettings::get_singleton()->set("rendering/renderer/rendering_method.mobile", renderer_request);
-			} else if (renderer_request == "forward_plus") {
+			} else if (renderer_request == "antimatter_vk") {
 				// Use the equivalent mobile rendering method. This prevents the rendering method from staying
-				// on its old choice if moving from `gl_compatibility` to `forward_plus`.
+				// on its old choice if moving from `antimatter_gl` to `antimatter_vk`.
 				ProjectSettings::get_singleton()->set("rendering/renderer/rendering_method.mobile", "mobile");
 			}
 
@@ -4769,13 +4769,13 @@ String EditorNode::_get_system_info() const {
 	const int processor_count = OS::get_singleton()->get_processor_count();
 
 	// Prettify
-	if (rendering_method == "forward_plus") {
+	if (rendering_method == "antimatter_vk") {
 		rendering_method = "Forward+";
 	} else if (rendering_method == "mobile") {
 		rendering_method = "Mobile";
-	} else if (rendering_method == "gl_compatibility") {
+	} else if (rendering_method == "antimatter_gl") {
 		rendering_method = "Antimatter";
-		driver_name = GLOBAL_GET("rendering/gl_compatibility/driver");
+		driver_name = GLOBAL_GET("rendering/antimatter_gl/driver");
 	}
 	if (driver_name == "vulkan") {
 		driver_name = "Vulkan";
@@ -6165,12 +6165,12 @@ Vector<Ref<EditorResourceConversionPlugin>> EditorNode::find_resource_conversion
 void EditorNode::_update_renderer_color() {
 	String rendering_method = renderer->get_selected_metadata();
 
-	if (rendering_method == "forward_plus") {
-		renderer->add_theme_color_override(SceneStringName(font_color), theme->get_color(SNAME("forward_plus_color"), EditorStringName(Editor)));
+	if (rendering_method == "antimatter_vk") {
+		renderer->add_theme_color_override(SceneStringName(font_color), theme->get_color(SNAME("antimatter_vk_color"), EditorStringName(Editor)));
 	} else if (rendering_method == "mobile") {
 		renderer->add_theme_color_override(SceneStringName(font_color), theme->get_color(SNAME("mobile_color"), EditorStringName(Editor)));
-	} else if (rendering_method == "gl_compatibility") {
-		renderer->add_theme_color_override(SceneStringName(font_color), theme->get_color(SNAME("gl_compatibility_color"), EditorStringName(Editor)));
+	} else if (rendering_method == "antimatter_gl") {
+		renderer->add_theme_color_override(SceneStringName(font_color), theme->get_color(SNAME("antimatter_gl_color"), EditorStringName(Editor)));
 	}
 }
 
@@ -6185,8 +6185,8 @@ void EditorNode::_renderer_selected(int p_which) {
 
 	renderer_request = rendering_method;
 	video_restart_dialog->set_text(
-			vformat(TTR("Changing the renderer requires restarting the editor.\n\nChoosing Save & Restart will change the rendering method to:\n- Desktop platforms: %s\n- Mobile platforms: %s\n- Web platform: gl_compatibility"),
-					renderer_request, renderer_request.replace("forward_plus", "mobile")));
+			vformat(TTR("Changing the renderer requires restarting the editor.\n\nChoosing Save & Restart will change the rendering method to:\n- Desktop platforms: %s\n- Mobile platforms: %s\n- Web platform: antimatter_gl"),
+					renderer_request, renderer_request.replace("antimatter_vk", "mobile")));
 	video_restart_dialog->popup_centered();
 	renderer->select(renderer_current);
 	_update_renderer_color();
@@ -6194,13 +6194,13 @@ void EditorNode::_renderer_selected(int p_which) {
 
 void EditorNode::_add_renderer_entry(const String &p_renderer_name, bool p_mark_overridden) {
 	String item_text;
-	if (p_renderer_name == "forward_plus") {
+	if (p_renderer_name == "antimatter_vk") {
 		item_text = TTR("Forward+");
 	}
 	if (p_renderer_name == "mobile") {
 		item_text = TTR("Mobile");
 	}
-	if (p_renderer_name == "gl_compatibility") {
+	if (p_renderer_name == "antimatter_gl") {
 		item_text = TTR("Antimatter");
 	}
 	if (p_mark_overridden) {

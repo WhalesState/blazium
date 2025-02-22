@@ -605,11 +605,11 @@ void TParseVersions::getPreamble(std::string& preamble)
         }
 
         if (version >= 150) {
-            // define GL_core_profile and GL_compatibility_profile
+            // define GL_core_profile and antimatter_gl_profile
             preamble += "#define GL_core_profile 1\n";
 
             if (profile == ECompatibilityProfile)
-                preamble += "#define GL_compatibility_profile 1\n";
+                preamble += "#define antimatter_gl_profile 1\n";
         }
         if (version >= 140) {
             preamble += "#define GL_EXT_null_initializer 1\n";

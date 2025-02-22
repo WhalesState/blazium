@@ -1665,18 +1665,18 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 
 		String default_driver = driver_hints.get_slice(",", 0);
 
-		GLOBAL_DEF_RST_NOVAL("rendering/gl_compatibility/driver", default_driver);
-		GLOBAL_DEF_RST_NOVAL(PropertyInfo(Variant::STRING, "rendering/gl_compatibility/driver.windows", PROPERTY_HINT_ENUM, driver_hints_angle), default_driver);
-		GLOBAL_DEF_RST_NOVAL(PropertyInfo(Variant::STRING, "rendering/gl_compatibility/driver.linuxbsd", PROPERTY_HINT_ENUM, driver_hints_egl), default_driver);
-		GLOBAL_DEF_RST_NOVAL(PropertyInfo(Variant::STRING, "rendering/gl_compatibility/driver.web", PROPERTY_HINT_ENUM, driver_hints), default_driver);
-		GLOBAL_DEF_RST_NOVAL(PropertyInfo(Variant::STRING, "rendering/gl_compatibility/driver.android", PROPERTY_HINT_ENUM, driver_hints), default_driver);
-		GLOBAL_DEF_RST_NOVAL(PropertyInfo(Variant::STRING, "rendering/gl_compatibility/driver.ios", PROPERTY_HINT_ENUM, driver_hints), default_driver);
-		GLOBAL_DEF_RST_NOVAL(PropertyInfo(Variant::STRING, "rendering/gl_compatibility/driver.macos", PROPERTY_HINT_ENUM, driver_hints_angle), default_driver);
+		GLOBAL_DEF_RST_NOVAL("rendering/antimatter_gl/driver", default_driver);
+		GLOBAL_DEF_RST_NOVAL(PropertyInfo(Variant::STRING, "rendering/antimatter_gl/driver.windows", PROPERTY_HINT_ENUM, driver_hints_angle), default_driver);
+		GLOBAL_DEF_RST_NOVAL(PropertyInfo(Variant::STRING, "rendering/antimatter_gl/driver.linuxbsd", PROPERTY_HINT_ENUM, driver_hints_egl), default_driver);
+		GLOBAL_DEF_RST_NOVAL(PropertyInfo(Variant::STRING, "rendering/antimatter_gl/driver.web", PROPERTY_HINT_ENUM, driver_hints), default_driver);
+		GLOBAL_DEF_RST_NOVAL(PropertyInfo(Variant::STRING, "rendering/antimatter_gl/driver.android", PROPERTY_HINT_ENUM, driver_hints), default_driver);
+		GLOBAL_DEF_RST_NOVAL(PropertyInfo(Variant::STRING, "rendering/antimatter_gl/driver.ios", PROPERTY_HINT_ENUM, driver_hints), default_driver);
+		GLOBAL_DEF_RST_NOVAL(PropertyInfo(Variant::STRING, "rendering/antimatter_gl/driver.macos", PROPERTY_HINT_ENUM, driver_hints_angle), default_driver);
 
-		GLOBAL_DEF_RST("rendering/gl_compatibility/nvidia_disable_threaded_optimization", true);
-		GLOBAL_DEF_RST("rendering/gl_compatibility/fallback_to_angle", true);
-		GLOBAL_DEF_RST("rendering/gl_compatibility/fallback_to_native", true);
-		GLOBAL_DEF_RST("rendering/gl_compatibility/fallback_to_gles", true);
+		GLOBAL_DEF_RST("rendering/antimatter_gl/nvidia_disable_threaded_optimization", true);
+		GLOBAL_DEF_RST("rendering/antimatter_gl/fallback_to_angle", true);
+		GLOBAL_DEF_RST("rendering/antimatter_gl/fallback_to_native", true);
+		GLOBAL_DEF_RST("rendering/antimatter_gl/fallback_to_gles", true);
 
 		Array device_blocklist;
 
@@ -1760,12 +1760,12 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 
 #undef BLOCK_DEVICE
 
-		GLOBAL_DEF_RST_NOVAL(PropertyInfo(Variant::ARRAY, "rendering/gl_compatibility/force_angle_on_devices", PROPERTY_HINT_ARRAY_TYPE, vformat("%s/%s:%s", Variant::DICTIONARY, PROPERTY_HINT_NONE, String())), device_blocklist);
+		GLOBAL_DEF_RST_NOVAL(PropertyInfo(Variant::ARRAY, "rendering/antimatter_gl/force_angle_on_devices", PROPERTY_HINT_ARRAY_TYPE, vformat("%s/%s:%s", Variant::DICTIONARY, PROPERTY_HINT_NONE, String())), device_blocklist);
 	}
 
 	// Start with RenderingDevice-based backends.
 #ifdef RD_ENABLED
-	renderer_hints = "forward_plus,mobile";
+	renderer_hints = "antimatter_vk,mobile";
 	default_renderer_mobile = "mobile";
 #endif
 
@@ -1774,15 +1774,15 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 	if (!renderer_hints.is_empty()) {
 		renderer_hints += ",";
 	}
-	renderer_hints += "gl_compatibility";
+	renderer_hints += "antimatter_gl";
 	if (default_renderer_mobile.is_empty()) {
-		default_renderer_mobile = "gl_compatibility";
+		default_renderer_mobile = "antimatter_gl";
 	}
 	// Default to Compatibility when using the project manager.
 	if (rendering_driver.is_empty() && rendering_method.is_empty() && project_manager) {
 		rendering_driver = "opengl3";
-		rendering_method = "gl_compatibility";
-		default_renderer_mobile = "gl_compatibility";
+		rendering_method = "antimatter_gl";
+		default_renderer_mobile = "antimatter_gl";
 	}
 #endif
 	if (renderer_hints.is_empty()) {
@@ -1790,9 +1790,9 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 	}
 
 	if (!rendering_method.is_empty()) {
-		if (rendering_method != "forward_plus" &&
+		if (rendering_method != "antimatter_vk" &&
 				rendering_method != "mobile" &&
-				rendering_method != "gl_compatibility") {
+				rendering_method != "antimatter_gl") {
 			OS::get_singleton()->print("Unknown renderer name '%s', aborting. Valid options are: %s\n", rendering_method.utf8().get_data(), renderer_hints.utf8().get_data());
 			goto error;
 		}
@@ -1835,16 +1835,16 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 		// Set a default renderer if none selected. Try to choose one that matches the driver.
 		if (rendering_method.is_empty()) {
 			if (rendering_driver == "opengl3" || rendering_driver == "opengl3_angle" || rendering_driver == "opengl3_es") {
-				rendering_method = "gl_compatibility";
+				rendering_method = "antimatter_gl";
 			} else {
-				rendering_method = "forward_plus";
+				rendering_method = "antimatter_vk";
 			}
 		}
 
 		// Now validate whether the selected driver matches with the renderer.
 		bool valid_combination = false;
 		Vector<String> available_drivers;
-		if (rendering_method == "forward_plus" || rendering_method == "mobile") {
+		if (rendering_method == "antimatter_vk" || rendering_method == "mobile") {
 #ifdef VULKAN_ENABLED
 			available_drivers.push_back("vulkan");
 #endif
@@ -1853,7 +1853,7 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 #endif
 		}
 #ifdef GLES3_ENABLED
-		if (rendering_method == "gl_compatibility") {
+		if (rendering_method == "antimatter_gl") {
 			available_drivers.push_back("opengl3");
 			available_drivers.push_back("opengl3_angle");
 			available_drivers.push_back("opengl3_es");
@@ -1887,7 +1887,7 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 	default_renderer = renderer_hints.get_slice(",", 0);
 	GLOBAL_DEF_RST_BASIC(PropertyInfo(Variant::STRING, "rendering/renderer/rendering_method", PROPERTY_HINT_ENUM, renderer_hints), default_renderer);
 	GLOBAL_DEF_RST_BASIC("rendering/renderer/rendering_method.mobile", default_renderer_mobile);
-	GLOBAL_DEF_RST_BASIC("rendering/renderer/rendering_method.web", "gl_compatibility"); // This is a bit of a hack until we have WebGPU support.
+	GLOBAL_DEF_RST_BASIC("rendering/renderer/rendering_method.web", "antimatter_gl"); // This is a bit of a hack until we have WebGPU support.
 
 	// Default to ProjectSettings default if nothing set on the command line.
 	if (rendering_method.is_empty()) {
@@ -1895,8 +1895,8 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 	}
 
 	if (rendering_driver.is_empty()) {
-		if (rendering_method == "gl_compatibility") {
-			rendering_driver = GLOBAL_GET("rendering/gl_compatibility/driver");
+		if (rendering_method == "antimatter_gl") {
+			rendering_driver = GLOBAL_GET("rendering/antimatter_gl/driver");
 		} else {
 			rendering_driver = GLOBAL_GET("rendering/rendering_device/driver");
 		}

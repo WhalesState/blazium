@@ -44,7 +44,7 @@
 
 /*** SHADER SYNTAX HIGHLIGHTER ****/
 
-Dictionary GDShaderSyntaxHighlighter::_get_line_syntax_highlighting_impl(int p_line) {
+Dictionary guishaderSyntaxHighlighter::_get_line_syntax_highlighting_impl(int p_line) {
 	Dictionary color_map;
 
 	for (const Point2i &region : disabled_branch_regions) {
@@ -65,7 +65,7 @@ Dictionary GDShaderSyntaxHighlighter::_get_line_syntax_highlighting_impl(int p_l
 	return CodeHighlighter::_get_line_syntax_highlighting_impl(p_line);
 }
 
-void GDShaderSyntaxHighlighter::add_disabled_branch_region(const Point2i &p_region) {
+void guishaderSyntaxHighlighter::add_disabled_branch_region(const Point2i &p_region) {
 	ERR_FAIL_COND(p_region.x < 0);
 	ERR_FAIL_COND(p_region.y < 0);
 
@@ -81,12 +81,12 @@ void GDShaderSyntaxHighlighter::add_disabled_branch_region(const Point2i &p_regi
 	clear_highlighting_cache();
 }
 
-void GDShaderSyntaxHighlighter::clear_disabled_branch_regions() {
+void guishaderSyntaxHighlighter::clear_disabled_branch_regions() {
 	disabled_branch_regions.clear();
 	clear_highlighting_cache();
 }
 
-void GDShaderSyntaxHighlighter::set_disabled_branch_color(const Color &p_color) {
+void guishaderSyntaxHighlighter::set_disabled_branch_color(const Color &p_color) {
 	disabled_branch_color = p_color;
 	clear_highlighting_cache();
 }

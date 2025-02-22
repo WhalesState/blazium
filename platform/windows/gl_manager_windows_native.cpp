@@ -248,7 +248,7 @@ void GLManagerNative_Windows::_nvapi_setup_profile() {
 	ogl_thread_control_setting.settingId = OGL_THREAD_CONTROL_ID;
 	ogl_thread_control_setting.settingType = NVDRS_DWORD_TYPE;
 	int thread_control_val = OGL_THREAD_CONTROL_DISABLE;
-	if (!GLOBAL_GET("rendering/gl_compatibility/nvidia_disable_threaded_optimization")) {
+	if (!GLOBAL_GET("rendering/antimatter_gl/nvidia_disable_threaded_optimization")) {
 		thread_control_val = OGL_THREAD_CONTROL_ENABLE;
 	}
 	ogl_thread_control_setting.u32CurrentValue = thread_control_val;

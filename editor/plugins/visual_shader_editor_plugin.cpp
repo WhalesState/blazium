@@ -2054,7 +2054,7 @@ void VisualShaderEditor::_update_options_menu() {
 	Color unsupported_color = get_theme_color(SNAME("error_color"), EditorStringName(Editor));
 	Color supported_color = get_theme_color(SNAME("warning_color"), EditorStringName(Editor));
 
-	static bool low_driver = GLOBAL_GET("rendering/renderer/rendering_method") == "gl_compatibility";
+	static bool low_driver = GLOBAL_GET("rendering/renderer/rendering_method") == "antimatter_gl";
 
 	HashMap<String, TreeItem *> folders;
 

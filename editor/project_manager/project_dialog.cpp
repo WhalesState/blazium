@@ -438,7 +438,7 @@ void ProjectDialog::_renderer_selected() {
 
 	String renderer_type = renderer_button_group->get_pressed_button()->get_meta(SNAME("rendering_method"));
 
-	if (renderer_type == "forward_plus") {
+	if (renderer_type == "antimatter_vk") {
 		renderer_info->set_text(
 				String::utf8("•  ") + TTR("Supports desktop platforms only.") +
 				String::utf8("\n•  ") + TTR("Advanced 3D graphics available.") +
@@ -452,7 +452,7 @@ void ProjectDialog::_renderer_selected() {
 				String::utf8("\n•  ") + TTR("Less scalable for complex scenes.") +
 				String::utf8("\n•  ") + TTR("Uses RenderingDevice backend.") +
 				String::utf8("\n•  ") + TTR("Fast rendering of simple scenes."));
-	} else if (renderer_type == "gl_compatibility") {
+	} else if (renderer_type == "antimatter_gl") {
 		renderer_info->set_text(
 				String::utf8("•  ") + TTR("Supports desktop, mobile + web platforms.") +
 				String::utf8("\n•  ") + TTR("Least advanced 3D graphics (currently work-in-progress).") +
@@ -497,22 +497,22 @@ void ProjectDialog::ok_pressed() {
 		ProjectSettings::CustomMap initial_settings;
 
 		// Be sure to change this code if/when renderers are changed.
-		// Default values are "forward_plus" for the main setting, "mobile" for the mobile override,
-		// and "gl_compatibility" for the web override.
+		// Default values are "antimatter_vk" for the main setting, "mobile" for the mobile override,
+		// and "antimatter_gl" for the web override.
 		String renderer_type = renderer_button_group->get_pressed_button()->get_meta(SNAME("rendering_method"));
 		initial_settings["rendering/renderer/rendering_method"] = renderer_type;
 
 		EditorSettings::get_singleton()->set("project_manager/default_renderer", renderer_type);
 		EditorSettings::get_singleton()->save();
 
-		if (renderer_type == "forward_plus") {
+		if (renderer_type == "antimatter_vk") {
 			project_features.push_back("Forward Plus");
 		} else if (renderer_type == "mobile") {
 			project_features.push_back("Mobile");
-		} else if (renderer_type == "gl_compatibility") {
+		} else if (renderer_type == "antimatter_gl") {
 			project_features.push_back("GL Compatibility");
 			// Also change the default rendering method for the mobile override.
-			initial_settings["rendering/renderer/rendering_method.mobile"] = "gl_compatibility";
+			initial_settings["rendering/renderer/rendering_method.mobile"] = "antimatter_gl";
 		} else {
 			WARN_PRINT("Unknown renderer type. Please report this as a bug on GitHub.");
 		}
@@ -911,7 +911,7 @@ ProjectDialog::ProjectDialog() {
 	Container *rvb = memnew(VBoxContainer);
 	rshc->add_child(rvb);
 
-	String default_renderer_type = "forward_plus";
+	String default_renderer_type = "antimatter_vk";
 	if (EditorSettings::get_singleton()->has_setting("project_manager/default_renderer")) {
 		default_renderer_type = EditorSettings::get_singleton()->get_setting("project_manager/default_renderer");
 	}
@@ -922,10 +922,10 @@ ProjectDialog::ProjectDialog() {
 #if defined(WEB_ENABLED)
 	rs_button->set_disabled(true);
 #endif
-	rs_button->set_meta(SNAME("rendering_method"), "forward_plus");
+	rs_button->set_meta(SNAME("rendering_method"), "antimatter_vk");
 	rs_button->connect(SceneStringName(pressed), callable_mp(this, &ProjectDialog::_renderer_selected));
 	rvb->add_child(rs_button);
-	if (default_renderer_type == "forward_plus") {
+	if (default_renderer_type == "antimatter_vk") {
 		rs_button->set_pressed(true);
 	}
 	rs_button = memnew(CheckBox);
@@ -946,11 +946,11 @@ ProjectDialog::ProjectDialog() {
 #if !defined(GLES3_ENABLED)
 	rs_button->set_disabled(true);
 #endif
-	rs_button->set_meta(SNAME("rendering_method"), "gl_compatibility");
+	rs_button->set_meta(SNAME("rendering_method"), "antimatter_gl");
 	rs_button->connect(SceneStringName(pressed), callable_mp(this, &ProjectDialog::_renderer_selected));
 	rvb->add_child(rs_button);
 #if defined(GLES3_ENABLED)
-	if (default_renderer_type == "gl_compatibility") {
+	if (default_renderer_type == "antimatter_gl") {
 		rs_button->set_pressed(true);
 	}
 #endif

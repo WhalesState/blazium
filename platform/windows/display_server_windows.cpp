@@ -6000,7 +6000,7 @@ DisplayServerWindows::DisplayServerWindows(const String &p_rendering_driver, Win
 // Init context and rendering device
 #if defined(GLES3_ENABLED)
 
-	bool fallback = GLOBAL_GET("rendering/gl_compatibility/fallback_to_angle");
+	bool fallback = GLOBAL_GET("rendering/antimatter_gl/fallback_to_angle");
 	bool show_warning = true;
 
 	if (rendering_driver == "opengl3") {
@@ -6032,7 +6032,7 @@ DisplayServerWindows::DisplayServerWindows(const String &p_rendering_driver, Win
 		bool force_angle = false;
 
 		Vector2i device_id = _get_device_ids(gl_info["name"]);
-		Array device_list = GLOBAL_GET("rendering/gl_compatibility/force_angle_on_devices");
+		Array device_list = GLOBAL_GET("rendering/antimatter_gl/force_angle_on_devices");
 		for (int i = 0; i < device_list.size(); i++) {
 			const Dictionary &device = device_list[i];
 			if (device.has("vendor") && device.has("name")) {

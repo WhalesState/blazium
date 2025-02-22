@@ -86,11 +86,11 @@ void ShaderCreateDialog::_update_language_info() {
 		ShaderTypeData shader_type_data;
 		if (i == int(SHADER_TYPE_TEXT)) {
 			shader_type_data.use_templates = true;
-			shader_type_data.extensions.push_back("gdshader");
-			shader_type_data.default_extension = "gdshader";
+			shader_type_data.extensions.push_back("guishader");
+			shader_type_data.default_extension = "guishader";
 		} else if (i == int(SHADER_TYPE_INC)) {
-			shader_type_data.extensions.push_back("gdshaderinc");
-			shader_type_data.default_extension = "gdshaderinc";
+			shader_type_data.extensions.push_back("guishaderinc");
+			shader_type_data.default_extension = "guishaderinc";
 		} else {
 			shader_type_data.default_extension = "tres";
 		}

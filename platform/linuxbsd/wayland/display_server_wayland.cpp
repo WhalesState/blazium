@@ -1425,7 +1425,7 @@ DisplayServerWayland::DisplayServerWayland(const String &p_rendering_driver, Win
 				memdelete(egl_manager);
 				egl_manager = nullptr;
 
-				bool fallback = GLOBAL_GET("rendering/gl_compatibility/fallback_to_gles");
+				bool fallback = GLOBAL_GET("rendering/antimatter_gl/fallback_to_gles");
 				if (fallback) {
 					WARN_PRINT("Your video card drivers seem not to support the required OpenGL version, switching to OpenGLES.");
 					rendering_driver = "opengl3_es";

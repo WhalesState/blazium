@@ -2749,7 +2749,7 @@ RasterizerCanvasGLES3::RasterizerCanvasGLES3() {
 	}
 
 	// Reserve 3 Uniform Buffers for instance data Frame N, N+1 and N+2
-	data.max_instances_per_buffer = uint32_t(GLOBAL_GET("rendering/gl_compatibility/item_buffer_size"));
+	data.max_instances_per_buffer = uint32_t(GLOBAL_GET("rendering/antimatter_gl/item_buffer_size"));
 	data.max_instance_buffer_size = data.max_instances_per_buffer * sizeof(InstanceData); // 16,384 instances * 128 bytes = 2,097,152 bytes = 2,048 kb
 	state.canvas_instance_data_buffers.resize(3);
 	state.canvas_instance_batches.reserve(200);

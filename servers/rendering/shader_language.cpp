@@ -8537,8 +8537,8 @@ Error ShaderLanguage::_parse_shader(const HashMap<StringName, FunctionInfo> &p_f
 						_set_error(vformat(RTR("Uniform instances are not yet implemented for '%s' shaders."), shader_type_identifier));
 						return ERR_PARSE_ERROR;
 					}
-					if (OS::get_singleton()->get_current_rendering_method() == "gl_compatibility") {
-						_set_error(RTR("Uniform instances are not supported in gl_compatibility shaders."));
+					if (OS::get_singleton()->get_current_rendering_method() == "antimatter_gl") {
+						_set_error(RTR("Uniform instances are not supported in antimatter_gl shaders."));
 						return ERR_PARSE_ERROR;
 					}
 					if (uniform_scope == ShaderNode::Uniform::SCOPE_LOCAL) {
@@ -9016,7 +9016,7 @@ Error ShaderLanguage::_parse_shader(const HashMap<StringName, FunctionInfo> &p_f
 									new_hint = ShaderNode::Uniform::HINT_NORMAL_ROUGHNESS_TEXTURE;
 									--texture_uniforms;
 									--texture_binding;
-									if (OS::get_singleton()->get_current_rendering_method() != "forward_plus") {
+									if (OS::get_singleton()->get_current_rendering_method() != "antimatter_vk") {
 										_set_error(RTR("'hint_normal_roughness_texture' is only available when using the Forward+ backend."));
 										return ERR_PARSE_ERROR;
 									}

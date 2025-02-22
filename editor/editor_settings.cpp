@@ -871,13 +871,13 @@ void EditorSettings::_load_defaults(Ref<ConfigFile> p_extra_config) {
 	EDITOR_SETTING(Variant::INT, PROPERTY_HINT_ENUM, "project_manager/directory_naming_convention", 1, "No convention,kebab-case,snake_case,camelCase,PascalCase,Title Case")
 
 #if defined(WEB_ENABLED)
-	// Web platform only supports `gl_compatibility`.
-	EDITOR_SETTING(Variant::STRING, PROPERTY_HINT_ENUM, "project_manager/default_renderer", "gl_compatibility", "forward_plus,mobile,gl_compatibility")
+	// Web platform only supports `antimatter_gl`.
+	EDITOR_SETTING(Variant::STRING, PROPERTY_HINT_ENUM, "project_manager/default_renderer", "antimatter_gl", "antimatter_vk,mobile,antimatter_gl")
 #elif defined(ANDROID_ENABLED)
 	// Use more suitable rendering method by default.
-	EDITOR_SETTING(Variant::STRING, PROPERTY_HINT_ENUM, "project_manager/default_renderer", "mobile", "forward_plus,mobile,gl_compatibility")
+	EDITOR_SETTING(Variant::STRING, PROPERTY_HINT_ENUM, "project_manager/default_renderer", "mobile", "antimatter_vk,mobile,antimatter_gl")
 #else
-	EDITOR_SETTING(Variant::STRING, PROPERTY_HINT_ENUM, "project_manager/default_renderer", "forward_plus", "forward_plus,mobile,gl_compatibility")
+	EDITOR_SETTING(Variant::STRING, PROPERTY_HINT_ENUM, "project_manager/default_renderer", "antimatter_vk", "antimatter_vk,mobile,antimatter_gl")
 #endif
 
 	if (p_extra_config.is_valid()) {

@@ -168,10 +168,10 @@ EGLAPI EGLBoolean EGLAPIENTRY eglStreamPostD3DTextureANGLE(EGLDisplay dpy, EGLSt
 #endif
 #endif /* EGL_ANGLE_stream_producer_d3d_texture */
 
-#ifndef EGL_ANGLE_create_context_webgl_compatibility
-#define EGL_ANGLE_create_context_webgl_compatibility 1
-#define EGL_CONTEXT_WEBGL_COMPATIBILITY_ANGLE 0x33AC
-#endif /* EGL_ANGLE_create_context_webgl_compatibility */
+#ifndef EGL_ANGLE_create_context_webantimatter_gl
+#define EGL_ANGLE_create_context_webantimatter_gl 1
+#define EGL_CONTEXT_WEBantimatter_gl_ANGLE 0x33AC
+#endif /* EGL_ANGLE_create_context_webantimatter_gl */
 
 #ifndef EGL_ANGLE_display_texture_share_group
 #define EGL_ANGLE_display_texture_share_group 1
