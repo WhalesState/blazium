@@ -54,8 +54,6 @@
 #include "audio/effects/audio_effect_stereo_enhance.h"
 #include "audio/effects/audio_stream_generator.h"
 #include "audio_server.h"
-#include "camera/camera_feed.h"
-#include "camera_server.h"
 #include "debugger/servers_debugger.h"
 #include "display/native_menu.h"
 #include "display_server.h"
@@ -123,8 +121,6 @@ void register_server_types() {
 	GDREGISTER_CLASS(AudioServer);
 
 	GDREGISTER_CLASS(NativeMenu);
-
-	GDREGISTER_CLASS(CameraServer);
 
 	GDREGISTER_ABSTRACT_CLASS(RenderingDevice);
 
@@ -210,8 +206,6 @@ void register_server_types() {
 	GDREGISTER_ABSTRACT_CLASS(RenderSceneBuffers);
 	GDREGISTER_CLASS(RenderSceneBuffersExtension);
 
-	GDREGISTER_CLASS(CameraFeed);
-
 	ServersDebugger::initialize();
 
 	// Physics 2D
@@ -257,7 +251,6 @@ void register_server_singletons() {
 	OS::get_singleton()->benchmark_begin_measure("Servers", "Register Singletons");
 
 	Engine::get_singleton()->add_singleton(Engine::Singleton("AudioServer", AudioServer::get_singleton(), "AudioServer"));
-	Engine::get_singleton()->add_singleton(Engine::Singleton("CameraServer", CameraServer::get_singleton(), "CameraServer"));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("DisplayServer", DisplayServer::get_singleton(), "DisplayServer"));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("NativeMenu", NativeMenu::get_singleton(), "NativeMenu"));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("RenderingServer", RenderingServer::get_singleton(), "RenderingServer"));

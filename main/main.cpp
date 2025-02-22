@@ -66,7 +66,6 @@
 #include "scene/theme/theme_db.h"
 #include "servers/audio/audio_driver_dummy.h"
 #include "servers/audio_server.h"
-#include "servers/camera_server.h"
 #include "servers/display_server.h"
 #include "servers/register_server_types.h"
 #include "servers/rendering/rendering_server_default.h"
@@ -140,7 +139,6 @@ static SteamTracker *steam_tracker = nullptr;
 
 // Initialized in setup2()
 static AudioServer *audio_server = nullptr;
-static CameraServer *camera_server = nullptr;
 static DisplayServer *display_server = nullptr;
 static RenderingServer *rendering_server = nullptr;
 static TextServerManager *tsman = nullptr;
@@ -2768,8 +2766,6 @@ Error Main::setup2(bool p_show_boot_logo) {
 
 	OS::get_singleton()->benchmark_begin_measure("Startup", "Finalize Setup");
 
-	camera_server = CameraServer::create();
-
 	MAIN_PRINT("Main: Load Physics");
 
 	initialize_physics();
@@ -3939,10 +3935,6 @@ void Main::cleanup(bool p_force) {
 	if (audio_server) {
 		audio_server->finish();
 		memdelete(audio_server);
-	}
-
-	if (camera_server) {
-		memdelete(camera_server);
 	}
 
 	OS::get_singleton()->finalize();
