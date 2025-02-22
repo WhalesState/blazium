@@ -454,9 +454,6 @@ void register_scene_types() {
 	GDREGISTER_ABSTRACT_CLASS(VisualShaderNodeConstant);
 	GDREGISTER_ABSTRACT_CLASS(VisualShaderNodeVectorBase);
 	GDREGISTER_CLASS(VisualShaderNodeFrame);
-#ifndef DISABLE_DEPRECATED
-	GDREGISTER_CLASS(VisualShaderNodeComment); // Deprecated, just for compatibility.
-#endif
 	GDREGISTER_CLASS(VisualShaderNodeFloatConstant);
 	GDREGISTER_CLASS(VisualShaderNodeIntConstant);
 	GDREGISTER_CLASS(VisualShaderNodeUIntConstant);
@@ -465,20 +462,20 @@ void register_scene_types() {
 	GDREGISTER_CLASS(VisualShaderNodeVec2Constant);
 	GDREGISTER_CLASS(VisualShaderNodeVec3Constant);
 	GDREGISTER_CLASS(VisualShaderNodeVec4Constant);
-	GDREGISTER_CLASS(VisualShaderNodeTransformConstant);
+	// GDREGISTER_CLASS(VisualShaderNodeTransformConstant); // 3D-specific
 	GDREGISTER_CLASS(VisualShaderNodeFloatOp);
 	GDREGISTER_CLASS(VisualShaderNodeIntOp);
 	GDREGISTER_CLASS(VisualShaderNodeUIntOp);
 	GDREGISTER_CLASS(VisualShaderNodeVectorOp);
 	GDREGISTER_CLASS(VisualShaderNodeColorOp);
-	GDREGISTER_CLASS(VisualShaderNodeTransformOp);
-	GDREGISTER_CLASS(VisualShaderNodeTransformVecMult);
+	// GDREGISTER_CLASS(VisualShaderNodeTransformOp); // 3D-specific
+	// GDREGISTER_CLASS(VisualShaderNodeTransformVecMult); // 3D-specific
 	GDREGISTER_CLASS(VisualShaderNodeFloatFunc);
 	GDREGISTER_CLASS(VisualShaderNodeIntFunc);
 	GDREGISTER_CLASS(VisualShaderNodeUIntFunc);
 	GDREGISTER_CLASS(VisualShaderNodeVectorFunc);
 	GDREGISTER_CLASS(VisualShaderNodeColorFunc);
-	GDREGISTER_CLASS(VisualShaderNodeTransformFunc);
+	// GDREGISTER_CLASS(VisualShaderNodeTransformFunc); // 3D-specific
 	GDREGISTER_CLASS(VisualShaderNodeUVFunc);
 	GDREGISTER_CLASS(VisualShaderNodeUVPolarCoord);
 	GDREGISTER_CLASS(VisualShaderNodeDotProduct);
@@ -494,16 +491,16 @@ void register_scene_types() {
 	GDREGISTER_CLASS(VisualShaderNodeVectorRefract);
 	GDREGISTER_CLASS(VisualShaderNodeMix);
 	GDREGISTER_CLASS(VisualShaderNodeVectorCompose);
-	GDREGISTER_CLASS(VisualShaderNodeTransformCompose);
+	// GDREGISTER_CLASS(VisualShaderNodeTransformCompose); // 3D-specific
 	GDREGISTER_CLASS(VisualShaderNodeVectorDecompose);
-	GDREGISTER_CLASS(VisualShaderNodeTransformDecompose);
+	// GDREGISTER_CLASS(VisualShaderNodeTransformDecompose); // 3D-specific
 	GDREGISTER_CLASS(VisualShaderNodeTexture);
 	GDREGISTER_CLASS(VisualShaderNodeCurveTexture);
 	GDREGISTER_CLASS(VisualShaderNodeCurveXYZTexture);
-	GDREGISTER_ABSTRACT_CLASS(VisualShaderNodeSample3D);
+	// GDREGISTER_ABSTRACT_CLASS(VisualShaderNodeSample3D); // 3D-specific
 	GDREGISTER_CLASS(VisualShaderNodeTexture2DArray);
-	GDREGISTER_CLASS(VisualShaderNodeTexture3D);
-	GDREGISTER_CLASS(VisualShaderNodeCubemap);
+	// GDREGISTER_CLASS(VisualShaderNodeTexture3D); // 3D-specific
+	// GDREGISTER_CLASS(VisualShaderNodeCubemap); // 3D-specific
 	GDREGISTER_ABSTRACT_CLASS(VisualShaderNodeParameter);
 	GDREGISTER_CLASS(VisualShaderNodeParameterRef);
 	GDREGISTER_CLASS(VisualShaderNodeFloatParameter);
@@ -514,52 +511,52 @@ void register_scene_types() {
 	GDREGISTER_CLASS(VisualShaderNodeVec2Parameter);
 	GDREGISTER_CLASS(VisualShaderNodeVec3Parameter);
 	GDREGISTER_CLASS(VisualShaderNodeVec4Parameter);
-	GDREGISTER_CLASS(VisualShaderNodeTransformParameter);
+	// GDREGISTER_CLASS(VisualShaderNodeTransformParameter); // 3D-specific
 	GDREGISTER_ABSTRACT_CLASS(VisualShaderNodeTextureParameter);
 	GDREGISTER_CLASS(VisualShaderNodeTexture2DParameter);
-	GDREGISTER_CLASS(VisualShaderNodeTextureParameterTriplanar);
+	// GDREGISTER_CLASS(VisualShaderNodeTextureParameterTriplanar); // 3D-specific
 	GDREGISTER_CLASS(VisualShaderNodeTexture2DArrayParameter);
-	GDREGISTER_CLASS(VisualShaderNodeTexture3DParameter);
-	GDREGISTER_CLASS(VisualShaderNodeCubemapParameter);
-	GDREGISTER_CLASS(VisualShaderNodeLinearSceneDepth);
-	GDREGISTER_CLASS(VisualShaderNodeWorldPositionFromDepth);
-	GDREGISTER_CLASS(VisualShaderNodeScreenNormalWorldSpace);
+	// GDREGISTER_CLASS(VisualShaderNodeTexture3DParameter); // 3D-specific
+	// GDREGISTER_CLASS(VisualShaderNodeCubemapParameter); // 3D-specific
+	// GDREGISTER_CLASS(VisualShaderNodeLinearSceneDepth); // 3D-specific
+	// GDREGISTER_CLASS(VisualShaderNodeWorldPositionFromDepth); // 3D-specific
+	// GDREGISTER_CLASS(VisualShaderNodeScreenNormalWorldSpace); // 3D-specific
 	GDREGISTER_CLASS(VisualShaderNodeIf);
 	GDREGISTER_CLASS(VisualShaderNodeSwitch);
-	GDREGISTER_CLASS(VisualShaderNodeFresnel);
+	// GDREGISTER_CLASS(VisualShaderNodeFresnel); // 3D-specific
 	GDREGISTER_CLASS(VisualShaderNodeExpression);
 	GDREGISTER_CLASS(VisualShaderNodeGlobalExpression);
 	GDREGISTER_CLASS(VisualShaderNodeIs);
 	GDREGISTER_CLASS(VisualShaderNodeCompare);
 	GDREGISTER_CLASS(VisualShaderNodeMultiplyAdd);
-	GDREGISTER_CLASS(VisualShaderNodeBillboard);
+	// GDREGISTER_CLASS(VisualShaderNodeBillboard); // 3D-specific
 	GDREGISTER_CLASS(VisualShaderNodeDistanceFade);
 	GDREGISTER_CLASS(VisualShaderNodeProximityFade);
 	GDREGISTER_CLASS(VisualShaderNodeRandomRange);
 	GDREGISTER_CLASS(VisualShaderNodeRemap);
-	GDREGISTER_CLASS(VisualShaderNodeRotationByAxis);
+	// GDREGISTER_CLASS(VisualShaderNodeRotationByAxis); // 3D-specific
 	GDREGISTER_ABSTRACT_CLASS(VisualShaderNodeVarying);
 	GDREGISTER_CLASS(VisualShaderNodeVaryingSetter);
 	GDREGISTER_CLASS(VisualShaderNodeVaryingGetter);
 	GDREGISTER_CLASS(VisualShaderNodeReroute);
 
-	GDREGISTER_CLASS(VisualShaderNodeSDFToScreenUV);
-	GDREGISTER_CLASS(VisualShaderNodeScreenUVToSDF);
-	GDREGISTER_CLASS(VisualShaderNodeTextureSDF);
-	GDREGISTER_CLASS(VisualShaderNodeTextureSDFNormal);
-	GDREGISTER_CLASS(VisualShaderNodeSDFRaymarch);
+	// GDREGISTER_CLASS(VisualShaderNodeSDFToScreenUV); // 3D-specific
+	// GDREGISTER_CLASS(VisualShaderNodeScreenUVToSDF); // 3D-specific
+	// GDREGISTER_CLASS(VisualShaderNodeTextureSDF); // 3D-specific
+	// GDREGISTER_CLASS(VisualShaderNodeTextureSDFNormal); // 3D-specific
+	// GDREGISTER_CLASS(VisualShaderNodeSDFRaymarch); // 3D-specific
 
-	GDREGISTER_CLASS(VisualShaderNodeParticleOutput);
-	GDREGISTER_ABSTRACT_CLASS(VisualShaderNodeParticleEmitter);
-	GDREGISTER_CLASS(VisualShaderNodeParticleSphereEmitter);
-	GDREGISTER_CLASS(VisualShaderNodeParticleBoxEmitter);
-	GDREGISTER_CLASS(VisualShaderNodeParticleRingEmitter);
-	GDREGISTER_CLASS(VisualShaderNodeParticleMeshEmitter);
-	GDREGISTER_CLASS(VisualShaderNodeParticleMultiplyByAxisAngle);
-	GDREGISTER_CLASS(VisualShaderNodeParticleConeVelocity);
-	GDREGISTER_CLASS(VisualShaderNodeParticleRandomness);
-	GDREGISTER_CLASS(VisualShaderNodeParticleAccelerator);
-	GDREGISTER_CLASS(VisualShaderNodeParticleEmit);
+	GDREGISTER_CLASS(VisualShaderNodeParticleOutput); // 3D-specific
+	GDREGISTER_ABSTRACT_CLASS(VisualShaderNodeParticleEmitter); // 3D-specific
+	GDREGISTER_CLASS(VisualShaderNodeParticleSphereEmitter); // 3D-specific
+	GDREGISTER_CLASS(VisualShaderNodeParticleBoxEmitter); // 3D-specific
+	GDREGISTER_CLASS(VisualShaderNodeParticleRingEmitter); // 3D-specific
+	GDREGISTER_CLASS(VisualShaderNodeParticleMeshEmitter); // 3D-specific
+	GDREGISTER_CLASS(VisualShaderNodeParticleMultiplyByAxisAngle); // 3D-specific
+	GDREGISTER_CLASS(VisualShaderNodeParticleConeVelocity); // 3D-specific
+	GDREGISTER_CLASS(VisualShaderNodeParticleRandomness); // 3D-specific
+	GDREGISTER_CLASS(VisualShaderNodeParticleAccelerator); // 3D-specific
+	GDREGISTER_CLASS(VisualShaderNodeParticleEmit); // 3D-specific
 
 	GDREGISTER_VIRTUAL_CLASS(Material);
 	GDREGISTER_CLASS(PlaceholderMaterial);
