@@ -345,7 +345,7 @@ PackedStringArray GPUParticles2D::get_configuration_warnings() const {
 	}
 
 	if (trail_enabled && OS::get_singleton()->get_current_rendering_method() == "antimatter_gl") {
-		warnings.push_back(RTR("Particle trails are only available when using the Forward+ or Mobile rendering backends."));
+		warnings.push_back(RTR("Particle trails are only available when using the Antimatter+ or Mobile rendering backends."));
 	}
 
 	if (sub_emitter != NodePath() && OS::get_singleton()->get_current_rendering_method() == "antimatter_gl") {

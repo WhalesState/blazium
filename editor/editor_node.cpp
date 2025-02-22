@@ -4770,9 +4770,9 @@ String EditorNode::_get_system_info() const {
 
 	// Prettify
 	if (rendering_method == "antimatter_vk") {
-		rendering_method = "Forward+";
+		rendering_method = "Antimatter+";
 	} else if (rendering_method == "mobile") {
-		rendering_method = "Mobile";
+		rendering_method = "AntimatterLite";
 	} else if (rendering_method == "antimatter_gl") {
 		rendering_method = "Antimatter";
 		driver_name = GLOBAL_GET("rendering/antimatter_gl/driver");
@@ -6195,10 +6195,10 @@ void EditorNode::_renderer_selected(int p_which) {
 void EditorNode::_add_renderer_entry(const String &p_renderer_name, bool p_mark_overridden) {
 	String item_text;
 	if (p_renderer_name == "antimatter_vk") {
-		item_text = TTR("Forward+");
+		item_text = TTR("Antimatter+");
 	}
 	if (p_renderer_name == "mobile") {
-		item_text = TTR("Mobile");
+		item_text = TTR("AntimatterLite");
 	}
 	if (p_renderer_name == "antimatter_gl") {
 		item_text = TTR("Antimatter");
@@ -7019,7 +7019,7 @@ EditorNode::EditorNode() {
 	renderer->set_theme_type_variation("TopBarOptionButton");
 	renderer->set_fit_to_longest_item(false);
 	renderer->set_focus_mode(Control::FOCUS_NONE);
-	renderer->set_tooltip_text(TTR("Choose a rendering method.\n\nNotes:\n- On mobile platforms, the Mobile rendering method is used if Forward+ is selected here.\n- On the web platform, the Compatibility rendering method is always used."));
+	renderer->set_tooltip_text(TTR("Choose a rendering method.\n\nNotes:\n- On mobile platforms, the Mobile rendering method is used if Antimatter+ is selected here.\n- On the web platform, the Compatibility rendering method is always used."));
 
 	right_menu_hb->add_child(renderer);
 

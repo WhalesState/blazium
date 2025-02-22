@@ -5377,7 +5377,7 @@ Error RenderingDevice::initialize(RenderingContextDriver *p_context, DisplayServ
 		if (OS::get_singleton()->get_current_rendering_method() == "mobile") {
 			rendering_method = "Forward Mobile";
 		} else {
-			rendering_method = "Forward+";
+			rendering_method = "Antimatter+";
 		}
 
 		// Output our device version.

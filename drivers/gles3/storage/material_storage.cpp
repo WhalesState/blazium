@@ -3002,19 +3002,19 @@ void SceneShaderData::set_code(const String &p_code) {
 
 #ifdef DEBUG_ENABLED
 	if (uses_particle_trails) {
-		WARN_PRINT_ONCE_ED("Particle trails are only available when using the Forward+ or Mobile rendering backends.");
+		WARN_PRINT_ONCE_ED("Particle trails are only available when using the Antimatter+ or Mobile rendering backends.");
 	}
 
 	if (uses_sss) {
-		WARN_PRINT_ONCE_ED("Sub-surface scattering is only available when using the Forward+ rendering backend.");
+		WARN_PRINT_ONCE_ED("Sub-surface scattering is only available when using the Antimatter+ rendering backend.");
 	}
 
 	if (uses_transmittance) {
-		WARN_PRINT_ONCE_ED("Transmittance is only available when using the Forward+ rendering backend.");
+		WARN_PRINT_ONCE_ED("Transmittance is only available when using the Antimatter+ rendering backend.");
 	}
 
 	if (uses_normal_texture) {
-		WARN_PRINT_ONCE_ED("Reading from the normal-roughness texture is only available when using the Forward+ or Mobile rendering backends.");
+		WARN_PRINT_ONCE_ED("Reading from the normal-roughness texture is only available when using the Antimatter+ or Mobile rendering backends.");
 	}
 #endif
 

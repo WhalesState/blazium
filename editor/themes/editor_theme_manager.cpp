@@ -289,9 +289,10 @@ EditorThemeManager::ThemeConfiguration EditorThemeManager::_create_theme_config(
 				preset_accent_color = Color(0.179542f, 0.735295f, 0.468908f);
 				preset_contrast = -0.6f;
 			} else { // Default
-				preset_accent_color = Color(0.44, 0.73, 0.98);
-				preset_base_color = Color(0.21, 0.24, 0.29);
-				preset_contrast = config.default_contrast;
+				preset_accent_color = Color::html("#f4837e");
+				preset_base_color = Color::html("#111111");
+				preset_contrast = -0.4f;
+				config.icon_saturation = 1.0f;
 			}
 
 			config.accent_color = preset_accent_color;
@@ -513,14 +514,14 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 
 		// Special colors for rendering methods.
 
-		p_theme->set_color("antimatter_vk_color", EditorStringName(Editor), Color::hex(0xff2159ff));
-		p_theme->set_color("mobile_color", EditorStringName(Editor), Color::hex(0xaff2159ff));
-		p_theme->set_color("antimatter_gl_color", EditorStringName(Editor), Color::hex(0xff2159ff));
+		p_theme->set_color("antimatter_vk_color", EditorStringName(Editor), Color::hex64(0xff2159ff));
+		p_theme->set_color("mobile_color", EditorStringName(Editor), Color::hex64(0xaff2159ff));
+		p_theme->set_color("antimatter_gl_color", EditorStringName(Editor), Color::hex64(0xff2159ff));
 
 		if (p_config.dark_theme) {
 			p_theme->set_color("highend_color", EditorStringName(Editor), Color(1.0, 0.0, 0.0));
 		} else {
-			p_theme->set_color("highend_color", EditorStringName(Editor), Color::hex(0xad1128ff));
+			p_theme->set_color("highend_color", EditorStringName(Editor), Color::hex64(0xad1128ff));
 		}
 	}
 

@@ -9017,7 +9017,7 @@ Error ShaderLanguage::_parse_shader(const HashMap<StringName, FunctionInfo> &p_f
 									--texture_uniforms;
 									--texture_binding;
 									if (OS::get_singleton()->get_current_rendering_method() != "antimatter_vk") {
-										_set_error(RTR("'hint_normal_roughness_texture' is only available when using the Forward+ backend."));
+										_set_error(RTR("'hint_normal_roughness_texture' is only available when using the Antimatter+ backend."));
 										return ERR_PARSE_ERROR;
 									}
 									if (shader_type_identifier != StringName() && String(shader_type_identifier) != "spatial") {
