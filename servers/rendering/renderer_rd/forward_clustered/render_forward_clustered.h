@@ -71,8 +71,7 @@ class RenderForwardClustered : public RendererSceneRenderRD {
 		SPEC_CONSTANT_DIRECTIONAL_SOFT_SHADOW_SAMPLES = 8,
 		SPEC_CONSTANT_DIRECTIONAL_PENUMBRA_SHADOW_SAMPLES = 9,
 		SPEC_CONSTANT_DECAL_FILTER = 10,
-		SPEC_CONSTANT_PROJECTOR_FILTER = 11,
-		SPEC_CONSTANT_USE_DEPTH_FOG = 12,
+		SPEC_CONSTANT_PROJECTOR_FILTER = 11
 	};
 
 	enum {
@@ -284,11 +283,6 @@ class RenderForwardClustered : public RendererSceneRenderRD {
 
 			int32_t sdf_size[3];
 			uint32_t gi_upscale_for_msaa;
-
-			uint32_t volumetric_fog_enabled;
-			float volumetric_fog_inv_length;
-			float volumetric_fog_detail_spread;
-			uint32_t volumetric_fog_pad;
 		};
 
 		struct PushConstant {
@@ -585,11 +579,6 @@ class RenderForwardClustered : public RendererSceneRenderRD {
 
 	/* SDFGI */
 	void _update_sdfgi(RenderDataRD *p_render_data);
-
-	/* Volumetric fog */
-	RID shadow_sampler;
-
-	void _update_volumetric_fog(Ref<RenderSceneBuffersRD> p_render_buffers, RID p_environment, const Projection &p_cam_projection, const Transform3D &p_cam_transform, const Transform3D &p_prev_cam_inv_transform, RID p_shadow_atlas, int p_directional_light_count, bool p_use_directional_shadows, int p_positional_light_count, int p_voxel_gi_count, const PagedArray<RID> &p_fog_volumes);
 
 	/* Render shadows */
 

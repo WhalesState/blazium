@@ -234,21 +234,6 @@ void SkyRD::_render_sky(RD::DrawListID p_list, float p_time, RID p_fb, PipelineC
 
 	RD::get_singleton()->draw_list_bind_render_pipeline(draw_list, p_pipeline->get_render_pipeline(RD::INVALID_ID, fb_format, false, RD::get_singleton()->draw_list_get_current_pass()));
 
-	// Update uniform sets.
-	{
-		RD::get_singleton()->draw_list_bind_uniform_set(draw_list, sky_scene_state.uniform_set, SKY_SET_UNIFORMS);
-		if (p_uniform_set.is_valid() && RD::get_singleton()->uniform_set_is_valid(p_uniform_set)) { // Material may not have a uniform set.
-			RD::get_singleton()->draw_list_bind_uniform_set(draw_list, p_uniform_set, SKY_SET_MATERIAL);
-		}
-		RD::get_singleton()->draw_list_bind_uniform_set(draw_list, p_texture_set, SKY_SET_TEXTURES);
-		// Fog uniform set can be invalidated before drawing, so validate at draw time
-		if (sky_scene_state.fog_uniform_set.is_valid() && RD::get_singleton()->uniform_set_is_valid(sky_scene_state.fog_uniform_set)) {
-			RD::get_singleton()->draw_list_bind_uniform_set(draw_list, sky_scene_state.fog_uniform_set, SKY_SET_FOG);
-		} else {
-			RD::get_singleton()->draw_list_bind_uniform_set(draw_list, sky_scene_state.default_fog_uniform_set, SKY_SET_FOG);
-		}
-	}
-
 	RD::get_singleton()->draw_list_set_push_constant(draw_list, &sky_push_constant, sizeof(SkyPushConstant));
 
 	RD::get_singleton()->draw_list_draw(draw_list, false, 1u, 3u);
@@ -878,67 +863,6 @@ void sky() {
 
 		sky_scene_state.uniform_set = RD::get_singleton()->uniform_set_create(uniforms, sky_shader.default_shader_rd, SKY_SET_UNIFORMS);
 	}
-
-	{
-		Vector<RD::Uniform> uniforms;
-		{
-			RD::Uniform u;
-			u.binding = 0;
-			u.uniform_type = RD::UNIFORM_TYPE_TEXTURE;
-			RID vfog = texture_storage->texture_rd_get_default(RendererRD::TextureStorage::DEFAULT_RD_TEXTURE_3D_WHITE);
-			u.append_id(vfog);
-			uniforms.push_back(u);
-		}
-
-		sky_scene_state.default_fog_uniform_set = RD::get_singleton()->uniform_set_create(uniforms, sky_shader.default_shader_rd, SKY_SET_FOG);
-	}
-
-	{
-		// Need defaults for using fog with clear color
-		sky_scene_state.fog_shader = material_storage->shader_allocate();
-		material_storage->shader_initialize(sky_scene_state.fog_shader);
-
-		material_storage->shader_set_code(sky_scene_state.fog_shader, R"(
-// Default clear color sky shader.
-
-shader_type sky;
-
-uniform vec4 clear_color;
-
-void sky() {
-	COLOR = clear_color.rgb;
-}
-)");
-		sky_scene_state.fog_material = material_storage->material_allocate();
-		material_storage->material_initialize(sky_scene_state.fog_material);
-
-		material_storage->material_set_shader(sky_scene_state.fog_material, sky_scene_state.fog_shader);
-
-		Vector<RD::Uniform> uniforms;
-		{
-			RD::Uniform u;
-			u.uniform_type = RD::UNIFORM_TYPE_TEXTURE;
-			u.binding = 0;
-			u.append_id(texture_storage->texture_rd_get_default(RendererRD::TextureStorage::DEFAULT_RD_TEXTURE_CUBEMAP_BLACK));
-			uniforms.push_back(u);
-		}
-		{
-			RD::Uniform u;
-			u.uniform_type = RD::UNIFORM_TYPE_TEXTURE;
-			u.binding = 1;
-			u.append_id(texture_storage->texture_rd_get_default(RendererRD::TextureStorage::DEFAULT_RD_TEXTURE_WHITE));
-			uniforms.push_back(u);
-		}
-		{
-			RD::Uniform u;
-			u.uniform_type = RD::UNIFORM_TYPE_TEXTURE;
-			u.binding = 2;
-			u.append_id(texture_storage->texture_rd_get_default(RendererRD::TextureStorage::DEFAULT_RD_TEXTURE_WHITE));
-			uniforms.push_back(u);
-		}
-
-		sky_scene_state.fog_only_texture_uniform_set = RD::get_singleton()->uniform_set_create(uniforms, sky_shader.default_shader_rd, SKY_SET_TEXTURES);
-	}
 }
 
 void SkyRD::set_texture_format(RD::DataFormat p_texture_format) {
@@ -957,20 +881,6 @@ SkyRD::~SkyRD() {
 	memdelete_arr(sky_scene_state.last_frame_directional_lights);
 	material_storage->shader_free(sky_shader.default_shader);
 	material_storage->material_free(sky_shader.default_material);
-	material_storage->shader_free(sky_scene_state.fog_shader);
-	material_storage->material_free(sky_scene_state.fog_material);
-
-	if (RD::get_singleton()->uniform_set_is_valid(sky_scene_state.uniform_set)) {
-		RD::get_singleton()->free(sky_scene_state.uniform_set);
-	}
-
-	if (RD::get_singleton()->uniform_set_is_valid(sky_scene_state.default_fog_uniform_set)) {
-		RD::get_singleton()->free(sky_scene_state.default_fog_uniform_set);
-	}
-
-	if (RD::get_singleton()->uniform_set_is_valid(sky_scene_state.fog_only_texture_uniform_set)) {
-		RD::get_singleton()->free(sky_scene_state.fog_only_texture_uniform_set);
-	}
 }
 
 void SkyRD::setup_sky(RID p_env, Ref<RenderSceneBuffersRD> p_render_buffers, const PagedArray<RID> &p_lights, RID p_camera_attributes, uint32_t p_view_count, const Projection *p_view_projections, const Vector3 *p_view_eye_offsets, const Transform3D &p_cam_transform, const Projection &p_cam_projection, const Size2i p_screen_size, Vector2 p_jitter, RendererSceneRenderRD *p_scene_render) {
@@ -1148,31 +1058,6 @@ void SkyRD::setup_sky(RID p_env, Ref<RenderSceneBuffersRD> p_render_buffers, con
 		}
 	}
 
-	// Setup fog variables.
-	sky_scene_state.ubo.volumetric_fog_enabled = false;
-	if (p_render_buffers.is_valid()) {
-		if (p_render_buffers->has_custom_data(RB_SCOPE_FOG)) {
-			Ref<RendererRD::Fog::VolumetricFog> fog = p_render_buffers->get_custom_data(RB_SCOPE_FOG);
-			sky_scene_state.ubo.volumetric_fog_enabled = true;
-
-			float fog_end = fog->length;
-			if (fog_end > 0.0) {
-				sky_scene_state.ubo.volumetric_fog_inv_length = 1.0 / fog_end;
-			} else {
-				sky_scene_state.ubo.volumetric_fog_inv_length = 1.0;
-			}
-
-			float fog_detail_spread = fog->spread; // Reverse lookup.
-			if (fog_detail_spread > 0.0) {
-				sky_scene_state.ubo.volumetric_fog_detail_spread = 1.0 / fog_detail_spread;
-			} else {
-				sky_scene_state.ubo.volumetric_fog_detail_spread = 1.0;
-			}
-
-			sky_scene_state.fog_uniform_set = fog->sky_uniform_set;
-		}
-	}
-
 	Projection correction;
 	correction.set_depth_correction(false, true);
 	correction.add_jitter_offset(p_jitter);
@@ -1199,20 +1084,6 @@ void SkyRD::setup_sky(RID p_env, Ref<RenderSceneBuffersRD> p_render_buffers, con
 		sky_scene_state.ubo.view_eye_offsets[i][2] = p_view_eye_offsets[i].z;
 		sky_scene_state.ubo.view_eye_offsets[i][3] = 0.0;
 	}
-
-	sky_scene_state.ubo.z_far = p_view_projections[0].get_z_far(); // Should be the same for all projection.
-	sky_scene_state.ubo.fog_enabled = RendererSceneRenderRD::get_singleton()->environment_get_fog_enabled(p_env);
-	sky_scene_state.ubo.fog_density = RendererSceneRenderRD::get_singleton()->environment_get_fog_density(p_env);
-	sky_scene_state.ubo.fog_aerial_perspective = RendererSceneRenderRD::get_singleton()->environment_get_fog_aerial_perspective(p_env);
-	Color fog_color = RendererSceneRenderRD::get_singleton()->environment_get_fog_light_color(p_env).srgb_to_linear();
-	float fog_energy = RendererSceneRenderRD::get_singleton()->environment_get_fog_light_energy(p_env);
-	sky_scene_state.ubo.fog_light_color[0] = fog_color.r * fog_energy;
-	sky_scene_state.ubo.fog_light_color[1] = fog_color.g * fog_energy;
-	sky_scene_state.ubo.fog_light_color[2] = fog_color.b * fog_energy;
-	sky_scene_state.ubo.fog_sun_scatter = RendererSceneRenderRD::get_singleton()->environment_get_fog_sun_scatter(p_env);
-
-	sky_scene_state.ubo.fog_sky_affect = RendererSceneRenderRD::get_singleton()->environment_get_fog_sky_affect(p_env);
-	sky_scene_state.ubo.volumetric_fog_sky_affect = RendererSceneRenderRD::get_singleton()->environment_get_volumetric_fog_sky_affect(p_env);
 
 	RD::get_singleton()->buffer_update(sky_scene_state.uniform_buffer, 0, sizeof(SkySceneState::UBO), &sky_scene_state.ubo);
 }
@@ -1420,11 +1291,6 @@ void SkyRD::update_res_buffers(Ref<RenderSceneBuffersRD> p_render_buffers, RID p
 		}
 	}
 
-	if (background == RS::ENV_BG_CLEAR_COLOR || background == RS::ENV_BG_COLOR) {
-		sky_material = sky_scene_state.fog_material;
-		material = static_cast<SkyMaterialData *>(material_storage->material_get_data(sky_material, RendererRD::MaterialStorage::SHADER_TYPE_SKY));
-	}
-
 	ERR_FAIL_NULL(material);
 
 	SkyShaderData *shader_data = material->shader_data;
@@ -1528,11 +1394,6 @@ void SkyRD::draw_sky(RD::DrawListID p_draw_list, Ref<RenderSceneBuffersRD> p_ren
 		}
 	}
 
-	if (background == RS::ENV_BG_CLEAR_COLOR || background == RS::ENV_BG_COLOR) {
-		sky_material = sky_scene_state.fog_material;
-		material = static_cast<SkyMaterialData *>(material_storage->material_get_data(sky_material, RendererRD::MaterialStorage::SHADER_TYPE_SKY));
-	}
-
 	ERR_FAIL_NULL(material);
 
 	SkyShaderData *shader_data = material->shader_data;
@@ -1562,11 +1423,7 @@ void SkyRD::draw_sky(RD::DrawListID p_draw_list, Ref<RenderSceneBuffersRD> p_ren
 	PipelineCacheRD *pipeline = &shader_data->pipelines[sky_scene_state.view_count > 1 ? SKY_VERSION_BACKGROUND_MULTIVIEW : SKY_VERSION_BACKGROUND];
 
 	RID texture_uniform_set;
-	if (sky) {
-		texture_uniform_set = sky->get_textures(SKY_TEXTURE_SET_BACKGROUND, sky_shader.default_shader_rd, p_render_buffers);
-	} else {
-		texture_uniform_set = sky_scene_state.fog_only_texture_uniform_set;
-	}
+	texture_uniform_set = sky->get_textures(SKY_TEXTURE_SET_BACKGROUND, sky_shader.default_shader_rd, p_render_buffers);
 
 	_render_sky(p_draw_list, p_time, p_fb, pipeline, material->uniform_set, texture_uniform_set, projection, sky_transform, sky_scene_state.cam_transform.origin, p_luminance_multiplier);
 }

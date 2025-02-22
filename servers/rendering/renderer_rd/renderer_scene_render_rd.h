@@ -42,7 +42,6 @@
 #include "servers/rendering/renderer_rd/effects/luminance.h"
 #include "servers/rendering/renderer_rd/effects/tone_mapper.h"
 #include "servers/rendering/renderer_rd/effects/vrs.h"
-#include "servers/rendering/renderer_rd/environment/fog.h"
 #include "servers/rendering/renderer_rd/environment/gi.h"
 #include "servers/rendering/renderer_rd/environment/sky.h"
 #include "servers/rendering/renderer_rd/framebuffer_cache_rd.h"
@@ -190,9 +189,6 @@ public:
 
 	virtual void environment_glow_set_use_bicubic_upscale(bool p_enable) override;
 
-	virtual void environment_set_volumetric_fog_volume_size(int p_size, int p_depth) override;
-	virtual void environment_set_volumetric_fog_filter_active(bool p_enable) override;
-
 	virtual void environment_set_sdfgi_ray_count(RS::EnvironmentSDFGIRayCount p_ray_count) override;
 	virtual void environment_set_sdfgi_frames_to_converge(RS::EnvironmentSDFGIFramesToConverge p_frames) override;
 	virtual void environment_set_sdfgi_frames_to_update_light(RS::EnvironmentSDFGIFramesToUpdateLight p_update) override;
@@ -206,18 +202,6 @@ public:
 	/* REFLECTION PROBE */
 
 	virtual RID reflection_probe_create_framebuffer(RID p_color, RID p_depth);
-
-	/* FOG VOLUMES */
-
-	uint32_t get_volumetric_fog_size() const { return volumetric_fog_size; }
-	uint32_t get_volumetric_fog_depth() const { return volumetric_fog_depth; }
-	bool get_volumetric_fog_filter_active() const { return volumetric_fog_filter_active; }
-
-	virtual RID fog_volume_instance_create(RID p_fog_volume) override;
-	virtual void fog_volume_instance_set_transform(RID p_fog_volume_instance, const Transform3D &p_transform) override;
-	virtual void fog_volume_instance_set_active(RID p_fog_volume_instance, bool p_active) override;
-	virtual RID fog_volume_instance_get_volume(RID p_fog_volume_instance) const override;
-	virtual Vector3 fog_volume_instance_get_position(RID p_fog_volume_instance) const override;
 
 	/* gi light probes */
 
@@ -239,7 +223,7 @@ public:
 
 	virtual void base_uniforms_changed() = 0;
 
-	virtual void render_scene(const Ref<RenderSceneBuffers> &p_render_buffers, const CameraData *p_camera_data, const CameraData *p_prev_camera_data, const PagedArray<RenderGeometryInstance *> &p_instances, const PagedArray<RID> &p_lights, const PagedArray<RID> &p_reflection_probes, const PagedArray<RID> &p_voxel_gi_instances, const PagedArray<RID> &p_decals, const PagedArray<RID> &p_lightmaps, const PagedArray<RID> &p_fog_volumes, RID p_environment, RID p_camera_attributes, RID p_compositor, RID p_shadow_atlas, RID p_occluder_debug_tex, RID p_reflection_atlas, RID p_reflection_probe, int p_reflection_probe_pass, float p_screen_mesh_lod_threshold, const RenderShadowData *p_render_shadows, int p_render_shadow_count, const RenderSDFGIData *p_render_sdfgi_regions, int p_render_sdfgi_region_count, const RenderSDFGIUpdateData *p_sdfgi_update_data = nullptr, RenderingMethod::RenderInfo *r_render_info = nullptr) override;
+	virtual void render_scene(const Ref<RenderSceneBuffers> &p_render_buffers, const CameraData *p_camera_data, const CameraData *p_prev_camera_data, const PagedArray<RenderGeometryInstance *> &p_instances, const PagedArray<RID> &p_lights, const PagedArray<RID> &p_reflection_probes, const PagedArray<RID> &p_voxel_gi_instances, const PagedArray<RID> &p_decals, const PagedArray<RID> &p_lightmaps, RID p_environment, RID p_camera_attributes, RID p_compositor, RID p_shadow_atlas, RID p_occluder_debug_tex, RID p_reflection_atlas, RID p_reflection_probe, int p_reflection_probe_pass, float p_screen_mesh_lod_threshold, const RenderShadowData *p_render_shadows, int p_render_shadow_count, const RenderSDFGIData *p_render_sdfgi_regions, int p_render_sdfgi_region_count, const RenderSDFGIUpdateData *p_sdfgi_update_data = nullptr, RenderingMethod::RenderInfo *r_render_info = nullptr) override;
 
 	virtual void render_material(const Transform3D &p_cam_transform, const Projection &p_cam_projection, bool p_cam_orthogonal, const PagedArray<RenderGeometryInstance *> &p_instances, RID p_framebuffer, const Rect2i &p_region) override;
 
@@ -329,7 +313,6 @@ public:
 
 	virtual bool is_vrs_supported() const;
 	virtual bool is_dynamic_gi_supported() const;
-	virtual bool is_volumetric_supported() const;
 	virtual uint32_t get_max_elements() const;
 
 	void init();

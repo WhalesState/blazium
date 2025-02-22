@@ -1304,7 +1304,7 @@ void GI::SDFGI::update_probes(RID p_env, SkyRD::Sky *p_sky) {
 	push_constant.ray_bias = probe_bias;
 	push_constant.image_size[0] = probe_axis_count * probe_axis_count;
 	push_constant.image_size[1] = probe_axis_count;
-	push_constant.store_ambient_texture = RendererSceneRenderRD::get_singleton()->environment_get_volumetric_fog_enabled(p_env);
+	push_constant.store_ambient_texture = 0;
 
 	RID sky_uniform_set = gi->sdfgi_shader.integrate_default_sky_uniform_set;
 	push_constant.sky_mode = SDFGIShader::IntegratePushConstant::SKY_MODE_DISABLED;
@@ -3728,12 +3728,6 @@ void GI::setup_voxel_gi_instances(RenderDataRD *p_render_data, Ref<RenderSceneBu
 				RD::get_singleton()->free(rbgi->uniform_set[v]);
 			}
 			rbgi->uniform_set[v] = RID();
-		}
-
-		if (p_render_buffers->has_custom_data(RB_SCOPE_FOG)) {
-			// VoxelGI instances have changed, so we need to update volumetric fog.
-			Ref<RendererRD::Fog::VolumetricFog> fog = p_render_buffers->get_custom_data(RB_SCOPE_FOG);
-			fog->sync_gi_dependent_sets_validity(true);
 		}
 	}
 

@@ -580,7 +580,6 @@ public:
 	virtual void base_uniforms_changed() override;
 
 	virtual bool is_dynamic_gi_supported() const override;
-	virtual bool is_volumetric_supported() const override;
 	virtual uint32_t get_max_elements() const override;
 
 	RenderForwardMobile();

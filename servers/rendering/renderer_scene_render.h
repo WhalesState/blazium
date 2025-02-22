@@ -138,44 +138,6 @@ public:
 	float environment_get_exposure(RID p_env) const;
 	float environment_get_white(RID p_env) const;
 
-	// Fog
-	void environment_set_fog(RID p_env, bool p_enable, const Color &p_light_color, float p_light_energy, float p_sun_scatter, float p_density, float p_height, float p_height_density, float p_aerial_perspective, float p_sky_affect, RS::EnvironmentFogMode p_mode);
-	bool environment_get_fog_enabled(RID p_env) const;
-	RS::EnvironmentFogMode environment_get_fog_mode(RID p_env) const;
-	Color environment_get_fog_light_color(RID p_env) const;
-	float environment_get_fog_light_energy(RID p_env) const;
-	float environment_get_fog_sun_scatter(RID p_env) const;
-	float environment_get_fog_density(RID p_env) const;
-	float environment_get_fog_sky_affect(RID p_env) const;
-	float environment_get_fog_height(RID p_env) const;
-	float environment_get_fog_height_density(RID p_env) const;
-	float environment_get_fog_aerial_perspective(RID p_env) const;
-
-	// Depth Fog
-	void environment_set_fog_depth(RID p_env, float p_curve, float p_begin, float p_end);
-	float environment_get_fog_depth_curve(RID p_env) const;
-	float environment_get_fog_depth_begin(RID p_env) const;
-	float environment_get_fog_depth_end(RID p_env) const;
-
-	// Volumetric Fog
-	void environment_set_volumetric_fog(RID p_env, bool p_enable, float p_density, const Color &p_albedo, const Color &p_emission, float p_emission_energy, float p_anisotropy, float p_length, float p_detail_spread, float p_gi_inject, bool p_temporal_reprojection, float p_temporal_reprojection_amount, float p_ambient_inject, float p_sky_affect);
-	bool environment_get_volumetric_fog_enabled(RID p_env) const;
-	float environment_get_volumetric_fog_density(RID p_env) const;
-	Color environment_get_volumetric_fog_scattering(RID p_env) const;
-	Color environment_get_volumetric_fog_emission(RID p_env) const;
-	float environment_get_volumetric_fog_emission_energy(RID p_env) const;
-	float environment_get_volumetric_fog_anisotropy(RID p_env) const;
-	float environment_get_volumetric_fog_length(RID p_env) const;
-	float environment_get_volumetric_fog_detail_spread(RID p_env) const;
-	float environment_get_volumetric_fog_gi_inject(RID p_env) const;
-	float environment_get_volumetric_fog_sky_affect(RID p_env) const;
-	bool environment_get_volumetric_fog_temporal_reprojection(RID p_env) const;
-	float environment_get_volumetric_fog_temporal_reprojection_amount(RID p_env) const;
-	float environment_get_volumetric_fog_ambient_inject(RID p_env) const;
-
-	virtual void environment_set_volumetric_fog_volume_size(int p_size, int p_depth) = 0;
-	virtual void environment_set_volumetric_fog_filter_active(bool p_enable) = 0;
-
 	// GLOW
 	void environment_set_glow(RID p_env, bool p_enable, Vector<float> p_levels, float p_intensity, float p_strength, float p_mix, float p_bloom_threshold, RS::EnvironmentGlowBlendMode p_blend_mode, float p_hdr_bleed_threshold, float p_hdr_bleed_scale, float p_hdr_luminance_cap, float p_glow_map_strength, RID p_glow_map);
 	bool environment_get_glow_enabled(RID p_env) const;
@@ -258,12 +220,6 @@ public:
 	virtual void positional_soft_shadow_filter_set_quality(RS::ShadowQuality p_quality) = 0;
 	virtual void directional_soft_shadow_filter_set_quality(RS::ShadowQuality p_quality) = 0;
 
-	virtual RID fog_volume_instance_create(RID p_fog_volume) = 0;
-	virtual void fog_volume_instance_set_transform(RID p_fog_volume_instance, const Transform3D &p_transform) = 0;
-	virtual void fog_volume_instance_set_active(RID p_fog_volume_instance, bool p_active) = 0;
-	virtual RID fog_volume_instance_get_volume(RID p_fog_volume_instance) const = 0;
-	virtual Vector3 fog_volume_instance_get_position(RID p_fog_volume_instance) const = 0;
-
 	virtual RID voxel_gi_instance_create(RID p_voxel_gi) = 0;
 	virtual void voxel_gi_instance_set_transform_to_data(RID p_probe, const Transform3D &p_xform) = 0;
 	virtual bool voxel_gi_needs_update(RID p_probe) const = 0;
@@ -312,7 +268,7 @@ public:
 		void set_multiview_camera(uint32_t p_view_count, const Transform3D *p_transforms, const Projection *p_projections, bool p_is_orthogonal, bool p_vaspect);
 	};
 
-	virtual void render_scene(const Ref<RenderSceneBuffers> &p_render_buffers, const CameraData *p_camera_data, const CameraData *p_prev_camera_data, const PagedArray<RenderGeometryInstance *> &p_instances, const PagedArray<RID> &p_lights, const PagedArray<RID> &p_reflection_probes, const PagedArray<RID> &p_voxel_gi_instances, const PagedArray<RID> &p_decals, const PagedArray<RID> &p_lightmaps, const PagedArray<RID> &p_fog_volumes, RID p_environment, RID p_camera_attributes, RID p_compositor, RID p_shadow_atlas, RID p_occluder_debug_tex, RID p_reflection_atlas, RID p_reflection_probe, int p_reflection_probe_pass, float p_screen_mesh_lod_threshold, const RenderShadowData *p_render_shadows, int p_render_shadow_count, const RenderSDFGIData *p_render_sdfgi_regions, int p_render_sdfgi_region_count, const RenderSDFGIUpdateData *p_sdfgi_update_data = nullptr, RenderingMethod::RenderInfo *r_render_info = nullptr) = 0;
+	virtual void render_scene(const Ref<RenderSceneBuffers> &p_render_buffers, const CameraData *p_camera_data, const CameraData *p_prev_camera_data, const PagedArray<RenderGeometryInstance *> &p_instances, const PagedArray<RID> &p_lights, const PagedArray<RID> &p_reflection_probes, const PagedArray<RID> &p_voxel_gi_instances, const PagedArray<RID> &p_decals, const PagedArray<RID> &p_lightmaps, RID p_environment, RID p_camera_attributes, RID p_compositor, RID p_shadow_atlas, RID p_occluder_debug_tex, RID p_reflection_atlas, RID p_reflection_probe, int p_reflection_probe_pass, float p_screen_mesh_lod_threshold, const RenderShadowData *p_render_shadows, int p_render_shadow_count, const RenderSDFGIData *p_render_sdfgi_regions, int p_render_sdfgi_region_count, const RenderSDFGIUpdateData *p_sdfgi_update_data = nullptr, RenderingMethod::RenderInfo *r_render_info = nullptr) = 0;
 
 	virtual void render_material(const Transform3D &p_cam_transform, const Projection &p_cam_projection, bool p_cam_orthogonal, const PagedArray<RenderGeometryInstance *> &p_instances, RID p_framebuffer, const Rect2i &p_region) = 0;
 	virtual void render_particle_collider_heightfield(RID p_collider, const Transform3D &p_transform, const PagedArray<RenderGeometryInstance *> &p_instances) = 0;

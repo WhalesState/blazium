@@ -202,25 +202,6 @@ void RenderSceneDataRD::update_ubo(RID p_uniform_buffer, RS::ViewportDebugDraw p
 			ubo.use_reflection_cubemap = false;
 		}
 
-		ubo.fog_enabled = render_scene_render->environment_get_fog_enabled(p_env);
-		ubo.fog_mode = render_scene_render->environment_get_fog_mode(p_env);
-		ubo.fog_density = render_scene_render->environment_get_fog_density(p_env);
-		ubo.fog_height = render_scene_render->environment_get_fog_height(p_env);
-		ubo.fog_height_density = render_scene_render->environment_get_fog_height_density(p_env);
-		ubo.fog_aerial_perspective = render_scene_render->environment_get_fog_aerial_perspective(p_env);
-
-		ubo.fog_depth_curve = render_scene_render->environment_get_fog_depth_curve(p_env);
-		ubo.fog_depth_end = render_scene_render->environment_get_fog_depth_end(p_env) > 0.0 ? render_scene_render->environment_get_fog_depth_end(p_env) : ubo.z_far;
-		ubo.fog_depth_begin = MIN(render_scene_render->environment_get_fog_depth_begin(p_env), ubo.fog_depth_end - 0.001);
-
-		Color fog_color = render_scene_render->environment_get_fog_light_color(p_env).srgb_to_linear();
-		float fog_energy = render_scene_render->environment_get_fog_light_energy(p_env);
-
-		ubo.fog_light_color[0] = fog_color.r * fog_energy;
-		ubo.fog_light_color[1] = fog_color.g * fog_energy;
-		ubo.fog_light_color[2] = fog_color.b * fog_energy;
-
-		ubo.fog_sun_scatter = render_scene_render->environment_get_fog_sun_scatter(p_env);
 	} else {
 		if (p_reflection_probe_instance.is_valid() && RendererRD::LightStorage::get_singleton()->reflection_probe_is_interior(p_reflection_probe_instance)) {
 			ubo.use_ambient_light = false;

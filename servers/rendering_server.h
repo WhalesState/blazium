@@ -87,15 +87,6 @@ protected:
 	static RenderingServer *(*create_func)();
 	static void _bind_methods();
 
-#ifndef DISABLE_DEPRECATED
-	void _environment_set_fog_bind_compat_84792(RID p_env, bool p_enable, const Color &p_light_color, float p_light_energy, float p_sun_scatter, float p_density, float p_height, float p_height_density, float p_aerial_perspective, float p_sky_affect);
-	void _canvas_item_add_multiline_bind_compat_84523(RID p_item, const Vector<Point2> &p_points, const Vector<Color> &p_colors, float p_width = -1.0);
-	void _canvas_item_add_rect_bind_compat_84523(RID p_item, const Rect2 &p_rect, const Color &p_color);
-	void _canvas_item_add_circle_bind_compat_84523(RID p_item, const Point2 &p_pos, float p_radius, const Color &p_color);
-
-	static void _bind_compatibility_methods();
-#endif
-
 public:
 	static RenderingServer *get_singleton();
 	static RenderingServer *create();
@@ -798,23 +789,6 @@ public:
 
 	virtual void particles_collision_set_height_field_resolution(RID p_particles_collision, ParticlesCollisionHeightfieldResolution p_resolution) = 0; // For SDF and vector field.
 
-	/* FOG VOLUME API */
-
-	virtual RID fog_volume_create() = 0;
-
-	enum FogVolumeShape {
-		FOG_VOLUME_SHAPE_ELLIPSOID,
-		FOG_VOLUME_SHAPE_CONE,
-		FOG_VOLUME_SHAPE_CYLINDER,
-		FOG_VOLUME_SHAPE_BOX,
-		FOG_VOLUME_SHAPE_WORLD,
-		FOG_VOLUME_SHAPE_MAX,
-	};
-
-	virtual void fog_volume_set_shape(RID p_fog_volume, FogVolumeShape p_shape) = 0;
-	virtual void fog_volume_set_size(RID p_fog_volume, const Vector3 &p_size) = 0;
-	virtual void fog_volume_set_material(RID p_fog_volume, RID p_material) = 0;
-
 	/* VISIBILITY NOTIFIER API */
 
 	virtual RID visibility_notifier_create() = 0;
@@ -1244,18 +1218,6 @@ public:
 
 	virtual void environment_set_sdfgi_frames_to_update_light(EnvironmentSDFGIFramesToUpdateLight p_update) = 0;
 
-	enum EnvironmentFogMode {
-		ENV_FOG_MODE_EXPONENTIAL,
-		ENV_FOG_MODE_DEPTH,
-	};
-
-	virtual void environment_set_fog(RID p_env, bool p_enable, const Color &p_light_color, float p_light_energy, float p_sun_scatter, float p_density, float p_height, float p_height_density, float p_aerial_perspective, float p_sky_affect, EnvironmentFogMode p_mode = EnvironmentFogMode::ENV_FOG_MODE_EXPONENTIAL) = 0;
-	virtual void environment_set_fog_depth(RID p_env, float p_curve, float p_begin, float p_end) = 0;
-
-	virtual void environment_set_volumetric_fog(RID p_env, bool p_enable, float p_density, const Color &p_albedo, const Color &p_emission, float p_emission_energy, float p_anisotropy, float p_length, float p_detail_spread, float p_gi_inject, bool p_temporal_reprojection, float p_temporal_reprojection_amount, float p_ambient_inject, float p_sky_affect) = 0;
-	virtual void environment_set_volumetric_fog_volume_size(int p_size, int p_depth) = 0;
-	virtual void environment_set_volumetric_fog_filter_active(bool p_enable) = 0;
-
 	virtual Ref<Image> environment_bake_panorama(RID p_env, bool p_bake_irradiance, const Size2i &p_size) = 0;
 
 	virtual void screen_space_roughness_limiter_set_active(bool p_enable, float p_amount, float p_limit) = 0;
@@ -1319,7 +1281,6 @@ public:
 		INSTANCE_LIGHTMAP,
 		INSTANCE_OCCLUDER,
 		INSTANCE_VISIBLITY_NOTIFIER,
-		INSTANCE_FOG_VOLUME,
 		INSTANCE_MAX,
 
 		INSTANCE_GEOMETRY_MASK = (1 << INSTANCE_MESH) | (1 << INSTANCE_MULTIMESH) | (1 << INSTANCE_PARTICLES)
@@ -1803,7 +1764,6 @@ VARIANT_ENUM_CAST(RenderingServer::ParticlesDrawOrder);
 VARIANT_ENUM_CAST(RenderingServer::ParticlesEmitFlags);
 VARIANT_ENUM_CAST(RenderingServer::ParticlesCollisionType);
 VARIANT_ENUM_CAST(RenderingServer::ParticlesCollisionHeightfieldResolution);
-VARIANT_ENUM_CAST(RenderingServer::FogVolumeShape);
 VARIANT_ENUM_CAST(RenderingServer::ViewportScaling3DMode);
 VARIANT_ENUM_CAST(RenderingServer::ViewportUpdateMode);
 VARIANT_ENUM_CAST(RenderingServer::ViewportClearMode);
@@ -1825,7 +1785,6 @@ VARIANT_ENUM_CAST(RenderingServer::EnvironmentBG);
 VARIANT_ENUM_CAST(RenderingServer::EnvironmentAmbientSource);
 VARIANT_ENUM_CAST(RenderingServer::EnvironmentReflectionSource);
 VARIANT_ENUM_CAST(RenderingServer::EnvironmentGlowBlendMode);
-VARIANT_ENUM_CAST(RenderingServer::EnvironmentFogMode);
 VARIANT_ENUM_CAST(RenderingServer::EnvironmentToneMapper);
 VARIANT_ENUM_CAST(RenderingServer::EnvironmentSSRRoughnessQuality);
 VARIANT_ENUM_CAST(RenderingServer::EnvironmentSSAOQuality);

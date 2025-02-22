@@ -841,20 +841,12 @@ void RenderForwardMobile::_render_scene(RenderDataRD *p_render_data, const Color
 				clear_color.r *= bg_energy_multiplier;
 				clear_color.g *= bg_energy_multiplier;
 				clear_color.b *= bg_energy_multiplier;
-				if (!p_render_data->transparent_bg && environment_get_fog_enabled(p_render_data->environment)) {
-					draw_sky_fog_only = true;
-					RendererRD::MaterialStorage::get_singleton()->material_set_param(sky.sky_scene_state.fog_material, "clear_color", Variant(clear_color.srgb_to_linear()));
-				}
 			} break;
 			case RS::ENV_BG_COLOR: {
 				clear_color = environment_get_bg_color(p_render_data->environment);
 				clear_color.r *= bg_energy_multiplier;
 				clear_color.g *= bg_energy_multiplier;
 				clear_color.b *= bg_energy_multiplier;
-				if (!p_render_data->transparent_bg && environment_get_fog_enabled(p_render_data->environment)) {
-					draw_sky_fog_only = true;
-					RendererRD::MaterialStorage::get_singleton()->material_set_param(sky.sky_scene_state.fog_material, "clear_color", Variant(clear_color.srgb_to_linear()));
-				}
 			} break;
 			case RS::ENV_BG_SKY: {
 				draw_sky = !p_render_data->transparent_bg;
@@ -927,14 +919,6 @@ void RenderForwardMobile::_render_scene(RenderDataRD *p_render_data, const Color
 			}
 		} else {
 			spec_constant_base_flags |= 1 << SPEC_CONSTANT_DISABLE_DIRECTIONAL_LIGHTS;
-		}
-
-		if (!is_environment(p_render_data->environment) || !environment_get_fog_enabled(p_render_data->environment)) {
-			spec_constant_base_flags |= 1 << SPEC_CONSTANT_DISABLE_FOG;
-		}
-
-		if (p_render_data->environment.is_valid() && environment_get_fog_mode(p_render_data->environment) == RS::EnvironmentFogMode::ENV_FOG_MODE_DEPTH) {
-			spec_constant_base_flags |= 1 << SPEC_CONSTANT_USE_DEPTH_FOG;
 		}
 	}
 
@@ -2725,10 +2709,6 @@ void RenderForwardMobile::_geometry_instance_dependency_deleted(const RID &p_dep
 /* misc */
 
 bool RenderForwardMobile::is_dynamic_gi_supported() const {
-	return false;
-}
-
-bool RenderForwardMobile::is_volumetric_supported() const {
 	return false;
 }
 

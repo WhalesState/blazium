@@ -175,43 +175,6 @@ private:
 	Ref<Texture> glow_map;
 	void _update_glow();
 
-	// Fog
-	bool fog_enabled = false;
-	FogMode fog_mode = FOG_MODE_EXPONENTIAL;
-	Color fog_light_color = Color(0.518, 0.553, 0.608);
-	float fog_light_energy = 1.0;
-	float fog_sun_scatter = 0.0;
-	float fog_density = 0.01;
-	float fog_height = 0.0;
-	float fog_height_density = 0.0; //can be negative to invert effect
-	float fog_aerial_perspective = 0.0;
-	float fog_sky_affect = 1.0;
-
-	void _update_fog();
-
-	// Depth Fog
-	float fog_depth_curve = 1.0;
-	float fog_depth_begin = 10.0;
-	float fog_depth_end = 100.0;
-
-	void _update_fog_depth();
-
-	// Volumetric Fog
-	bool volumetric_fog_enabled = false;
-	float volumetric_fog_density = 0.05;
-	Color volumetric_fog_albedo = Color(1.0, 1.0, 1.0);
-	Color volumetric_fog_emission = Color(0.0, 0.0, 0.0);
-	float volumetric_fog_emission_energy = 1.0;
-	float volumetric_fog_anisotropy = 0.2;
-	float volumetric_fog_length = 64.0;
-	float volumetric_fog_detail_spread = 2.0;
-	float volumetric_fog_gi_inject = 1.0;
-	float volumetric_fog_ambient_inject = 0.0;
-	float volumetric_fog_sky_affect = 1.0;
-	bool volumetric_fog_temporal_reproject = true;
-	float volumetric_fog_temporal_reproject_amount = 0.9;
-	void _update_volumetric_fog();
-
 	// Adjustment
 	bool adjustment_enabled = false;
 	float adjustment_brightness = 1.0;
@@ -369,66 +332,6 @@ public:
 	float get_glow_map_strength() const;
 	void set_glow_map(Ref<Texture> p_glow_map);
 	Ref<Texture> get_glow_map() const;
-
-	// Fog
-
-	void set_fog_enabled(bool p_enabled);
-	bool is_fog_enabled() const;
-	void set_fog_mode(FogMode p_mode);
-	FogMode get_fog_mode() const;
-	void set_fog_light_color(const Color &p_light_color);
-	Color get_fog_light_color() const;
-	void set_fog_light_energy(float p_amount);
-	float get_fog_light_energy() const;
-	void set_fog_sun_scatter(float p_amount);
-	float get_fog_sun_scatter() const;
-
-	void set_fog_density(float p_amount);
-	float get_fog_density() const;
-	void set_fog_height(float p_amount);
-	float get_fog_height() const;
-	void set_fog_height_density(float p_amount);
-	float get_fog_height_density() const;
-	void set_fog_aerial_perspective(float p_aerial_perspective);
-	float get_fog_aerial_perspective() const;
-	void set_fog_sky_affect(float p_sky_affect);
-	float get_fog_sky_affect() const;
-
-	// Depth Fog
-	void set_fog_depth_curve(float p_curve);
-	float get_fog_depth_curve() const;
-	void set_fog_depth_begin(float p_begin);
-	float get_fog_depth_begin() const;
-	void set_fog_depth_end(float p_end);
-	float get_fog_depth_end() const;
-
-	// Volumetric Fog
-	void set_volumetric_fog_enabled(bool p_enable);
-	bool is_volumetric_fog_enabled() const;
-	void set_volumetric_fog_density(float p_density);
-	float get_volumetric_fog_density() const;
-	void set_volumetric_fog_albedo(Color p_color);
-	Color get_volumetric_fog_albedo() const;
-	void set_volumetric_fog_emission(Color p_color);
-	Color get_volumetric_fog_emission() const;
-	void set_volumetric_fog_emission_energy(float p_begin);
-	float get_volumetric_fog_emission_energy() const;
-	void set_volumetric_fog_anisotropy(float p_anisotropy);
-	float get_volumetric_fog_anisotropy() const;
-	void set_volumetric_fog_length(float p_length);
-	float get_volumetric_fog_length() const;
-	void set_volumetric_fog_detail_spread(float p_detail_spread);
-	float get_volumetric_fog_detail_spread() const;
-	void set_volumetric_fog_gi_inject(float p_gi_inject);
-	float get_volumetric_fog_gi_inject() const;
-	void set_volumetric_fog_ambient_inject(float p_ambient_inject);
-	float get_volumetric_fog_ambient_inject() const;
-	void set_volumetric_fog_sky_affect(float p_sky_affect);
-	float get_volumetric_fog_sky_affect() const;
-	void set_volumetric_fog_temporal_reprojection_enabled(bool p_enable);
-	bool is_volumetric_fog_temporal_reprojection_enabled() const;
-	void set_volumetric_fog_temporal_reprojection_amount(float p_amount);
-	float get_volumetric_fog_temporal_reprojection_amount() const;
 
 	// Adjustment
 	void set_adjustment_enabled(bool p_enabled);

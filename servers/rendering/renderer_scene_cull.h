@@ -669,11 +669,6 @@ public:
 		RID instance;
 	};
 
-	struct InstanceFogVolumeData : public InstanceBaseData {
-		RID instance;
-		bool is_global;
-	};
-
 	struct InstanceVisibilityNotifierData : public InstanceBaseData {
 		bool just_visible = false;
 		uint64_t visible_in_frame = 0;
@@ -886,7 +881,6 @@ public:
 		PagedArray<RID> decals;
 		PagedArray<RID> voxel_gi_instances;
 		PagedArray<RID> mesh_instances;
-		PagedArray<RID> fog_volumes;
 
 		struct DirectionalShadow {
 			PagedArray<RenderGeometryInstance *> cascade_geometry_instances[RendererSceneRender::MAX_DIRECTIONAL_LIGHT_CASCADES];
@@ -904,7 +898,6 @@ public:
 			decals.clear();
 			voxel_gi_instances.clear();
 			mesh_instances.clear();
-			fog_volumes.clear();
 			for (int i = 0; i < RendererSceneRender::MAX_DIRECTIONAL_LIGHTS; i++) {
 				for (int j = 0; j < RendererSceneRender::MAX_DIRECTIONAL_LIGHT_CASCADES; j++) {
 					directional_shadows[i].cascade_geometry_instances[j].clear();
@@ -929,7 +922,6 @@ public:
 			decals.reset();
 			voxel_gi_instances.reset();
 			mesh_instances.reset();
-			fog_volumes.reset();
 			for (int i = 0; i < RendererSceneRender::MAX_DIRECTIONAL_LIGHTS; i++) {
 				for (int j = 0; j < RendererSceneRender::MAX_DIRECTIONAL_LIGHT_CASCADES; j++) {
 					directional_shadows[i].cascade_geometry_instances[j].reset();
@@ -954,7 +946,6 @@ public:
 			decals.merge_unordered(p_cull_result.decals);
 			voxel_gi_instances.merge_unordered(p_cull_result.voxel_gi_instances);
 			mesh_instances.merge_unordered(p_cull_result.mesh_instances);
-			fog_volumes.merge_unordered(p_cull_result.fog_volumes);
 
 			for (int i = 0; i < RendererSceneRender::MAX_DIRECTIONAL_LIGHTS; i++) {
 				for (int j = 0; j < RendererSceneRender::MAX_DIRECTIONAL_LIGHT_CASCADES; j++) {
@@ -980,7 +971,6 @@ public:
 			decals.set_page_pool(p_rid_pool);
 			voxel_gi_instances.set_page_pool(p_rid_pool);
 			mesh_instances.set_page_pool(p_rid_pool);
-			fog_volumes.set_page_pool(p_rid_pool);
 			for (int i = 0; i < RendererSceneRender::MAX_DIRECTIONAL_LIGHTS; i++) {
 				for (int j = 0; j < RendererSceneRender::MAX_DIRECTIONAL_LIGHT_CASCADES; j++) {
 					directional_shadows[i].cascade_geometry_instances[j].set_page_pool(p_geometry_instance_pool);
@@ -1234,46 +1224,6 @@ public:
 	PASS1RC(RS::EnvironmentToneMapper, environment_get_tone_mapper, RID)
 	PASS1RC(float, environment_get_exposure, RID)
 	PASS1RC(float, environment_get_white, RID)
-
-	// Fog
-	PASS11(environment_set_fog, RID, bool, const Color &, float, float, float, float, float, float, float, RS::EnvironmentFogMode)
-
-	PASS1RC(bool, environment_get_fog_enabled, RID)
-	PASS1RC(Color, environment_get_fog_light_color, RID)
-	PASS1RC(float, environment_get_fog_light_energy, RID)
-	PASS1RC(float, environment_get_fog_sun_scatter, RID)
-	PASS1RC(float, environment_get_fog_density, RID)
-	PASS1RC(float, environment_get_fog_sky_affect, RID)
-	PASS1RC(float, environment_get_fog_height, RID)
-	PASS1RC(float, environment_get_fog_height_density, RID)
-	PASS1RC(float, environment_get_fog_aerial_perspective, RID)
-	PASS1RC(RS::EnvironmentFogMode, environment_get_fog_mode, RID)
-
-	PASS2(environment_set_volumetric_fog_volume_size, int, int)
-	PASS1(environment_set_volumetric_fog_filter_active, bool)
-
-	// Depth Fog
-	PASS4(environment_set_fog_depth, RID, float, float, float)
-	PASS1RC(float, environment_get_fog_depth_curve, RID)
-	PASS1RC(float, environment_get_fog_depth_begin, RID)
-	PASS1RC(float, environment_get_fog_depth_end, RID)
-
-	// Volumentric Fog
-	PASS14(environment_set_volumetric_fog, RID, bool, float, const Color &, const Color &, float, float, float, float, float, bool, float, float, float)
-
-	PASS1RC(bool, environment_get_volumetric_fog_enabled, RID)
-	PASS1RC(float, environment_get_volumetric_fog_density, RID)
-	PASS1RC(Color, environment_get_volumetric_fog_scattering, RID)
-	PASS1RC(Color, environment_get_volumetric_fog_emission, RID)
-	PASS1RC(float, environment_get_volumetric_fog_emission_energy, RID)
-	PASS1RC(float, environment_get_volumetric_fog_anisotropy, RID)
-	PASS1RC(float, environment_get_volumetric_fog_length, RID)
-	PASS1RC(float, environment_get_volumetric_fog_detail_spread, RID)
-	PASS1RC(float, environment_get_volumetric_fog_gi_inject, RID)
-	PASS1RC(float, environment_get_volumetric_fog_sky_affect, RID)
-	PASS1RC(bool, environment_get_volumetric_fog_temporal_reprojection, RID)
-	PASS1RC(float, environment_get_volumetric_fog_temporal_reprojection_amount, RID)
-	PASS1RC(float, environment_get_volumetric_fog_ambient_inject, RID)
 
 	// Glow
 	PASS13(environment_set_glow, RID, bool, Vector<float>, float, float, float, float, RS::EnvironmentGlowBlendMode, float, float, float, float, RID)

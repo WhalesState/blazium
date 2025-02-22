@@ -51,8 +51,7 @@ public:
 	enum SkySet {
 		SKY_SET_UNIFORMS,
 		SKY_SET_MATERIAL,
-		SKY_SET_TEXTURES,
-		SKY_SET_FOG,
+		SKY_SET_TEXTURES
 	};
 
 	const int SAMPLERS_BINDING_FIRST_INDEX = 4;
@@ -141,19 +140,6 @@ public:
 			float view_inv_projections[RendererSceneRender::MAX_RENDER_VIEWS][16]; // 2 x 64 - 256
 			float view_eye_offsets[RendererSceneRender::MAX_RENDER_VIEWS][4]; // 2 x 16 - 288
 
-			uint32_t volumetric_fog_enabled; // 4 - 292
-			float volumetric_fog_inv_length; // 4 - 296
-			float volumetric_fog_detail_spread; // 4 - 300
-			float volumetric_fog_sky_affect; // 4 - 304
-
-			uint32_t fog_enabled; // 4 - 308
-			float fog_sky_affect; // 4 - 312
-			float fog_density; // 4 - 316
-			float fog_sun_scatter; // 4 - 320
-
-			float fog_light_color[3]; // 12 - 332
-			float fog_aerial_perspective; // 4 - 336
-
 			float z_far; // 4 - 340
 			uint32_t directional_light_count; // 4 - 344
 			uint32_t pad1; // 4 - 348
@@ -173,12 +159,6 @@ public:
 		RID directional_light_buffer;
 		RID uniform_set;
 		RID uniform_buffer;
-		RID fog_uniform_set;
-		RID default_fog_uniform_set;
-
-		RID fog_shader;
-		RID fog_material;
-		RID fog_only_texture_uniform_set;
 	} sky_scene_state;
 
 	struct ReflectionData {

@@ -556,10 +556,6 @@ void RendererSceneCull::instance_set_base(RID p_instance, RID p_base) {
 				InstanceParticlesCollisionData *collision = static_cast<InstanceParticlesCollisionData *>(instance->base_data);
 				RSG::utilities->free(collision->instance);
 			} break;
-			case RS::INSTANCE_FOG_VOLUME: {
-				InstanceFogVolumeData *volume = static_cast<InstanceFogVolumeData *>(instance->base_data);
-				scene_render->free(volume->instance);
-			} break;
 			case RS::INSTANCE_VISIBLITY_NOTIFIER: {
 				//none
 			} break;
@@ -685,12 +681,6 @@ void RendererSceneCull::instance_set_base(RID p_instance, RID p_base) {
 				collision->instance = RSG::particles_storage->particles_collision_instance_create(p_base);
 				RSG::particles_storage->particles_collision_instance_set_active(collision->instance, instance->visible);
 				instance->base_data = collision;
-			} break;
-			case RS::INSTANCE_FOG_VOLUME: {
-				InstanceFogVolumeData *volume = memnew(InstanceFogVolumeData);
-				volume->instance = scene_render->fog_volume_instance_create(p_base);
-				scene_render->fog_volume_instance_set_active(volume->instance, instance->visible);
-				instance->base_data = volume;
 			} break;
 			case RS::INSTANCE_VISIBLITY_NOTIFIER: {
 				InstanceVisibilityNotifierData *vnd = memnew(InstanceVisibilityNotifierData);
@@ -997,11 +987,6 @@ void RendererSceneCull::instance_set_visible(RID p_instance, bool p_visible) {
 	if (instance->base_type == RS::INSTANCE_PARTICLES_COLLISION) {
 		InstanceParticlesCollisionData *collision = static_cast<InstanceParticlesCollisionData *>(instance->base_data);
 		RSG::particles_storage->particles_collision_instance_set_active(collision->instance, p_visible);
-	}
-
-	if (instance->base_type == RS::INSTANCE_FOG_VOLUME) {
-		InstanceFogVolumeData *volume = static_cast<InstanceFogVolumeData *>(instance->base_data);
-		scene_render->fog_volume_instance_set_active(volume->instance, p_visible);
 	}
 
 	if (instance->base_type == RS::INSTANCE_OCCLUDER) {
@@ -1616,9 +1601,6 @@ void RendererSceneCull::_update_instance(Instance *p_instance) {
 			heightfield_particle_colliders_update_list.insert(p_instance);
 		}
 		RSG::particles_storage->particles_collision_instance_set_transform(collision->instance, p_instance->transform);
-	} else if (p_instance->base_type == RS::INSTANCE_FOG_VOLUME) {
-		InstanceFogVolumeData *volume = static_cast<InstanceFogVolumeData *>(p_instance->base_data);
-		scene_render->fog_volume_instance_set_transform(volume->instance, p_instance->transform);
 	} else if (p_instance->base_type == RS::INSTANCE_OCCLUDER) {
 		if (p_instance->scenario) {
 			RendererSceneOcclusionCull::get_singleton()->scenario_set_instance(p_instance->scenario->self, p_instance->self, p_instance->base, p_instance->transform, p_instance->visible);
@@ -1742,9 +1724,6 @@ void RendererSceneCull::_update_instance(Instance *p_instance) {
 			} break;
 			case RS::INSTANCE_VOXEL_GI: {
 				idata.instance_data_rid = static_cast<InstanceVoxelGIData *>(p_instance->base_data)->probe_instance.get_id();
-			} break;
-			case RS::INSTANCE_FOG_VOLUME: {
-				idata.instance_data_rid = static_cast<InstanceFogVolumeData *>(p_instance->base_data)->instance.get_id();
 			} break;
 			case RS::INSTANCE_VISIBLITY_NOTIFIER: {
 				idata.visibility_notifier = static_cast<InstanceVisibilityNotifierData *>(p_instance->base_data);
@@ -1957,9 +1936,6 @@ void RendererSceneCull::_update_instance_aabb(Instance *p_instance) {
 		case RenderingServer::INSTANCE_PARTICLES_COLLISION: {
 			new_aabb = RSG::particles_storage->particles_collision_get_aabb(p_instance->base);
 
-		} break;
-		case RenderingServer::INSTANCE_FOG_VOLUME: {
-			new_aabb = RSG::fog->fog_volume_get_aabb(p_instance->base);
 		} break;
 		case RenderingServer::INSTANCE_VISIBLITY_NOTIFIER: {
 			new_aabb = RSG::utilities->visibility_notifier_get_aabb(p_instance->base);
@@ -2711,8 +2687,6 @@ void RendererSceneCull::_scene_cull(CullData &cull_data, InstanceCullResult &cul
 
 				} else if (base_type == RS::INSTANCE_LIGHTMAP) {
 					cull_result.lightmaps.push_back(RID::from_uint64(idata.instance_data_rid));
-				} else if (base_type == RS::INSTANCE_FOG_VOLUME) {
-					cull_result.fog_volumes.push_back(RID::from_uint64(idata.instance_data_rid));
 				} else if (base_type == RS::INSTANCE_VISIBLITY_NOTIFIER) {
 					InstanceVisibilityNotifierData *vnd = idata.visibility_notifier;
 					if (!vnd->list_element.in_list()) {
@@ -3297,7 +3271,7 @@ void RendererSceneCull::_render_scene(const RendererSceneRender::CameraData *p_c
 	}
 
 	RENDER_TIMESTAMP("Render 3D Scene");
-	scene_render->render_scene(p_render_buffers, p_camera_data, prev_camera_data, scene_cull_result.geometry_instances, scene_cull_result.light_instances, scene_cull_result.reflections, scene_cull_result.voxel_gi_instances, scene_cull_result.decals, scene_cull_result.lightmaps, scene_cull_result.fog_volumes, p_environment, camera_attributes, p_compositor, p_shadow_atlas, occluders_tex, p_reflection_probe.is_valid() ? RID() : scenario->reflection_atlas, p_reflection_probe, p_reflection_probe_pass, p_screen_mesh_lod_threshold, render_shadow_data, max_shadows_used, render_sdfgi_data, cull.sdfgi.region_count, &sdfgi_update_data, r_render_info);
+	scene_render->render_scene(p_render_buffers, p_camera_data, prev_camera_data, scene_cull_result.geometry_instances, scene_cull_result.light_instances, scene_cull_result.reflections, scene_cull_result.voxel_gi_instances, scene_cull_result.decals, scene_cull_result.lightmaps, p_environment, camera_attributes, p_compositor, p_shadow_atlas, occluders_tex, p_reflection_probe.is_valid() ? RID() : scenario->reflection_atlas, p_reflection_probe, p_reflection_probe_pass, p_screen_mesh_lod_threshold, render_shadow_data, max_shadows_used, render_sdfgi_data, cull.sdfgi.region_count, &sdfgi_update_data, r_render_info);
 
 	if (p_viewport.is_valid()) {
 		RSG::viewport->viewport_set_prev_camera_data(p_viewport, p_camera_data);

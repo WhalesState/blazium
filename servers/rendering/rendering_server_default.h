@@ -544,20 +544,6 @@ public:
 	FUNC1(particles_collision_height_field_update, RID)
 	FUNC2(particles_collision_set_height_field_resolution, RID, ParticlesCollisionHeightfieldResolution)
 
-	/* FOG VOLUME */
-
-#undef ServerName
-#undef server_name
-
-#define ServerName RendererFog
-#define server_name RSG::fog
-
-	FUNCRIDSPLIT(fog_volume)
-
-	FUNC2(fog_volume_set_shape, RID, FogVolumeShape)
-	FUNC2(fog_volume_set_size, RID, const Vector3 &)
-	FUNC2(fog_volume_set_material, RID, RID)
-
 	/* VISIBILITY_NOTIFIER */
 
 #undef ServerName
@@ -737,14 +723,6 @@ public:
 	FUNC4(environment_set_tonemap, RID, EnvironmentToneMapper, float, float)
 
 	FUNC7(environment_set_adjustment, RID, bool, float, float, float, bool, RID)
-
-	FUNC11(environment_set_fog, RID, bool, const Color &, float, float, float, float, float, float, float, EnvironmentFogMode)
-
-	FUNC4(environment_set_fog_depth, RID, float, float, float)
-	FUNC14(environment_set_volumetric_fog, RID, bool, float, const Color &, const Color &, float, float, float, float, float, bool, float, float, float)
-
-	FUNC2(environment_set_volumetric_fog_volume_size, int, int)
-	FUNC1(environment_set_volumetric_fog_filter_active, bool)
 
 	FUNC11(environment_set_sdfgi, RID, bool, int, float, EnvironmentSDFGIYScale, bool, float, bool, float, float, float)
 	FUNC1(environment_set_sdfgi_ray_count, EnvironmentSDFGIRayCount)

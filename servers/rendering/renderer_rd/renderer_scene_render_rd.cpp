@@ -33,7 +33,6 @@
 #include "core/config/project_settings.h"
 #include "core/os/os.h"
 #include "renderer_compositor_rd.h"
-#include "servers/rendering/renderer_rd/environment/fog.h"
 #include "servers/rendering/renderer_rd/storage_rd/material_storage.h"
 #include "servers/rendering/renderer_rd/storage_rd/texture_storage.h"
 #include "servers/rendering/rendering_server_default.h"
@@ -76,15 +75,6 @@ Ref<Image> RendererSceneRenderRD::sky_bake_panorama(RID p_sky, float p_energy, b
 
 void RendererSceneRenderRD::environment_glow_set_use_bicubic_upscale(bool p_enable) {
 	glow_bicubic_upscale = p_enable;
-}
-
-void RendererSceneRenderRD::environment_set_volumetric_fog_volume_size(int p_size, int p_depth) {
-	volumetric_fog_size = p_size;
-	volumetric_fog_depth = p_depth;
-}
-
-void RendererSceneRenderRD::environment_set_volumetric_fog_filter_active(bool p_enable) {
-	volumetric_fog_filter_active = p_enable;
 }
 
 void RendererSceneRenderRD::environment_set_sdfgi_ray_count(RS::EnvironmentSDFGIRayCount p_ray_count) {
@@ -166,28 +156,6 @@ RID RendererSceneRenderRD::reflection_probe_create_framebuffer(RID p_color, RID 
 	fb.push_back(p_color);
 	fb.push_back(p_depth);
 	return RD::get_singleton()->framebuffer_create(fb);
-}
-
-/* FOG VOLUME INSTANCE */
-
-RID RendererSceneRenderRD::fog_volume_instance_create(RID p_fog_volume) {
-	return RendererRD::Fog::get_singleton()->fog_volume_instance_create(p_fog_volume);
-}
-
-void RendererSceneRenderRD::fog_volume_instance_set_transform(RID p_fog_volume_instance, const Transform3D &p_transform) {
-	RendererRD::Fog::get_singleton()->fog_volume_instance_set_transform(p_fog_volume_instance, p_transform);
-}
-
-void RendererSceneRenderRD::fog_volume_instance_set_active(RID p_fog_volume_instance, bool p_active) {
-	RendererRD::Fog::get_singleton()->fog_volume_instance_set_active(p_fog_volume_instance, p_active);
-}
-
-RID RendererSceneRenderRD::fog_volume_instance_get_volume(RID p_fog_volume_instance) const {
-	return RendererRD::Fog::get_singleton()->fog_volume_instance_get_volume(p_fog_volume_instance);
-}
-
-Vector3 RendererSceneRenderRD::fog_volume_instance_get_position(RID p_fog_volume_instance) const {
-	return RendererRD::Fog::get_singleton()->fog_volume_instance_get_position(p_fog_volume_instance);
 }
 
 /* VOXEL GI */
@@ -1105,7 +1073,7 @@ void RendererSceneRenderRD::_post_prepass_render(RenderDataRD *p_render_data, bo
 	}
 }
 
-void RendererSceneRenderRD::render_scene(const Ref<RenderSceneBuffers> &p_render_buffers, const CameraData *p_camera_data, const CameraData *p_prev_camera_data, const PagedArray<RenderGeometryInstance *> &p_instances, const PagedArray<RID> &p_lights, const PagedArray<RID> &p_reflection_probes, const PagedArray<RID> &p_voxel_gi_instances, const PagedArray<RID> &p_decals, const PagedArray<RID> &p_lightmaps, const PagedArray<RID> &p_fog_volumes, RID p_environment, RID p_camera_attributes, RID p_compositor, RID p_shadow_atlas, RID p_occluder_debug_tex, RID p_reflection_atlas, RID p_reflection_probe, int p_reflection_probe_pass, float p_screen_mesh_lod_threshold, const RenderShadowData *p_render_shadows, int p_render_shadow_count, const RenderSDFGIData *p_render_sdfgi_regions, int p_render_sdfgi_region_count, const RenderSDFGIUpdateData *p_sdfgi_update_data, RenderingMethod::RenderInfo *r_render_info) {
+void RendererSceneRenderRD::render_scene(const Ref<RenderSceneBuffers> &p_render_buffers, const CameraData *p_camera_data, const CameraData *p_prev_camera_data, const PagedArray<RenderGeometryInstance *> &p_instances, const PagedArray<RID> &p_lights, const PagedArray<RID> &p_reflection_probes, const PagedArray<RID> &p_voxel_gi_instances, const PagedArray<RID> &p_decals, const PagedArray<RID> &p_lightmaps, RID p_environment, RID p_camera_attributes, RID p_compositor, RID p_shadow_atlas, RID p_occluder_debug_tex, RID p_reflection_atlas, RID p_reflection_probe, int p_reflection_probe_pass, float p_screen_mesh_lod_threshold, const RenderShadowData *p_render_shadows, int p_render_shadow_count, const RenderSDFGIData *p_render_sdfgi_regions, int p_render_sdfgi_region_count, const RenderSDFGIUpdateData *p_sdfgi_update_data, RenderingMethod::RenderInfo *r_render_info) {
 	RendererRD::LightStorage *light_storage = RendererRD::LightStorage::get_singleton();
 	RendererRD::TextureStorage *texture_storage = RendererRD::TextureStorage::get_singleton();
 
@@ -1184,7 +1152,6 @@ void RendererSceneRenderRD::render_scene(const Ref<RenderSceneBuffers> &p_render
 		render_data.voxel_gi_instances = &p_voxel_gi_instances;
 		render_data.decals = &p_decals;
 		render_data.lightmaps = &p_lightmaps;
-		render_data.fog_volumes = &p_fog_volumes;
 		render_data.environment = p_environment;
 		render_data.compositor = p_compositor;
 		render_data.camera_attributes = p_camera_attributes;
@@ -1271,8 +1238,6 @@ bool RendererSceneRenderRD::free(RID p_rid) {
 	} else if (sky.sky_owner.owns(p_rid)) {
 		sky.update_dirty_skys();
 		sky.free_sky(p_rid);
-	} else if (RendererRD::Fog::get_singleton()->owns_fog_volume_instance(p_rid)) {
-		RendererRD::Fog::get_singleton()->fog_instance_free(p_rid);
 	} else {
 		return false;
 	}
@@ -1421,11 +1386,6 @@ bool RendererSceneRenderRD::is_dynamic_gi_supported() const {
 	return true;
 }
 
-bool RendererSceneRenderRD::is_volumetric_supported() const {
-	// usable by default (unless low end = true)
-	return true;
-}
-
 uint32_t RendererSceneRenderRD::get_max_elements() const {
 	return GLOBAL_GET("rendering/limits/cluster_builder/max_clustered_elements");
 }
@@ -1458,10 +1418,6 @@ void RendererSceneRenderRD::init() {
 	{ //lights
 	}
 
-	if (is_volumetric_supported()) {
-		RendererRD::Fog::get_singleton()->init_fog_shader(RendererRD::LightStorage::get_singleton()->get_max_directional_lights(), get_roughness_layers(), is_using_radiance_cubemap_array());
-	}
-
 	RSG::camera_attributes->camera_attributes_set_dof_blur_bokeh_shape(RS::DOFBokehShape(int(GLOBAL_GET("rendering/camera/depth_of_field/depth_of_field_bokeh_shape"))));
 	RSG::camera_attributes->camera_attributes_set_dof_blur_quality(RS::DOFBlurQuality(int(GLOBAL_GET("rendering/camera/depth_of_field/depth_of_field_bokeh_quality"))), GLOBAL_GET("rendering/camera/depth_of_field/depth_of_field_use_jitter"));
 	use_physical_light_units = GLOBAL_GET("rendering/lights_and_shadows/use_physical_light_units");
@@ -1477,9 +1433,6 @@ void RendererSceneRenderRD::init() {
 	soft_shadow_kernel = memnew_arr(float, 128);
 	positional_soft_shadow_filter_set_quality(RS::ShadowQuality(int(GLOBAL_GET("rendering/lights_and_shadows/positional_shadow/soft_shadow_filter_quality"))));
 	directional_soft_shadow_filter_set_quality(RS::ShadowQuality(int(GLOBAL_GET("rendering/lights_and_shadows/directional_shadow/soft_shadow_filter_quality"))));
-
-	environment_set_volumetric_fog_volume_size(GLOBAL_GET("rendering/environment/volumetric_fog/volume_size"), GLOBAL_GET("rendering/environment/volumetric_fog/volume_depth"));
-	environment_set_volumetric_fog_filter_active(GLOBAL_GET("rendering/environment/volumetric_fog/use_filter"));
 
 	decals_set_filter(RS::DecalFilter(int(GLOBAL_GET("rendering/textures/decals/filter"))));
 	light_projectors_set_filter(RS::LightProjectorFilter(int(GLOBAL_GET("rendering/textures/light_projectors/filter"))));
@@ -1534,10 +1487,6 @@ RendererSceneRenderRD::~RendererSceneRenderRD() {
 
 	if (is_dynamic_gi_supported()) {
 		gi.free();
-	}
-
-	if (is_volumetric_supported()) {
-		RendererRD::Fog::get_singleton()->free_fog_shader();
 	}
 
 	memdelete_arr(directional_penumbra_shadow_kernel);

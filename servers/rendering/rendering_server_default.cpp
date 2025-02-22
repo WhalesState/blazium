@@ -218,7 +218,6 @@ void RenderingServerDefault::_init() {
 	RSG::particles_storage = RSG::rasterizer->get_particles_storage();
 	RSG::texture_storage = RSG::rasterizer->get_texture_storage();
 	RSG::gi = RSG::rasterizer->get_gi();
-	RSG::fog = RSG::rasterizer->get_fog();
 	RSG::canvas_render = RSG::rasterizer->get_canvas();
 	sr->set_scene_render(RSG::rasterizer->get_scene());
 }
