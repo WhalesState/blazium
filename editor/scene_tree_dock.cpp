@@ -1519,7 +1519,7 @@ void SceneTreeDock::_notification(int p_what) {
 			}
 			first_enter = false;
 
-			CanvasItemEditorPlugin *canvas_item_plugin = Object::cast_to<CanvasItemEditorPlugin>(editor_data->get_editor_by_name("2D"));
+			CanvasItemEditorPlugin *canvas_item_plugin = Object::cast_to<CanvasItemEditorPlugin>(editor_data->get_editor_by_name("Designer"));
 			if (canvas_item_plugin) {
 				canvas_item_plugin->get_canvas_item_editor()->connect("item_lock_status_changed", callable_mp(scene_tree, &SceneTreeEditor::_update_tree).bind(false));
 				canvas_item_plugin->get_canvas_item_editor()->connect("item_group_status_changed", callable_mp(scene_tree, &SceneTreeEditor::_update_tree).bind(false));
@@ -3811,7 +3811,7 @@ void SceneTreeDock::_focus_node() {
 	ERR_FAIL_NULL(node);
 
 	if (node->is_class("CanvasItem")) {
-		CanvasItemEditorPlugin *editor = Object::cast_to<CanvasItemEditorPlugin>(editor_data->get_editor_by_name("2D"));
+		CanvasItemEditorPlugin *editor = Object::cast_to<CanvasItemEditorPlugin>(editor_data->get_editor_by_name("Designer"));
 		editor->get_canvas_item_editor()->focus_selection();
 	}
 }
