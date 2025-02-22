@@ -126,7 +126,7 @@ void TexturePreview::_update_metadata_label_text() {
 TexturePreview::TexturePreview(Ref<Texture2D> p_texture, bool p_show_metadata) {
 	checkerboard = memnew(TextureRect);
 	checkerboard->set_stretch_mode(TextureRect::STRETCH_TILE);
-	checkerboard->set_texture_repeat(CanvasItem::TEXTURE_REPEAT_ENABLED);
+	checkerboard->set_texture_repeat(Element::TEXTURE_REPEAT_ENABLED);
 	checkerboard->set_custom_minimum_size(Size2(0.0, 256.0) * EDSCALE);
 	add_child(checkerboard);
 

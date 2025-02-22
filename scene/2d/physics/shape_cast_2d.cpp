@@ -240,7 +240,7 @@ void ShapeCast2D::_notification(int p_what) {
 			for (int i = 0; i <= steps; ++i) {
 				Vector2 t = (real_t(i) / steps) * target_position;
 				draw_set_transform(t, 0.0, Size2(1, 1));
-				shape->draw(get_canvas_item(), draw_col);
+				shape->draw(get_element(), draw_col);
 			}
 			draw_set_transform(Vector2(), 0.0, Size2(1, 1));
 

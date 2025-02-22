@@ -30,7 +30,7 @@
 
 #include "style_box.h"
 
-#include "scene/main/canvas_item.h"
+#include "scene/main/element.h"
 
 Size2 StyleBox::get_minimum_size() const {
 	Size2 min_size = Size2(get_margin(SIDE_LEFT) + get_margin(SIDE_RIGHT), get_margin(SIDE_TOP) + get_margin(SIDE_BOTTOM));
@@ -89,8 +89,8 @@ Point2 StyleBox::get_offset() const {
 	return Point2(get_margin(SIDE_LEFT), get_margin(SIDE_TOP));
 }
 
-void StyleBox::draw(RID p_canvas_item, const Rect2 &p_rect) const {
-	GDVIRTUAL_REQUIRED_CALL(_draw, p_canvas_item, p_rect);
+void StyleBox::draw(RID p_element, const Rect2 &p_rect) const {
+	GDVIRTUAL_REQUIRED_CALL(_draw, p_element, p_rect);
 }
 
 Rect2 StyleBox::get_draw_rect(const Rect2 &p_rect) const {
@@ -101,8 +101,8 @@ Rect2 StyleBox::get_draw_rect(const Rect2 &p_rect) const {
 	return p_rect;
 }
 
-CanvasItem *StyleBox::get_current_item_drawn() const {
-	return CanvasItem::get_current_item_drawn();
+Element *StyleBox::get_current_item_drawn() const {
+	return Element::get_current_item_drawn();
 }
 
 bool StyleBox::test_mask(const Point2 &p_point, const Rect2 &p_rect) const {
@@ -121,7 +121,7 @@ void StyleBox::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_margin", "margin"), &StyleBox::get_margin);
 	ClassDB::bind_method(D_METHOD("get_offset"), &StyleBox::get_offset);
 
-	ClassDB::bind_method(D_METHOD("draw", "canvas_item", "rect"), &StyleBox::draw);
+	ClassDB::bind_method(D_METHOD("draw", "element", "rect"), &StyleBox::draw);
 	ClassDB::bind_method(D_METHOD("get_current_item_drawn"), &StyleBox::get_current_item_drawn);
 
 	ClassDB::bind_method(D_METHOD("test_mask", "point", "rect"), &StyleBox::test_mask);
@@ -132,7 +132,7 @@ void StyleBox::_bind_methods() {
 	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "content_margin_right", PROPERTY_HINT_RANGE, "-1,2048,1,suffix:px"), "set_content_margin", "get_content_margin", SIDE_RIGHT);
 	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "content_margin_bottom", PROPERTY_HINT_RANGE, "-1,2048,1,suffix:px"), "set_content_margin", "get_content_margin", SIDE_BOTTOM);
 
-	GDVIRTUAL_BIND(_draw, "to_canvas_item", "rect")
+	GDVIRTUAL_BIND(_draw, "to_element", "rect")
 	GDVIRTUAL_BIND(_get_draw_rect, "rect")
 	GDVIRTUAL_BIND(_get_minimum_size)
 	GDVIRTUAL_BIND(_test_mask, "point", "rect")

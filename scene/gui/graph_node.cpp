@@ -304,7 +304,7 @@ void GraphNode::draw_port(int p_slot_index, Point2i p_pos, bool p_left, const Co
 	}
 
 	icon_offset = -port_icon->get_size() * 0.5;
-	port_icon->draw(get_canvas_item(), p_pos + icon_offset, p_color);
+	port_icon->draw(get_element(), p_pos + icon_offset, p_color);
 }
 
 void GraphNode::_notification(int p_what) {

@@ -30,7 +30,7 @@
 
 #include "sprite_2d_editor_plugin.h"
 
-#include "canvas_item_editor_plugin.h"
+#include "element_editor_plugin.h"
 #include "core/math/geometry_2d.h"
 #include "editor/editor_node.h"
 #include "editor/editor_settings.h"
@@ -556,7 +556,7 @@ void Sprite2DEditor::_notification(int p_what) {
 			[[fallthrough]];
 		}
 		case EditorSettings::NOTIFICATION_EDITOR_SETTINGS_CHANGED: {
-			panner->setup((ViewPanner::ControlScheme)EDITOR_GET("editors/panning/sub_editors_panning_scheme").operator int(), ED_GET_SHORTCUT("canvas_item_editor/pan_view"), bool(EDITOR_GET("editors/panning/simple_panning")));
+			panner->setup((ViewPanner::ControlScheme)EDITOR_GET("editors/panning/sub_editors_panning_scheme").operator int(), ED_GET_SHORTCUT("element_editor/pan_view"), bool(EDITOR_GET("editors/panning/simple_panning")));
 		} break;
 		case NOTIFICATION_ENTER_TREE:
 		case NOTIFICATION_THEME_CHANGED: {
@@ -577,7 +577,7 @@ void Sprite2DEditor::_bind_methods() {
 Sprite2DEditor::Sprite2DEditor() {
 	options = memnew(MenuButton);
 
-	CanvasItemEditor::get_singleton()->add_control_to_menu_panel(options);
+	ElementEditor::get_singleton()->add_control_to_menu_panel(options);
 
 	options->set_text(TTR("Sprite2D"));
 

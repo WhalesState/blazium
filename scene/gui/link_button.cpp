@@ -166,7 +166,7 @@ void LinkButton::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_DRAW: {
-			RID ci = get_canvas_item();
+			RID ci = get_element();
 			Size2 size = get_size();
 			Color color;
 			bool do_underline = false;
@@ -215,14 +215,14 @@ void LinkButton::_notification(int p_what) {
 			int outline_size = theme_cache.outline_size;
 			if (is_layout_rtl()) {
 				if (outline_size > 0 && font_outline_color.a > 0) {
-					text_buf->draw_outline(get_canvas_item(), Vector2(size.width - width, 0), outline_size, font_outline_color);
+					text_buf->draw_outline(get_element(), Vector2(size.width - width, 0), outline_size, font_outline_color);
 				}
-				text_buf->draw(get_canvas_item(), Vector2(size.width - width, 0), color);
+				text_buf->draw(get_element(), Vector2(size.width - width, 0), color);
 			} else {
 				if (outline_size > 0 && font_outline_color.a > 0) {
-					text_buf->draw_outline(get_canvas_item(), Vector2(0, 0), outline_size, font_outline_color);
+					text_buf->draw_outline(get_element(), Vector2(0, 0), outline_size, font_outline_color);
 				}
-				text_buf->draw(get_canvas_item(), Vector2(0, 0), color);
+				text_buf->draw(get_element(), Vector2(0, 0), color);
 			}
 
 			if (do_underline) {

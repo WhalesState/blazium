@@ -40,7 +40,7 @@
 #include "editor/editor_undo_redo_manager.h"
 #include "editor/node_dock.h"
 #include "editor/plugins/animation_player_editor_plugin.h"
-#include "editor/plugins/canvas_item_editor_plugin.h"
+#include "editor/plugins/element_editor_plugin.h"
 #include "editor/plugins/script_editor_plugin.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/flow_container.h"
@@ -119,7 +119,7 @@ void SceneTreeEditor::_cell_button_pressed(Object *p_item, int p_column, int p_i
 	} else if (p_id == BUTTON_GROUP) {
 		undo_redo->create_action(TTR("Ungroup Children"));
 
-		if (n->is_class("CanvasItem") || n->is_class("Node3D")) {
+		if (n->is_class("Element") || n->is_class("Node3D")) {
 			undo_redo->add_do_method(n, "remove_meta", "_edit_group_");
 			undo_redo->add_undo_method(n, "set_meta", "_edit_group_", true);
 			undo_redo->add_do_method(this, "_update_tree");
@@ -532,8 +532,8 @@ void SceneTreeEditor::_node_visibility_changed(Node *p_node) {
 
 	if (p_node->has_method("is_visible")) {
 		node_visible = p_node->call("is_visible");
-		if (p_node->is_class("CanvasItem") || p_node->is_class("CanvasLayer") || p_node->is_class("Window")) {
-			CanvasItemEditor::get_singleton()->get_viewport_control()->queue_redraw();
+		if (p_node->is_class("Element") || p_node->is_class("CanvasLayer") || p_node->is_class("Window")) {
+			ElementEditor::get_singleton()->get_viewport_control()->queue_redraw();
 		}
 	}
 

@@ -248,12 +248,12 @@ bool CPUParticles2D::get_fractional_delta() const {
 PackedStringArray CPUParticles2D::get_configuration_warnings() const {
 	PackedStringArray warnings = Node2D::get_configuration_warnings();
 
-	CanvasItemMaterial *mat = Object::cast_to<CanvasItemMaterial>(get_material().ptr());
+	ElementMaterial *mat = Object::cast_to<ElementMaterial>(get_material().ptr());
 
 	if (get_material().is_null() || (mat && !mat->get_particles_animation())) {
 		if (get_param_max(PARAM_ANIM_SPEED) != 0.0 || get_param_max(PARAM_ANIM_OFFSET) != 0.0 ||
 				get_param_curve(PARAM_ANIM_SPEED).is_valid() || get_param_curve(PARAM_ANIM_OFFSET).is_valid()) {
-			warnings.push_back(RTR("CPUParticles2D animation requires the usage of a CanvasItemMaterial with \"Particles Animation\" enabled."));
+			warnings.push_back(RTR("CPUParticles2D animation requires the usage of a ElementMaterial with \"Particles Animation\" enabled."));
 		}
 	}
 
@@ -1076,14 +1076,14 @@ void CPUParticles2D::_set_do_redraw(bool p_do_redraw) {
 
 		if (do_redraw) {
 			RS::get_singleton()->connect("frame_pre_draw", callable_mp(this, &CPUParticles2D::_update_render_thread));
-			RS::get_singleton()->canvas_item_set_update_when_visible(get_canvas_item(), true);
+			RS::get_singleton()->element_set_update_when_visible(get_element(), true);
 
 			RS::get_singleton()->multimesh_set_visible_instances(multimesh, -1);
 		} else {
 			if (RS::get_singleton()->is_connected("frame_pre_draw", callable_mp(this, &CPUParticles2D::_update_render_thread))) {
 				RS::get_singleton()->disconnect("frame_pre_draw", callable_mp(this, &CPUParticles2D::_update_render_thread));
 			}
-			RS::get_singleton()->canvas_item_set_update_when_visible(get_canvas_item(), false);
+			RS::get_singleton()->element_set_update_when_visible(get_element(), false);
 
 			RS::get_singleton()->multimesh_set_visible_instances(multimesh, 0);
 		}
@@ -1123,7 +1123,7 @@ void CPUParticles2D::_notification(int p_what) {
 				texrid = texture->get_rid();
 			}
 
-			RS::get_singleton()->canvas_item_add_multimesh(get_canvas_item(), multimesh, texrid);
+			RS::get_singleton()->element_add_multimesh(get_element(), multimesh, texrid);
 		} break;
 
 		case NOTIFICATION_INTERNAL_PROCESS: {

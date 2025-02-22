@@ -795,7 +795,7 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 		return 0;
 	}
 
-	RID ci = get_canvas_item();
+	RID ci = get_element();
 	bool rtl = (l.text_buf->get_direction() == TextServer::DIRECTION_RTL);
 	bool lrtl = is_layout_rtl();
 
@@ -1339,7 +1339,7 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 								if (last_color.a > 0.0) {
 									Vector2 rect_off = p_ofs + Vector2(box_start - theme_cache.text_highlight_h_padding, off_step.y - l_ascent - theme_cache.text_highlight_v_padding);
 									Vector2 rect_size = Vector2(off_step.x - box_start + 2 * theme_cache.text_highlight_h_padding, l_size.y + 2 * theme_cache.text_highlight_v_padding);
-									RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(rect_off, rect_size), last_color);
+									RenderingServer::get_singleton()->element_add_rect(ci, Rect2(rect_off, rect_size), last_color);
 								}
 								if (color.a > 0.0) {
 									box_start = off_step.x;
@@ -1352,7 +1352,7 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 							if (last_color.a > 0.0) {
 								Vector2 rect_off = p_ofs + Vector2(box_start - theme_cache.text_highlight_h_padding, off_step.y - l_ascent - theme_cache.text_highlight_v_padding);
 								Vector2 rect_size = Vector2(off_step.x - box_start + 2 * theme_cache.text_highlight_h_padding, l_size.y + 2 * theme_cache.text_highlight_v_padding);
-								RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(rect_off, rect_size), last_color);
+								RenderingServer::get_singleton()->element_add_rect(ci, Rect2(rect_off, rect_size), last_color);
 							}
 							last_color = Color(0, 0, 0, 0);
 						}
@@ -1367,7 +1367,7 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 					Vector<Vector2> sel = TS->shaped_text_get_selection(rid, sel_start, sel_end);
 					for (int i = 0; i < sel.size(); i++) {
 						Rect2 rect = Rect2(sel[i].x + p_ofs.x + off.x, p_ofs.y + off.y - l_ascent, sel[i].y - sel[i].x, l_size.y); // Note: use "off" not "off_step", selection is relative to the line start.
-						RenderingServer::get_singleton()->canvas_item_add_rect(ci, rect, selection_bg);
+						RenderingServer::get_singleton()->element_add_rect(ci, rect, selection_bg);
 					}
 				}
 			}
@@ -1375,7 +1375,7 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 				if (last_color.a > 0.0) {
 					Vector2 rect_off = p_ofs + Vector2(box_start - theme_cache.text_highlight_h_padding, off_step.y - l_ascent - theme_cache.text_highlight_v_padding);
 					Vector2 rect_size = Vector2(off_step.x - box_start + 2 * theme_cache.text_highlight_h_padding, l_size.y + 2 * theme_cache.text_highlight_v_padding);
-					RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(rect_off, rect_size), last_color);
+					RenderingServer::get_singleton()->element_add_rect(ci, Rect2(rect_off, rect_size), last_color);
 				}
 			}
 			if (step == DRAW_STEP_TEXT) {
@@ -1834,15 +1834,15 @@ void RichTextLabel::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_DRAW: {
-			RID ci = get_canvas_item();
+			RID ci = get_element();
 			Size2 size = get_size();
 
 			draw_style_box(theme_cache.normal_style, Rect2(Point2(), size));
 
 			if (has_focus()) {
-				RenderingServer::get_singleton()->canvas_item_add_clip_ignore(ci, true);
+				RenderingServer::get_singleton()->element_add_clip_ignore(ci, true);
 				draw_style_box(theme_cache.focus_style, Rect2(Point2(), size));
-				RenderingServer::get_singleton()->canvas_item_add_clip_ignore(ci, false);
+				RenderingServer::get_singleton()->element_add_clip_ignore(ci, false);
 			}
 
 			// Start text shaping.

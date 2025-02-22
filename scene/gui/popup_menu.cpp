@@ -725,7 +725,7 @@ void PopupMenu::_mouse_over_update(const Point2 &p_over) {
 
 void PopupMenu::_draw_items() {
 	control->set_custom_minimum_size(Size2(0, _get_items_total_height()));
-	RID ci = control->get_canvas_item();
+	RID ci = control->get_element();
 
 	// Space between the item content and the sides of popup menu.
 	bool rtl = control->is_layout_rtl();

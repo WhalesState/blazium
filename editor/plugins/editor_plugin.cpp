@@ -44,7 +44,7 @@
 #include "editor/gui/editor_title_bar.h"
 #include "editor/import/editor_import_plugin.h"
 #include "editor/inspector_dock.h"
-#include "editor/plugins/canvas_item_editor_plugin.h"
+#include "editor/plugins/element_editor_plugin.h"
 #include "editor/plugins/editor_debugger_plugin.h"
 #include "editor/plugins/editor_resource_conversion_plugin.h"
 #include "editor/plugins/script_editor_plugin.h"
@@ -111,17 +111,17 @@ void EditorPlugin::add_control_to_container(CustomControlContainer p_location, C
 		} break;
 
 		case CONTAINER_CANVAS_EDITOR_MENU: {
-			CanvasItemEditor::get_singleton()->add_control_to_menu_panel(p_control);
+			ElementEditor::get_singleton()->add_control_to_menu_panel(p_control);
 
 		} break;
 		case CONTAINER_CANVAS_EDITOR_SIDE_LEFT: {
-			CanvasItemEditor::get_singleton()->add_control_to_left_panel(p_control);
+			ElementEditor::get_singleton()->add_control_to_left_panel(p_control);
 		} break;
 		case CONTAINER_CANVAS_EDITOR_SIDE_RIGHT: {
-			CanvasItemEditor::get_singleton()->add_control_to_right_panel(p_control);
+			ElementEditor::get_singleton()->add_control_to_right_panel(p_control);
 		} break;
 		case CONTAINER_CANVAS_EDITOR_BOTTOM: {
-			CanvasItemEditor::get_singleton()->get_bottom_split()->add_child(p_control);
+			ElementEditor::get_singleton()->get_bottom_split()->add_child(p_control);
 
 		} break;
 		case CONTAINER_INSPECTOR_BOTTOM: {
@@ -150,17 +150,17 @@ void EditorPlugin::remove_control_from_container(CustomControlContainer p_locati
 		} break;
 
 		case CONTAINER_CANVAS_EDITOR_MENU: {
-			CanvasItemEditor::get_singleton()->remove_control_from_menu_panel(p_control);
+			ElementEditor::get_singleton()->remove_control_from_menu_panel(p_control);
 
 		} break;
 		case CONTAINER_CANVAS_EDITOR_SIDE_LEFT: {
-			CanvasItemEditor::get_singleton()->remove_control_from_left_panel(p_control);
+			ElementEditor::get_singleton()->remove_control_from_left_panel(p_control);
 		} break;
 		case CONTAINER_CANVAS_EDITOR_SIDE_RIGHT: {
-			CanvasItemEditor::get_singleton()->remove_control_from_right_panel(p_control);
+			ElementEditor::get_singleton()->remove_control_from_right_panel(p_control);
 		} break;
 		case CONTAINER_CANVAS_EDITOR_BOTTOM: {
-			CanvasItemEditor::get_singleton()->get_bottom_split()->remove_child(p_control);
+			ElementEditor::get_singleton()->get_bottom_split()->remove_child(p_control);
 
 		} break;
 		case CONTAINER_INSPECTOR_BOTTOM: {
@@ -245,7 +245,7 @@ void EditorPlugin::forward_canvas_force_draw_over_viewport(Control *p_overlay) {
 
 // Updates the overlays of the 2D viewport or, if in 3D mode, of every 3D viewport.
 int EditorPlugin::update_overlays() const {
-	CanvasItemEditor::get_singleton()->get_viewport_control()->queue_redraw();
+	ElementEditor::get_singleton()->get_viewport_control()->queue_redraw();
 	return 1;
 }
 

@@ -52,7 +52,7 @@ void SeparationRayShape2D::draw(const RID &p_to_rid, const Color &p_color) {
 	if (no_line) {
 		arrow_size = target_position.length();
 	} else {
-		RS::get_singleton()->canvas_item_add_line(p_to_rid, Vector2(), target_position - target_position.normalized() * arrow_size, p_color, line_width);
+		RS::get_singleton()->element_add_line(p_to_rid, Vector2(), target_position - target_position.normalized() * arrow_size, p_color, line_width);
 	}
 
 	Transform2D xf;
@@ -67,7 +67,7 @@ void SeparationRayShape2D::draw(const RID &p_to_rid, const Color &p_color) {
 
 	Vector<Color> cols = { p_color, p_color, p_color };
 
-	RS::get_singleton()->canvas_item_add_primitive(p_to_rid, pts, cols, Vector<Point2>(), RID());
+	RS::get_singleton()->element_add_primitive(p_to_rid, pts, cols, Vector<Point2>(), RID());
 }
 
 Rect2 SeparationRayShape2D::get_rect() const {

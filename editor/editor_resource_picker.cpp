@@ -1287,7 +1287,7 @@ void EditorAudioStreamPicker::_preview_draw() {
 
 		Vector<Color> colors = { get_theme_color(SNAME("contrast_color_2"), EditorStringName(Editor)) };
 
-		RS::get_singleton()->canvas_item_add_multiline(stream_preview_rect->get_canvas_item(), points, colors);
+		RS::get_singleton()->element_add_multiline(stream_preview_rect->get_element(), points, colors);
 
 		if (tagged_frame_offset_count) {
 			Color accent = get_theme_color(SNAME("accent_color"), EditorStringName(Editor));

@@ -332,14 +332,14 @@ PackedStringArray GPUParticles2D::get_configuration_warnings() const {
 	if (process_material.is_null()) {
 		warnings.push_back(RTR("A material to process the particles is not assigned, so no behavior is imprinted."));
 	} else {
-		CanvasItemMaterial *mat = Object::cast_to<CanvasItemMaterial>(get_material().ptr());
+		ElementMaterial *mat = Object::cast_to<ElementMaterial>(get_material().ptr());
 
 		if (get_material().is_null() || (mat && !mat->get_particles_animation())) {
 			const ParticleProcessMaterial *process = Object::cast_to<ParticleProcessMaterial>(process_material.ptr());
 			if (process &&
 					(process->get_param_max(ParticleProcessMaterial::PARAM_ANIM_SPEED) != 0.0 || process->get_param_max(ParticleProcessMaterial::PARAM_ANIM_OFFSET) != 0.0 ||
 							process->get_param_texture(ParticleProcessMaterial::PARAM_ANIM_SPEED).is_valid() || process->get_param_texture(ParticleProcessMaterial::PARAM_ANIM_OFFSET).is_valid())) {
-				warnings.push_back(RTR("Particles2D animation requires the usage of a CanvasItemMaterial with \"Particles Animation\" enabled."));
+				warnings.push_back(RTR("Particles2D animation requires the usage of a ElementMaterial with \"Particles Animation\" enabled."));
 			}
 		}
 	}
@@ -669,7 +669,7 @@ void GPUParticles2D::_notification(int p_what) {
 				RS::get_singleton()->mesh_add_surface_from_arrays(mesh, RS::PRIMITIVE_TRIANGLES, arr, Array(), Dictionary(), RS::ARRAY_FLAG_USE_2D_VERTICES);
 				RS::get_singleton()->particles_set_trail_bind_poses(particles, Vector<Transform3D>());
 			}
-			RS::get_singleton()->canvas_item_add_particles(get_canvas_item(), particles, texture_rid);
+			RS::get_singleton()->element_add_particles(get_element(), particles, texture_rid);
 
 #ifdef TOOLS_ENABLED
 			if (show_visibility_rect) {

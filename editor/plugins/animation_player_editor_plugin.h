@@ -161,7 +161,7 @@ class AnimationPlayerEditor : public VBoxContainer {
 		LocalVector<bool> captures_valid;
 		struct {
 			RID canvas;
-			RID canvas_item;
+			RID element;
 			Ref<ShaderMaterial> material;
 			Ref<Shader> shader;
 		} capture;

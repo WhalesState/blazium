@@ -30,7 +30,7 @@
 
 #include "curve_editor_plugin.h"
 
-#include "canvas_item_editor_plugin.h"
+#include "element_editor_plugin.h"
 #include "core/input/input.h"
 #include "core/math/geometry_2d.h"
 #include "core/os/keyboard.h"
@@ -757,12 +757,12 @@ static void plot_curve_accurate(const Curve &curve, float step, Vector2 scaling,
 	}
 }
 
-struct CanvasItemPlotCurve {
-	CanvasItem &ci;
+struct ElementPlotCurve {
+	Element &ci;
 	Color color1;
 	Color color2;
 
-	CanvasItemPlotCurve(CanvasItem &p_ci, Color p_color1, Color p_color2) :
+	ElementPlotCurve(Element &p_ci, Color p_color1, Color p_color2) :
 			ci(p_ci),
 			color1(p_color1),
 			color2(p_color2) {}
@@ -838,7 +838,7 @@ void CurveEdit::_redraw() {
 	const Color line_color = get_theme_color(SceneStringName(font_color), EditorStringName(Editor));
 	const Color edge_line_color = get_theme_color(SceneStringName(font_color), EditorStringName(Editor)) * Color(1, 1, 1, 0.75);
 
-	CanvasItemPlotCurve plot_func(*this, line_color, edge_line_color);
+	ElementPlotCurve plot_func(*this, line_color, edge_line_color);
 	plot_curve_accurate(**curve, 2.f, (get_view_pos(Vector2(1, curve->get_max_value())) - get_view_pos(Vector2(0, curve->get_min_value()))) / Vector2(1, curve->get_range()), plot_func);
 
 	// Draw points, except for the selected one.

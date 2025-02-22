@@ -30,7 +30,7 @@
 
 #include "cast_2d_editor_plugin.h"
 
-#include "canvas_item_editor_plugin.h"
+#include "element_editor_plugin.h"
 #include "editor/editor_node.h"
 #include "editor/editor_undo_redo_manager.h"
 #include "scene/2d/physics/ray_cast_2d.h"
@@ -59,7 +59,7 @@ bool Cast2DEditor::forward_canvas_gui_input(const Ref<InputEvent> &p_event) {
 		return false;
 	}
 
-	Transform2D xform = canvas_item_editor->get_canvas_transform() * node->get_global_transform();
+	Transform2D xform = element_editor->get_canvas_transform() * node->get_global_transform();
 
 	Ref<InputEventMouseButton> mb = p_event;
 	if (mb.is_valid() && mb->get_button_index() == MouseButton::LEFT) {
@@ -84,9 +84,9 @@ bool Cast2DEditor::forward_canvas_gui_input(const Ref<InputEvent> &p_event) {
 				EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
 				undo_redo->create_action(TTR("Set Target Position"));
 				undo_redo->add_do_property(node, "target_position", target_position);
-				undo_redo->add_do_method(canvas_item_editor, "update_viewport");
+				undo_redo->add_do_method(element_editor, "update_viewport");
 				undo_redo->add_undo_property(node, "target_position", original_target_position);
-				undo_redo->add_undo_method(canvas_item_editor, "update_viewport");
+				undo_redo->add_undo_method(element_editor, "update_viewport");
 				undo_redo->commit_action();
 			}
 
@@ -97,11 +97,11 @@ bool Cast2DEditor::forward_canvas_gui_input(const Ref<InputEvent> &p_event) {
 
 	Ref<InputEventMouseMotion> mm = p_event;
 	if (mm.is_valid() && pressed) {
-		Vector2 point = canvas_item_editor->snap_point(canvas_item_editor->get_canvas_transform().affine_inverse().xform(mm->get_position()));
+		Vector2 point = element_editor->snap_point(element_editor->get_canvas_transform().affine_inverse().xform(mm->get_position()));
 		point = node->get_global_transform().affine_inverse().xform(point);
 
 		node->set("target_position", point);
-		canvas_item_editor->update_viewport();
+		element_editor->update_viewport();
 
 		return true;
 	}
@@ -114,15 +114,15 @@ void Cast2DEditor::forward_canvas_draw_over_viewport(Control *p_overlay) {
 		return;
 	}
 
-	Transform2D gt = canvas_item_editor->get_canvas_transform() * node->get_global_transform();
+	Transform2D gt = element_editor->get_canvas_transform() * node->get_global_transform();
 
 	const Ref<Texture2D> handle = get_editor_theme_icon(SNAME("EditorHandle"));
 	p_overlay->draw_texture(handle, gt.xform((Vector2)node->get("target_position")) - handle->get_size() / 2);
 }
 
 void Cast2DEditor::edit(Node2D *p_node) {
-	if (!canvas_item_editor) {
-		canvas_item_editor = CanvasItemEditor::get_singleton();
+	if (!element_editor) {
+		element_editor = ElementEditor::get_singleton();
 	}
 
 	if (Object::cast_to<RayCast2D>(p_node) || Object::cast_to<ShapeCast2D>(p_node)) {
@@ -131,7 +131,7 @@ void Cast2DEditor::edit(Node2D *p_node) {
 		node = nullptr;
 	}
 
-	canvas_item_editor->update_viewport();
+	element_editor->update_viewport();
 }
 
 ///////////////////////

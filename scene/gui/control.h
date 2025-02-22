@@ -34,7 +34,7 @@
 #include "core/math/transform_2d.h"
 #include "core/object/gdvirtual.gen.inc"
 #include "core/templates/rid.h"
-#include "scene/main/canvas_item.h"
+#include "scene/main/element.h"
 #include "scene/main/timer.h"
 #include "scene/resources/theme.h"
 
@@ -44,8 +44,8 @@ class Panel;
 class ThemeOwner;
 class ThemeContext;
 
-class Control : public CanvasItem {
-	GDCLASS(Control, CanvasItem);
+class Control : public Element {
+	GDCLASS(Control, Element);
 
 #ifdef TOOLS_ENABLED
 	bool saving = false;
@@ -174,7 +174,7 @@ private:
 
 		Control *parent_control = nullptr;
 		Window *parent_window = nullptr;
-		CanvasItem *parent_canvas_item = nullptr;
+		Element *parent_element = nullptr;
 		Callable forward_drag;
 		Callable forward_can_drop;
 		Callable forward_drop;
@@ -276,7 +276,7 @@ private:
 
 	// Positioning and sizing.
 
-	void _update_canvas_item_transform();
+	void _update_element_transform();
 	Transform2D _get_internal_transform() const;
 
 	void _set_anchor(Side p_side, real_t p_anchor);
@@ -298,7 +298,7 @@ private:
 	void _update_minimum_size();
 	void _size_changed();
 
-	void _top_level_changed() override {} // Controls don't need to do anything, only other CanvasItems.
+	void _top_level_changed() override {} // Controls don't need to do anything, only other Elements.
 	void _top_level_changed_on_parent() override;
 
 	void _clear_size_warning();

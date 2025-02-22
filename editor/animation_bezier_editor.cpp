@@ -215,12 +215,12 @@ void AnimationBezierTrackEdit::_notification(int p_what) {
 	switch (p_what) {
 		case EditorSettings::NOTIFICATION_EDITOR_SETTINGS_CHANGED: {
 			if (EditorSettings::get_singleton()->check_changed_settings_in_group("editors/panning")) {
-				panner->setup((ViewPanner::ControlScheme)EDITOR_GET("editors/panning/animation_editors_panning_scheme").operator int(), ED_GET_SHORTCUT("canvas_item_editor/pan_view"), bool(EDITOR_GET("editors/panning/simple_panning")));
+				panner->setup((ViewPanner::ControlScheme)EDITOR_GET("editors/panning/animation_editors_panning_scheme").operator int(), ED_GET_SHORTCUT("element_editor/pan_view"), bool(EDITOR_GET("editors/panning/simple_panning")));
 			}
 		} break;
 
 		case NOTIFICATION_ENTER_TREE: {
-			panner->setup((ViewPanner::ControlScheme)EDITOR_GET("editors/panning/animation_editors_panning_scheme").operator int(), ED_GET_SHORTCUT("canvas_item_editor/pan_view"), bool(EDITOR_GET("editors/panning/simple_panning")));
+			panner->setup((ViewPanner::ControlScheme)EDITOR_GET("editors/panning/animation_editors_panning_scheme").operator int(), ED_GET_SHORTCUT("element_editor/pan_view"), bool(EDITOR_GET("editors/panning/simple_panning")));
 			[[fallthrough]];
 		}
 		case NOTIFICATION_THEME_CHANGED: {
@@ -318,7 +318,7 @@ void AnimationBezierTrackEdit::_notification(int p_what) {
 
 						Vector2 string_pos = Point2(ofs, vofs);
 						string_pos = string_pos.floor();
-						text_buf.draw(get_canvas_item(), string_pos, color);
+						text_buf.draw(get_element(), string_pos, color);
 
 						vofs += h + vsep;
 						track_v_scroll_max += h + vsep;
@@ -397,7 +397,7 @@ void AnimationBezierTrackEdit::_notification(int p_what) {
 					}
 
 					Vector2 string_pos = Point2(margin, vofs);
-					text_buf.draw(get_canvas_item(), string_pos, cc);
+					text_buf.draw(get_element(), string_pos, cc);
 
 					float icon_start_height = vofs + rect.size.y / 2.0;
 					Rect2 remove_rect = Rect2(remove_hpos, icon_start_height - remove->get_height() / 2.0, remove->get_width(), remove->get_height());

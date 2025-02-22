@@ -107,13 +107,13 @@ void ConvexPolygonShape2D::draw(const RID &p_to_rid, const Color &p_color) {
 	}
 
 	Vector<Color> col = { p_color };
-	RenderingServer::get_singleton()->canvas_item_add_polygon(p_to_rid, points, col);
+	RenderingServer::get_singleton()->element_add_polygon(p_to_rid, points, col);
 
 	if (is_collision_outline_enabled()) {
 		col = { Color(p_color, 1.0) };
-		RenderingServer::get_singleton()->canvas_item_add_polyline(p_to_rid, points, col);
+		RenderingServer::get_singleton()->element_add_polyline(p_to_rid, points, col);
 		// Draw the last segment.
-		RenderingServer::get_singleton()->canvas_item_add_line(p_to_rid, points[points.size() - 1], points[0], Color(p_color, 1.0));
+		RenderingServer::get_singleton()->element_add_line(p_to_rid, points[points.size() - 1], points[0], Color(p_color, 1.0));
 	}
 }
 

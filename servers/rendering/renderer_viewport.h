@@ -112,8 +112,8 @@ public:
 
 		RS::ViewportClearMode clear_mode = RenderingServer::VIEWPORT_CLEAR_ALWAYS;
 
-		RS::CanvasItemTextureFilter texture_filter = RS::CANVAS_ITEM_TEXTURE_FILTER_LINEAR;
-		RS::CanvasItemTextureRepeat texture_repeat = RS::CANVAS_ITEM_TEXTURE_REPEAT_DISABLED;
+		RS::ElementTextureFilter texture_filter = RS::element_TEXTURE_FILTER_LINEAR;
+		RS::ElementTextureRepeat texture_repeat = RS::element_TEXTURE_REPEAT_DISABLED;
 
 		bool transparent_bg = false;
 		bool use_hdr_2d = false;
@@ -286,8 +286,8 @@ public:
 	void viewport_set_snap_2d_transforms_to_pixel(RID p_viewport, bool p_enabled);
 	void viewport_set_snap_2d_vertices_to_pixel(RID p_viewport, bool p_enabled);
 
-	void viewport_set_default_canvas_item_texture_filter(RID p_viewport, RS::CanvasItemTextureFilter p_filter);
-	void viewport_set_default_canvas_item_texture_repeat(RID p_viewport, RS::CanvasItemTextureRepeat p_repeat);
+	void viewport_set_default_element_texture_filter(RID p_viewport, RS::ElementTextureFilter p_filter);
+	void viewport_set_default_element_texture_repeat(RID p_viewport, RS::ElementTextureRepeat p_repeat);
 
 	void viewport_set_sdf_oversize_and_scale(RID p_viewport, RS::ViewportSDFOversize p_over_size, RS::ViewportSDFScale p_scale);
 

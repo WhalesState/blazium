@@ -242,7 +242,7 @@ void Control::get_argument_options(const StringName &p_function, int p_idx, List
 			}
 		}
 	}
-	CanvasItem::get_argument_options(p_function, p_idx, r_options);
+	Element::get_argument_options(p_function, p_idx, r_options);
 }
 #endif
 
@@ -612,7 +612,7 @@ bool Control::_property_get_revert(const StringName &p_name, Variant &r_property
 
 bool Control::is_top_level_control() const {
 	ERR_READ_THREAD_GUARD_V(false);
-	return is_inside_tree() && (!data.parent_canvas_item && !data.RI && is_set_as_top_level());
+	return is_inside_tree() && (!data.parent_element && !data.RI && is_set_as_top_level());
 }
 
 Control *Control::get_parent_control() const {
@@ -627,7 +627,7 @@ Window *Control::get_parent_window() const {
 
 Control *Control::get_root_parent_control() const {
 	ERR_READ_THREAD_GUARD_V(nullptr);
-	const CanvasItem *ci = this;
+	const Element *ci = this;
 	const Control *root = this;
 
 	while (ci) {
@@ -653,8 +653,8 @@ Rect2 Control::get_parent_anchorable_rect() const {
 	}
 
 	Rect2 parent_rect;
-	if (data.parent_canvas_item) {
-		parent_rect = data.parent_canvas_item->get_anchorable_rect();
+	if (data.parent_element) {
+		parent_rect = data.parent_element->get_anchorable_rect();
 	} else {
 #ifdef TOOLS_ENABLED
 		Node *edited_scene_root = get_tree()->get_edited_scene_root();
@@ -690,7 +690,7 @@ Transform2D Control::_get_internal_transform() const {
 	return offset.affine_inverse() * (rot_scale * offset);
 }
 
-void Control::_update_canvas_item_transform() {
+void Control::_update_element_transform() {
 	Transform2D xform = _get_internal_transform();
 	xform[2] += get_position();
 
@@ -699,7 +699,7 @@ void Control::_update_canvas_item_transform() {
 		xform[2] = (xform[2] + Vector2(0.5, 0.5)).floor();
 	}
 
-	RenderingServer::get_singleton()->canvas_item_set_transform(get_canvas_item(), xform);
+	RenderingServer::get_singleton()->element_set_transform(get_element(), xform);
 }
 
 Transform2D Control::get_transform() const {
@@ -1427,7 +1427,7 @@ void Control::set_global_position(const Point2 &p_point, bool p_keep_offsets) {
 	// (parent_global_transform * T(new_position) * internal_transform).origin == new_global_position
 	// (T(new_position) * internal_transform).origin == new_position_in_parent_space
 	// new_position == new_position_in_parent_space - internal_transform.origin
-	Point2 position_in_parent_space = data.parent_canvas_item ? data.parent_canvas_item->get_global_transform().affine_inverse().xform(p_point) : p_point;
+	Point2 position_in_parent_space = data.parent_element ? data.parent_element->get_global_transform().affine_inverse().xform(p_point) : p_point;
 	set_position(position_in_parent_space - _get_internal_transform().get_origin(), p_keep_offsets);
 }
 
@@ -1755,7 +1755,7 @@ void Control::_size_changed() {
 		}
 
 		if (pos_changed && !size_changed) {
-			_update_canvas_item_transform();
+			_update_element_transform();
 		}
 	} else if (pos_changed) {
 		_notify_transform();
@@ -3234,11 +3234,11 @@ void Control::_notification(int p_notification) {
 		case NOTIFICATION_ENTER_CANVAS: {
 			data.is_rtl_dirty = true;
 
-			CanvasItem *node = this;
+			Element *node = this;
 			bool has_parent_control = false;
 
 			while (!node->is_set_as_top_level()) {
-				CanvasItem *parent = Object::cast_to<CanvasItem>(node->get_parent());
+				Element *parent = Object::cast_to<Element>(node->get_parent());
 				if (!parent) {
 					break;
 				}
@@ -3263,10 +3263,10 @@ void Control::_notification(int p_notification) {
 				get_parent()->connect(SNAME("child_order_changed"), callable_mp(get_viewport(), &Viewport::gui_set_root_order_dirty), CONNECT_REFERENCE_COUNTED);
 			}
 
-			data.parent_canvas_item = get_parent_item();
+			data.parent_element = get_parent_item();
 
-			if (data.parent_canvas_item) {
-				data.parent_canvas_item->connect(SceneStringName(item_rect_changed), callable_mp(this, &Control::_size_changed));
+			if (data.parent_element) {
+				data.parent_element->connect(SceneStringName(item_rect_changed), callable_mp(this, &Control::_size_changed));
 			} else {
 				// Connect viewport.
 				Viewport *viewport = get_viewport();
@@ -3276,9 +3276,9 @@ void Control::_notification(int p_notification) {
 		} break;
 
 		case NOTIFICATION_EXIT_CANVAS: {
-			if (data.parent_canvas_item) {
-				data.parent_canvas_item->disconnect(SceneStringName(item_rect_changed), callable_mp(this, &Control::_size_changed));
-				data.parent_canvas_item = nullptr;
+			if (data.parent_element) {
+				data.parent_element->disconnect(SceneStringName(item_rect_changed), callable_mp(this, &Control::_size_changed));
+				data.parent_element = nullptr;
 			} else {
 				// Disconnect viewport.
 				Viewport *viewport = get_viewport();
@@ -3292,7 +3292,7 @@ void Control::_notification(int p_notification) {
 				get_parent()->disconnect(SNAME("child_order_changed"), callable_mp(get_viewport(), &Viewport::gui_set_root_order_dirty));
 			}
 
-			data.parent_canvas_item = nullptr;
+			data.parent_element = nullptr;
 			data.is_rtl_dirty = true;
 		} break;
 
@@ -3307,9 +3307,9 @@ void Control::_notification(int p_notification) {
 		} break;
 
 		case NOTIFICATION_DRAW: {
-			_update_canvas_item_transform();
-			RenderingServer::get_singleton()->canvas_item_set_custom_rect(get_canvas_item(), !data.disable_visibility_clip, Rect2(Point2(), get_size()));
-			RenderingServer::get_singleton()->canvas_item_set_clip(get_canvas_item(), data.clip_contents);
+			_update_element_transform();
+			RenderingServer::get_singleton()->element_set_custom_rect(get_element(), !data.disable_visibility_clip, Rect2(Point2(), get_size()));
+			RenderingServer::get_singleton()->element_set_clip(get_element(), data.clip_contents);
 		} break;
 
 		case NOTIFICATION_MOUSE_ENTER: {

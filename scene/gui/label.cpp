@@ -401,7 +401,7 @@ void Label::_notification(int p_what) {
 
 		case NOTIFICATION_DRAW: {
 			if (clip) {
-				RenderingServer::get_singleton()->canvas_item_set_clip(get_canvas_item(), true);
+				RenderingServer::get_singleton()->element_set_clip(get_element(), true);
 			}
 
 			// When a shaped text is invalidated by an external source, we want to reshape it.
@@ -420,7 +420,7 @@ void Label::_notification(int p_what) {
 				_shape();
 			}
 
-			RID ci = get_canvas_item();
+			RID ci = get_element();
 
 			bool has_settings = settings.is_valid();
 

@@ -483,7 +483,7 @@ void RasterizerGLES3::set_boot_image(const Ref<Image> &p_image, const Color &p_c
 	screenrect.size /= win_size;
 
 	GLES3::Texture *t = texture_storage->get_texture(texture);
-	t->gl_set_filter(p_use_filter ? RS::CANVAS_ITEM_TEXTURE_FILTER_LINEAR : RS::CANVAS_ITEM_TEXTURE_FILTER_NEAREST);
+	t->gl_set_filter(p_use_filter ? RS::element_TEXTURE_FILTER_LINEAR : RS::element_TEXTURE_FILTER_NEAREST);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, t->tex_id);
 	copy_effects->copy_to_rect(screenrect);

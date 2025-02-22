@@ -171,7 +171,7 @@ void ColorPicker::init_shaders() {
 	wheel_shader->set_code(R"(
 // ColorPicker wheel shader.
 
-shader_type canvas_item;
+shader_type element;
 
 void fragment() {
 	float x = UV.x - 0.5;
@@ -195,7 +195,7 @@ void fragment() {
 	circle_shader->set_code(R"(
 // ColorPicker circle shader.
 
-shader_type canvas_item;
+shader_type element;
 
 uniform float v = 1.0;
 
@@ -2229,7 +2229,7 @@ void ColorPresetButton::_notification(int p_what) {
 				if (preset_color.a < 1) {
 					// Draw a background pattern when the color is transparent.
 					sb_flat->set_bg_color(Color(1, 1, 1));
-					sb_flat->draw(get_canvas_item(), r);
+					sb_flat->draw(get_element(), r);
 
 					Rect2 bg_texture_rect = r.grow_side(SIDE_LEFT, -sb_flat->get_margin(SIDE_LEFT));
 					bg_texture_rect = bg_texture_rect.grow_side(SIDE_RIGHT, -sb_flat->get_margin(SIDE_RIGHT));
@@ -2240,7 +2240,7 @@ void ColorPresetButton::_notification(int p_what) {
 					sb_flat->set_bg_color(preset_color);
 				}
 				sb_flat->set_bg_color(preset_color);
-				sb_flat->draw(get_canvas_item(), r);
+				sb_flat->draw(get_element(), r);
 			} else if (sb_texture.is_valid()) {
 				if (preset_color.a < 1) {
 					// Draw a background pattern when the color is transparent.
@@ -2248,7 +2248,7 @@ void ColorPresetButton::_notification(int p_what) {
 					draw_texture_rect(theme_cache.background_icon, r, use_tile_texture);
 				}
 				sb_texture->set_modulate(preset_color);
-				sb_texture->draw(get_canvas_item(), r);
+				sb_texture->draw(get_element(), r);
 			} else {
 				WARN_PRINT("Unsupported StyleBox used for ColorPresetButton. Use StyleBoxFlat or StyleBoxTexture instead.");
 			}

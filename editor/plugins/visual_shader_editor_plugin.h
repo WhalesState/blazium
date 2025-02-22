@@ -264,13 +264,13 @@ class VisualShaderEditor : public VBoxContainer {
 	bool preview_showed = false;
 
 	enum ShaderModeFlags {
-		MODE_FLAGS_SPATIAL_CANVASITEM = 1,
+		MODE_FLAGS_SPATIAL_Element = 1,
 		MODE_FLAGS_SKY = 2,
 		MODE_FLAGS_PARTICLES = 4,
 		MODE_FLAGS_FOG = 8,
 	};
 
-	int mode = MODE_FLAGS_SPATIAL_CANVASITEM;
+	int mode = MODE_FLAGS_SPATIAL_Element;
 
 	enum TypeFlags {
 		TYPE_FLAGS_VERTEX = 1,

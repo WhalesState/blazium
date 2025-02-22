@@ -135,7 +135,7 @@ struct Material {
 			update_element(this) {}
 };
 
-/* CanvasItem Materials */
+/* Element Materials */
 
 struct CanvasShaderData : public ShaderData {
 	enum BlendMode { // Used internally.

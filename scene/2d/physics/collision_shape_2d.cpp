@@ -108,7 +108,7 @@ void CollisionShape2D::_notification(int p_what) {
 				draw_col.b = g;
 				draw_col.a *= 0.5;
 			}
-			shape->draw(get_canvas_item(), draw_col);
+			shape->draw(get_element(), draw_col);
 
 			rect = shape->get_rect();
 			rect = rect.grow(3);

@@ -856,13 +856,13 @@ void VersionControlEditorPlugin::_update_extra_options() {
 	for (int i = 0; i < branch_select->get_item_count(); i++) {
 		extra_options_remove_branch_list->add_icon_item(EditorNode::get_singleton()->get_editor_theme()->get_icon(SNAME("VcsBranches"), EditorStringName(EditorIcons)), branch_select->get_item_text(branch_select->get_item_id(i)));
 	}
-	extra_options_remove_branch_list->update_canvas_items();
+	extra_options_remove_branch_list->update_elements();
 
 	extra_options_remove_remote_list->clear();
 	for (int i = 0; i < remote_select->get_item_count(); i++) {
 		extra_options_remove_remote_list->add_icon_item(EditorNode::get_singleton()->get_editor_theme()->get_icon(SNAME("ArrowUp"), EditorStringName(EditorIcons)), remote_select->get_item_text(remote_select->get_item_id(i)));
 	}
-	extra_options_remove_remote_list->update_canvas_items();
+	extra_options_remove_remote_list->update_elements();
 }
 
 bool VersionControlEditorPlugin::_is_staging_area_empty() {

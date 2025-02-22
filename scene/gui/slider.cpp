@@ -244,7 +244,7 @@ void Slider::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_DRAW: {
-			RID ci = get_canvas_item();
+			RID ci = get_element();
 			Size2i size = get_size();
 			double ratio = Math::is_nan(get_as_ratio()) ? 0 : get_as_ratio();
 

@@ -21,7 +21,7 @@
 
 #include "core/string/ustring.h"
 
-static String OK_COLOR_SHADER = R"(shader_type canvas_item;
+static String OK_COLOR_SHADER = R"(shader_type element;
 
 const float M_PI = 3.1415926535897932384626433832795;
 

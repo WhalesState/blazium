@@ -82,7 +82,7 @@ DebuggerEditorPlugin::DebuggerEditorPlugin(PopupMenu *p_debug_menu) {
 	debug_menu->set_item_tooltip(-1,
 			TTR("When this option is enabled, avoidance object shapes, radiuses, and velocities will be visible in the running project."));
 	debug_menu->add_separator();
-	debug_menu->add_check_shortcut(ED_SHORTCUT("editor/visible_canvas_redraw", TTR("Debug CanvasItem Redraws")), RUN_DEBUG_CANVAS_REDRAW);
+	debug_menu->add_check_shortcut(ED_SHORTCUT("editor/visible_canvas_redraw", TTR("Debug Element Redraws")), RUN_DEBUG_CANVAS_REDRAW);
 	debug_menu->set_item_tooltip(-1,
 			TTR("When this option is enabled, redraw requests of 2D objects will become visible (as a short flash) in the running project.\nThis is useful to troubleshoot low processor mode."));
 	debug_menu->add_separator();

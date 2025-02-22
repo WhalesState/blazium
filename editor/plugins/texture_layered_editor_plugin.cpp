@@ -105,7 +105,7 @@ void TextureLayeredEditor::_make_shaders() {
 	shaders[0]->set_code(R"(
 // TextureLayeredEditor preview shader (2D array).
 
-shader_type canvas_item;
+shader_type element;
 
 uniform sampler2DArray tex;
 uniform float layer;
@@ -119,7 +119,7 @@ void fragment() {
 	shaders[1]->set_code(R"(
 // TextureLayeredEditor preview shader (cubemap).
 
-shader_type canvas_item;
+shader_type element;
 
 uniform samplerCube tex;
 uniform vec3 normal;
@@ -135,7 +135,7 @@ void fragment() {
 	shaders[2]->set_code(R"(
 // TextureLayeredEditor preview shader (cubemap array).
 
-shader_type canvas_item;
+shader_type element;
 
 uniform samplerCubeArray tex;
 uniform vec3 normal;

@@ -63,10 +63,10 @@ void TextureRegionEditor::_texture_preview_draw() {
 
 	Transform2D mtx = _get_offset_transform();
 
-	RS::get_singleton()->canvas_item_add_set_transform(texture_preview->get_canvas_item(), mtx);
+	RS::get_singleton()->element_add_set_transform(texture_preview->get_element(), mtx);
 	texture_preview->draw_rect(Rect2(Point2(), object_texture->get_size()), Color(0.5, 0.5, 0.5, 0.5), false);
 	texture_preview->draw_texture(object_texture, Point2());
-	RS::get_singleton()->canvas_item_add_set_transform(texture_preview->get_canvas_item(), Transform2D());
+	RS::get_singleton()->element_add_set_transform(texture_preview->get_element(), Transform2D());
 }
 
 void TextureRegionEditor::_texture_overlay_draw() {
@@ -814,7 +814,7 @@ void TextureRegionEditor::_notification(int p_what) {
 		}
 
 		case NOTIFICATION_READY: {
-			panner->setup((ViewPanner::ControlScheme)EDITOR_GET("editors/panning/sub_editors_panning_scheme").operator int(), ED_GET_SHORTCUT("canvas_item_editor/pan_view"), bool(EDITOR_GET("editors/panning/simple_panning")));
+			panner->setup((ViewPanner::ControlScheme)EDITOR_GET("editors/panning/sub_editors_panning_scheme").operator int(), ED_GET_SHORTCUT("element_editor/pan_view"), bool(EDITOR_GET("editors/panning/simple_panning")));
 		} break;
 
 		case NOTIFICATION_ENTER_TREE: {
@@ -976,7 +976,7 @@ void TextureRegionEditor::_edit_region() {
 		return;
 	}
 
-	CanvasItem::TextureFilter filter = CanvasItem::TEXTURE_FILTER_NEAREST_WITH_MIPMAPS;
+	Element::TextureFilter filter = Element::TEXTURE_FILTER_NEAREST_WITH_MIPMAPS;
 	if (node_sprite_2d) {
 		filter = node_sprite_2d->get_texture_filter_in_tree();
 	} else if (node_ninepatch) {
@@ -984,35 +984,35 @@ void TextureRegionEditor::_edit_region() {
 	}
 
 	// occurs when get_texture_filter_in_tree reaches the scene root
-	if (filter == CanvasItem::TEXTURE_FILTER_PARENT_NODE) {
+	if (filter == Element::TEXTURE_FILTER_PARENT_NODE) {
 		SubViewport *root = EditorNode::get_singleton()->get_scene_root();
 
 		if (root != nullptr) {
-			Viewport::DefaultCanvasItemTextureFilter filter_default = root->get_default_canvas_item_texture_filter();
+			Viewport::DefaultElementTextureFilter filter_default = root->get_default_element_texture_filter();
 
 			// depending on default filter, set filter to match, otherwise fall back on nearest w/ mipmaps
 			switch (filter_default) {
-				case DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST:
-					filter = CanvasItem::TEXTURE_FILTER_NEAREST;
+				case DEFAULT_element_TEXTURE_FILTER_NEAREST:
+					filter = Element::TEXTURE_FILTER_NEAREST;
 					break;
-				case DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR:
-					filter = CanvasItem::TEXTURE_FILTER_LINEAR;
+				case DEFAULT_element_TEXTURE_FILTER_LINEAR:
+					filter = Element::TEXTURE_FILTER_LINEAR;
 					break;
-				case DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS:
-					filter = CanvasItem::TEXTURE_FILTER_LINEAR_WITH_MIPMAPS;
+				case DEFAULT_element_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS:
+					filter = Element::TEXTURE_FILTER_LINEAR_WITH_MIPMAPS;
 					break;
-				case DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS:
+				case DEFAULT_element_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS:
 				default:
-					filter = CanvasItem::TEXTURE_FILTER_NEAREST_WITH_MIPMAPS;
+					filter = Element::TEXTURE_FILTER_NEAREST_WITH_MIPMAPS;
 					break;
 			}
 		} else {
-			filter = CanvasItem::TEXTURE_FILTER_NEAREST_WITH_MIPMAPS;
+			filter = Element::TEXTURE_FILTER_NEAREST_WITH_MIPMAPS;
 		}
 	}
 
 	texture_preview->set_texture_filter(filter);
-	texture_preview->set_texture_repeat(CanvasItem::TEXTURE_REPEAT_DISABLED);
+	texture_preview->set_texture_repeat(Element::TEXTURE_REPEAT_DISABLED);
 
 	if (cache_map.has(object_texture->get_rid())) {
 		autoslice_cache = cache_map[object_texture->get_rid()];

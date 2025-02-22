@@ -175,7 +175,7 @@ TextureStorage::TextureStorage() {
 			glBindTexture(GL_TEXTURE_2D, texture.tex_id);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8UI, 4, 4, 0, GL_RGBA_INTEGER, GL_UNSIGNED_BYTE, pixel_data);
 			GLES3::Utilities::get_singleton()->texture_allocated_data(texture.tex_id, 4 * 4 * 4, "Default uint texture");
-			texture.gl_set_filter(RS::CANVAS_ITEM_TEXTURE_FILTER_NEAREST);
+			texture.gl_set_filter(RS::element_TEXTURE_FILTER_NEAREST);
 		}
 		{
 			uint16_t pixel_data[4 * 4];
@@ -197,7 +197,7 @@ TextureStorage::TextureStorage() {
 			glBindTexture(GL_TEXTURE_2D, texture.tex_id);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 4, 4, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, pixel_data);
 			GLES3::Utilities::get_singleton()->texture_allocated_data(texture.tex_id, 4 * 4 * 2, "Default depth texture");
-			texture.gl_set_filter(RS::CANVAS_ITEM_TEXTURE_FILTER_NEAREST);
+			texture.gl_set_filter(RS::element_TEXTURE_FILTER_NEAREST);
 		}
 	}
 
@@ -292,14 +292,14 @@ void TextureStorage::canvas_texture_set_shading_parameters(RID p_canvas_texture,
 	ct->specular_color.a = p_shininess;
 }
 
-void TextureStorage::canvas_texture_set_texture_filter(RID p_canvas_texture, RS::CanvasItemTextureFilter p_filter) {
+void TextureStorage::canvas_texture_set_texture_filter(RID p_canvas_texture, RS::ElementTextureFilter p_filter) {
 	CanvasTexture *ct = canvas_texture_owner.get_or_null(p_canvas_texture);
 	ERR_FAIL_NULL(ct);
 
 	ct->texture_filter = p_filter;
 }
 
-void TextureStorage::canvas_texture_set_texture_repeat(RID p_canvas_texture, RS::CanvasItemTextureRepeat p_repeat) {
+void TextureStorage::canvas_texture_set_texture_repeat(RID p_canvas_texture, RS::ElementTextureRepeat p_repeat) {
 	CanvasTexture *ct = canvas_texture_owner.get_or_null(p_canvas_texture);
 	ERR_FAIL_NULL(ct);
 
@@ -1478,12 +1478,12 @@ void TextureStorage::_texture_set_data(RID p_texture, const Ref<Image> &p_image,
 
 	// Set filtering and repeat state to default.
 	if (mipmaps > 1) {
-		texture->gl_set_filter(RS::CANVAS_ITEM_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS);
+		texture->gl_set_filter(RS::element_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS);
 	} else {
-		texture->gl_set_filter(RS::CANVAS_ITEM_TEXTURE_FILTER_NEAREST);
+		texture->gl_set_filter(RS::element_TEXTURE_FILTER_NEAREST);
 	}
 
-	texture->gl_set_repeat(RS::CANVAS_ITEM_TEXTURE_REPEAT_ENABLED);
+	texture->gl_set_repeat(RS::element_TEXTURE_REPEAT_ENABLED);
 
 	int w = img->get_width();
 	int h = img->get_height();
@@ -1556,12 +1556,12 @@ void TextureStorage::_texture_set_3d_data(RID p_texture, const Vector<Ref<Image>
 
 	// Set filtering and repeat state to default.
 	if (texture->mipmaps > 1) {
-		texture->gl_set_filter(RS::CANVAS_ITEM_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS);
+		texture->gl_set_filter(RS::element_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS);
 	} else {
-		texture->gl_set_filter(RS::CANVAS_ITEM_TEXTURE_FILTER_NEAREST);
+		texture->gl_set_filter(RS::element_TEXTURE_FILTER_NEAREST);
 	}
 
-	texture->gl_set_repeat(RS::CANVAS_ITEM_TEXTURE_REPEAT_ENABLED);
+	texture->gl_set_repeat(RS::element_TEXTURE_REPEAT_ENABLED);
 
 	Vector<Ref<Image>> images;
 	images.resize(p_data.size());
@@ -2037,8 +2037,8 @@ void TextureStorage::_update_render_target(RenderTarget *rt) {
 				glTexImage2D(texture_target, 0, rt->color_internal_format, rt->size.x, rt->size.y, 0, rt->color_format, rt->color_type, nullptr);
 			}
 
-			texture->gl_set_filter(RS::CANVAS_ITEM_TEXTURE_FILTER_NEAREST);
-			texture->gl_set_repeat(RS::CANVAS_ITEM_TEXTURE_REPEAT_DISABLED);
+			texture->gl_set_filter(RS::element_TEXTURE_FILTER_NEAREST);
+			texture->gl_set_repeat(RS::element_TEXTURE_REPEAT_DISABLED);
 
 			GLES3::Utilities::get_singleton()->texture_allocated_data(rt->color, rt->size.x * rt->size.y * rt->view_count * rt->color_format_size, "Render target color texture");
 		}
@@ -2282,8 +2282,8 @@ void TextureStorage::_clear_render_target(RenderTarget *rt) {
 			tex->active = false;
 			tex->render_target = nullptr;
 			tex->is_render_target = false;
-			tex->gl_set_filter(RS::CANVAS_ITEM_TEXTURE_FILTER_MAX);
-			tex->gl_set_repeat(RS::CANVAS_ITEM_TEXTURE_REPEAT_MAX);
+			tex->gl_set_filter(RS::element_TEXTURE_FILTER_MAX);
+			tex->gl_set_repeat(RS::element_TEXTURE_REPEAT_MAX);
 		}
 	} else {
 		Texture *tex = get_texture(rt->overridden.color);

@@ -118,7 +118,7 @@ void Sprite2D::_notification(int p_what) {
 				return;
 			}
 
-			RID ci = get_canvas_item();
+			RID ci = get_element();
 
 			Rect2 src_rect, dst_rect;
 			bool filter_clip_enabled;

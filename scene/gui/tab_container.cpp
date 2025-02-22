@@ -160,7 +160,7 @@ void TabContainer::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_DRAW: {
-			RID canvas = get_canvas_item();
+			RID canvas = get_element();
 			Size2 size = get_size();
 
 			// Draw only the tab area if the header is hidden.
@@ -182,9 +182,9 @@ void TabContainer::_notification(int p_what) {
 				int x = is_layout_rtl() ? 0 : get_size().width - theme_cache.menu_icon->get_width();
 
 				if (menu_hovered) {
-					theme_cache.menu_hl_icon->draw(get_canvas_item(), Point2(x, header_voffset + (header_height - theme_cache.menu_hl_icon->get_height()) / 2));
+					theme_cache.menu_hl_icon->draw(get_element(), Point2(x, header_voffset + (header_height - theme_cache.menu_hl_icon->get_height()) / 2));
 				} else {
-					theme_cache.menu_icon->draw(get_canvas_item(), Point2(x, header_voffset + (header_height - theme_cache.menu_icon->get_height()) / 2));
+					theme_cache.menu_icon->draw(get_element(), Point2(x, header_voffset + (header_height - theme_cache.menu_icon->get_height()) / 2));
 				}
 			}
 		} break;

@@ -99,7 +99,7 @@ void CheckButton::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_DRAW: {
-			RID ci = get_canvas_item();
+			RID ci = get_element();
 			bool rtl = is_layout_rtl();
 
 			Ref<Texture2D> on_tex;

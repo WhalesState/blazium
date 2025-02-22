@@ -154,15 +154,15 @@ void AtlasTexture::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "filter_clip"), "set_filter_clip", "has_filter_clip");
 }
 
-void AtlasTexture::draw(RID p_canvas_item, const Point2 &p_pos, const Color &p_modulate, bool p_transpose) const {
+void AtlasTexture::draw(RID p_element, const Point2 &p_pos, const Color &p_modulate, bool p_transpose) const {
 	if (atlas.is_null()) {
 		return;
 	}
 	const Rect2 rc = _get_region_rect();
-	atlas->draw_rect_region(p_canvas_item, Rect2(p_pos + margin.position, rc.size), rc, p_modulate, p_transpose, filter_clip);
+	atlas->draw_rect_region(p_element, Rect2(p_pos + margin.position, rc.size), rc, p_modulate, p_transpose, filter_clip);
 }
 
-void AtlasTexture::draw_rect(RID p_canvas_item, const Rect2 &p_rect, bool p_tile, const Color &p_modulate, bool p_transpose) const {
+void AtlasTexture::draw_rect(RID p_element, const Rect2 &p_rect, bool p_tile, const Color &p_modulate, bool p_transpose) const {
 	if (atlas.is_null()) {
 		return;
 	}
@@ -172,11 +172,11 @@ void AtlasTexture::draw_rect(RID p_canvas_item, const Rect2 &p_rect, bool p_tile
 	Rect2 dr;
 	Rect2 src_c;
 	if (get_rect_region(p_rect, src_rect, dr, src_c)) {
-		atlas->draw_rect_region(p_canvas_item, dr, src_c, p_modulate, p_transpose, filter_clip);
+		atlas->draw_rect_region(p_element, dr, src_c, p_modulate, p_transpose, filter_clip);
 	}
 }
 
-void AtlasTexture::draw_rect_region(RID p_canvas_item, const Rect2 &p_rect, const Rect2 &p_src_rect, const Color &p_modulate, bool p_transpose, bool p_clip_uv) const {
+void AtlasTexture::draw_rect_region(RID p_element, const Rect2 &p_rect, const Rect2 &p_src_rect, const Color &p_modulate, bool p_transpose, bool p_clip_uv) const {
 	// This might not necessarily work well if using a rect, needs to be fixed properly.
 	if (atlas.is_null()) {
 		return;
@@ -185,7 +185,7 @@ void AtlasTexture::draw_rect_region(RID p_canvas_item, const Rect2 &p_rect, cons
 	Rect2 dr;
 	Rect2 src_c;
 	if (get_rect_region(p_rect, p_src_rect, dr, src_c)) {
-		atlas->draw_rect_region(p_canvas_item, dr, src_c, p_modulate, p_transpose, filter_clip);
+		atlas->draw_rect_region(p_element, dr, src_c, p_modulate, p_transpose, filter_clip);
 	}
 }
 

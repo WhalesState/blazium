@@ -44,7 +44,7 @@ class Shader : public Resource {
 public:
 	enum Mode {
 		MODE_SPATIAL,
-		MODE_CANVAS_ITEM,
+		MODE_element,
 		MODE_PARTICLES,
 		MODE_SKY,
 		MODE_FOG,

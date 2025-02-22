@@ -105,7 +105,7 @@ void RasterizerCanvasGLES3::_update_transform_to_mat4(const Transform3D &p_trans
 	p_mat4[15] = 1;
 }
 
-void RasterizerCanvasGLES3::canvas_render_items(RID p_to_render_target, Item *p_item_list, const Color &p_modulate, Light *p_light_list, Light *p_directional_light_list, const Transform2D &p_canvas_transform, RS::CanvasItemTextureFilter p_default_filter, RS::CanvasItemTextureRepeat p_default_repeat, bool p_snap_2d_vertices_to_pixel, bool &r_sdf_used, RenderingMethod::RenderInfo *r_render_info) {
+void RasterizerCanvasGLES3::canvas_render_items(RID p_to_render_target, Item *p_item_list, const Color &p_modulate, Light *p_light_list, Light *p_directional_light_list, const Transform2D &p_canvas_transform, RS::ElementTextureFilter p_default_filter, RS::ElementTextureRepeat p_default_repeat, bool p_snap_2d_vertices_to_pixel, bool &r_sdf_used, RenderingMethod::RenderInfo *r_render_info) {
 	GLES3::TextureStorage *texture_storage = GLES3::TextureStorage::get_singleton();
 	GLES3::MaterialStorage *material_storage = GLES3::MaterialStorage::get_singleton();
 	GLES3::MeshStorage *mesh_storage = GLES3::MeshStorage::get_singleton();
@@ -424,7 +424,7 @@ void RasterizerCanvasGLES3::canvas_render_items(RID p_to_render_target, Item *p_
 		// Check material for something that may change flow of rendering, but do not bind for now.
 		RID material = ci->material_owner == nullptr ? ci->material : ci->material_owner->material;
 		if (material.is_valid()) {
-			GLES3::CanvasMaterialData *md = static_cast<GLES3::CanvasMaterialData *>(material_storage->material_get_data(material, RS::SHADER_CANVAS_ITEM));
+			GLES3::CanvasMaterialData *md = static_cast<GLES3::CanvasMaterialData *>(material_storage->material_get_data(material, RS::SHADER_element));
 			if (md && md->shader_data->valid) {
 				if (md->shader_data->uses_screen_texture && canvas_group_owner == nullptr) {
 					if (!material_screen_texture_cached) {
@@ -453,7 +453,7 @@ void RasterizerCanvasGLES3::canvas_render_items(RID p_to_render_target, Item *p_
 					const Item::CommandMesh *cm = static_cast<const Item::CommandMesh *>(c);
 					if (cm->mesh_instance.is_valid()) {
 						mesh_storage->mesh_instance_check_for_update(cm->mesh_instance);
-						mesh_storage->mesh_instance_set_canvas_item_transform(cm->mesh_instance, canvas_transform_inverse * ci->final_transform);
+						mesh_storage->mesh_instance_set_element_transform(cm->mesh_instance, canvas_transform_inverse * ci->final_transform);
 						update_skeletons = true;
 					}
 				}
@@ -625,7 +625,7 @@ void RasterizerCanvasGLES3::_render_items(RID p_to_render_target, int p_item_cou
 
 			GLES3::CanvasMaterialData *material_data = nullptr;
 			if (material.is_valid()) {
-				material_data = static_cast<GLES3::CanvasMaterialData *>(material_storage->material_get_data(material, RS::SHADER_CANVAS_ITEM));
+				material_data = static_cast<GLES3::CanvasMaterialData *>(material_storage->material_get_data(material, RS::SHADER_element));
 			}
 			shader_data_cache = nullptr;
 			if (material_data) {
@@ -810,7 +810,7 @@ void RasterizerCanvasGLES3::_render_items(RID p_to_render_target, int p_item_cou
 }
 
 void RasterizerCanvasGLES3::_record_item_commands(const Item *p_item, RID p_render_target, const Transform2D &p_canvas_transform_inverse, Item *&current_clip, GLES3::CanvasShaderData::BlendMode p_blend_mode, Light *p_lights, uint32_t &r_index, bool &r_batch_broken, bool &r_sdf_used, const Point2 &p_offset) {
-	RenderingServer::CanvasItemTextureFilter texture_filter = p_item->texture_filter == RS::CANVAS_ITEM_TEXTURE_FILTER_DEFAULT ? state.default_filter : p_item->texture_filter;
+	RenderingServer::ElementTextureFilter texture_filter = p_item->texture_filter == RS::element_TEXTURE_FILTER_DEFAULT ? state.default_filter : p_item->texture_filter;
 
 	if (texture_filter != state.canvas_instance_batches[state.current_batch_index].filter) {
 		_new_batch(r_batch_broken);
@@ -818,7 +818,7 @@ void RasterizerCanvasGLES3::_record_item_commands(const Item *p_item, RID p_rend
 		state.canvas_instance_batches[state.current_batch_index].filter = texture_filter;
 	}
 
-	RenderingServer::CanvasItemTextureRepeat texture_repeat = p_item->texture_repeat == RS::CANVAS_ITEM_TEXTURE_REPEAT_DEFAULT ? state.default_repeat : p_item->texture_repeat;
+	RenderingServer::ElementTextureRepeat texture_repeat = p_item->texture_repeat == RS::element_TEXTURE_REPEAT_DEFAULT ? state.default_repeat : p_item->texture_repeat;
 
 	if (texture_repeat != state.canvas_instance_batches[state.current_batch_index].repeat) {
 		_new_batch(r_batch_broken);
@@ -927,9 +927,9 @@ void RasterizerCanvasGLES3::_record_item_commands(const Item *p_item, RID p_rend
 			case Item::Command::TYPE_RECT: {
 				const Item::CommandRect *rect = static_cast<const Item::CommandRect *>(c);
 
-				if (rect->flags & CANVAS_RECT_TILE && state.canvas_instance_batches[state.current_batch_index].repeat != RenderingServer::CanvasItemTextureRepeat::CANVAS_ITEM_TEXTURE_REPEAT_ENABLED) {
+				if (rect->flags & CANVAS_RECT_TILE && state.canvas_instance_batches[state.current_batch_index].repeat != RenderingServer::ElementTextureRepeat::element_TEXTURE_REPEAT_ENABLED) {
 					_new_batch(r_batch_broken);
-					state.canvas_instance_batches[state.current_batch_index].repeat = RenderingServer::CanvasItemTextureRepeat::CANVAS_ITEM_TEXTURE_REPEAT_ENABLED;
+					state.canvas_instance_batches[state.current_batch_index].repeat = RenderingServer::ElementTextureRepeat::element_TEXTURE_REPEAT_ENABLED;
 				}
 
 				if (rect->texture != state.canvas_instance_batches[state.current_batch_index].tex || state.canvas_instance_batches[state.current_batch_index].command_type != Item::Command::TYPE_RECT) {
@@ -1870,7 +1870,7 @@ void RasterizerCanvasGLES3::_update_shadow_atlas() {
 			state.shadow_fb = 0;
 			state.shadow_texture = 0;
 			state.shadow_depth_buffer = 0;
-			WARN_PRINT("Could not create CanvasItem shadow atlas, status: " + GLES3::TextureStorage::get_singleton()->get_framebuffer_error(status));
+			WARN_PRINT("Could not create Element shadow atlas, status: " + GLES3::TextureStorage::get_singleton()->get_framebuffer_error(status));
 		}
 		GLES3::Utilities::get_singleton()->texture_allocated_data(state.shadow_texture, state.shadow_texture_size * data.max_lights_per_render * 2 * 4, "2D shadow atlas texture");
 		glBindFramebuffer(GL_FRAMEBUFFER, GLES3::TextureStorage::system_fbo);
@@ -2133,7 +2133,7 @@ void RasterizerCanvasGLES3::set_shadow_texture_size(int p_size) {
 
 	if (p_size > config->max_texture_size) {
 		p_size = config->max_texture_size;
-		WARN_PRINT("Attempting to set CanvasItem shadow atlas size to " + itos(p_size) + " which is beyond limit of " + itos(config->max_texture_size) + "supported by hardware.");
+		WARN_PRINT("Attempting to set Element shadow atlas size to " + itos(p_size) + " which is beyond limit of " + itos(config->max_texture_size) + "supported by hardware.");
 	}
 
 	if (p_size == state.shadow_texture_size) {
@@ -2208,7 +2208,7 @@ void RasterizerCanvasGLES3::canvas_begin(RID p_to_render_target, bool p_to_backb
 	glBindTexture(GL_TEXTURE_2D, tex->tex_id);
 }
 
-void RasterizerCanvasGLES3::_bind_canvas_texture(RID p_texture, RS::CanvasItemTextureFilter p_base_filter, RS::CanvasItemTextureRepeat p_base_repeat) {
+void RasterizerCanvasGLES3::_bind_canvas_texture(RID p_texture, RS::ElementTextureFilter p_base_filter, RS::ElementTextureRepeat p_base_repeat) {
 	GLES3::TextureStorage *texture_storage = GLES3::TextureStorage::get_singleton();
 	GLES3::Config *config = GLES3::Config::get_singleton();
 
@@ -2244,11 +2244,11 @@ void RasterizerCanvasGLES3::_bind_canvas_texture(RID p_texture, RS::CanvasItemTe
 		return;
 	}
 
-	RS::CanvasItemTextureFilter filter = ct->texture_filter != RS::CANVAS_ITEM_TEXTURE_FILTER_DEFAULT ? ct->texture_filter : p_base_filter;
-	ERR_FAIL_COND(filter == RS::CANVAS_ITEM_TEXTURE_FILTER_DEFAULT);
+	RS::ElementTextureFilter filter = ct->texture_filter != RS::element_TEXTURE_FILTER_DEFAULT ? ct->texture_filter : p_base_filter;
+	ERR_FAIL_COND(filter == RS::element_TEXTURE_FILTER_DEFAULT);
 
-	RS::CanvasItemTextureRepeat repeat = ct->texture_repeat != RS::CANVAS_ITEM_TEXTURE_REPEAT_DEFAULT ? ct->texture_repeat : p_base_repeat;
-	ERR_FAIL_COND(repeat == RS::CANVAS_ITEM_TEXTURE_REPEAT_DEFAULT);
+	RS::ElementTextureRepeat repeat = ct->texture_repeat != RS::element_TEXTURE_REPEAT_DEFAULT ? ct->texture_repeat : p_base_repeat;
+	ERR_FAIL_COND(repeat == RS::element_TEXTURE_REPEAT_DEFAULT);
 
 	GLES3::Texture *texture = texture_storage->get_texture(ct->diffuse);
 
@@ -2299,7 +2299,7 @@ void RasterizerCanvasGLES3::_bind_canvas_texture(RID p_texture, RS::CanvasItemTe
 	}
 }
 
-void RasterizerCanvasGLES3::_prepare_canvas_texture(RID p_texture, RS::CanvasItemTextureFilter p_base_filter, RS::CanvasItemTextureRepeat p_base_repeat, uint32_t &r_index, Size2 &r_texpixel_size) {
+void RasterizerCanvasGLES3::_prepare_canvas_texture(RID p_texture, RS::ElementTextureFilter p_base_filter, RS::ElementTextureRepeat p_base_repeat, uint32_t &r_index, Size2 &r_texpixel_size) {
 	GLES3::TextureStorage *texture_storage = GLES3::TextureStorage::get_singleton();
 
 	if (p_texture == RID()) {
@@ -2809,7 +2809,7 @@ RasterizerCanvasGLES3::RasterizerCanvasGLES3() {
 		material_storage->shader_set_code(default_canvas_group_shader, R"(
 // Default CanvasGroup shader.
 
-shader_type canvas_item;
+shader_type element;
 render_mode unshaded;
 
 uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_nearest;
@@ -2837,7 +2837,7 @@ void fragment() {
 		material_storage->shader_set_code(default_clip_children_shader, R"(
 // Default clip children shader.
 
-shader_type canvas_item;
+shader_type element;
 render_mode unshaded;
 
 uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_nearest;

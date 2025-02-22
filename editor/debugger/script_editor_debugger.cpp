@@ -48,7 +48,7 @@
 #include "editor/editor_string_names.h"
 #include "editor/gui/editor_file_dialog.h"
 #include "editor/inspector_dock.h"
-#include "editor/plugins/canvas_item_editor_plugin.h"
+#include "editor/plugins/element_editor_plugin.h"
 #include "editor/plugins/editor_debugger_plugin.h"
 #include "editor/themes/editor_scale.h"
 #include "main/performance.h"
@@ -893,7 +893,7 @@ void ScriptEditorDebugger::_notification(int p_what) {
 				peer->poll();
 
 				if (camera_override == CameraOverride::OVERRIDE_2D) {
-					Dictionary state = CanvasItemEditor::get_singleton()->get_state();
+					Dictionary state = ElementEditor::get_singleton()->get_state();
 					float zoom = state["zoom"];
 					Point2 offset = state["ofs"];
 					Transform2D transform;

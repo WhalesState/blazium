@@ -37,11 +37,11 @@ void TouchScreenButton::set_texture_normal(const Ref<Texture2D> &p_texture) {
 		return;
 	}
 	if (texture_normal.is_valid()) {
-		texture_normal->disconnect(CoreStringName(changed), callable_mp((CanvasItem *)this, &CanvasItem::queue_redraw));
+		texture_normal->disconnect(CoreStringName(changed), callable_mp((Element *)this, &Element::queue_redraw));
 	}
 	texture_normal = p_texture;
 	if (texture_normal.is_valid()) {
-		texture_normal->connect(CoreStringName(changed), callable_mp((CanvasItem *)this, &CanvasItem::queue_redraw), CONNECT_REFERENCE_COUNTED);
+		texture_normal->connect(CoreStringName(changed), callable_mp((Element *)this, &Element::queue_redraw), CONNECT_REFERENCE_COUNTED);
 	}
 	queue_redraw();
 }
@@ -55,11 +55,11 @@ void TouchScreenButton::set_texture_pressed(const Ref<Texture2D> &p_texture_pres
 		return;
 	}
 	if (texture_pressed.is_valid()) {
-		texture_pressed->disconnect(CoreStringName(changed), callable_mp((CanvasItem *)this, &CanvasItem::queue_redraw));
+		texture_pressed->disconnect(CoreStringName(changed), callable_mp((Element *)this, &Element::queue_redraw));
 	}
 	texture_pressed = p_texture_pressed;
 	if (texture_pressed.is_valid()) {
-		texture_pressed->connect(CoreStringName(changed), callable_mp((CanvasItem *)this, &CanvasItem::queue_redraw), CONNECT_REFERENCE_COUNTED);
+		texture_pressed->connect(CoreStringName(changed), callable_mp((Element *)this, &Element::queue_redraw), CONNECT_REFERENCE_COUNTED);
 	}
 	queue_redraw();
 }
@@ -81,11 +81,11 @@ void TouchScreenButton::set_shape(const Ref<Shape2D> &p_shape) {
 		return;
 	}
 	if (shape.is_valid()) {
-		shape->disconnect_changed(callable_mp((CanvasItem *)this, &CanvasItem::queue_redraw));
+		shape->disconnect_changed(callable_mp((Element *)this, &Element::queue_redraw));
 	}
 	shape = p_shape;
 	if (shape.is_valid()) {
-		shape->connect_changed(callable_mp((CanvasItem *)this, &CanvasItem::queue_redraw));
+		shape->connect_changed(callable_mp((Element *)this, &Element::queue_redraw));
 	}
 	queue_redraw();
 }
@@ -150,7 +150,7 @@ void TouchScreenButton::_notification(int p_what) {
 				}
 
 				draw_set_transform_matrix(get_canvas_transform().translated_local(pos));
-				shape->draw(get_canvas_item(), draw_col);
+				shape->draw(get_element(), draw_col);
 			}
 		} break;
 
@@ -332,7 +332,7 @@ void TouchScreenButton::_release(bool p_exiting_tree) {
 #ifdef TOOLS_ENABLED
 Rect2 TouchScreenButton::_edit_get_rect() const {
 	if (texture_normal.is_null()) {
-		return CanvasItem::_edit_get_rect();
+		return Element::_edit_get_rect();
 	}
 
 	return Rect2(Size2(), texture_normal->get_size());
@@ -345,7 +345,7 @@ bool TouchScreenButton::_edit_use_rect() const {
 
 Rect2 TouchScreenButton::get_anchorable_rect() const {
 	if (texture_normal.is_null()) {
-		return CanvasItem::get_anchorable_rect();
+		return Element::get_anchorable_rect();
 	}
 
 	return Rect2(Size2(), texture_normal->get_size());

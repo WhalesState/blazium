@@ -36,7 +36,7 @@
 #include "editor/editor_string_names.h"
 #include "editor/editor_undo_redo_manager.h"
 #include "editor/gui/editor_spin_slider.h"
-#include "editor/plugins/canvas_item_editor_plugin.h"
+#include "editor/plugins/element_editor_plugin.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/color_picker.h"
 #include "scene/gui/flow_container.h"
@@ -101,7 +101,7 @@ void GradientEdit::_color_changed(const Color &p_color) {
 
 void GradientEdit::set_gradient(const Ref<Gradient> &p_gradient) {
 	gradient = p_gradient;
-	gradient->connect(CoreStringName(changed), callable_mp((CanvasItem *)this, &CanvasItem::queue_redraw));
+	gradient->connect(CoreStringName(changed), callable_mp((Element *)this, &Element::queue_redraw));
 }
 
 const Ref<Gradient> &GradientEdit::get_gradient() const {

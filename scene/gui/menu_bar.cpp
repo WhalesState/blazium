@@ -400,7 +400,7 @@ Rect2 MenuBar::_get_menu_item_rect(int p_index) const {
 void MenuBar::_draw_menu_item(int p_index) {
 	ERR_FAIL_INDEX(p_index, menu_cache.size());
 
-	RID ci = get_canvas_item();
+	RID ci = get_element();
 	bool hovered = (focused_menu == p_index);
 	bool pressed = (active_menu == p_index);
 	bool rtl = is_layout_rtl();

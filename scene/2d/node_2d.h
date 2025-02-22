@@ -31,10 +31,10 @@
 #ifndef NODE_2D_H
 #define NODE_2D_H
 
-#include "scene/main/canvas_item.h"
+#include "scene/main/element.h"
 
-class Node2D : public CanvasItem {
-	GDCLASS(Node2D, CanvasItem);
+class Node2D : public Element {
+	GDCLASS(Node2D, Element);
 
 	mutable MTFlag xform_dirty;
 	mutable Point2 position;

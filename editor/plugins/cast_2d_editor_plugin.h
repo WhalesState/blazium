@@ -34,12 +34,12 @@
 #include "editor/plugins/editor_plugin.h"
 #include "scene/2d/node_2d.h"
 
-class CanvasItemEditor;
+class ElementEditor;
 
 class Cast2DEditor : public Control {
 	GDCLASS(Cast2DEditor, Control);
 
-	CanvasItemEditor *canvas_item_editor = nullptr;
+	ElementEditor *element_editor = nullptr;
 	Node2D *node = nullptr;
 
 	bool pressed = false;

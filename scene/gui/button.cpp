@@ -212,7 +212,7 @@ void Button::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_DRAW: {
-			const RID ci = get_canvas_item();
+			const RID ci = get_element();
 			const Size2 size = get_size();
 
 			Ref<StyleBox> style = _get_current_stylebox();

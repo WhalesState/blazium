@@ -72,7 +72,7 @@ Ref<Texture2D> MeshTexture::get_base_texture() const {
 	return base_texture;
 }
 
-void MeshTexture::draw(RID p_canvas_item, const Point2 &p_pos, const Color &p_modulate, bool p_transpose) const {
+void MeshTexture::draw(RID p_element, const Point2 &p_pos, const Color &p_modulate, bool p_transpose) const {
 	if (mesh.is_null() || base_texture.is_null()) {
 		return;
 	}
@@ -82,10 +82,10 @@ void MeshTexture::draw(RID p_canvas_item, const Point2 &p_pos, const Color &p_mo
 		SWAP(xform.columns[0][1], xform.columns[1][0]);
 		SWAP(xform.columns[0][0], xform.columns[1][1]);
 	}
-	RenderingServer::get_singleton()->canvas_item_add_mesh(p_canvas_item, mesh->get_rid(), xform, p_modulate, base_texture->get_rid());
+	RenderingServer::get_singleton()->element_add_mesh(p_element, mesh->get_rid(), xform, p_modulate, base_texture->get_rid());
 }
 
-void MeshTexture::draw_rect(RID p_canvas_item, const Rect2 &p_rect, bool p_tile, const Color &p_modulate, bool p_transpose) const {
+void MeshTexture::draw_rect(RID p_element, const Rect2 &p_rect, bool p_tile, const Color &p_modulate, bool p_transpose) const {
 	if (mesh.is_null() || base_texture.is_null()) {
 		return;
 	}
@@ -104,10 +104,10 @@ void MeshTexture::draw_rect(RID p_canvas_item, const Rect2 &p_rect, bool p_tile,
 		SWAP(xform.columns[0][1], xform.columns[1][0]);
 		SWAP(xform.columns[0][0], xform.columns[1][1]);
 	}
-	RenderingServer::get_singleton()->canvas_item_add_mesh(p_canvas_item, mesh->get_rid(), xform, p_modulate, base_texture->get_rid());
+	RenderingServer::get_singleton()->element_add_mesh(p_element, mesh->get_rid(), xform, p_modulate, base_texture->get_rid());
 }
 
-void MeshTexture::draw_rect_region(RID p_canvas_item, const Rect2 &p_rect, const Rect2 &p_src_rect, const Color &p_modulate, bool p_transpose, bool p_clip_uv) const {
+void MeshTexture::draw_rect_region(RID p_element, const Rect2 &p_rect, const Rect2 &p_src_rect, const Color &p_modulate, bool p_transpose, bool p_clip_uv) const {
 	if (mesh.is_null() || base_texture.is_null()) {
 		return;
 	}
@@ -126,7 +126,7 @@ void MeshTexture::draw_rect_region(RID p_canvas_item, const Rect2 &p_rect, const
 		SWAP(xform.columns[0][1], xform.columns[1][0]);
 		SWAP(xform.columns[0][0], xform.columns[1][1]);
 	}
-	RenderingServer::get_singleton()->canvas_item_add_mesh(p_canvas_item, mesh->get_rid(), xform, p_modulate, base_texture->get_rid());
+	RenderingServer::get_singleton()->element_add_mesh(p_element, mesh->get_rid(), xform, p_modulate, base_texture->get_rid());
 }
 
 bool MeshTexture::get_rect_region(const Rect2 &p_rect, const Rect2 &p_src_rect, Rect2 &r_rect, Rect2 &r_src_rect) const {

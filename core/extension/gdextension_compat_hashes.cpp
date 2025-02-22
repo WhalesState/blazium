@@ -166,7 +166,7 @@ void GDExtensionCompatHashes::initialize() {
 		{ "create_from_image_alpha", 505265891, 106271684 },
 		{ "opaque_to_polygons", 876132484, 48478126 },
 	});
-	mappings.insert("CanvasItem", {
+	mappings.insert("Element", {
 		{ "draw_line", 2516941890, 1562330099 },
 		{ "draw_dashed_line", 2175215884, 684651049 },
 		{ "draw_polyline", 4175878946, 3797364428 },
@@ -685,27 +685,27 @@ void GDExtensionCompatHashes::initialize() {
 		{ "instances_cull_aabb", 2031554939, 2570105777 },
 		{ "instances_cull_ray", 3388524336, 2208759584 },
 		{ "instances_cull_convex", 3690700105, 2488539944 },
-		{ "canvas_item_add_line", 2843922985, 1819681853 },
-		{ "canvas_item_add_polyline", 3438017257, 3098767073 },
-		{ "canvas_item_add_multiline", 3176074788, 2088642721 },
-		{ "canvas_item_add_texture_rect", 3205360868, 324864032 },
-		{ "canvas_item_add_msdf_texture_rect_region", 349157222, 97408773 },
-		{ "canvas_item_add_texture_rect_region", 2782979504, 485157892 },
-		{ "canvas_item_add_nine_patch", 904428547, 389957886 },
-		{ "canvas_item_add_polygon", 2907936855, 3580000528 },
-		{ "canvas_item_add_triangle_array", 749685193, 660261329 },
-		{ "canvas_item_add_multimesh", 1541595251, 2131855138 },
-		{ "canvas_item_add_animation_slice", 4107531031, 2646834499 },
-		{ "canvas_item_set_canvas_group_mode", 41973386, 3973586316 },
+		{ "element_add_line", 2843922985, 1819681853 },
+		{ "element_add_polyline", 3438017257, 3098767073 },
+		{ "element_add_multiline", 3176074788, 2088642721 },
+		{ "element_add_texture_rect", 3205360868, 324864032 },
+		{ "element_add_msdf_texture_rect_region", 349157222, 97408773 },
+		{ "element_add_texture_rect_region", 2782979504, 485157892 },
+		{ "element_add_nine_patch", 904428547, 389957886 },
+		{ "element_add_polygon", 2907936855, 3580000528 },
+		{ "element_add_triangle_array", 749685193, 660261329 },
+		{ "element_add_multimesh", 1541595251, 2131855138 },
+		{ "element_add_animation_slice", 4107531031, 2646834499 },
+		{ "element_set_canvas_group_mode", 41973386, 3973586316 },
 		{ "set_boot_image", 2244367877, 3759744527 },
 #ifdef REAL_T_IS_DOUBLE
 		{ "viewport_attach_to_screen", 1410474027, 2248302004 },
-		{ "canvas_item_set_custom_rect", 2180266943, 1134449082 },
-		{ "canvas_item_add_mesh", 3877492181, 3024949314 },
+		{ "element_set_custom_rect", 2180266943, 1134449082 },
+		{ "element_add_mesh", 3877492181, 3024949314 },
 #else
 		{ "viewport_attach_to_screen", 1278520651, 1062245816 },
-		{ "canvas_item_set_custom_rect", 2180266943, 1333997032 },
-		{ "canvas_item_add_mesh", 3548053052, 316450961 },
+		{ "element_set_custom_rect", 2180266943, 1333997032 },
+		{ "element_add_mesh", 3548053052, 316450961 },
 #endif
 	});
 	mappings.insert("ResourceLoader", {

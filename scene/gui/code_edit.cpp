@@ -45,7 +45,7 @@ void CodeEdit::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_DRAW: {
-			RID ci = get_canvas_item();
+			RID ci = get_element();
 			const Size2 size = get_size();
 			const bool caret_visible = is_caret_visible();
 			const bool rtl = is_layout_rtl();
@@ -61,10 +61,10 @@ void CodeEdit::_notification(int p_what) {
 					if (xoffset > xmargin_beg && xoffset < xmargin_end) {
 						Color guideline_color = (i == 0) ? theme_cache.line_length_guideline_color : theme_cache.line_length_guideline_color * Color(1, 1, 1, 0.5);
 						if (rtl) {
-							RenderingServer::get_singleton()->canvas_item_add_line(ci, Point2(size.width - xoffset, 0), Point2(size.width - xoffset, size.height), guideline_color);
+							RenderingServer::get_singleton()->element_add_line(ci, Point2(size.width - xoffset, 0), Point2(size.width - xoffset, size.height), guideline_color);
 							continue;
 						}
-						RenderingServer::get_singleton()->canvas_item_add_line(ci, Point2(xoffset, 0), Point2(xoffset, size.height), guideline_color);
+						RenderingServer::get_singleton()->element_add_line(ci, Point2(xoffset, 0), Point2(xoffset, size.height), guideline_color);
 					}
 				}
 			}
@@ -174,14 +174,14 @@ void CodeEdit::_notification(int p_what) {
 
 					draw_style_box(theme_cache.code_completion_style, Rect2(code_completion_rect.position - theme_cache.code_completion_style->get_offset(), code_completion_rect.size + theme_cache.code_completion_style->get_minimum_size() + Size2(scroll_width, 0)));
 					if (theme_cache.code_completion_background_color.a > 0.01) {
-						RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(code_completion_rect.position, code_completion_rect.size + Size2(scroll_width, 0)), theme_cache.code_completion_background_color);
+						RenderingServer::get_singleton()->element_add_rect(ci, Rect2(code_completion_rect.position, code_completion_rect.size + Size2(scroll_width, 0)), theme_cache.code_completion_background_color);
 					}
 
 					code_completion_scroll_rect.position = code_completion_rect.position + Vector2(code_completion_rect.size.width, 0);
 					code_completion_scroll_rect.size = Vector2(scroll_width, code_completion_rect.size.height);
 
 					code_completion_line_ofs = CLAMP((code_completion_force_item_center < 0 ? code_completion_current_selected : code_completion_force_item_center) - lines / 2, 0, code_completion_options_count - lines);
-					RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(Point2(code_completion_rect.position.x, code_completion_rect.position.y + (code_completion_current_selected - code_completion_line_ofs) * row_height), Size2(code_completion_rect.size.width, row_height)), theme_cache.code_completion_selected_color);
+					RenderingServer::get_singleton()->element_add_rect(ci, Rect2(Point2(code_completion_rect.position.x, code_completion_rect.position.y + (code_completion_current_selected - code_completion_line_ofs) * row_height), Size2(code_completion_rect.size.width, row_height)), theme_cache.code_completion_selected_color);
 
 					for (int i = 0; i < lines; i++) {
 						int l = code_completion_line_ofs + i;
@@ -1296,7 +1296,7 @@ void CodeEdit::_main_gutter_draw_callback(int p_line, int p_gutter, const Rect2 
 			Rect2 icon_region = p_region;
 			icon_region.position += Point2(padding, padding);
 			icon_region.size -= Point2(padding, padding) * 2;
-			theme_cache.breakpoint_icon->draw_rect(get_canvas_item(), icon_region, false, use_color);
+			theme_cache.breakpoint_icon->draw_rect(get_element(), icon_region, false, use_color);
 		}
 	}
 
@@ -1316,7 +1316,7 @@ void CodeEdit::_main_gutter_draw_callback(int p_line, int p_gutter, const Rect2 
 			Rect2 icon_region = p_region;
 			icon_region.position += Point2(horizontal_padding, 0);
 			icon_region.size -= Point2(horizontal_padding * 1.1, vertical_padding);
-			theme_cache.bookmark_icon->draw_rect(get_canvas_item(), icon_region, false, use_color);
+			theme_cache.bookmark_icon->draw_rect(get_element(), icon_region, false, use_color);
 		}
 	}
 
@@ -1327,7 +1327,7 @@ void CodeEdit::_main_gutter_draw_callback(int p_line, int p_gutter, const Rect2 
 		Rect2 icon_region = p_region;
 		icon_region.position += Point2(horizontal_padding, vertical_padding);
 		icon_region.size -= Point2(horizontal_padding, vertical_padding) * 2;
-		theme_cache.executing_line_icon->draw_rect(get_canvas_item(), icon_region, false, theme_cache.executing_line_color);
+		theme_cache.executing_line_icon->draw_rect(get_element(), icon_region, false, theme_cache.executing_line_color);
 	}
 }
 
@@ -1457,7 +1457,7 @@ void CodeEdit::_line_number_draw_callback(int p_line, int p_gutter, const Rect2 
 	if (number_color == Color(1, 1, 1)) {
 		number_color = theme_cache.line_number_color;
 	}
-	tl->draw(get_canvas_item(), Point2(p_region.position.x, yofs), number_color);
+	tl->draw(get_element(), Point2(p_region.position.x, yofs), number_color);
 }
 
 /* Fold Gutter */
@@ -1488,17 +1488,17 @@ void CodeEdit::_fold_gutter_draw_callback(int p_line, int p_gutter, Rect2 p_regi
 		Color region_icon_color = theme_cache.folded_code_region_color;
 		region_icon_color.a = MAX(region_icon_color.a, 0.4f);
 		if (can_fold) {
-			theme_cache.can_fold_code_region_icon->draw_rect(get_canvas_item(), p_region, false, region_icon_color);
+			theme_cache.can_fold_code_region_icon->draw_rect(get_element(), p_region, false, region_icon_color);
 		} else {
-			theme_cache.folded_code_region_icon->draw_rect(get_canvas_item(), p_region, false, region_icon_color);
+			theme_cache.folded_code_region_icon->draw_rect(get_element(), p_region, false, region_icon_color);
 		}
 		return;
 	}
 	if (can_fold) {
-		theme_cache.can_fold_icon->draw_rect(get_canvas_item(), p_region, false, theme_cache.code_folding_color);
+		theme_cache.can_fold_icon->draw_rect(get_element(), p_region, false, theme_cache.code_folding_color);
 		return;
 	}
-	theme_cache.folded_icon->draw_rect(get_canvas_item(), p_region, false, theme_cache.code_folding_color);
+	theme_cache.folded_icon->draw_rect(get_element(), p_region, false, theme_cache.code_folding_color);
 }
 
 /* Line Folding */

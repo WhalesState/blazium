@@ -34,7 +34,7 @@
 void Panel::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_DRAW: {
-			RID ci = get_canvas_item();
+			RID ci = get_element();
 			theme_cache.panel_style->draw(ci, Rect2(Point2(), get_size()));
 		} break;
 	}

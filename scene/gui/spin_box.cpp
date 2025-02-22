@@ -254,7 +254,7 @@ void SpinBox::_notification(int p_what) {
 			_update_text(true);
 			_adjust_width_for_icon(theme_cache.updown_icon);
 
-			RID ci = get_canvas_item();
+			RID ci = get_element();
 			Size2i size = get_size();
 
 			if (is_layout_rtl()) {

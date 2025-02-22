@@ -36,7 +36,7 @@
 #include "editor/editor_settings.h"
 #include "editor/editor_undo_redo_manager.h"
 #include "editor/gui/editor_zoom_widget.h"
-#include "editor/plugins/canvas_item_editor_plugin.h"
+#include "editor/plugins/element_editor_plugin.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/2d/skeleton_2d.h"
 #include "scene/gui/check_box.h"
@@ -107,7 +107,7 @@ void Polygon2DEditor::_notification(int p_what) {
 			[[fallthrough]];
 		}
 		case NOTIFICATION_ENTER_TREE: {
-			uv_panner->setup((ViewPanner::ControlScheme)EDITOR_GET("editors/panning/sub_editors_panning_scheme").operator int(), ED_GET_SHORTCUT("canvas_item_editor/pan_view"), bool(EDITOR_GET("editors/panning/simple_panning")));
+			uv_panner->setup((ViewPanner::ControlScheme)EDITOR_GET("editors/panning/sub_editors_panning_scheme").operator int(), ED_GET_SHORTCUT("element_editor/pan_view"), bool(EDITOR_GET("editors/panning/simple_panning")));
 		} break;
 
 		case NOTIFICATION_READY: {
@@ -443,8 +443,8 @@ void Polygon2DEditor::_commit_action() {
 	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
 	undo_redo->add_do_method(uv_edit_draw, "queue_redraw");
 	undo_redo->add_undo_method(uv_edit_draw, "queue_redraw");
-	undo_redo->add_do_method(CanvasItemEditor::get_singleton(), "update_viewport");
-	undo_redo->add_undo_method(CanvasItemEditor::get_singleton(), "update_viewport");
+	undo_redo->add_do_method(ElementEditor::get_singleton(), "update_viewport");
+	undo_redo->add_undo_method(ElementEditor::get_singleton(), "update_viewport");
 	undo_redo->commit_action();
 }
 
@@ -583,7 +583,7 @@ void Polygon2DEditor::_uv_input(const Ref<InputEvent> &p_input) {
 						node->set_uv(points_prev);
 					}
 
-					CanvasItemEditor::get_singleton()->update_viewport();
+					ElementEditor::get_singleton()->update_viewport();
 				}
 
 				if (uv_move_current == UV_MODE_CREATE_INTERNAL) {
@@ -968,7 +968,7 @@ void Polygon2DEditor::_uv_input(const Ref<InputEvent> &p_input) {
 			}
 
 			uv_edit_draw->queue_redraw();
-			CanvasItemEditor::get_singleton()->update_viewport();
+			ElementEditor::get_singleton()->update_viewport();
 		} else if (polygon_create.size()) {
 			uv_create_to = mtx.affine_inverse().xform(mm->get_position());
 			uv_edit_draw->queue_redraw();
@@ -1074,9 +1074,9 @@ void Polygon2DEditor::_uv_draw() {
 		Transform2D texture_transform = Transform2D(node->get_texture_rotation(), node->get_texture_offset());
 		texture_transform.scale(node->get_texture_scale());
 		texture_transform.affine_invert();
-		RS::get_singleton()->canvas_item_add_set_transform(uv_edit_draw->get_canvas_item(), mtx * texture_transform);
+		RS::get_singleton()->element_add_set_transform(uv_edit_draw->get_element(), mtx * texture_transform);
 		uv_edit_draw->draw_texture(base_tex, Point2());
-		RS::get_singleton()->canvas_item_add_set_transform(uv_edit_draw->get_canvas_item(), Transform2D());
+		RS::get_singleton()->element_add_set_transform(uv_edit_draw->get_element(), Transform2D());
 		preview_polygon->hide();
 	} else {
 		preview_polygon->set_transform(mtx);

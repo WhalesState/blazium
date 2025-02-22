@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  canvas_item_material.h                                                */
+/*  element_material.h                                                */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,13 +28,13 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef CANVAS_ITEM_MATERIAL_H
-#define CANVAS_ITEM_MATERIAL_H
+#ifndef element_MATERIAL_H
+#define element_MATERIAL_H
 
 #include "scene/resources/material.h"
 
-class CanvasItemMaterial : public Material {
-	GDCLASS(CanvasItemMaterial, Material);
+class ElementMaterial : public Material {
+	GDCLASS(ElementMaterial, Material);
 
 public:
 	enum BlendMode {
@@ -98,8 +98,8 @@ private:
 	}
 
 	static Mutex material_mutex;
-	static SelfList<CanvasItemMaterial>::List dirty_materials;
-	SelfList<CanvasItemMaterial> element;
+	static SelfList<ElementMaterial>::List dirty_materials;
+	SelfList<ElementMaterial> element;
 
 	void _update_shader();
 	_FORCE_INLINE_ void _queue_shader_change();
@@ -143,11 +143,11 @@ public:
 
 	virtual Shader::Mode get_shader_mode() const override;
 
-	CanvasItemMaterial();
-	virtual ~CanvasItemMaterial();
+	ElementMaterial();
+	virtual ~ElementMaterial();
 };
 
-VARIANT_ENUM_CAST(CanvasItemMaterial::BlendMode)
-VARIANT_ENUM_CAST(CanvasItemMaterial::LightMode)
+VARIANT_ENUM_CAST(ElementMaterial::BlendMode)
+VARIANT_ENUM_CAST(ElementMaterial::LightMode)
 
-#endif // CANVAS_ITEM_MATERIAL_H
+#endif // element_MATERIAL_H

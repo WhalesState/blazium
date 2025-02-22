@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  canvas_item.h                                                         */
+/*  element.h                                                         */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,11 +28,11 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef CANVAS_ITEM_H
-#define CANVAS_ITEM_H
+#ifndef element_H
+#define element_H
 
 #include "scene/main/node.h"
-#include "scene/resources/canvas_item_material.h"
+#include "scene/resources/element_material.h"
 #include "scene/resources/font.h"
 
 class CanvasLayer;
@@ -41,8 +41,8 @@ class StyleBox;
 class Window;
 class World2D;
 
-class CanvasItem : public Node {
-	GDCLASS(CanvasItem, Node);
+class Element : public Node {
+	GDCLASS(Element, Node);
 
 	friend class CanvasLayer;
 
@@ -77,7 +77,7 @@ private:
 	mutable SelfList<Node>
 			xform_change;
 
-	RID canvas_item;
+	RID element;
 	StringName canvas_group;
 
 	CanvasLayer *canvas_layer = nullptr;
@@ -85,8 +85,8 @@ private:
 	Color modulate = Color(1, 1, 1, 1);
 	Color self_modulate = Color(1, 1, 1, 1);
 
-	List<CanvasItem *> children_items;
-	List<CanvasItem *>::Element *C = nullptr;
+	List<Element *> children_items;
+	List<Element *>::Element *C = nullptr;
 
 	int light_mask = 1;
 	uint32_t visibility_layer = 1;
@@ -110,8 +110,8 @@ private:
 
 	ClipChildrenMode clip_children_mode = CLIP_CHILDREN_DISABLED;
 
-	mutable RS::CanvasItemTextureFilter texture_filter_cache = RS::CANVAS_ITEM_TEXTURE_FILTER_LINEAR;
-	mutable RS::CanvasItemTextureRepeat texture_repeat_cache = RS::CANVAS_ITEM_TEXTURE_REPEAT_DISABLED;
+	mutable RS::ElementTextureFilter texture_filter_cache = RS::element_TEXTURE_FILTER_LINEAR;
+	mutable RS::ElementTextureRepeat texture_repeat_cache = RS::element_TEXTURE_REPEAT_DISABLED;
 	TextureFilter texture_filter = TEXTURE_FILTER_PARENT_NODE;
 	TextureRepeat texture_repeat = TEXTURE_REPEAT_PARENT_NODE;
 
@@ -138,11 +138,11 @@ private:
 
 	void _window_visibility_changed();
 
-	void _notify_transform(CanvasItem *p_node);
+	void _notify_transform(Element *p_node);
 
 	virtual void _physics_interpolated_changed() override;
 
-	static CanvasItem *current_item_drawn;
+	static Element *current_item_drawn;
 	friend class Viewport;
 	void _refresh_texture_repeat_cache() const;
 	void _update_texture_repeat_changed(bool p_propagate);
@@ -152,8 +152,8 @@ private:
 	void _notify_transform_deferred();
 
 protected:
-	virtual void _update_self_texture_repeat(RS::CanvasItemTextureRepeat p_texture_repeat);
-	virtual void _update_self_texture_filter(RS::CanvasItemTextureFilter p_texture_filter);
+	virtual void _update_self_texture_repeat(RS::ElementTextureRepeat p_texture_repeat);
+	virtual void _update_self_texture_filter(RS::ElementTextureFilter p_texture_filter);
 
 	_FORCE_INLINE_ void _notify_transform() {
 		_notify_transform(this);
@@ -198,7 +198,7 @@ public:
 	// Select the node
 	virtual bool _edit_is_selected_on_click(const Point2 &p_point, double p_tolerance) const;
 
-	// Save and restore a CanvasItem state
+	// Save and restore a Element state
 	virtual void _edit_set_state(const Dictionary &p_state) {}
 	virtual Dictionary _edit_get_state() const { return Dictionary(); }
 
@@ -311,7 +311,7 @@ public:
 	void draw_animation_slice(double p_animation_length, double p_slice_begin, double p_slice_end, double p_offset = 0);
 	void draw_end_animation();
 
-	static CanvasItem *get_current_item_drawn();
+	static Element *get_current_item_drawn();
 
 	/* RECT / TRANSFORM */
 
@@ -321,7 +321,7 @@ public:
 	void set_draw_behind_parent(bool p_enable);
 	bool is_draw_behind_parent_enabled() const;
 
-	CanvasItem *get_parent_item() const;
+	Element *get_parent_item() const;
 
 	virtual Transform2D get_transform() const = 0;
 
@@ -329,9 +329,9 @@ public:
 	virtual Transform2D get_global_transform_with_canvas() const;
 	virtual Transform2D get_screen_transform() const;
 
-	CanvasItem *get_top_level() const;
-	_FORCE_INLINE_ RID get_canvas_item() const {
-		return canvas_item;
+	Element *get_top_level() const;
+	_FORCE_INLINE_ RID get_element() const {
+		return element;
 	}
 
 	void set_block_transform_notify(bool p_enable);
@@ -380,13 +380,13 @@ public:
 	int get_canvas_layer() const;
 	CanvasLayer *get_canvas_layer_node() const;
 
-	CanvasItem();
-	~CanvasItem();
+	Element();
+	~Element();
 };
 
-VARIANT_ENUM_CAST(CanvasItem::TextureFilter)
-VARIANT_ENUM_CAST(CanvasItem::TextureRepeat)
-VARIANT_ENUM_CAST(CanvasItem::ClipChildrenMode)
+VARIANT_ENUM_CAST(Element::TextureFilter)
+VARIANT_ENUM_CAST(Element::TextureRepeat)
+VARIANT_ENUM_CAST(Element::ClipChildrenMode)
 
 class CanvasTexture : public Texture2D {
 	GDCLASS(CanvasTexture, Texture2D);
@@ -400,8 +400,8 @@ class CanvasTexture : public Texture2D {
 
 	RID canvas_texture;
 
-	CanvasItem::TextureFilter texture_filter = CanvasItem::TEXTURE_FILTER_PARENT_NODE;
-	CanvasItem::TextureRepeat texture_repeat = CanvasItem::TEXTURE_REPEAT_PARENT_NODE;
+	Element::TextureFilter texture_filter = Element::TEXTURE_FILTER_PARENT_NODE;
+	Element::TextureRepeat texture_repeat = Element::TEXTURE_REPEAT_PARENT_NODE;
 
 protected:
 	static void _bind_methods();
@@ -422,11 +422,11 @@ public:
 	void set_specular_shininess(real_t p_shininess);
 	real_t get_specular_shininess() const;
 
-	void set_texture_filter(CanvasItem::TextureFilter p_filter);
-	CanvasItem::TextureFilter get_texture_filter() const;
+	void set_texture_filter(Element::TextureFilter p_filter);
+	Element::TextureFilter get_texture_filter() const;
 
-	void set_texture_repeat(CanvasItem::TextureRepeat p_repeat);
-	CanvasItem::TextureRepeat get_texture_repeat() const;
+	void set_texture_repeat(Element::TextureRepeat p_repeat);
+	Element::TextureRepeat get_texture_repeat() const;
 
 	virtual int get_width() const override;
 	virtual int get_height() const override;
@@ -442,4 +442,4 @@ public:
 	~CanvasTexture();
 };
 
-#endif // CANVAS_ITEM_H
+#endif // element_H

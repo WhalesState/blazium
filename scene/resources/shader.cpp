@@ -97,8 +97,8 @@ void Shader::set_code(const String &p_code) {
 	// Try to get the shader type from the final, fully preprocessed shader code.
 	String type = ShaderLanguage::get_shader_type(pp_code);
 
-	if (type == "canvas_item") {
-		mode = MODE_CANVAS_ITEM;
+	if (type == "element") {
+		mode = MODE_element;
 	} else if (type == "particles") {
 		mode = MODE_PARTICLES;
 	} else if (type == "sky") {
@@ -250,7 +250,7 @@ void Shader::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "code", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_code", "get_code");
 
 	BIND_ENUM_CONSTANT(MODE_SPATIAL);
-	BIND_ENUM_CONSTANT(MODE_CANVAS_ITEM);
+	BIND_ENUM_CONSTANT(MODE_element);
 	BIND_ENUM_CONSTANT(MODE_PARTICLES);
 	BIND_ENUM_CONSTANT(MODE_SKY);
 	BIND_ENUM_CONSTANT(MODE_FOG);

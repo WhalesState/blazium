@@ -126,7 +126,7 @@
 #include "editor/multi_node_edit.h"
 #include "editor/node_dock.h"
 #include "editor/plugins/animation_player_editor_plugin.h"
-#include "editor/plugins/canvas_item_editor_plugin.h"
+#include "editor/plugins/element_editor_plugin.h"
 #include "editor/plugins/debugger_editor_plugin.h"
 #include "editor/plugins/dedicated_server_export_plugin.h"
 #include "editor/plugins/editor_plugin.h"
@@ -340,14 +340,14 @@ void EditorNode::_update_from_settings() {
 	_update_title();
 
 	int current_filter = GLOBAL_GET("rendering/textures/canvas_textures/default_texture_filter");
-	if (current_filter != scene_root->get_default_canvas_item_texture_filter()) {
-		Viewport::DefaultCanvasItemTextureFilter tf = (Viewport::DefaultCanvasItemTextureFilter)current_filter;
-		scene_root->set_default_canvas_item_texture_filter(tf);
+	if (current_filter != scene_root->get_default_element_texture_filter()) {
+		Viewport::DefaultElementTextureFilter tf = (Viewport::DefaultElementTextureFilter)current_filter;
+		scene_root->set_default_element_texture_filter(tf);
 	}
 	int current_repeat = GLOBAL_GET("rendering/textures/canvas_textures/default_texture_repeat");
-	if (current_repeat != scene_root->get_default_canvas_item_texture_repeat()) {
-		Viewport::DefaultCanvasItemTextureRepeat tr = (Viewport::DefaultCanvasItemTextureRepeat)current_repeat;
-		scene_root->set_default_canvas_item_texture_repeat(tr);
+	if (current_repeat != scene_root->get_default_element_texture_repeat()) {
+		Viewport::DefaultElementTextureRepeat tr = (Viewport::DefaultElementTextureRepeat)current_repeat;
+		scene_root->set_default_element_texture_repeat(tr);
 	}
 
 	RS::DOFBokehShape dof_shape = RS::DOFBokehShape(int(GLOBAL_GET("rendering/camera/depth_of_field/depth_of_field_bokeh_shape")));
@@ -467,8 +467,8 @@ void EditorNode::_update_theme(bool p_skip_creation) {
 		}
 	}
 
-	if (CanvasItemEditor::get_singleton()->get_theme_preview() == CanvasItemEditor::THEME_PREVIEW_EDITOR) {
-		update_preview_themes(CanvasItemEditor::THEME_PREVIEW_EDITOR);
+	if (ElementEditor::get_singleton()->get_theme_preview() == ElementEditor::THEME_PREVIEW_EDITOR) {
+		update_preview_themes(ElementEditor::THEME_PREVIEW_EDITOR);
 	}
 
 	// Update styles.
@@ -518,11 +518,11 @@ void EditorNode::update_preview_themes(int p_mode) {
 	List<Ref<Theme>> preview_themes;
 
 	switch (p_mode) {
-		case CanvasItemEditor::THEME_PREVIEW_PROJECT:
+		case ElementEditor::THEME_PREVIEW_PROJECT:
 			preview_themes.push_back(ThemeDB::get_singleton()->get_project_theme());
 			break;
 
-		case CanvasItemEditor::THEME_PREVIEW_EDITOR:
+		case ElementEditor::THEME_PREVIEW_EDITOR:
 			preview_themes.push_back(get_editor_theme());
 			break;
 
@@ -672,7 +672,7 @@ void EditorNode::_notification(int p_what) {
 			_titlebar_resized();
 
 			// Set up a theme context for the 2D preview viewport using the stored preview theme.
-			CanvasItemEditor::ThemePreviewMode theme_preview_mode = (CanvasItemEditor::ThemePreviewMode)(int)EditorSettings::get_singleton()->get_project_metadata("2d_editor", "theme_preview", CanvasItemEditor::THEME_PREVIEW_PROJECT);
+			ElementEditor::ThemePreviewMode theme_preview_mode = (ElementEditor::ThemePreviewMode)(int)EditorSettings::get_singleton()->get_project_metadata("2d_editor", "theme_preview", ElementEditor::THEME_PREVIEW_PROJECT);
 			update_preview_themes(theme_preview_mode);
 
 			/* DO NOT LOAD SCENES HERE, WAIT FOR FILE SCANNING AND REIMPORT TO COMPLETE */
@@ -769,7 +769,7 @@ void EditorNode::_notification(int p_what) {
 }
 
 void EditorNode::_update_update_spinner() {
-	update_spinner->set_visible(!RenderingServer::get_singleton()->canvas_item_get_debug_redraw() && _should_display_update_spinner());
+	update_spinner->set_visible(!RenderingServer::get_singleton()->element_get_debug_redraw() && _should_display_update_spinner());
 
 	const bool update_continuously = EDITOR_GET("interface/editor/update_continuously");
 	PopupMenu *update_popup = update_spinner->get_popup();
@@ -1591,7 +1591,7 @@ void EditorNode::_find_node_types(Node *p_node, int &count_2d, int &count_3d) {
 		return;
 	}
 
-	if (p_node->is_class("CanvasItem")) {
+	if (p_node->is_class("Element")) {
 		count_2d++;
 	} else if (p_node->is_class("Node3D")) {
 		count_3d++;
@@ -3613,7 +3613,7 @@ void EditorNode::_set_main_scene_state(Dictionary p_state, Node *p_for_scene) {
 			Node *editor_node = SceneTreeDock::get_singleton()->get_tree_editor()->get_selected();
 			editor_node = editor_node == nullptr ? get_edited_scene() : editor_node;
 
-			if (Object::cast_to<CanvasItem>(editor_node)) {
+			if (Object::cast_to<Element>(editor_node)) {
 				editor_select(EDITOR_DESIGNER);
 			}
 		}
@@ -6555,7 +6555,7 @@ EditorNode::EditorNode() {
 
 	register_exporters();
 
-	ED_SHORTCUT("canvas_item_editor/pan_view", TTR("Pan View"), Key::SPACE);
+	ED_SHORTCUT("element_editor/pan_view", TTR("Pan View"), Key::SPACE);
 
 	const Vector<String> textfile_ext = ((String)(EDITOR_GET("docks/filesystem/textfile_extensions"))).split(",", false);
 	for (const String &E : textfile_ext) {
@@ -7246,7 +7246,7 @@ EditorNode::EditorNode() {
 
 	add_editor_plugin(memnew(AnimationPlayerEditorPlugin));
 	add_editor_plugin(memnew(AnimationTrackKeyEditEditorPlugin));
-	add_editor_plugin(memnew(CanvasItemEditorPlugin));
+	add_editor_plugin(memnew(ElementEditorPlugin));
 	add_editor_plugin(memnew(ScriptEditorPlugin));
 
 	EditorAudioBuses *audio_bus_editor = EditorAudioBuses::register_editor();

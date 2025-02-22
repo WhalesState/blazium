@@ -35,7 +35,7 @@
 #ifdef TOOLS_ENABLED
 #include "editor/editor_data.h"
 #include "editor/editor_settings.h"
-#include "editor/plugins/canvas_item_editor_plugin.h"
+#include "editor/plugins/element_editor_plugin.h"
 #endif //TOOLS_ENABLED
 
 bool Bone2D::_set(const StringName &p_path, const Variant &p_value) {
@@ -199,12 +199,12 @@ void Bone2D::_notification(int p_what) {
 			}
 
 			if (editor_gizmo_rid.is_null()) {
-				editor_gizmo_rid = RenderingServer::get_singleton()->canvas_item_create();
-				RenderingServer::get_singleton()->canvas_item_set_parent(editor_gizmo_rid, get_canvas_item());
-				RenderingServer::get_singleton()->canvas_item_set_z_as_relative_to_parent(editor_gizmo_rid, true);
-				RenderingServer::get_singleton()->canvas_item_set_z_index(editor_gizmo_rid, 10);
+				editor_gizmo_rid = RenderingServer::get_singleton()->element_create();
+				RenderingServer::get_singleton()->element_set_parent(editor_gizmo_rid, get_element());
+				RenderingServer::get_singleton()->element_set_z_as_relative_to_parent(editor_gizmo_rid, true);
+				RenderingServer::get_singleton()->element_set_z_index(editor_gizmo_rid, 10);
 			}
-			RenderingServer::get_singleton()->canvas_item_clear(editor_gizmo_rid);
+			RenderingServer::get_singleton()->element_clear(editor_gizmo_rid);
 
 			if (!_editor_show_bone_gizmo) {
 				return;
@@ -213,7 +213,7 @@ void Bone2D::_notification(int p_what) {
 			// Undo scaling
 			Transform2D editor_gizmo_trans;
 			editor_gizmo_trans.set_scale(Vector2(1, 1) / get_global_scale());
-			RenderingServer::get_singleton()->canvas_item_set_transform(editor_gizmo_rid, editor_gizmo_trans);
+			RenderingServer::get_singleton()->element_set_transform(editor_gizmo_rid, editor_gizmo_trans);
 
 			Color bone_color1 = EDITOR_GET("editors/2d/bone_color1");
 			Color bone_color2 = EDITOR_GET("editors/2d/bone_color2");
@@ -249,7 +249,7 @@ void Bone2D::_notification(int p_what) {
 				}
 
 				Vector<Color> outline_colors;
-				if (CanvasItemEditor::get_singleton()->editor_selection->is_selected(this)) {
+				if (ElementEditor::get_singleton()->editor_selection->is_selected(this)) {
 					outline_colors.push_back(bone_selected_color);
 					outline_colors.push_back(bone_selected_color);
 					outline_colors.push_back(bone_selected_color);
@@ -265,8 +265,8 @@ void Bone2D::_notification(int p_what) {
 					outline_colors.push_back(bone_outline_color);
 				}
 
-				RenderingServer::get_singleton()->canvas_item_add_polygon(editor_gizmo_rid, bone_shape_outline, outline_colors);
-				RenderingServer::get_singleton()->canvas_item_add_polygon(editor_gizmo_rid, bone_shape, colors);
+				RenderingServer::get_singleton()->element_add_polygon(editor_gizmo_rid, bone_shape_outline, outline_colors);
+				RenderingServer::get_singleton()->element_add_polygon(editor_gizmo_rid, bone_shape, colors);
 			}
 
 			if (!Bone2D_found) {
@@ -289,7 +289,7 @@ void Bone2D::_notification(int p_what) {
 				}
 
 				Vector<Color> outline_colors;
-				if (CanvasItemEditor::get_singleton()->editor_selection->is_selected(this)) {
+				if (ElementEditor::get_singleton()->editor_selection->is_selected(this)) {
 					outline_colors.push_back(bone_selected_color);
 					outline_colors.push_back(bone_selected_color);
 					outline_colors.push_back(bone_selected_color);
@@ -305,8 +305,8 @@ void Bone2D::_notification(int p_what) {
 					outline_colors.push_back(bone_outline_color);
 				}
 
-				RenderingServer::get_singleton()->canvas_item_add_polygon(editor_gizmo_rid, bone_shape_outline, outline_colors);
-				RenderingServer::get_singleton()->canvas_item_add_polygon(editor_gizmo_rid, bone_shape, colors);
+				RenderingServer::get_singleton()->element_add_polygon(editor_gizmo_rid, bone_shape_outline, outline_colors);
+				RenderingServer::get_singleton()->element_add_polygon(editor_gizmo_rid, bone_shape, colors);
 			}
 		} break;
 #endif // TOOLS_ENABLED

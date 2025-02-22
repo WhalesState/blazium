@@ -91,7 +91,7 @@
 #include "scene/gui/texture_rect.h"
 #include "scene/gui/tree.h"
 #include "scene/gui/video_stream_player.h"
-#include "scene/main/canvas_item.h"
+#include "scene/main/element.h"
 #include "scene/main/canvas_layer.h"
 #include "scene/main/http_request.h"
 #include "scene/main/instance_placeholder.h"
@@ -564,11 +564,11 @@ void register_scene_types() {
 	GDREGISTER_VIRTUAL_CLASS(Material);
 	GDREGISTER_CLASS(PlaceholderMaterial);
 	GDREGISTER_CLASS(ShaderMaterial);
-	GDREGISTER_ABSTRACT_CLASS(CanvasItem);
+	GDREGISTER_ABSTRACT_CLASS(Element);
 	GDREGISTER_CLASS(CanvasTexture);
-	GDREGISTER_CLASS(CanvasItemMaterial);
-	SceneTree::add_idle_callback(CanvasItemMaterial::flush_changes);
-	CanvasItemMaterial::init_shaders();
+	GDREGISTER_CLASS(ElementMaterial);
+	SceneTree::add_idle_callback(ElementMaterial::flush_changes);
+	ElementMaterial::init_shaders();
 
 	/* REGISTER 2D */
 
@@ -809,7 +809,7 @@ void unregister_scene_types() {
 	resource_loader_shader_include.unref();
 
 	ParticleProcessMaterial::finish_shaders();
-	CanvasItemMaterial::finish_shaders();
+	ElementMaterial::finish_shaders();
 	ColorPicker::finish_shaders();
 	GraphEdit::finish_shaders();
 	SceneStringNames::free();

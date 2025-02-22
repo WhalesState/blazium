@@ -48,7 +48,7 @@
 #include "editor/multi_node_edit.h"
 #include "editor/node_dock.h"
 #include "editor/plugins/animation_player_editor_plugin.h"
-#include "editor/plugins/canvas_item_editor_plugin.h"
+#include "editor/plugins/element_editor_plugin.h"
 #include "editor/plugins/script_editor_plugin.h"
 #include "editor/reparent_dialog.h"
 #include "editor/shader_create_dialog.h"
@@ -1519,11 +1519,11 @@ void SceneTreeDock::_notification(int p_what) {
 			}
 			first_enter = false;
 
-			CanvasItemEditorPlugin *canvas_item_plugin = Object::cast_to<CanvasItemEditorPlugin>(editor_data->get_editor_by_name("Designer"));
-			if (canvas_item_plugin) {
-				canvas_item_plugin->get_canvas_item_editor()->connect("item_lock_status_changed", callable_mp(scene_tree, &SceneTreeEditor::_update_tree).bind(false));
-				canvas_item_plugin->get_canvas_item_editor()->connect("item_group_status_changed", callable_mp(scene_tree, &SceneTreeEditor::_update_tree).bind(false));
-				scene_tree->connect("node_changed", callable_mp((CanvasItem *)canvas_item_plugin->get_canvas_item_editor()->get_viewport_control(), &CanvasItem::queue_redraw));
+			ElementEditorPlugin *element_plugin = Object::cast_to<ElementEditorPlugin>(editor_data->get_editor_by_name("Designer"));
+			if (element_plugin) {
+				element_plugin->get_element_editor()->connect("item_lock_status_changed", callable_mp(scene_tree, &SceneTreeEditor::_update_tree).bind(false));
+				element_plugin->get_element_editor()->connect("item_group_status_changed", callable_mp(scene_tree, &SceneTreeEditor::_update_tree).bind(false));
+				scene_tree->connect("node_changed", callable_mp((Element *)element_plugin->get_element_editor()->get_viewport_control(), &Element::queue_redraw));
 			}
 
 			filter->set_clear_button_enabled(true);
@@ -2692,7 +2692,7 @@ void SceneTreeDock::_delete_confirm(bool p_cut) {
 	undo_redo->commit_action();
 
 	// hack, force 2d editor viewport to refresh after deletion
-	if (CanvasItemEditor *editor = CanvasItemEditor::get_singleton()) {
+	if (ElementEditor *editor = ElementEditor::get_singleton()) {
 		editor->get_viewport_control()->queue_redraw();
 	}
 
@@ -3810,9 +3810,9 @@ void SceneTreeDock::_focus_node() {
 	Node *node = scene_tree->get_selected();
 	ERR_FAIL_NULL(node);
 
-	if (node->is_class("CanvasItem")) {
-		CanvasItemEditorPlugin *editor = Object::cast_to<CanvasItemEditorPlugin>(editor_data->get_editor_by_name("Designer"));
-		editor->get_canvas_item_editor()->focus_selection();
+	if (node->is_class("Element")) {
+		ElementEditorPlugin *editor = Object::cast_to<ElementEditorPlugin>(editor_data->get_editor_by_name("Designer"));
+		editor->get_element_editor()->focus_selection();
 	}
 }
 
@@ -3920,7 +3920,7 @@ void SceneTreeDock::open_shader_dialog(const Ref<ShaderMaterial> &p_for_material
 }
 
 void SceneTreeDock::open_add_child_dialog() {
-	create_dialog->set_base_type("CanvasItem");
+	create_dialog->set_base_type("Element");
 	_tool_selected(TOOL_NEW, true);
 	reset_create_dialog = true;
 }

@@ -30,7 +30,7 @@
 
 #include "collision_shape_2d_editor_plugin.h"
 
-#include "canvas_item_editor_plugin.h"
+#include "element_editor_plugin.h"
 #include "core/os/keyboard.h"
 #include "editor/editor_node.h"
 #include "editor/editor_settings.h"
@@ -304,7 +304,7 @@ bool CollisionShape2DEditor::forward_canvas_gui_input(const Ref<InputEvent> &p_e
 	}
 
 	Ref<InputEventMouseButton> mb = p_event;
-	Transform2D xform = canvas_item_editor->get_canvas_transform() * node->get_global_transform();
+	Transform2D xform = element_editor->get_canvas_transform() * node->get_global_transform();
 
 	if (mb.is_valid()) {
 		Vector2 gpoint = mb->get_position();
@@ -358,7 +358,7 @@ bool CollisionShape2DEditor::forward_canvas_gui_input(const Ref<InputEvent> &p_e
 			return false;
 		}
 
-		Vector2 cpoint = canvas_item_editor->snap_point(canvas_item_editor->get_canvas_transform().affine_inverse().xform(mm->get_position()));
+		Vector2 cpoint = element_editor->snap_point(element_editor->get_canvas_transform().affine_inverse().xform(mm->get_position()));
 		cpoint = original_transform.affine_inverse().xform(cpoint);
 		last_point = cpoint;
 
@@ -383,10 +383,10 @@ bool CollisionShape2DEditor::forward_canvas_gui_input(const Ref<InputEvent> &p_e
 }
 
 void CollisionShape2DEditor::_shape_changed() {
-	canvas_item_editor->update_viewport();
+	element_editor->update_viewport();
 
 	if (current_shape.is_valid()) {
-		current_shape->disconnect_changed(callable_mp(canvas_item_editor, &CanvasItemEditor::update_viewport));
+		current_shape->disconnect_changed(callable_mp(element_editor, &ElementEditor::update_viewport));
 		current_shape = Ref<Shape2D>();
 		shape_type = -1;
 	}
@@ -398,7 +398,7 @@ void CollisionShape2DEditor::_shape_changed() {
 	current_shape = node->get_shape();
 
 	if (current_shape.is_valid()) {
-		current_shape->connect_changed(callable_mp(canvas_item_editor, &CanvasItemEditor::update_viewport));
+		current_shape->connect_changed(callable_mp(element_editor, &ElementEditor::update_viewport));
 	} else {
 		return;
 	}
@@ -435,7 +435,7 @@ void CollisionShape2DEditor::forward_canvas_draw_over_viewport(Control *p_overla
 		return;
 	}
 
-	Transform2D gt = canvas_item_editor->get_canvas_transform() * node->get_global_transform();
+	Transform2D gt = element_editor->get_canvas_transform() * node->get_global_transform();
 
 	Ref<Texture2D> h = get_editor_theme_icon(SNAME("EditorHandle"));
 	Vector2 size = h->get_size() * 0.5;
@@ -547,8 +547,8 @@ void CollisionShape2DEditor::_notification(int p_what) {
 }
 
 void CollisionShape2DEditor::edit(Node *p_node) {
-	if (!canvas_item_editor) {
-		canvas_item_editor = CanvasItemEditor::get_singleton();
+	if (!element_editor) {
+		element_editor = ElementEditor::get_singleton();
 	}
 
 	if (p_node) {

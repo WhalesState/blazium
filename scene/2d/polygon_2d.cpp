@@ -120,10 +120,10 @@ void Polygon2D::_notification(int p_what) {
 			ObjectID new_skeleton_id;
 
 			if (skeleton_node && !invert && bone_weights.size()) {
-				RS::get_singleton()->canvas_item_attach_skeleton(get_canvas_item(), skeleton_node->get_skeleton());
+				RS::get_singleton()->element_attach_skeleton(get_element(), skeleton_node->get_skeleton());
 				new_skeleton_id = skeleton_node->get_instance_id();
 			} else {
-				RS::get_singleton()->canvas_item_attach_skeleton(get_canvas_item(), RID());
+				RS::get_singleton()->element_attach_skeleton(get_element(), RID());
 			}
 
 			if (new_skeleton_id != current_skeleton_id) {
@@ -393,7 +393,7 @@ void Polygon2D::_notification(int p_what) {
 				}
 
 				RS::get_singleton()->mesh_add_surface(mesh, sd);
-				RS::get_singleton()->canvas_item_add_mesh(get_canvas_item(), mesh, Transform2D(), Color(1, 1, 1), texture.is_valid() ? texture->get_rid() : RID());
+				RS::get_singleton()->element_add_mesh(get_element(), mesh, Transform2D(), Color(1, 1, 1), texture.is_valid() ? texture->get_rid() : RID());
 			}
 
 		} break;
@@ -693,6 +693,6 @@ Polygon2D::Polygon2D() {
 Polygon2D::~Polygon2D() {
 	// This will free the internally-allocated mesh instance, if allocated.
 	ERR_FAIL_NULL(RenderingServer::get_singleton());
-	RS::get_singleton()->canvas_item_attach_skeleton(get_canvas_item(), RID());
+	RS::get_singleton()->element_attach_skeleton(get_element(), RID());
 	RS::get_singleton()->free(mesh);
 }

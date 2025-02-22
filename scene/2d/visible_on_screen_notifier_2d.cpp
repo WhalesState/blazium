@@ -62,7 +62,7 @@ void VisibleOnScreenNotifier2D::_visibility_exit() {
 void VisibleOnScreenNotifier2D::set_rect(const Rect2 &p_rect) {
 	rect = p_rect;
 	if (is_inside_tree()) {
-		RS::get_singleton()->canvas_item_set_visibility_notifier(get_canvas_item(), true, rect, callable_mp(this, &VisibleOnScreenNotifier2D::_visibility_enter), callable_mp(this, &VisibleOnScreenNotifier2D::_visibility_exit));
+		RS::get_singleton()->element_set_visibility_notifier(get_element(), true, rect, callable_mp(this, &VisibleOnScreenNotifier2D::_visibility_enter), callable_mp(this, &VisibleOnScreenNotifier2D::_visibility_exit));
 	}
 	queue_redraw();
 }
@@ -75,7 +75,7 @@ void VisibleOnScreenNotifier2D::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
 			on_screen = false;
-			RS::get_singleton()->canvas_item_set_visibility_notifier(get_canvas_item(), true, rect, callable_mp(this, &VisibleOnScreenNotifier2D::_visibility_enter), callable_mp(this, &VisibleOnScreenNotifier2D::_visibility_exit));
+			RS::get_singleton()->element_set_visibility_notifier(get_element(), true, rect, callable_mp(this, &VisibleOnScreenNotifier2D::_visibility_enter), callable_mp(this, &VisibleOnScreenNotifier2D::_visibility_exit));
 		} break;
 
 		case NOTIFICATION_DRAW: {
@@ -86,7 +86,7 @@ void VisibleOnScreenNotifier2D::_notification(int p_what) {
 
 		case NOTIFICATION_EXIT_TREE: {
 			on_screen = false;
-			RS::get_singleton()->canvas_item_set_visibility_notifier(get_canvas_item(), false, Rect2(), Callable(), Callable());
+			RS::get_singleton()->element_set_visibility_notifier(get_element(), false, Rect2(), Callable(), Callable());
 		} break;
 	}
 }

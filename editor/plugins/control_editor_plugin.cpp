@@ -34,7 +34,7 @@
 #include "editor/editor_settings.h"
 #include "editor/editor_string_names.h"
 #include "editor/editor_undo_redo_manager.h"
-#include "editor/plugins/canvas_item_editor_plugin.h"
+#include "editor/plugins/element_editor_plugin.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/check_button.h"
 #include "scene/gui/grid_container.h"
@@ -807,7 +807,7 @@ void ControlEditorToolbar::_anchor_mode_toggled(bool p_status) {
 	}
 
 	anchors_mode = p_status;
-	CanvasItemEditor::get_singleton()->update_viewport();
+	ElementEditor::get_singleton()->update_viewport();
 }
 
 void ControlEditorToolbar::_container_flags_selected(int p_flags, bool p_vertical) {

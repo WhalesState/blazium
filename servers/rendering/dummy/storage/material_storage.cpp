@@ -69,8 +69,8 @@ void MaterialStorage::shader_set_code(RID p_shader, const String &p_code) {
 	String mode_string = ShaderLanguage::get_shader_type(p_code);
 
 	RS::ShaderMode new_mode;
-	if (mode_string == "canvas_item") {
-		new_mode = RS::SHADER_CANVAS_ITEM;
+	if (mode_string == "element") {
+		new_mode = RS::SHADER_element;
 	} else if (mode_string == "particles") {
 		new_mode = RS::SHADER_PARTICLES;
 	} else if (mode_string == "spatial") {

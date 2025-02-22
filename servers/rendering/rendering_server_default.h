@@ -628,8 +628,8 @@ public:
 	FUNC2(viewport_set_snap_2d_transforms_to_pixel, RID, bool)
 	FUNC2(viewport_set_snap_2d_vertices_to_pixel, RID, bool)
 
-	FUNC2(viewport_set_default_canvas_item_texture_filter, RID, CanvasItemTextureFilter)
-	FUNC2(viewport_set_default_canvas_item_texture_repeat, RID, CanvasItemTextureRepeat)
+	FUNC2(viewport_set_default_element_texture_filter, RID, ElementTextureFilter)
+	FUNC2(viewport_set_default_element_texture_repeat, RID, ElementTextureRepeat)
 
 	FUNC2(viewport_set_global_canvas_transform, RID, const Transform2D &)
 	FUNC4(viewport_set_canvas_stacking, RID, RID, int, int)
@@ -836,74 +836,74 @@ public:
 	FUNC3(canvas_texture_set_channel, RID, CanvasTextureChannel, RID)
 	FUNC3(canvas_texture_set_shading_parameters, RID, const Color &, float)
 
-	FUNC2(canvas_texture_set_texture_filter, RID, CanvasItemTextureFilter)
-	FUNC2(canvas_texture_set_texture_repeat, RID, CanvasItemTextureRepeat)
+	FUNC2(canvas_texture_set_texture_filter, RID, ElementTextureFilter)
+	FUNC2(canvas_texture_set_texture_repeat, RID, ElementTextureRepeat)
 
-	FUNCRIDSPLIT(canvas_item)
-	FUNC2(canvas_item_set_parent, RID, RID)
+	FUNCRIDSPLIT(element)
+	FUNC2(element_set_parent, RID, RID)
 
-	FUNC2(canvas_item_set_default_texture_filter, RID, CanvasItemTextureFilter)
-	FUNC2(canvas_item_set_default_texture_repeat, RID, CanvasItemTextureRepeat)
+	FUNC2(element_set_default_texture_filter, RID, ElementTextureFilter)
+	FUNC2(element_set_default_texture_repeat, RID, ElementTextureRepeat)
 
-	FUNC2(canvas_item_set_visible, RID, bool)
-	FUNC2(canvas_item_set_light_mask, RID, int)
+	FUNC2(element_set_visible, RID, bool)
+	FUNC2(element_set_light_mask, RID, int)
 
-	FUNC2(canvas_item_set_visibility_layer, RID, uint32_t)
+	FUNC2(element_set_visibility_layer, RID, uint32_t)
 
-	FUNC2(canvas_item_set_update_when_visible, RID, bool)
+	FUNC2(element_set_update_when_visible, RID, bool)
 
-	FUNC2(canvas_item_set_transform, RID, const Transform2D &)
-	FUNC2(canvas_item_set_clip, RID, bool)
-	FUNC2(canvas_item_set_distance_field_mode, RID, bool)
-	FUNC3(canvas_item_set_custom_rect, RID, bool, const Rect2 &)
-	FUNC2(canvas_item_set_modulate, RID, const Color &)
-	FUNC2(canvas_item_set_self_modulate, RID, const Color &)
+	FUNC2(element_set_transform, RID, const Transform2D &)
+	FUNC2(element_set_clip, RID, bool)
+	FUNC2(element_set_distance_field_mode, RID, bool)
+	FUNC3(element_set_custom_rect, RID, bool, const Rect2 &)
+	FUNC2(element_set_modulate, RID, const Color &)
+	FUNC2(element_set_self_modulate, RID, const Color &)
 
-	FUNC2(canvas_item_set_draw_behind_parent, RID, bool)
+	FUNC2(element_set_draw_behind_parent, RID, bool)
 
-	FUNC6(canvas_item_add_line, RID, const Point2 &, const Point2 &, const Color &, float, bool)
-	FUNC5(canvas_item_add_polyline, RID, const Vector<Point2> &, const Vector<Color> &, float, bool)
-	FUNC5(canvas_item_add_multiline, RID, const Vector<Point2> &, const Vector<Color> &, float, bool)
-	FUNC4(canvas_item_add_rect, RID, const Rect2 &, const Color &, bool)
-	FUNC5(canvas_item_add_circle, RID, const Point2 &, float, const Color &, bool)
-	FUNC6(canvas_item_add_texture_rect, RID, const Rect2 &, RID, bool, const Color &, bool)
-	FUNC7(canvas_item_add_texture_rect_region, RID, const Rect2 &, RID, const Rect2 &, const Color &, bool, bool)
-	FUNC8(canvas_item_add_msdf_texture_rect_region, RID, const Rect2 &, RID, const Rect2 &, const Color &, int, float, float)
-	FUNC5(canvas_item_add_lcd_texture_rect_region, RID, const Rect2 &, RID, const Rect2 &, const Color &)
-	FUNC10(canvas_item_add_nine_patch, RID, const Rect2 &, const Rect2 &, RID, const Vector2 &, const Vector2 &, NinePatchAxisMode, NinePatchAxisMode, bool, const Color &)
-	FUNC5(canvas_item_add_primitive, RID, const Vector<Point2> &, const Vector<Color> &, const Vector<Point2> &, RID)
-	FUNC5(canvas_item_add_polygon, RID, const Vector<Point2> &, const Vector<Color> &, const Vector<Point2> &, RID)
-	FUNC9(canvas_item_add_triangle_array, RID, const Vector<int> &, const Vector<Point2> &, const Vector<Color> &, const Vector<Point2> &, const Vector<int> &, const Vector<float> &, RID, int)
-	FUNC5(canvas_item_add_mesh, RID, const RID &, const Transform2D &, const Color &, RID)
-	FUNC3(canvas_item_add_multimesh, RID, RID, RID)
-	FUNC3(canvas_item_add_particles, RID, RID, RID)
-	FUNC2(canvas_item_add_set_transform, RID, const Transform2D &)
-	FUNC2(canvas_item_add_clip_ignore, RID, bool)
-	FUNC5(canvas_item_add_animation_slice, RID, double, double, double, double)
+	FUNC6(element_add_line, RID, const Point2 &, const Point2 &, const Color &, float, bool)
+	FUNC5(element_add_polyline, RID, const Vector<Point2> &, const Vector<Color> &, float, bool)
+	FUNC5(element_add_multiline, RID, const Vector<Point2> &, const Vector<Color> &, float, bool)
+	FUNC4(element_add_rect, RID, const Rect2 &, const Color &, bool)
+	FUNC5(element_add_circle, RID, const Point2 &, float, const Color &, bool)
+	FUNC6(element_add_texture_rect, RID, const Rect2 &, RID, bool, const Color &, bool)
+	FUNC7(element_add_texture_rect_region, RID, const Rect2 &, RID, const Rect2 &, const Color &, bool, bool)
+	FUNC8(element_add_msdf_texture_rect_region, RID, const Rect2 &, RID, const Rect2 &, const Color &, int, float, float)
+	FUNC5(element_add_lcd_texture_rect_region, RID, const Rect2 &, RID, const Rect2 &, const Color &)
+	FUNC10(element_add_nine_patch, RID, const Rect2 &, const Rect2 &, RID, const Vector2 &, const Vector2 &, NinePatchAxisMode, NinePatchAxisMode, bool, const Color &)
+	FUNC5(element_add_primitive, RID, const Vector<Point2> &, const Vector<Color> &, const Vector<Point2> &, RID)
+	FUNC5(element_add_polygon, RID, const Vector<Point2> &, const Vector<Color> &, const Vector<Point2> &, RID)
+	FUNC9(element_add_triangle_array, RID, const Vector<int> &, const Vector<Point2> &, const Vector<Color> &, const Vector<Point2> &, const Vector<int> &, const Vector<float> &, RID, int)
+	FUNC5(element_add_mesh, RID, const RID &, const Transform2D &, const Color &, RID)
+	FUNC3(element_add_multimesh, RID, RID, RID)
+	FUNC3(element_add_particles, RID, RID, RID)
+	FUNC2(element_add_set_transform, RID, const Transform2D &)
+	FUNC2(element_add_clip_ignore, RID, bool)
+	FUNC5(element_add_animation_slice, RID, double, double, double, double)
 
-	FUNC2(canvas_item_set_sort_children_by_y, RID, bool)
-	FUNC2(canvas_item_set_z_index, RID, int)
-	FUNC2(canvas_item_set_z_as_relative_to_parent, RID, bool)
-	FUNC3(canvas_item_set_copy_to_backbuffer, RID, bool, const Rect2 &)
-	FUNC2(canvas_item_attach_skeleton, RID, RID)
+	FUNC2(element_set_sort_children_by_y, RID, bool)
+	FUNC2(element_set_z_index, RID, int)
+	FUNC2(element_set_z_as_relative_to_parent, RID, bool)
+	FUNC3(element_set_copy_to_backbuffer, RID, bool, const Rect2 &)
+	FUNC2(element_attach_skeleton, RID, RID)
 
-	FUNC1(canvas_item_clear, RID)
-	FUNC2(canvas_item_set_draw_index, RID, int)
+	FUNC1(element_clear, RID)
+	FUNC2(element_set_draw_index, RID, int)
 
-	FUNC2(canvas_item_set_material, RID, RID)
+	FUNC2(element_set_material, RID, RID)
 
-	FUNC2(canvas_item_set_use_parent_material, RID, bool)
+	FUNC2(element_set_use_parent_material, RID, bool)
 
-	FUNC5(canvas_item_set_visibility_notifier, RID, bool, const Rect2 &, const Callable &, const Callable &)
+	FUNC5(element_set_visibility_notifier, RID, bool, const Rect2 &, const Callable &, const Callable &)
 
-	FUNC6(canvas_item_set_canvas_group_mode, RID, CanvasGroupMode, float, bool, float, bool)
+	FUNC6(element_set_canvas_group_mode, RID, CanvasGroupMode, float, bool, float, bool)
 
-	FUNC1(canvas_item_set_debug_redraw, bool)
-	FUNC0RC(bool, canvas_item_get_debug_redraw)
+	FUNC1(element_set_debug_redraw, bool)
+	FUNC0RC(bool, element_get_debug_redraw)
 
-	FUNC2(canvas_item_set_interpolated, RID, bool)
-	FUNC1(canvas_item_reset_physics_interpolation, RID)
-	FUNC2(canvas_item_transform_physics_interpolation, RID, const Transform2D &)
+	FUNC2(element_set_interpolated, RID, bool)
+	FUNC1(element_reset_physics_interpolation, RID)
+	FUNC2(element_transform_physics_interpolation, RID, const Transform2D &)
 
 	FUNCRIDSPLIT(canvas_light)
 
@@ -954,7 +954,7 @@ public:
 
 	FUNC1(canvas_set_shadow_texture_size, int)
 
-	FUNC1R(Rect2, _debug_canvas_item_get_rect, RID)
+	FUNC1R(Rect2, _debug_element_get_rect, RID)
 
 	/* GLOBAL SHADER UNIFORMS */
 

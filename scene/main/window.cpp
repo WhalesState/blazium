@@ -1185,7 +1185,7 @@ void Window::_update_viewport_size() {
 				// Already handled above
 				//_update_font_oversampling(1.0);
 			} break;
-			case CONTENT_SCALE_MODE_CANVAS_ITEMS: {
+			case CONTENT_SCALE_MODE_elementS: {
 				final_size = screen_size;
 				final_size_override = viewport_size / content_scale_factor;
 				attach_to_screen_rect = Rect2(margin, screen_size);
@@ -1223,7 +1223,7 @@ void Window::_update_viewport_size() {
 		if (!Math::is_equal_approx(TS->font_get_global_oversampling(), font_oversampling)) {
 			TS->font_set_global_oversampling(font_oversampling);
 			if (!ci_updated) {
-				update_canvas_items();
+				update_elements();
 			}
 		}
 	}
@@ -3053,7 +3053,7 @@ void Window::_bind_methods() {
 	BIND_ENUM_CONSTANT(FLAG_MAX);
 
 	BIND_ENUM_CONSTANT(CONTENT_SCALE_MODE_DISABLED);
-	BIND_ENUM_CONSTANT(CONTENT_SCALE_MODE_CANVAS_ITEMS);
+	BIND_ENUM_CONSTANT(CONTENT_SCALE_MODE_elementS);
 	BIND_ENUM_CONSTANT(CONTENT_SCALE_MODE_VIEWPORT);
 
 	BIND_ENUM_CONSTANT(CONTENT_SCALE_ASPECT_IGNORE);

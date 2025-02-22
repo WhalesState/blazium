@@ -1802,9 +1802,9 @@ Array RenderingServer::_mesh_surface_get_skeleton_aabb_bind(RID p_mesh, int p_su
 }
 #endif
 
-Rect2 RenderingServer::debug_canvas_item_get_rect(RID p_item) {
+Rect2 RenderingServer::debug_element_get_rect(RID p_item) {
 #ifdef TOOLS_ENABLED
-	return _debug_canvas_item_get_rect(p_item);
+	return _debug_element_get_rect(p_item);
 #else
 	return Rect2();
 #endif
@@ -2226,8 +2226,8 @@ void RenderingServer::get_argument_options(const StringName &p_function, int p_i
 void RenderingServer::_bind_methods() {
 	BIND_CONSTANT(NO_INDEX_ARRAY);
 	BIND_CONSTANT(ARRAY_WEIGHTS_SIZE);
-	BIND_CONSTANT(CANVAS_ITEM_Z_MIN);
-	BIND_CONSTANT(CANVAS_ITEM_Z_MAX);
+	BIND_CONSTANT(element_Z_MIN);
+	BIND_CONSTANT(element_Z_MAX);
 	BIND_CONSTANT(MAX_GLOW_LEVELS);
 	BIND_CONSTANT(MAX_CURSORS);
 	BIND_CONSTANT(MAX_2D_DIRECTIONAL_LIGHTS);
@@ -2289,7 +2289,7 @@ void RenderingServer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("shader_get_default_texture_parameter", "shader", "name", "index"), &RenderingServer::shader_get_default_texture_parameter, DEFVAL(0));
 
 	BIND_ENUM_CONSTANT(SHADER_SPATIAL);
-	BIND_ENUM_CONSTANT(SHADER_CANVAS_ITEM);
+	BIND_ENUM_CONSTANT(SHADER_element);
 	BIND_ENUM_CONSTANT(SHADER_PARTICLES);
 	BIND_ENUM_CONSTANT(SHADER_SKY);
 	BIND_ENUM_CONSTANT(SHADER_FOG);
@@ -2781,8 +2781,8 @@ void RenderingServer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("viewport_set_snap_2d_transforms_to_pixel", "viewport", "enabled"), &RenderingServer::viewport_set_snap_2d_transforms_to_pixel);
 	ClassDB::bind_method(D_METHOD("viewport_set_snap_2d_vertices_to_pixel", "viewport", "enabled"), &RenderingServer::viewport_set_snap_2d_vertices_to_pixel);
 
-	ClassDB::bind_method(D_METHOD("viewport_set_default_canvas_item_texture_filter", "viewport", "filter"), &RenderingServer::viewport_set_default_canvas_item_texture_filter);
-	ClassDB::bind_method(D_METHOD("viewport_set_default_canvas_item_texture_repeat", "viewport", "repeat"), &RenderingServer::viewport_set_default_canvas_item_texture_repeat);
+	ClassDB::bind_method(D_METHOD("viewport_set_default_element_texture_filter", "viewport", "filter"), &RenderingServer::viewport_set_default_element_texture_filter);
+	ClassDB::bind_method(D_METHOD("viewport_set_default_element_texture_repeat", "viewport", "repeat"), &RenderingServer::viewport_set_default_element_texture_repeat);
 
 	ClassDB::bind_method(D_METHOD("viewport_set_canvas_transform", "viewport", "canvas", "offset"), &RenderingServer::viewport_set_canvas_transform);
 	ClassDB::bind_method(D_METHOD("viewport_set_canvas_stacking", "viewport", "canvas", "layer", "sublayer"), &RenderingServer::viewport_set_canvas_stacking);
@@ -3188,78 +3188,78 @@ void RenderingServer::_bind_methods() {
 
 	/* CANVAS ITEM */
 
-	ClassDB::bind_method(D_METHOD("canvas_item_create"), &RenderingServer::canvas_item_create);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_parent", "item", "parent"), &RenderingServer::canvas_item_set_parent);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_default_texture_filter", "item", "filter"), &RenderingServer::canvas_item_set_default_texture_filter);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_default_texture_repeat", "item", "repeat"), &RenderingServer::canvas_item_set_default_texture_repeat);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_visible", "item", "visible"), &RenderingServer::canvas_item_set_visible);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_light_mask", "item", "mask"), &RenderingServer::canvas_item_set_light_mask);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_visibility_layer", "item", "visibility_layer"), &RenderingServer::canvas_item_set_visibility_layer);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_transform", "item", "transform"), &RenderingServer::canvas_item_set_transform);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_clip", "item", "clip"), &RenderingServer::canvas_item_set_clip);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_distance_field_mode", "item", "enabled"), &RenderingServer::canvas_item_set_distance_field_mode);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_custom_rect", "item", "use_custom_rect", "rect"), &RenderingServer::canvas_item_set_custom_rect, DEFVAL(Rect2()));
-	ClassDB::bind_method(D_METHOD("canvas_item_set_modulate", "item", "color"), &RenderingServer::canvas_item_set_modulate);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_self_modulate", "item", "color"), &RenderingServer::canvas_item_set_self_modulate);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_draw_behind_parent", "item", "enabled"), &RenderingServer::canvas_item_set_draw_behind_parent);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_interpolated", "item", "interpolated"), &RenderingServer::canvas_item_set_interpolated);
-	ClassDB::bind_method(D_METHOD("canvas_item_reset_physics_interpolation", "item"), &RenderingServer::canvas_item_reset_physics_interpolation);
-	ClassDB::bind_method(D_METHOD("canvas_item_transform_physics_interpolation", "item", "transform"), &RenderingServer::canvas_item_transform_physics_interpolation);
+	ClassDB::bind_method(D_METHOD("element_create"), &RenderingServer::element_create);
+	ClassDB::bind_method(D_METHOD("element_set_parent", "item", "parent"), &RenderingServer::element_set_parent);
+	ClassDB::bind_method(D_METHOD("element_set_default_texture_filter", "item", "filter"), &RenderingServer::element_set_default_texture_filter);
+	ClassDB::bind_method(D_METHOD("element_set_default_texture_repeat", "item", "repeat"), &RenderingServer::element_set_default_texture_repeat);
+	ClassDB::bind_method(D_METHOD("element_set_visible", "item", "visible"), &RenderingServer::element_set_visible);
+	ClassDB::bind_method(D_METHOD("element_set_light_mask", "item", "mask"), &RenderingServer::element_set_light_mask);
+	ClassDB::bind_method(D_METHOD("element_set_visibility_layer", "item", "visibility_layer"), &RenderingServer::element_set_visibility_layer);
+	ClassDB::bind_method(D_METHOD("element_set_transform", "item", "transform"), &RenderingServer::element_set_transform);
+	ClassDB::bind_method(D_METHOD("element_set_clip", "item", "clip"), &RenderingServer::element_set_clip);
+	ClassDB::bind_method(D_METHOD("element_set_distance_field_mode", "item", "enabled"), &RenderingServer::element_set_distance_field_mode);
+	ClassDB::bind_method(D_METHOD("element_set_custom_rect", "item", "use_custom_rect", "rect"), &RenderingServer::element_set_custom_rect, DEFVAL(Rect2()));
+	ClassDB::bind_method(D_METHOD("element_set_modulate", "item", "color"), &RenderingServer::element_set_modulate);
+	ClassDB::bind_method(D_METHOD("element_set_self_modulate", "item", "color"), &RenderingServer::element_set_self_modulate);
+	ClassDB::bind_method(D_METHOD("element_set_draw_behind_parent", "item", "enabled"), &RenderingServer::element_set_draw_behind_parent);
+	ClassDB::bind_method(D_METHOD("element_set_interpolated", "item", "interpolated"), &RenderingServer::element_set_interpolated);
+	ClassDB::bind_method(D_METHOD("element_reset_physics_interpolation", "item"), &RenderingServer::element_reset_physics_interpolation);
+	ClassDB::bind_method(D_METHOD("element_transform_physics_interpolation", "item", "transform"), &RenderingServer::element_transform_physics_interpolation);
 
 	/* Primitives */
 
-	ClassDB::bind_method(D_METHOD("canvas_item_add_line", "item", "from", "to", "color", "width", "antialiased"), &RenderingServer::canvas_item_add_line, DEFVAL(-1.0), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("canvas_item_add_polyline", "item", "points", "colors", "width", "antialiased"), &RenderingServer::canvas_item_add_polyline, DEFVAL(-1.0), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("canvas_item_add_multiline", "item", "points", "colors", "width", "antialiased"), &RenderingServer::canvas_item_add_multiline, DEFVAL(-1.0), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("canvas_item_add_rect", "item", "rect", "color", "antialiased"), &RenderingServer::canvas_item_add_rect, DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("canvas_item_add_circle", "item", "pos", "radius", "color", "antialiased"), &RenderingServer::canvas_item_add_circle, DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("canvas_item_add_texture_rect", "item", "rect", "texture", "tile", "modulate", "transpose"), &RenderingServer::canvas_item_add_texture_rect, DEFVAL(false), DEFVAL(Color(1, 1, 1)), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("canvas_item_add_msdf_texture_rect_region", "item", "rect", "texture", "src_rect", "modulate", "outline_size", "px_range", "scale"), &RenderingServer::canvas_item_add_msdf_texture_rect_region, DEFVAL(Color(1, 1, 1)), DEFVAL(0), DEFVAL(1.0), DEFVAL(1.0));
-	ClassDB::bind_method(D_METHOD("canvas_item_add_lcd_texture_rect_region", "item", "rect", "texture", "src_rect", "modulate"), &RenderingServer::canvas_item_add_lcd_texture_rect_region);
-	ClassDB::bind_method(D_METHOD("canvas_item_add_texture_rect_region", "item", "rect", "texture", "src_rect", "modulate", "transpose", "clip_uv"), &RenderingServer::canvas_item_add_texture_rect_region, DEFVAL(Color(1, 1, 1)), DEFVAL(false), DEFVAL(true));
-	ClassDB::bind_method(D_METHOD("canvas_item_add_nine_patch", "item", "rect", "source", "texture", "topleft", "bottomright", "x_axis_mode", "y_axis_mode", "draw_center", "modulate"), &RenderingServer::canvas_item_add_nine_patch, DEFVAL(NINE_PATCH_STRETCH), DEFVAL(NINE_PATCH_STRETCH), DEFVAL(true), DEFVAL(Color(1, 1, 1)));
-	ClassDB::bind_method(D_METHOD("canvas_item_add_primitive", "item", "points", "colors", "uvs", "texture"), &RenderingServer::canvas_item_add_primitive);
-	ClassDB::bind_method(D_METHOD("canvas_item_add_polygon", "item", "points", "colors", "uvs", "texture"), &RenderingServer::canvas_item_add_polygon, DEFVAL(Vector<Point2>()), DEFVAL(RID()));
-	ClassDB::bind_method(D_METHOD("canvas_item_add_triangle_array", "item", "indices", "points", "colors", "uvs", "bones", "weights", "texture", "count"), &RenderingServer::canvas_item_add_triangle_array, DEFVAL(Vector<Point2>()), DEFVAL(Vector<int>()), DEFVAL(Vector<float>()), DEFVAL(RID()), DEFVAL(-1));
-	ClassDB::bind_method(D_METHOD("canvas_item_add_mesh", "item", "mesh", "transform", "modulate", "texture"), &RenderingServer::canvas_item_add_mesh, DEFVAL(Transform2D()), DEFVAL(Color(1, 1, 1)), DEFVAL(RID()));
-	ClassDB::bind_method(D_METHOD("canvas_item_add_multimesh", "item", "mesh", "texture"), &RenderingServer::canvas_item_add_multimesh, DEFVAL(RID()));
-	ClassDB::bind_method(D_METHOD("canvas_item_add_particles", "item", "particles", "texture"), &RenderingServer::canvas_item_add_particles);
-	ClassDB::bind_method(D_METHOD("canvas_item_add_set_transform", "item", "transform"), &RenderingServer::canvas_item_add_set_transform);
-	ClassDB::bind_method(D_METHOD("canvas_item_add_clip_ignore", "item", "ignore"), &RenderingServer::canvas_item_add_clip_ignore);
-	ClassDB::bind_method(D_METHOD("canvas_item_add_animation_slice", "item", "animation_length", "slice_begin", "slice_end", "offset"), &RenderingServer::canvas_item_add_animation_slice, DEFVAL(0.0));
-	ClassDB::bind_method(D_METHOD("canvas_item_set_sort_children_by_y", "item", "enabled"), &RenderingServer::canvas_item_set_sort_children_by_y);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_z_index", "item", "z_index"), &RenderingServer::canvas_item_set_z_index);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_z_as_relative_to_parent", "item", "enabled"), &RenderingServer::canvas_item_set_z_as_relative_to_parent);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_copy_to_backbuffer", "item", "enabled", "rect"), &RenderingServer::canvas_item_set_copy_to_backbuffer);
+	ClassDB::bind_method(D_METHOD("element_add_line", "item", "from", "to", "color", "width", "antialiased"), &RenderingServer::element_add_line, DEFVAL(-1.0), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("element_add_polyline", "item", "points", "colors", "width", "antialiased"), &RenderingServer::element_add_polyline, DEFVAL(-1.0), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("element_add_multiline", "item", "points", "colors", "width", "antialiased"), &RenderingServer::element_add_multiline, DEFVAL(-1.0), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("element_add_rect", "item", "rect", "color", "antialiased"), &RenderingServer::element_add_rect, DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("element_add_circle", "item", "pos", "radius", "color", "antialiased"), &RenderingServer::element_add_circle, DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("element_add_texture_rect", "item", "rect", "texture", "tile", "modulate", "transpose"), &RenderingServer::element_add_texture_rect, DEFVAL(false), DEFVAL(Color(1, 1, 1)), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("element_add_msdf_texture_rect_region", "item", "rect", "texture", "src_rect", "modulate", "outline_size", "px_range", "scale"), &RenderingServer::element_add_msdf_texture_rect_region, DEFVAL(Color(1, 1, 1)), DEFVAL(0), DEFVAL(1.0), DEFVAL(1.0));
+	ClassDB::bind_method(D_METHOD("element_add_lcd_texture_rect_region", "item", "rect", "texture", "src_rect", "modulate"), &RenderingServer::element_add_lcd_texture_rect_region);
+	ClassDB::bind_method(D_METHOD("element_add_texture_rect_region", "item", "rect", "texture", "src_rect", "modulate", "transpose", "clip_uv"), &RenderingServer::element_add_texture_rect_region, DEFVAL(Color(1, 1, 1)), DEFVAL(false), DEFVAL(true));
+	ClassDB::bind_method(D_METHOD("element_add_nine_patch", "item", "rect", "source", "texture", "topleft", "bottomright", "x_axis_mode", "y_axis_mode", "draw_center", "modulate"), &RenderingServer::element_add_nine_patch, DEFVAL(NINE_PATCH_STRETCH), DEFVAL(NINE_PATCH_STRETCH), DEFVAL(true), DEFVAL(Color(1, 1, 1)));
+	ClassDB::bind_method(D_METHOD("element_add_primitive", "item", "points", "colors", "uvs", "texture"), &RenderingServer::element_add_primitive);
+	ClassDB::bind_method(D_METHOD("element_add_polygon", "item", "points", "colors", "uvs", "texture"), &RenderingServer::element_add_polygon, DEFVAL(Vector<Point2>()), DEFVAL(RID()));
+	ClassDB::bind_method(D_METHOD("element_add_triangle_array", "item", "indices", "points", "colors", "uvs", "bones", "weights", "texture", "count"), &RenderingServer::element_add_triangle_array, DEFVAL(Vector<Point2>()), DEFVAL(Vector<int>()), DEFVAL(Vector<float>()), DEFVAL(RID()), DEFVAL(-1));
+	ClassDB::bind_method(D_METHOD("element_add_mesh", "item", "mesh", "transform", "modulate", "texture"), &RenderingServer::element_add_mesh, DEFVAL(Transform2D()), DEFVAL(Color(1, 1, 1)), DEFVAL(RID()));
+	ClassDB::bind_method(D_METHOD("element_add_multimesh", "item", "mesh", "texture"), &RenderingServer::element_add_multimesh, DEFVAL(RID()));
+	ClassDB::bind_method(D_METHOD("element_add_particles", "item", "particles", "texture"), &RenderingServer::element_add_particles);
+	ClassDB::bind_method(D_METHOD("element_add_set_transform", "item", "transform"), &RenderingServer::element_add_set_transform);
+	ClassDB::bind_method(D_METHOD("element_add_clip_ignore", "item", "ignore"), &RenderingServer::element_add_clip_ignore);
+	ClassDB::bind_method(D_METHOD("element_add_animation_slice", "item", "animation_length", "slice_begin", "slice_end", "offset"), &RenderingServer::element_add_animation_slice, DEFVAL(0.0));
+	ClassDB::bind_method(D_METHOD("element_set_sort_children_by_y", "item", "enabled"), &RenderingServer::element_set_sort_children_by_y);
+	ClassDB::bind_method(D_METHOD("element_set_z_index", "item", "z_index"), &RenderingServer::element_set_z_index);
+	ClassDB::bind_method(D_METHOD("element_set_z_as_relative_to_parent", "item", "enabled"), &RenderingServer::element_set_z_as_relative_to_parent);
+	ClassDB::bind_method(D_METHOD("element_set_copy_to_backbuffer", "item", "enabled", "rect"), &RenderingServer::element_set_copy_to_backbuffer);
 
-	ClassDB::bind_method(D_METHOD("canvas_item_clear", "item"), &RenderingServer::canvas_item_clear);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_draw_index", "item", "index"), &RenderingServer::canvas_item_set_draw_index);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_material", "item", "material"), &RenderingServer::canvas_item_set_material);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_use_parent_material", "item", "enabled"), &RenderingServer::canvas_item_set_use_parent_material);
+	ClassDB::bind_method(D_METHOD("element_clear", "item"), &RenderingServer::element_clear);
+	ClassDB::bind_method(D_METHOD("element_set_draw_index", "item", "index"), &RenderingServer::element_set_draw_index);
+	ClassDB::bind_method(D_METHOD("element_set_material", "item", "material"), &RenderingServer::element_set_material);
+	ClassDB::bind_method(D_METHOD("element_set_use_parent_material", "item", "enabled"), &RenderingServer::element_set_use_parent_material);
 
-	ClassDB::bind_method(D_METHOD("canvas_item_set_visibility_notifier", "item", "enable", "area", "enter_callable", "exit_callable"), &RenderingServer::canvas_item_set_visibility_notifier);
-	ClassDB::bind_method(D_METHOD("canvas_item_set_canvas_group_mode", "item", "mode", "clear_margin", "fit_empty", "fit_margin", "blur_mipmaps"), &RenderingServer::canvas_item_set_canvas_group_mode, DEFVAL(5.0), DEFVAL(false), DEFVAL(0.0), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("element_set_visibility_notifier", "item", "enable", "area", "enter_callable", "exit_callable"), &RenderingServer::element_set_visibility_notifier);
+	ClassDB::bind_method(D_METHOD("element_set_canvas_group_mode", "item", "mode", "clear_margin", "fit_empty", "fit_margin", "blur_mipmaps"), &RenderingServer::element_set_canvas_group_mode, DEFVAL(5.0), DEFVAL(false), DEFVAL(0.0), DEFVAL(false));
 
-	ClassDB::bind_method(D_METHOD("debug_canvas_item_get_rect", "item"), &RenderingServer::debug_canvas_item_get_rect);
+	ClassDB::bind_method(D_METHOD("debug_element_get_rect", "item"), &RenderingServer::debug_element_get_rect);
 
 	BIND_ENUM_CONSTANT(NINE_PATCH_STRETCH);
 	BIND_ENUM_CONSTANT(NINE_PATCH_TILE);
 	BIND_ENUM_CONSTANT(NINE_PATCH_TILE_FIT);
 
-	BIND_ENUM_CONSTANT(CANVAS_ITEM_TEXTURE_FILTER_DEFAULT);
-	BIND_ENUM_CONSTANT(CANVAS_ITEM_TEXTURE_FILTER_NEAREST);
-	BIND_ENUM_CONSTANT(CANVAS_ITEM_TEXTURE_FILTER_LINEAR);
-	BIND_ENUM_CONSTANT(CANVAS_ITEM_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS);
-	BIND_ENUM_CONSTANT(CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS);
-	BIND_ENUM_CONSTANT(CANVAS_ITEM_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS_ANISOTROPIC);
-	BIND_ENUM_CONSTANT(CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC);
-	BIND_ENUM_CONSTANT(CANVAS_ITEM_TEXTURE_FILTER_MAX);
+	BIND_ENUM_CONSTANT(element_TEXTURE_FILTER_DEFAULT);
+	BIND_ENUM_CONSTANT(element_TEXTURE_FILTER_NEAREST);
+	BIND_ENUM_CONSTANT(element_TEXTURE_FILTER_LINEAR);
+	BIND_ENUM_CONSTANT(element_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS);
+	BIND_ENUM_CONSTANT(element_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS);
+	BIND_ENUM_CONSTANT(element_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS_ANISOTROPIC);
+	BIND_ENUM_CONSTANT(element_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC);
+	BIND_ENUM_CONSTANT(element_TEXTURE_FILTER_MAX);
 
-	BIND_ENUM_CONSTANT(CANVAS_ITEM_TEXTURE_REPEAT_DEFAULT);
-	BIND_ENUM_CONSTANT(CANVAS_ITEM_TEXTURE_REPEAT_DISABLED);
-	BIND_ENUM_CONSTANT(CANVAS_ITEM_TEXTURE_REPEAT_ENABLED);
-	BIND_ENUM_CONSTANT(CANVAS_ITEM_TEXTURE_REPEAT_MIRROR);
-	BIND_ENUM_CONSTANT(CANVAS_ITEM_TEXTURE_REPEAT_MAX);
+	BIND_ENUM_CONSTANT(element_TEXTURE_REPEAT_DEFAULT);
+	BIND_ENUM_CONSTANT(element_TEXTURE_REPEAT_DISABLED);
+	BIND_ENUM_CONSTANT(element_TEXTURE_REPEAT_ENABLED);
+	BIND_ENUM_CONSTANT(element_TEXTURE_REPEAT_MIRROR);
+	BIND_ENUM_CONSTANT(element_TEXTURE_REPEAT_MAX);
 
 	BIND_ENUM_CONSTANT(CANVAS_GROUP_MODE_DISABLED);
 	BIND_ENUM_CONSTANT(CANVAS_GROUP_MODE_CLIP_ONLY);

@@ -42,7 +42,7 @@
 #include "editor/gui/editor_bottom_panel.h"
 #include "editor/gui/editor_file_dialog.h"
 #include "editor/inspector_dock.h"
-#include "editor/plugins/canvas_item_editor_plugin.h" // For onion skinning.
+#include "editor/plugins/element_editor_plugin.h" // For onion skinning.
 #include "editor/scene_tree_dock.h"
 #include "editor/themes/editor_scale.h"
 #include "editor/themes/editor_theme_manager.h"
@@ -1169,7 +1169,7 @@ void AnimationPlayerEditor::forward_force_draw_over_viewport(Control *p_overlay)
 		return;
 	}
 
-	RID ci = p_overlay->get_canvas_item();
+	RID ci = p_overlay->get_element();
 	Rect2 src_rect = p_overlay->get_global_rect();
 	// Re-flip since captures are already flipped.
 	src_rect.position.y = onion.capture_size.y - (src_rect.position.y + src_rect.size.y);
@@ -1186,7 +1186,7 @@ void AnimationPlayerEditor::forward_force_draw_over_viewport(Control *p_overlay)
 			alpha += alpha_step;
 
 			if (onion.captures_valid[capture_idx]) {
-				RS::get_singleton()->canvas_item_add_texture_rect_region(
+				RS::get_singleton()->element_add_texture_rect_region(
 						ci, dst_rect, RS::get_singleton()->viewport_get_texture(onion.captures[capture_idx]), src_rect, Color(1, 1, 1, alpha));
 			}
 
@@ -1200,7 +1200,7 @@ void AnimationPlayerEditor::forward_force_draw_over_viewport(Control *p_overlay)
 			alpha -= alpha_step;
 
 			if (onion.captures_valid[capture_idx]) {
-				RS::get_singleton()->canvas_item_add_texture_rect_region(
+				RS::get_singleton()->element_add_texture_rect_region(
 						ci, dst_rect, RS::get_singleton()->viewport_get_texture(onion.captures[capture_idx]), src_rect, Color(1, 1, 1, alpha));
 			}
 
@@ -1567,8 +1567,8 @@ void AnimationPlayerEditor::_allocate_onion_layers() {
 	}
 
 	// Reset the capture canvas item to the current root viewport texture (defensive).
-	RS::get_singleton()->canvas_item_clear(onion.capture.canvas_item);
-	RS::get_singleton()->canvas_item_add_texture_rect(onion.capture.canvas_item, Rect2(Point2(), Point2(capture_size.x, -capture_size.y)), get_tree()->get_root()->get_texture()->get_rid());
+	RS::get_singleton()->element_clear(onion.capture.element);
+	RS::get_singleton()->element_add_texture_rect(onion.capture.element, Rect2(Point2(), Point2(capture_size.x, -capture_size.y)), get_tree()->get_root()->get_texture()->get_rid());
 
 	onion.capture_size = capture_size;
 }
@@ -1620,8 +1620,8 @@ void AnimationPlayerEditor::_prepare_onion_layers_2_prolog() {
 	}
 
 	// Hide superfluous elements that would make the overlay unnecessary cluttered.
-	// CanvasItemEditor.
-	onion.temp.canvas_edit_state = CanvasItemEditor::get_singleton()->get_state();
+	// ElementEditor.
+	onion.temp.canvas_edit_state = ElementEditor::get_singleton()->get_state();
 	Dictionary new_state = onion.temp.canvas_edit_state.duplicate();
 	new_state["show_origin"] = false;
 	new_state["show_grid"] = false;
@@ -1630,10 +1630,10 @@ void AnimationPlayerEditor::_prepare_onion_layers_2_prolog() {
 	new_state["show_helpers"] = false;
 	new_state["show_zoom_control"] = false;
 	new_state["show_edit_locks"] = false;
-	new_state["grid_visibility"] = 2; // TODO: Expose CanvasItemEditor::GRID_VISIBILITY_HIDE somehow and use it.
+	new_state["grid_visibility"] = 2; // TODO: Expose ElementEditor::GRID_VISIBILITY_HIDE somehow and use it.
 	new_state["show_transformation_gizmos"] = onion.include_gizmos ? new_state["gizmos"] : Variant(false);
 	// TODO: Save/restore only affected entries.
-	CanvasItemEditor::get_singleton()->set_state(new_state);
+	ElementEditor::get_singleton()->set_state(new_state);
 
 	// Tweak the root viewport to ensure it's rendered before our target.
 	RID root_vp = get_tree()->get_root()->get_viewport_rid();
@@ -1644,7 +1644,7 @@ void AnimationPlayerEditor::_prepare_onion_layers_2_prolog() {
 	RID present_rid;
 	if (onion.differences_only) {
 		// Capture present scene as it is.
-		RS::get_singleton()->canvas_item_set_material(onion.capture.canvas_item, RID());
+		RS::get_singleton()->element_set_material(onion.capture.element, RID());
 		present_rid = onion.captures[onion.captures.size() - 1];
 		RS::get_singleton()->viewport_set_active(present_rid, true);
 		RS::get_singleton()->viewport_set_parent_viewport(root_vp, present_rid);
@@ -1658,7 +1658,7 @@ void AnimationPlayerEditor::_prepare_onion_layers_2_prolog() {
 
 	// Render every past/future step with the capture shader.
 
-	RS::get_singleton()->canvas_item_set_material(onion.capture.canvas_item, onion.capture.material->get_rid());
+	RS::get_singleton()->element_set_material(onion.capture.element, onion.capture.material->get_rid());
 	onion.capture.material->set_shader_parameter("bkg_color", GLOBAL_GET("rendering/environment/defaults/default_clear_color"));
 	onion.capture.material->set_shader_parameter("differences_only", onion.differences_only);
 	onion.capture.material->set_shader_parameter("present", onion.differences_only ? RS::get_singleton()->viewport_get_texture(present_rid) : RID());
@@ -1744,7 +1744,7 @@ void AnimationPlayerEditor::_prepare_onion_layers_2_epilog() {
 	player->restore(onion.temp.anim_values_backup);
 
 	// Restore state of main editors.
-	CanvasItemEditor::get_singleton()->set_state(onion.temp.canvas_edit_state);
+	ElementEditor::get_singleton()->set_state(onion.temp.canvas_edit_state);
 
 	// Update viewports with skin layers overlaid for the actual engine loop render.
 	onion.can_overlay = true;
@@ -2073,8 +2073,8 @@ AnimationPlayerEditor::AnimationPlayerEditor(AnimationPlayerEditorPlugin *p_plug
 	track_editor->connect(SceneStringName(visibility_changed), callable_mp(this, &AnimationPlayerEditor::_editor_visibility_changed));
 
 	onion.capture.canvas = RS::get_singleton()->canvas_create();
-	onion.capture.canvas_item = RS::get_singleton()->canvas_item_create();
-	RS::get_singleton()->canvas_item_set_parent(onion.capture.canvas_item, onion.capture.canvas);
+	onion.capture.element = RS::get_singleton()->element_create();
+	RS::get_singleton()->element_set_parent(onion.capture.element, onion.capture.canvas);
 
 	onion.capture.material.instantiate();
 
@@ -2082,7 +2082,7 @@ AnimationPlayerEditor::AnimationPlayerEditor(AnimationPlayerEditorPlugin *p_plug
 	onion.capture.shader->set_code(R"(
 // Animation editor onion skinning shader.
 
-shader_type canvas_item;
+shader_type element;
 
 uniform vec4 bkg_color;
 uniform vec4 dir_color;
@@ -2113,7 +2113,7 @@ void fragment() {
 AnimationPlayerEditor::~AnimationPlayerEditor() {
 	_free_onion_layers();
 	RS::get_singleton()->free(onion.capture.canvas);
-	RS::get_singleton()->free(onion.capture.canvas_item);
+	RS::get_singleton()->free(onion.capture.element);
 	onion.capture = {};
 }
 

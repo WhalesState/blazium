@@ -168,7 +168,7 @@ void fragment() {
 //}
 )";
 						break;
-					case Shader::MODE_CANVAS_ITEM:
+					case Shader::MODE_element:
 						code += R"(
 void vertex() {
 	// Called for every vertex the material is visible on.
@@ -179,7 +179,7 @@ void fragment() {
 }
 
 //void light() {
-	// Called for every pixel for every light affecting the CanvasItem.
+	// Called for every pixel for every light affecting the Element.
 	// Uncomment to replace the default light processing function with this one.
 //}
 )";

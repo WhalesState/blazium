@@ -926,7 +926,7 @@ void FontPreview::_notification(int p_what) {
 					if (prev_font->is_class("FontVariation")) {
 						name += " " + TTR(" - Variation");
 					}
-					font->draw_string(get_canvas_item(), Point2(0, font->get_height(font_size) + 2 * EDSCALE), name, HORIZONTAL_ALIGNMENT_CENTER, get_size().x, font_size, text_color);
+					font->draw_string(get_element(), Point2(0, font->get_height(font_size) + 2 * EDSCALE), name, HORIZONTAL_ALIGNMENT_CENTER, get_size().x, font_size, text_color);
 
 					String sample;
 					static const String sample_base = U"12漢字ԱբΑαАбΑαאבابܐܒހށआআਆઆଆஆఆಆആආกิກິༀကႠა한글ሀᎣᐁᚁᚠᜀᜠᝀᝠកᠠᤁᥐAb😀";
@@ -941,13 +941,13 @@ void FontPreview::_notification(int p_what) {
 					if (sample.is_empty()) {
 						prev_ok = false;
 					} else {
-						prev_font->draw_string(get_canvas_item(), Point2(0, font->get_height(font_size) + prev_font->get_height(25 * EDSCALE)), sample, HORIZONTAL_ALIGNMENT_CENTER, get_size().x, 25 * EDSCALE, text_color);
+						prev_font->draw_string(get_element(), Point2(0, font->get_height(font_size) + prev_font->get_height(25 * EDSCALE)), sample, HORIZONTAL_ALIGNMENT_CENTER, get_size().x, 25 * EDSCALE, text_color);
 					}
 				}
 			}
 			if (!prev_ok) {
 				text_color.a *= 0.5;
-				font->draw_string(get_canvas_item(), Point2(0, font->get_height(font_size) + 2 * EDSCALE), TTR("Unable to preview font"), HORIZONTAL_ALIGNMENT_CENTER, get_size().x, font_size, text_color);
+				font->draw_string(get_element(), Point2(0, font->get_height(font_size) + 2 * EDSCALE), TTR("Unable to preview font"), HORIZONTAL_ALIGNMENT_CENTER, get_size().x, font_size, text_color);
 			}
 		} break;
 

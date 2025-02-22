@@ -60,25 +60,25 @@ bool Texture2D::has_alpha() const {
 	return ret;
 }
 
-void Texture2D::draw(RID p_canvas_item, const Point2 &p_pos, const Color &p_modulate, bool p_transpose) const {
-	if (GDVIRTUAL_CALL(_draw, p_canvas_item, p_pos, p_modulate, p_transpose)) {
+void Texture2D::draw(RID p_element, const Point2 &p_pos, const Color &p_modulate, bool p_transpose) const {
+	if (GDVIRTUAL_CALL(_draw, p_element, p_pos, p_modulate, p_transpose)) {
 		return;
 	}
-	RenderingServer::get_singleton()->canvas_item_add_texture_rect(p_canvas_item, Rect2(p_pos, get_size()), get_rid(), false, p_modulate, p_transpose);
+	RenderingServer::get_singleton()->element_add_texture_rect(p_element, Rect2(p_pos, get_size()), get_rid(), false, p_modulate, p_transpose);
 }
 
-void Texture2D::draw_rect(RID p_canvas_item, const Rect2 &p_rect, bool p_tile, const Color &p_modulate, bool p_transpose) const {
-	if (GDVIRTUAL_CALL(_draw_rect, p_canvas_item, p_rect, p_tile, p_modulate, p_transpose)) {
+void Texture2D::draw_rect(RID p_element, const Rect2 &p_rect, bool p_tile, const Color &p_modulate, bool p_transpose) const {
+	if (GDVIRTUAL_CALL(_draw_rect, p_element, p_rect, p_tile, p_modulate, p_transpose)) {
 		return;
 	}
-	RenderingServer::get_singleton()->canvas_item_add_texture_rect(p_canvas_item, p_rect, get_rid(), p_tile, p_modulate, p_transpose);
+	RenderingServer::get_singleton()->element_add_texture_rect(p_element, p_rect, get_rid(), p_tile, p_modulate, p_transpose);
 }
 
-void Texture2D::draw_rect_region(RID p_canvas_item, const Rect2 &p_rect, const Rect2 &p_src_rect, const Color &p_modulate, bool p_transpose, bool p_clip_uv) const {
-	if (GDVIRTUAL_CALL(_draw_rect_region, p_canvas_item, p_rect, p_src_rect, p_modulate, p_transpose, p_clip_uv)) {
+void Texture2D::draw_rect_region(RID p_element, const Rect2 &p_rect, const Rect2 &p_src_rect, const Color &p_modulate, bool p_transpose, bool p_clip_uv) const {
+	if (GDVIRTUAL_CALL(_draw_rect_region, p_element, p_rect, p_src_rect, p_modulate, p_transpose, p_clip_uv)) {
 		return;
 	}
-	RenderingServer::get_singleton()->canvas_item_add_texture_rect_region(p_canvas_item, p_rect, get_rid(), p_src_rect, p_modulate, p_transpose, p_clip_uv);
+	RenderingServer::get_singleton()->element_add_texture_rect_region(p_element, p_rect, get_rid(), p_src_rect, p_modulate, p_transpose, p_clip_uv);
 }
 
 bool Texture2D::get_rect_region(const Rect2 &p_rect, const Rect2 &p_src_rect, Rect2 &r_rect, Rect2 &r_src_rect) const {
@@ -99,9 +99,9 @@ void Texture2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_height"), &Texture2D::get_height);
 	ClassDB::bind_method(D_METHOD("get_size"), &Texture2D::get_size);
 	ClassDB::bind_method(D_METHOD("has_alpha"), &Texture2D::has_alpha);
-	ClassDB::bind_method(D_METHOD("draw", "canvas_item", "position", "modulate", "transpose"), &Texture2D::draw, DEFVAL(Color(1, 1, 1)), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("draw_rect", "canvas_item", "rect", "tile", "modulate", "transpose"), &Texture2D::draw_rect, DEFVAL(Color(1, 1, 1)), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("draw_rect_region", "canvas_item", "rect", "src_rect", "modulate", "transpose", "clip_uv"), &Texture2D::draw_rect_region, DEFVAL(Color(1, 1, 1)), DEFVAL(false), DEFVAL(true));
+	ClassDB::bind_method(D_METHOD("draw", "element", "position", "modulate", "transpose"), &Texture2D::draw, DEFVAL(Color(1, 1, 1)), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("draw_rect", "element", "rect", "tile", "modulate", "transpose"), &Texture2D::draw_rect, DEFVAL(Color(1, 1, 1)), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("draw_rect_region", "element", "rect", "src_rect", "modulate", "transpose", "clip_uv"), &Texture2D::draw_rect_region, DEFVAL(Color(1, 1, 1)), DEFVAL(false), DEFVAL(true));
 	ClassDB::bind_method(D_METHOD("get_image"), &Texture2D::get_image);
 	ClassDB::bind_method(D_METHOD("create_placeholder"), &Texture2D::create_placeholder);
 
@@ -112,9 +112,9 @@ void Texture2D::_bind_methods() {
 	GDVIRTUAL_BIND(_is_pixel_opaque, "x", "y");
 	GDVIRTUAL_BIND(_has_alpha);
 
-	GDVIRTUAL_BIND(_draw, "to_canvas_item", "pos", "modulate", "transpose")
-	GDVIRTUAL_BIND(_draw_rect, "to_canvas_item", "rect", "tile", "modulate", "transpose")
-	GDVIRTUAL_BIND(_draw_rect_region, "to_canvas_item", "rect", "src_rect", "modulate", "transpose", "clip_uv");
+	GDVIRTUAL_BIND(_draw, "to_element", "pos", "modulate", "transpose")
+	GDVIRTUAL_BIND(_draw_rect, "to_element", "rect", "tile", "modulate", "transpose")
+	GDVIRTUAL_BIND(_draw_rect_region, "to_element", "rect", "src_rect", "modulate", "transpose", "clip_uv");
 }
 
 Texture2D::Texture2D() {

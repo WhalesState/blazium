@@ -258,7 +258,7 @@ void AnimatedSprite2D::_notification(int p_what) {
 				return;
 			}
 
-			RID ci = get_canvas_item();
+			RID ci = get_element();
 
 			Size2 s = texture->get_size();
 			Point2 ofs = offset;

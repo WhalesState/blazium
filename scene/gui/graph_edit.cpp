@@ -219,7 +219,7 @@ void GraphEdit::init_shaders() {
 	default_connections_shader.instantiate();
 	default_connections_shader->set_code(R"(
 // Connection lines shader.
-shader_type canvas_item;
+shader_type element;
 render_mode blend_mix;
 
 uniform vec4 rim_color : source_color;
@@ -595,7 +595,7 @@ void GraphEdit::add_child_notify(Node *p_child) {
 	Control::add_child_notify(p_child);
 
 	// Keep the top layer always on top!
-	callable_mp((CanvasItem *)top_layer, &CanvasItem::move_to_front).call_deferred();
+	callable_mp((Element *)top_layer, &Element::move_to_front).call_deferred();
 
 	GraphElement *graph_element = Object::cast_to<GraphElement>(p_child);
 	if (graph_element) {
@@ -623,8 +623,8 @@ void GraphEdit::add_child_notify(Node *p_child) {
 		}
 		graph_element->connect("raise_request", callable_mp(this, &GraphEdit::_ensure_node_order_from).bind(graph_element));
 		graph_element->connect("resize_request", callable_mp(this, &GraphEdit::_graph_element_resize_request).bind(graph_element));
-		graph_element->connect(SceneStringName(item_rect_changed), callable_mp((CanvasItem *)connections_layer, &CanvasItem::queue_redraw));
-		graph_element->connect(SceneStringName(item_rect_changed), callable_mp((CanvasItem *)minimap, &GraphEditMinimap::queue_redraw));
+		graph_element->connect(SceneStringName(item_rect_changed), callable_mp((Element *)connections_layer, &Element::queue_redraw));
+		graph_element->connect(SceneStringName(item_rect_changed), callable_mp((Element *)minimap, &GraphEditMinimap::queue_redraw));
 
 		graph_element->set_scale(Vector2(zoom, zoom));
 		_graph_element_moved(graph_element);
@@ -644,7 +644,7 @@ void GraphEdit::remove_child_notify(Node *p_child) {
 
 	if (top_layer != nullptr && is_inside_tree()) {
 		// Keep the top layer always on top!
-		callable_mp((CanvasItem *)top_layer, &CanvasItem::move_to_front).call_deferred();
+		callable_mp((Element *)top_layer, &Element::move_to_front).call_deferred();
 	}
 
 	GraphElement *graph_element = Object::cast_to<GraphElement>(p_child);
@@ -696,12 +696,12 @@ void GraphEdit::remove_child_notify(Node *p_child) {
 		graph_element->disconnect("resize_request", callable_mp(this, &GraphEdit::_graph_element_resize_request));
 
 		if (connections_layer != nullptr && connections_layer->is_inside_tree()) {
-			graph_element->disconnect(SceneStringName(item_rect_changed), callable_mp((CanvasItem *)connections_layer, &CanvasItem::queue_redraw));
+			graph_element->disconnect(SceneStringName(item_rect_changed), callable_mp((Element *)connections_layer, &Element::queue_redraw));
 		}
 
 		// In case of the whole GraphEdit being destroyed these references can already be freed.
 		if (minimap != nullptr && minimap->is_inside_tree()) {
-			graph_element->disconnect(SceneStringName(item_rect_changed), callable_mp((CanvasItem *)minimap, &GraphEditMinimap::queue_redraw));
+			graph_element->disconnect(SceneStringName(item_rect_changed), callable_mp((Element *)minimap, &GraphEditMinimap::queue_redraw));
 		}
 	}
 }

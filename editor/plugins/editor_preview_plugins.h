@@ -161,7 +161,7 @@ class EditorFontPreviewPlugin : public EditorResourcePreviewGenerator {
 	RID viewport;
 	RID viewport_texture;
 	RID canvas;
-	RID canvas_item;
+	RID element;
 	DrawRequester draw_requester;
 
 public:

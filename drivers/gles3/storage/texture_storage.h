@@ -136,8 +136,8 @@ struct CanvasTexture {
 	Color specular_color = Color(1, 1, 1, 1);
 	float shininess = 1.0;
 
-	RS::CanvasItemTextureFilter texture_filter = RS::CANVAS_ITEM_TEXTURE_FILTER_DEFAULT;
-	RS::CanvasItemTextureRepeat texture_repeat = RS::CANVAS_ITEM_TEXTURE_REPEAT_DEFAULT;
+	RS::ElementTextureFilter texture_filter = RS::element_TEXTURE_FILTER_DEFAULT;
+	RS::ElementTextureRepeat texture_repeat = RS::element_TEXTURE_REPEAT_DEFAULT;
 };
 
 struct RenderTarget;
@@ -237,7 +237,7 @@ struct Texture {
 	}
 
 	// texture state
-	void gl_set_filter(RS::CanvasItemTextureFilter p_filter) {
+	void gl_set_filter(RS::ElementTextureFilter p_filter) {
 		if (p_filter == state_filter) {
 			return;
 		}
@@ -248,21 +248,21 @@ struct Texture {
 		GLint max_lod = 0;
 		GLfloat anisotropy = 1.0f;
 		switch (state_filter) {
-			case RS::CANVAS_ITEM_TEXTURE_FILTER_NEAREST: {
+			case RS::element_TEXTURE_FILTER_NEAREST: {
 				pmin = GL_NEAREST;
 				pmag = GL_NEAREST;
 				max_lod = 0;
 			} break;
-			case RS::CANVAS_ITEM_TEXTURE_FILTER_LINEAR: {
+			case RS::element_TEXTURE_FILTER_LINEAR: {
 				pmin = GL_LINEAR;
 				pmag = GL_LINEAR;
 				max_lod = 0;
 			} break;
-			case RS::CANVAS_ITEM_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS_ANISOTROPIC: {
+			case RS::element_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS_ANISOTROPIC: {
 				anisotropy = config->anisotropic_level;
 			};
 				[[fallthrough]];
-			case RS::CANVAS_ITEM_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS: {
+			case RS::element_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS: {
 				pmag = GL_NEAREST;
 				if (mipmaps <= 1) {
 					pmin = GL_NEAREST;
@@ -275,11 +275,11 @@ struct Texture {
 					max_lod = 1000;
 				}
 			} break;
-			case RS::CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC: {
+			case RS::element_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC: {
 				anisotropy = config->anisotropic_level;
 			};
 				[[fallthrough]];
-			case RS::CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS: {
+			case RS::element_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS: {
 				pmag = GL_LINEAR;
 				if (mipmaps <= 1) {
 					pmin = GL_LINEAR;
@@ -304,20 +304,20 @@ struct Texture {
 			glTexParameterf(target, _GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy);
 		}
 	}
-	void gl_set_repeat(RS::CanvasItemTextureRepeat p_repeat) {
+	void gl_set_repeat(RS::ElementTextureRepeat p_repeat) {
 		if (p_repeat == state_repeat) {
 			return;
 		}
 		state_repeat = p_repeat;
 		GLenum prep = GL_CLAMP_TO_EDGE;
 		switch (state_repeat) {
-			case RS::CANVAS_ITEM_TEXTURE_REPEAT_DISABLED: {
+			case RS::element_TEXTURE_REPEAT_DISABLED: {
 				prep = GL_CLAMP_TO_EDGE;
 			} break;
-			case RS::CANVAS_ITEM_TEXTURE_REPEAT_ENABLED: {
+			case RS::element_TEXTURE_REPEAT_ENABLED: {
 				prep = GL_REPEAT;
 			} break;
-			case RS::CANVAS_ITEM_TEXTURE_REPEAT_MIRROR: {
+			case RS::element_TEXTURE_REPEAT_MIRROR: {
 				prep = GL_MIRRORED_REPEAT;
 			} break;
 			default: {
@@ -330,8 +330,8 @@ struct Texture {
 	}
 
 private:
-	RS::CanvasItemTextureFilter state_filter = RS::CANVAS_ITEM_TEXTURE_FILTER_MAX;
-	RS::CanvasItemTextureRepeat state_repeat = RS::CANVAS_ITEM_TEXTURE_REPEAT_MAX;
+	RS::ElementTextureFilter state_filter = RS::element_TEXTURE_FILTER_MAX;
+	RS::ElementTextureRepeat state_repeat = RS::element_TEXTURE_REPEAT_MAX;
 };
 
 struct RenderTarget {
@@ -486,8 +486,8 @@ public:
 	virtual void canvas_texture_set_channel(RID p_canvas_texture, RS::CanvasTextureChannel p_channel, RID p_texture) override;
 	virtual void canvas_texture_set_shading_parameters(RID p_canvas_texture, const Color &p_base_color, float p_shininess) override;
 
-	virtual void canvas_texture_set_texture_filter(RID p_item, RS::CanvasItemTextureFilter p_filter) override;
-	virtual void canvas_texture_set_texture_repeat(RID p_item, RS::CanvasItemTextureRepeat p_repeat) override;
+	virtual void canvas_texture_set_texture_filter(RID p_item, RS::ElementTextureFilter p_filter) override;
+	virtual void canvas_texture_set_texture_repeat(RID p_item, RS::ElementTextureRepeat p_repeat) override;
 
 	/* Texture API */
 

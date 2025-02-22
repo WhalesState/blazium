@@ -35,7 +35,7 @@
 #include "scene/2d/path_2d.h"
 #include "scene/gui/box_container.h"
 
-class CanvasItemEditor;
+class ElementEditor;
 class ConfirmationDialog;
 class MenuButton;
 
@@ -44,7 +44,7 @@ class Path2DEditor : public HBoxContainer {
 
 	friend class Path2DEditorPlugin;
 
-	CanvasItemEditor *canvas_item_editor = nullptr;
+	ElementEditor *element_editor = nullptr;
 	Panel *panel = nullptr;
 	Path2D *node = nullptr;
 

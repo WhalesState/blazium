@@ -375,7 +375,7 @@ Rect2 StyleBoxFlat::get_draw_rect(const Rect2 &p_rect) const {
 	return draw_rect;
 }
 
-void StyleBoxFlat::draw(RID p_canvas_item, const Rect2 &p_rect) const {
+void StyleBoxFlat::draw(RID p_element, const Rect2 &p_rect) const {
 	bool draw_border = (border_width[0] > 0) || (border_width[1] > 0) || (border_width[2] > 0) || (border_width[3] > 0);
 	bool draw_shadow = (shadow_size > 0);
 	if (!draw_border && !draw_center && !draw_shadow) {
@@ -545,7 +545,7 @@ void StyleBoxFlat::draw(RID p_canvas_item, const Rect2 &p_rect) const {
 
 	// Draw stylebox.
 	RenderingServer *vs = RenderingServer::get_singleton();
-	vs->canvas_item_add_triangle_array(p_canvas_item, indices, verts, colors, uvs);
+	vs->element_add_triangle_array(p_element, indices, verts, colors, uvs);
 }
 
 void StyleBoxFlat::_bind_methods() {

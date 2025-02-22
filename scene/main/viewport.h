@@ -36,7 +36,7 @@
 
 class AudioListener2D;
 class Camera2D;
-class CanvasItem;
+class Element;
 class CanvasLayer;
 class Control;
 class Label;
@@ -165,19 +165,19 @@ public:
 		DEBUG_DRAW_INTERNAL_BUFFER,
 	};
 
-	enum DefaultCanvasItemTextureFilter {
-		DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST,
-		DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR,
-		DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS,
-		DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS,
-		DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_MAX
+	enum DefaultElementTextureFilter {
+		DEFAULT_element_TEXTURE_FILTER_NEAREST,
+		DEFAULT_element_TEXTURE_FILTER_LINEAR,
+		DEFAULT_element_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS,
+		DEFAULT_element_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS,
+		DEFAULT_element_TEXTURE_FILTER_MAX
 	};
 
-	enum DefaultCanvasItemTextureRepeat {
-		DEFAULT_CANVAS_ITEM_TEXTURE_REPEAT_DISABLED,
-		DEFAULT_CANVAS_ITEM_TEXTURE_REPEAT_ENABLED,
-		DEFAULT_CANVAS_ITEM_TEXTURE_REPEAT_MIRROR,
-		DEFAULT_CANVAS_ITEM_TEXTURE_REPEAT_MAX,
+	enum DefaultElementTextureRepeat {
+		DEFAULT_element_TEXTURE_REPEAT_DISABLED,
+		DEFAULT_element_TEXTURE_REPEAT_ENABLED,
+		DEFAULT_element_TEXTURE_REPEAT_MIRROR,
+		DEFAULT_element_TEXTURE_REPEAT_MAX,
 	};
 
 	enum SDFOversize {
@@ -331,7 +331,7 @@ private:
 
 	struct SubWindow {
 		Window *window = nullptr;
-		RID canvas_item;
+		RID element;
 		Rect2i parent_safe_rect;
 		bool pending_window_update = false;
 	};
@@ -390,8 +390,8 @@ private:
 		Vector<SubWindow> sub_windows; // Don't obtain references or pointers to the elements, as their location can change.
 	} gui;
 
-	DefaultCanvasItemTextureFilter default_canvas_item_texture_filter = DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR;
-	DefaultCanvasItemTextureRepeat default_canvas_item_texture_repeat = DEFAULT_CANVAS_ITEM_TEXTURE_REPEAT_DISABLED;
+	DefaultElementTextureFilter default_element_texture_filter = DEFAULT_element_TEXTURE_FILTER_LINEAR;
+	DefaultElementTextureRepeat default_element_texture_repeat = DEFAULT_element_TEXTURE_REPEAT_DISABLED;
 
 	bool disable_input = false;
 
@@ -399,7 +399,7 @@ private:
 	void _gui_call_notification(Control *p_control, int p_what);
 
 	void _gui_sort_roots();
-	Control *_gui_find_control_at_pos(CanvasItem *p_node, const Point2 &p_global, const Transform2D &p_xform);
+	Control *_gui_find_control_at_pos(Element *p_node, const Point2 &p_global, const Transform2D &p_xform);
 
 	void _gui_input_event(Ref<InputEvent> p_event);
 	void _perform_drop(Control *p_control = nullptr, Point2 p_pos = Point2());
@@ -445,7 +445,7 @@ private:
 	void _drop_mouse_focus();
 	void _drop_physics_mouseover(bool p_paused_only = false);
 
-	void _update_canvas_items(Node *p_node);
+	void _update_elements(Node *p_node);
 
 	friend class Window;
 
@@ -482,11 +482,11 @@ protected:
 
 public:
 	void canvas_parent_mark_dirty(Node *p_node);
-	void canvas_item_top_level_changed();
+	void element_top_level_changed();
 
 	uint64_t get_processed_events_count() const { return event_count; }
 
-	void update_canvas_items();
+	void update_elements();
 
 	Rect2 get_visible_rect() const;
 	RID get_viewport_rid() const;
@@ -627,11 +627,11 @@ public:
 	void set_sdf_scale(SDFScale p_sdf_scale);
 	SDFScale get_sdf_scale() const;
 
-	void set_default_canvas_item_texture_filter(DefaultCanvasItemTextureFilter p_filter);
-	DefaultCanvasItemTextureFilter get_default_canvas_item_texture_filter() const;
+	void set_default_element_texture_filter(DefaultElementTextureFilter p_filter);
+	DefaultElementTextureFilter get_default_element_texture_filter() const;
 
-	void set_default_canvas_item_texture_repeat(DefaultCanvasItemTextureRepeat p_repeat);
-	DefaultCanvasItemTextureRepeat get_default_canvas_item_texture_repeat() const;
+	void set_default_element_texture_repeat(DefaultElementTextureRepeat p_repeat);
+	DefaultElementTextureRepeat get_default_element_texture_repeat() const;
 
 	// VRS
 
@@ -774,7 +774,7 @@ VARIANT_ENUM_CAST(Viewport::VRSUpdateMode);
 VARIANT_ENUM_CAST(SubViewport::ClearMode);
 VARIANT_ENUM_CAST(Viewport::RenderInfo);
 VARIANT_ENUM_CAST(Viewport::RenderInfoType);
-VARIANT_ENUM_CAST(Viewport::DefaultCanvasItemTextureFilter);
-VARIANT_ENUM_CAST(Viewport::DefaultCanvasItemTextureRepeat);
+VARIANT_ENUM_CAST(Viewport::DefaultElementTextureFilter);
+VARIANT_ENUM_CAST(Viewport::DefaultElementTextureRepeat);
 
 #endif // VIEWPORT_H

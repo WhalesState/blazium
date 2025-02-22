@@ -101,7 +101,7 @@ void AudioStreamEditor::_draw_preview() {
 
 	Vector<Color> colors = { get_theme_color(SNAME("contrast_color_2"), EditorStringName(Editor)) };
 
-	RS::get_singleton()->canvas_item_add_multiline(_preview->get_canvas_item(), points, colors);
+	RS::get_singleton()->element_add_multiline(_preview->get_element(), points, colors);
 }
 
 void AudioStreamEditor::_preview_changed(ObjectID p_which) {

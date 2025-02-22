@@ -1315,15 +1315,15 @@ void RendererViewport::viewport_set_snap_2d_vertices_to_pixel(RID p_viewport, bo
 	viewport->snap_2d_vertices_to_pixel = p_enabled;
 }
 
-void RendererViewport::viewport_set_default_canvas_item_texture_filter(RID p_viewport, RS::CanvasItemTextureFilter p_filter) {
-	ERR_FAIL_COND_MSG(p_filter == RS::CANVAS_ITEM_TEXTURE_FILTER_DEFAULT, "Viewport does not accept DEFAULT as texture filter (it's the topmost choice already).)");
+void RendererViewport::viewport_set_default_element_texture_filter(RID p_viewport, RS::ElementTextureFilter p_filter) {
+	ERR_FAIL_COND_MSG(p_filter == RS::element_TEXTURE_FILTER_DEFAULT, "Viewport does not accept DEFAULT as texture filter (it's the topmost choice already).)");
 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
 	ERR_FAIL_NULL(viewport);
 
 	viewport->texture_filter = p_filter;
 }
-void RendererViewport::viewport_set_default_canvas_item_texture_repeat(RID p_viewport, RS::CanvasItemTextureRepeat p_repeat) {
-	ERR_FAIL_COND_MSG(p_repeat == RS::CANVAS_ITEM_TEXTURE_REPEAT_DEFAULT, "Viewport does not accept DEFAULT as texture repeat (it's the topmost choice already).)");
+void RendererViewport::viewport_set_default_element_texture_repeat(RID p_viewport, RS::ElementTextureRepeat p_repeat) {
+	ERR_FAIL_COND_MSG(p_repeat == RS::element_TEXTURE_REPEAT_DEFAULT, "Viewport does not accept DEFAULT as texture repeat (it's the topmost choice already).)");
 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
 	ERR_FAIL_NULL(viewport);
 

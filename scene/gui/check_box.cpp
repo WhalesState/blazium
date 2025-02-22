@@ -95,7 +95,7 @@ void CheckBox::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_DRAW: {
-			RID ci = get_canvas_item();
+			RID ci = get_element();
 
 			Ref<Texture2D> on_tex;
 			Ref<Texture2D> off_tex;

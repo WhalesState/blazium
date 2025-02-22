@@ -1097,7 +1097,7 @@ void EditorPropertyLayersGrid::_notification(int p_what) {
 				arrow_draw_rect.size.y *= -1.0; // Flip arrow vertically when expanded.
 			}
 
-			RID ci = get_canvas_item();
+			RID ci = get_element();
 			arrow->draw_rect(ci, arrow_draw_rect, false, arrow_color);
 
 		} break;
@@ -1530,7 +1530,7 @@ void EditorPropertyEasing::_drag_easing(const Ref<InputEvent> &p_ev) {
 }
 
 void EditorPropertyEasing::_draw_easing() {
-	RID ci = easing_draw->get_canvas_item();
+	RID ci = easing_draw->get_element();
 
 	Size2 s = easing_draw->get_size();
 
@@ -3200,8 +3200,8 @@ void EditorPropertyResource::_update_preferred_shader() {
 		const StringName &ed_property = parent_property->get_edited_property();
 
 		// Set preferred shader based on edited parent type.
-		if (Object::cast_to<CanvasItem>(ed_object)) {
-			shader_picker->set_preferred_mode(Shader::MODE_CANVAS_ITEM);
+		if (Object::cast_to<Element>(ed_object)) {
+			shader_picker->set_preferred_mode(Shader::MODE_element);
 		} else if (Object::cast_to<Mesh>(ed_object)) {
 			shader_picker->set_preferred_mode(Shader::MODE_SPATIAL);
 		}

@@ -394,7 +394,7 @@ public:
 				while (true) {
 					if (unlikely(current_block == (uint32_t)blocks.size())) {
 						// If we need more blocks, we allocate them
-						// (they won't be freed until this CanvasItem is
+						// (they won't be freed until this Element is
 						// deleted, though).
 						CommandBlock cb;
 						cb.memory = (uint8_t *)memalloc(CommandBlock::MAX_SIZE);
@@ -456,8 +456,8 @@ public:
 			light_masked = false;
 		}
 
-		RS::CanvasItemTextureFilter texture_filter;
-		RS::CanvasItemTextureRepeat texture_repeat;
+		RS::ElementTextureFilter texture_filter;
+		RS::ElementTextureRepeat texture_repeat;
 
 		Item() {
 			commands = nullptr;
@@ -480,8 +480,8 @@ public:
 			light_masked = false;
 			update_when_visible = false;
 			z_final = 0;
-			texture_filter = RS::CANVAS_ITEM_TEXTURE_FILTER_DEFAULT;
-			texture_repeat = RS::CANVAS_ITEM_TEXTURE_REPEAT_DEFAULT;
+			texture_filter = RS::element_TEXTURE_FILTER_DEFAULT;
+			texture_repeat = RS::element_TEXTURE_REPEAT_DEFAULT;
 			repeat_source = false;
 			on_interpolate_transform_list = false;
 			interpolated = true;
@@ -497,7 +497,7 @@ public:
 		}
 	};
 
-	virtual void canvas_render_items(RID p_to_render_target, Item *p_item_list, const Color &p_modulate, Light *p_light_list, Light *p_directional_list, const Transform2D &p_canvas_transform, RS::CanvasItemTextureFilter p_default_filter, RS::CanvasItemTextureRepeat p_default_repeat, bool p_snap_2d_vertices_to_pixel, bool &r_sdf_used, RenderingMethod::RenderInfo *r_render_info = nullptr) = 0;
+	virtual void canvas_render_items(RID p_to_render_target, Item *p_item_list, const Color &p_modulate, Light *p_light_list, Light *p_directional_list, const Transform2D &p_canvas_transform, RS::ElementTextureFilter p_default_filter, RS::ElementTextureRepeat p_default_repeat, bool p_snap_2d_vertices_to_pixel, bool &r_sdf_used, RenderingMethod::RenderInfo *r_render_info = nullptr) = 0;
 
 	struct LightOccluderInstance {
 		bool enabled : 1;

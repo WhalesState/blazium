@@ -30,7 +30,7 @@
 
 #include "canvas_layer.h"
 
-#include "scene/main/canvas_item.h"
+#include "scene/main/element.h"
 #include "scene/main/viewport.h"
 #include "scene/resources/world_2d.h"
 
@@ -55,9 +55,9 @@ void CanvasLayer::set_visible(bool p_visible) {
 	emit_signal(SceneStringName(visibility_changed));
 
 	for (int i = 0; i < get_child_count(); i++) {
-		CanvasItem *c = Object::cast_to<CanvasItem>(get_child(i));
+		Element *c = Object::cast_to<Element>(get_child(i));
 		if (c) {
-			RenderingServer::get_singleton()->canvas_item_set_visible(c->get_canvas_item(), p_visible && c->is_visible());
+			RenderingServer::get_singleton()->element_set_visible(c->get_element(), p_visible && c->is_visible());
 
 			c->_propagate_visibility_changed(p_visible);
 		}

@@ -35,7 +35,7 @@
 #include "core/object/class_db.h"
 #include "core/object/gdvirtual.gen.inc"
 
-class CanvasItem;
+class Element;
 
 class StyleBox : public Resource {
 	GDCLASS(StyleBox, Resource);
@@ -64,10 +64,10 @@ public:
 	float get_margin(Side p_side) const;
 	Point2 get_offset() const;
 
-	virtual void draw(RID p_canvas_item, const Rect2 &p_rect) const;
+	virtual void draw(RID p_element, const Rect2 &p_rect) const;
 	virtual Rect2 get_draw_rect(const Rect2 &p_rect) const;
 
-	CanvasItem *get_current_item_drawn() const;
+	Element *get_current_item_drawn() const;
 
 	virtual bool test_mask(const Point2 &p_point, const Rect2 &p_rect) const;
 
@@ -79,7 +79,7 @@ class StyleBoxEmpty : public StyleBox {
 	virtual float get_style_margin(Side p_side) const override { return 0; }
 
 public:
-	virtual void draw(RID p_canvas_item, const Rect2 &p_rect) const override {}
+	virtual void draw(RID p_element, const Rect2 &p_rect) const override {}
 	StyleBoxEmpty() {}
 };
 

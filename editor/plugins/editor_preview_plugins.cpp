@@ -695,11 +695,11 @@ Ref<Texture2D> EditorFontPreviewPlugin::generate_from_path(const String &p_path,
 
 	const Color c = GLOBAL_GET("rendering/environment/defaults/default_clear_color");
 	const float fg = c.get_luminance() < 0.5 ? 1.0 : 0.0;
-	sampled_font->draw_string(canvas_item, pos, sample, HORIZONTAL_ALIGNMENT_LEFT, -1.f, 50, Color(fg, fg, fg));
+	sampled_font->draw_string(element, pos, sample, HORIZONTAL_ALIGNMENT_LEFT, -1.f, 50, Color(fg, fg, fg));
 
 	draw_requester.request_and_wait(viewport);
 
-	RS::get_singleton()->canvas_item_clear(canvas_item);
+	RS::get_singleton()->element_clear(element);
 
 	Ref<Image> img = RS::get_singleton()->texture_2d_get(viewport_texture);
 	ERR_FAIL_COND_V(img.is_null(), Ref<ImageTexture>());
@@ -735,15 +735,15 @@ EditorFontPreviewPlugin::EditorFontPreviewPlugin() {
 	viewport_texture = RS::get_singleton()->viewport_get_texture(viewport);
 
 	canvas = RS::get_singleton()->canvas_create();
-	canvas_item = RS::get_singleton()->canvas_item_create();
+	element = RS::get_singleton()->element_create();
 
 	RS::get_singleton()->viewport_attach_canvas(viewport, canvas);
-	RS::get_singleton()->canvas_item_set_parent(canvas_item, canvas);
+	RS::get_singleton()->element_set_parent(element, canvas);
 }
 
 EditorFontPreviewPlugin::~EditorFontPreviewPlugin() {
 	ERR_FAIL_NULL(RenderingServer::get_singleton());
-	RS::get_singleton()->free(canvas_item);
+	RS::get_singleton()->free(element);
 	RS::get_singleton()->free(canvas);
 	RS::get_singleton()->free(viewport);
 }

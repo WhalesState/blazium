@@ -226,7 +226,7 @@ void Viewport::_process_dirty_canvas_parent_orders() {
 		Node *n = static_cast<Node *>(obj);
 		for (int i = 0; i < n->get_child_count(); i++) {
 			Node *c = n->get_child(i);
-			CanvasItem *ci = Object::cast_to<CanvasItem>(c);
+			Element *ci = Object::cast_to<Element>(c);
 			if (ci) {
 				ci->update_draw_order();
 				continue;
@@ -261,7 +261,7 @@ void Viewport::_sub_window_update_order() {
 	}
 
 	for (int i = 0; i < gui.sub_windows.size(); i++) {
-		RS::get_singleton()->canvas_item_set_draw_index(gui.sub_windows[i].canvas_item, i);
+		RS::get_singleton()->element_set_draw_index(gui.sub_windows[i].element, i);
 	}
 }
 
@@ -277,8 +277,8 @@ void Viewport::_sub_window_register(Window *p_window) {
 		RS::get_singleton()->viewport_set_canvas_stacking(viewport, subwindow_canvas, SUBWINDOW_CANVAS_LAYER, 0);
 	}
 	SubWindow sw;
-	sw.canvas_item = RS::get_singleton()->canvas_item_create();
-	RS::get_singleton()->canvas_item_set_parent(sw.canvas_item, subwindow_canvas);
+	sw.element = RS::get_singleton()->element_create();
+	RS::get_singleton()->element_set_parent(sw.element, subwindow_canvas);
 	sw.window = p_window;
 	gui.sub_windows.push_back(sw);
 
@@ -308,12 +308,12 @@ void Viewport::_sub_window_update(Window *p_window) {
 
 	Transform2D pos;
 	pos.set_origin(p_window->get_position());
-	RS::get_singleton()->canvas_item_clear(sw.canvas_item);
+	RS::get_singleton()->element_clear(sw.element);
 	Rect2i r = Rect2i(p_window->get_position(), sw.window->get_size());
 
 	if (!p_window->get_flag(Window::FLAG_BORDERLESS)) {
 		Ref<StyleBox> panel = gui.subwindow_focused == p_window ? p_window->theme_cache.embedded_border : p_window->theme_cache.embedded_unfocused_border;
-		panel->draw(sw.canvas_item, r);
+		panel->draw(sw.element, r);
 
 		// Draw the title bar text.
 		Ref<Font> title_font = p_window->theme_cache.title_font;
@@ -332,16 +332,16 @@ void Viewport::_sub_window_update(Window *p_window) {
 		Color font_outline_color = p_window->theme_cache.title_outline_modulate;
 		int outline_size = p_window->theme_cache.title_outline_size;
 		if (outline_size > 0 && font_outline_color.a > 0) {
-			title_text.draw_outline(sw.canvas_item, r.position + Point2(x, y), outline_size, font_outline_color);
+			title_text.draw_outline(sw.element, r.position + Point2(x, y), outline_size, font_outline_color);
 		}
-		title_text.draw(sw.canvas_item, r.position + Point2(x, y), title_color);
+		title_text.draw(sw.element, r.position + Point2(x, y), title_color);
 
 		bool pressed = gui.subwindow_focused == sw.window && gui.subwindow_drag == SUB_WINDOW_DRAG_CLOSE && gui.subwindow_drag_close_inside;
 		Ref<Texture2D> close_icon = pressed ? p_window->theme_cache.close_pressed : p_window->theme_cache.close;
-		close_icon->draw(sw.canvas_item, r.position + Vector2(r.size.width - close_h_ofs, -close_v_ofs));
+		close_icon->draw(sw.element, r.position + Vector2(r.size.width - close_h_ofs, -close_v_ofs));
 	}
 
-	RS::get_singleton()->canvas_item_add_texture_rect(sw.canvas_item, r, sw.window->get_texture()->get_rid());
+	RS::get_singleton()->element_add_texture_rect(sw.element, r, sw.window->get_texture()->get_rid());
 }
 
 void Viewport::_sub_window_grab_focus(Window *p_window) {
@@ -429,7 +429,7 @@ void Viewport::_sub_window_remove(Window *p_window) {
 		sw.window->_mouse_leave_viewport();
 		gui.subwindow_over = nullptr;
 	}
-	RS::get_singleton()->free(sw.canvas_item);
+	RS::get_singleton()->free(sw.element);
 	gui.sub_windows.remove_at(index);
 
 	if (gui.sub_windows.size() == 0) {
@@ -521,8 +521,8 @@ void Viewport::_notification(int p_what) {
 			add_to_group("_viewports");
 			if (get_tree()->is_debugging_collisions_hint()) {
 				PhysicsServer2D::get_singleton()->space_set_debug_contacts(find_world_2d()->get_space(), get_tree()->get_collision_debug_contact_count());
-				contact_2d_debug = RenderingServer::get_singleton()->canvas_item_create();
-				RenderingServer::get_singleton()->canvas_item_set_parent(contact_2d_debug, current_canvas);
+				contact_2d_debug = RenderingServer::get_singleton()->element_create();
+				RenderingServer::get_singleton()->element_set_parent(contact_2d_debug, current_canvas);
 				set_physics_process_internal(true);
 			}
 		} break;
@@ -564,15 +564,15 @@ void Viewport::_notification(int p_what) {
 			}
 
 			if (get_tree()->is_debugging_collisions_hint() && contact_2d_debug.is_valid()) {
-				RenderingServer::get_singleton()->canvas_item_clear(contact_2d_debug);
-				RenderingServer::get_singleton()->canvas_item_set_draw_index(contact_2d_debug, 0xFFFFF); //very high index
+				RenderingServer::get_singleton()->element_clear(contact_2d_debug);
+				RenderingServer::get_singleton()->element_set_draw_index(contact_2d_debug, 0xFFFFF); //very high index
 
 				Vector<Vector2> points = PhysicsServer2D::get_singleton()->space_get_contacts(find_world_2d()->get_space());
 				int point_count = PhysicsServer2D::get_singleton()->space_get_contact_count(find_world_2d()->get_space());
 				Color ccol = get_tree()->get_debug_collision_contact_color();
 
 				for (int i = 0; i < point_count; i++) {
-					RenderingServer::get_singleton()->canvas_item_add_rect(contact_2d_debug, Rect2(points[i] - Vector2(2, 2), Vector2(5, 5)), ccol);
+					RenderingServer::get_singleton()->element_add_rect(contact_2d_debug, Rect2(points[i] - Vector2(2, 2), Vector2(5, 5)), ccol);
 				}
 			}
 		} break;
@@ -808,7 +808,7 @@ RID Viewport::get_viewport_rid() const {
 	return viewport;
 }
 
-void Viewport::update_canvas_items() {
+void Viewport::update_elements() {
 	ERR_MAIN_THREAD_GUARD;
 	if (!is_inside_tree()) {
 		return;
@@ -822,7 +822,7 @@ void Viewport::update_canvas_items() {
 			}
 		}
 	}
-	_update_canvas_items(this);
+	_update_elements(this);
 }
 
 bool Viewport::_set_size(const Size2i &p_size, const Size2i &p_size_2d_override, bool p_allocated) {
@@ -851,7 +851,7 @@ bool Viewport::_set_size(const Size2i &p_size, const Size2i &p_size_2d_override,
 	_update_global_transform();
 	update_configuration_warnings();
 
-	update_canvas_items();
+	update_elements();
 
 	for (ViewportTexture *E : viewport_textures) {
 		E->emit_changed();
@@ -1074,14 +1074,14 @@ Transform2D Viewport::get_final_transform() const {
 	return stretch_transform * global_canvas_transform;
 }
 
-void Viewport::_update_canvas_items(Node *p_node) {
+void Viewport::_update_elements(Node *p_node) {
 	if (p_node != this) {
 		Window *w = Object::cast_to<Window>(p_node);
 		if (w && (!w->is_inside_tree() || !w->is_embedded())) {
 			return;
 		}
 
-		CanvasItem *ci = Object::cast_to<CanvasItem>(p_node);
+		Element *ci = Object::cast_to<Element>(p_node);
 		if (ci) {
 			ci->queue_redraw();
 		}
@@ -1090,7 +1090,7 @@ void Viewport::_update_canvas_items(Node *p_node) {
 	int cc = p_node->get_child_count();
 
 	for (int i = 0; i < cc; i++) {
-		_update_canvas_items(p_node->get_child(i));
+		_update_elements(p_node->get_child(i));
 	}
 }
 
@@ -1379,7 +1379,7 @@ bool Viewport::_gui_call_input(Control *p_control, const Ref<InputEvent> &p_inpu
 					mb->get_button_index() == MouseButton::WHEEL_LEFT ||
 					mb->get_button_index() == MouseButton::WHEEL_RIGHT);
 
-	CanvasItem *ci = p_control;
+	Element *ci = p_control;
 	while (ci) {
 		Control *control = Object::cast_to<Control>(ci);
 		if (control) {
@@ -1417,7 +1417,7 @@ bool Viewport::_gui_call_input(Control *p_control, const Ref<InputEvent> &p_inpu
 }
 
 void Viewport::_gui_call_notification(Control *p_control, int p_what) {
-	CanvasItem *ci = p_control;
+	Element *ci = p_control;
 	while (ci) {
 		Control *control = Object::cast_to<Control>(ci);
 		if (control) {
@@ -1457,7 +1457,7 @@ Control *Viewport::gui_find_control(const Point2 &p_global) {
 		}
 
 		Transform2D xform;
-		CanvasItem *pci = sw->get_parent_item();
+		Element *pci = sw->get_parent_item();
 		if (pci) {
 			xform = pci->get_global_transform_with_canvas();
 		} else {
@@ -1473,7 +1473,7 @@ Control *Viewport::gui_find_control(const Point2 &p_global) {
 	return nullptr;
 }
 
-Control *Viewport::_gui_find_control_at_pos(CanvasItem *p_node, const Point2 &p_global, const Transform2D &p_xform) {
+Control *Viewport::_gui_find_control_at_pos(Element *p_node, const Point2 &p_global, const Transform2D &p_xform) {
 	if (!p_node->is_visible()) {
 		return nullptr; // Canvas item hidden, discard.
 	}
@@ -1488,7 +1488,7 @@ Control *Viewport::_gui_find_control_at_pos(CanvasItem *p_node, const Point2 &p_
 
 	if (!c || !c->is_clipping_contents() || c->has_point(matrix.affine_inverse().xform(p_global))) {
 		for (int i = p_node->get_child_count() - 1; i >= 0; i--) {
-			CanvasItem *ci = Object::cast_to<CanvasItem>(p_node->get_child(i));
+			Element *ci = Object::cast_to<Element>(p_node->get_child(i));
 			if (!ci || ci->is_set_as_top_level()) {
 				continue;
 			}
@@ -1519,7 +1519,7 @@ Control *Viewport::_gui_find_control_at_pos(CanvasItem *p_node, const Point2 &p_
 
 bool Viewport::_gui_drop(Control *p_at_control, Point2 p_at_pos, bool p_just_check) {
 	// Attempt grab, try parent controls too.
-	CanvasItem *ci = p_at_control;
+	Element *ci = p_at_control;
 	while (ci) {
 		Control *control = Object::cast_to<Control>(ci);
 		if (control) {
@@ -1592,7 +1592,7 @@ void Viewport::_gui_input_event(Ref<InputEvent> p_event) {
 #endif
 
 			if (mb->get_button_index() == MouseButton::LEFT) { // Assign focus.
-				CanvasItem *ci = gui.mouse_focus;
+				Element *ci = gui.mouse_focus;
 				while (ci) {
 					Control *control = Object::cast_to<Control>(ci);
 					if (control) {
@@ -1671,7 +1671,7 @@ void Viewport::_gui_input_event(Ref<InputEvent> p_event) {
 			float len = gui.drag_accum.length();
 			if (len > 10) {
 				{ // Attempt grab, try parent controls too.
-					CanvasItem *ci = gui.mouse_focus;
+					Element *ci = gui.mouse_focus;
 					while (ci) {
 						Control *control = Object::cast_to<Control>(ci);
 						if (control) {
@@ -2234,7 +2234,7 @@ void Viewport::_gui_remove_control(Control *p_control) {
 	}
 }
 
-void Viewport::canvas_item_top_level_changed() {
+void Viewport::element_top_level_changed() {
 	_gui_update_mouse_over();
 }
 
@@ -2256,7 +2256,7 @@ void Viewport::_gui_update_mouse_over() {
 	LocalVector<Control *> needs_enter;
 	LocalVector<int> needs_exit;
 
-	CanvasItem *ancestor = gui.mouse_over;
+	Element *ancestor = gui.mouse_over;
 	bool removing = false;
 	bool reached_top = false;
 	while (ancestor) {
@@ -2297,7 +2297,7 @@ void Viewport::_gui_update_mouse_over() {
 				break;
 			} else {
 				removing = true;
-				ancestor = Object::cast_to<CanvasItem>(ancestor->get_parent());
+				ancestor = Object::cast_to<Element>(ancestor->get_parent());
 				continue;
 			}
 		}
@@ -2877,7 +2877,7 @@ void Viewport::_update_mouse_over(Vector2 p_pos) {
 
 		if (over) {
 			// Get all ancestors that the mouse is currently over and need an enter signal.
-			CanvasItem *ancestor = over;
+			Element *ancestor = over;
 			while (ancestor) {
 				Control *ancestor_control = Object::cast_to<Control>(ancestor);
 				if (ancestor_control) {
@@ -3462,65 +3462,65 @@ bool Viewport::is_handling_input_locally() const {
 	return handle_input_locally;
 }
 
-void Viewport::set_default_canvas_item_texture_filter(DefaultCanvasItemTextureFilter p_filter) {
+void Viewport::set_default_element_texture_filter(DefaultElementTextureFilter p_filter) {
 	ERR_MAIN_THREAD_GUARD;
-	ERR_FAIL_INDEX(p_filter, DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_MAX);
+	ERR_FAIL_INDEX(p_filter, DEFAULT_element_TEXTURE_FILTER_MAX);
 
-	if (default_canvas_item_texture_filter == p_filter) {
+	if (default_element_texture_filter == p_filter) {
 		return;
 	}
-	default_canvas_item_texture_filter = p_filter;
-	switch (default_canvas_item_texture_filter) {
-		case DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST:
-			RS::get_singleton()->viewport_set_default_canvas_item_texture_filter(viewport, RS::CANVAS_ITEM_TEXTURE_FILTER_NEAREST);
+	default_element_texture_filter = p_filter;
+	switch (default_element_texture_filter) {
+		case DEFAULT_element_TEXTURE_FILTER_NEAREST:
+			RS::get_singleton()->viewport_set_default_element_texture_filter(viewport, RS::element_TEXTURE_FILTER_NEAREST);
 			break;
-		case DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR:
-			RS::get_singleton()->viewport_set_default_canvas_item_texture_filter(viewport, RS::CANVAS_ITEM_TEXTURE_FILTER_LINEAR);
+		case DEFAULT_element_TEXTURE_FILTER_LINEAR:
+			RS::get_singleton()->viewport_set_default_element_texture_filter(viewport, RS::element_TEXTURE_FILTER_LINEAR);
 			break;
-		case DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS:
-			RS::get_singleton()->viewport_set_default_canvas_item_texture_filter(viewport, RS::CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS);
+		case DEFAULT_element_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS:
+			RS::get_singleton()->viewport_set_default_element_texture_filter(viewport, RS::element_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS);
 			break;
-		case DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS:
-			RS::get_singleton()->viewport_set_default_canvas_item_texture_filter(viewport, RS::CANVAS_ITEM_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS);
+		case DEFAULT_element_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS:
+			RS::get_singleton()->viewport_set_default_element_texture_filter(viewport, RS::element_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS);
 			break;
 		default: {
 		}
 	}
 }
 
-Viewport::DefaultCanvasItemTextureFilter Viewport::get_default_canvas_item_texture_filter() const {
-	ERR_READ_THREAD_GUARD_V(DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST);
-	return default_canvas_item_texture_filter;
+Viewport::DefaultElementTextureFilter Viewport::get_default_element_texture_filter() const {
+	ERR_READ_THREAD_GUARD_V(DEFAULT_element_TEXTURE_FILTER_NEAREST);
+	return default_element_texture_filter;
 }
 
-void Viewport::set_default_canvas_item_texture_repeat(DefaultCanvasItemTextureRepeat p_repeat) {
+void Viewport::set_default_element_texture_repeat(DefaultElementTextureRepeat p_repeat) {
 	ERR_MAIN_THREAD_GUARD;
-	ERR_FAIL_INDEX(p_repeat, DEFAULT_CANVAS_ITEM_TEXTURE_REPEAT_MAX);
+	ERR_FAIL_INDEX(p_repeat, DEFAULT_element_TEXTURE_REPEAT_MAX);
 
-	if (default_canvas_item_texture_repeat == p_repeat) {
+	if (default_element_texture_repeat == p_repeat) {
 		return;
 	}
 
-	default_canvas_item_texture_repeat = p_repeat;
+	default_element_texture_repeat = p_repeat;
 
-	switch (default_canvas_item_texture_repeat) {
-		case DEFAULT_CANVAS_ITEM_TEXTURE_REPEAT_DISABLED:
-			RS::get_singleton()->viewport_set_default_canvas_item_texture_repeat(viewport, RS::CANVAS_ITEM_TEXTURE_REPEAT_DISABLED);
+	switch (default_element_texture_repeat) {
+		case DEFAULT_element_TEXTURE_REPEAT_DISABLED:
+			RS::get_singleton()->viewport_set_default_element_texture_repeat(viewport, RS::element_TEXTURE_REPEAT_DISABLED);
 			break;
-		case DEFAULT_CANVAS_ITEM_TEXTURE_REPEAT_ENABLED:
-			RS::get_singleton()->viewport_set_default_canvas_item_texture_repeat(viewport, RS::CANVAS_ITEM_TEXTURE_REPEAT_ENABLED);
+		case DEFAULT_element_TEXTURE_REPEAT_ENABLED:
+			RS::get_singleton()->viewport_set_default_element_texture_repeat(viewport, RS::element_TEXTURE_REPEAT_ENABLED);
 			break;
-		case DEFAULT_CANVAS_ITEM_TEXTURE_REPEAT_MIRROR:
-			RS::get_singleton()->viewport_set_default_canvas_item_texture_repeat(viewport, RS::CANVAS_ITEM_TEXTURE_REPEAT_MIRROR);
+		case DEFAULT_element_TEXTURE_REPEAT_MIRROR:
+			RS::get_singleton()->viewport_set_default_element_texture_repeat(viewport, RS::element_TEXTURE_REPEAT_MIRROR);
 			break;
 		default: {
 		}
 	}
 }
 
-Viewport::DefaultCanvasItemTextureRepeat Viewport::get_default_canvas_item_texture_repeat() const {
-	ERR_READ_THREAD_GUARD_V(DEFAULT_CANVAS_ITEM_TEXTURE_REPEAT_DISABLED);
-	return default_canvas_item_texture_repeat;
+Viewport::DefaultElementTextureRepeat Viewport::get_default_element_texture_repeat() const {
+	ERR_READ_THREAD_GUARD_V(DEFAULT_element_TEXTURE_REPEAT_DISABLED);
+	return default_element_texture_repeat;
 }
 
 void Viewport::set_vrs_mode(Viewport::VRSMode p_vrs_mode) {
@@ -3928,8 +3928,8 @@ void Viewport::assign_next_enabled_camera_2d(const StringName &p_camera_group) {
 
 void Viewport::_propagate_world_2d_changed(Node *p_node) {
 	if (p_node != this) {
-		if (Object::cast_to<CanvasItem>(p_node)) {
-			p_node->notification(CanvasItem::NOTIFICATION_WORLD_2D_CHANGED);
+		if (Object::cast_to<Element>(p_node)) {
+			p_node->notification(Element::NOTIFICATION_WORLD_2D_CHANGED);
 		} else {
 			Viewport *v = Object::cast_to<Viewport>(p_node);
 			if (v) {
@@ -4044,8 +4044,8 @@ void Viewport::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_handle_input_locally", "enable"), &Viewport::set_handle_input_locally);
 	ClassDB::bind_method(D_METHOD("is_handling_input_locally"), &Viewport::is_handling_input_locally);
 
-	ClassDB::bind_method(D_METHOD("set_default_canvas_item_texture_filter", "mode"), &Viewport::set_default_canvas_item_texture_filter);
-	ClassDB::bind_method(D_METHOD("get_default_canvas_item_texture_filter"), &Viewport::get_default_canvas_item_texture_filter);
+	ClassDB::bind_method(D_METHOD("set_default_element_texture_filter", "mode"), &Viewport::set_default_element_texture_filter);
+	ClassDB::bind_method(D_METHOD("get_default_element_texture_filter"), &Viewport::get_default_element_texture_filter);
 
 	ClassDB::bind_method(D_METHOD("set_embedding_subwindows", "enable"), &Viewport::set_embedding_subwindows);
 	ClassDB::bind_method(D_METHOD("is_embedding_subwindows"), &Viewport::is_embedding_subwindows);
@@ -4057,8 +4057,8 @@ void Viewport::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_canvas_cull_mask_bit", "layer", "enable"), &Viewport::set_canvas_cull_mask_bit);
 	ClassDB::bind_method(D_METHOD("get_canvas_cull_mask_bit", "layer"), &Viewport::get_canvas_cull_mask_bit);
 
-	ClassDB::bind_method(D_METHOD("set_default_canvas_item_texture_repeat", "mode"), &Viewport::set_default_canvas_item_texture_repeat);
-	ClassDB::bind_method(D_METHOD("get_default_canvas_item_texture_repeat"), &Viewport::get_default_canvas_item_texture_repeat);
+	ClassDB::bind_method(D_METHOD("set_default_element_texture_repeat", "mode"), &Viewport::set_default_element_texture_repeat);
+	ClassDB::bind_method(D_METHOD("get_default_element_texture_repeat"), &Viewport::get_default_element_texture_repeat);
 
 	ClassDB::bind_method(D_METHOD("set_sdf_oversize", "oversize"), &Viewport::set_sdf_oversize);
 	ClassDB::bind_method(D_METHOD("get_sdf_oversize"), &Viewport::get_sdf_oversize);
@@ -4090,9 +4090,9 @@ void Viewport::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "mesh_lod_threshold", PROPERTY_HINT_RANGE, "0,1024,0.1"), "set_mesh_lod_threshold", "get_mesh_lod_threshold");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "debug_draw", PROPERTY_HINT_ENUM, "Disabled,Unshaded,Lighting,Overdraw,Wireframe,Normal Buffer,VoxelGI Albedo,VoxelGI Lighting,VoxelGI Emission,Shadow Atlas,Directional Shadow Map,Scene Luminance,SSAO,SSIL,Directional Shadow Splits,Decal Atlas,SDFGI Cascades,SDFGI Probes,VoxelGI/SDFGI Buffer,Disable Mesh LOD,OmniLight3D Cluster,SpotLight3D Cluster,Decal Cluster,ReflectionProbe Cluster,Occlusion Culling Buffer,Motion Vectors,Internal Buffer"), "set_debug_draw", "get_debug_draw");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "use_hdr_2d"), "set_use_hdr_2d", "is_using_hdr_2d");
-	ADD_GROUP("Canvas Items", "canvas_item_");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "canvas_item_default_texture_filter", PROPERTY_HINT_ENUM, "Nearest,Linear,Linear Mipmap,Nearest Mipmap"), "set_default_canvas_item_texture_filter", "get_default_canvas_item_texture_filter");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "canvas_item_default_texture_repeat", PROPERTY_HINT_ENUM, "Disabled,Enabled,Mirror"), "set_default_canvas_item_texture_repeat", "get_default_canvas_item_texture_repeat");
+	ADD_GROUP("Canvas Items", "element_");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "element_default_texture_filter", PROPERTY_HINT_ENUM, "Nearest,Linear,Linear Mipmap,Nearest Mipmap"), "set_default_element_texture_filter", "get_default_element_texture_filter");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "element_default_texture_repeat", PROPERTY_HINT_ENUM, "Disabled,Enabled,Mirror"), "set_default_element_texture_repeat", "get_default_element_texture_repeat");
 	ADD_GROUP("Audio Listener", "audio_listener_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "audio_listener_enable_2d"), "set_as_audio_listener_2d", "is_audio_listener_2d");
 	ADD_GROUP("Physics", "physics_");
@@ -4182,16 +4182,16 @@ void Viewport::_bind_methods() {
 	BIND_ENUM_CONSTANT(DEBUG_DRAW_MOTION_VECTORS)
 	BIND_ENUM_CONSTANT(DEBUG_DRAW_INTERNAL_BUFFER);
 
-	BIND_ENUM_CONSTANT(DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST);
-	BIND_ENUM_CONSTANT(DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR);
-	BIND_ENUM_CONSTANT(DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS);
-	BIND_ENUM_CONSTANT(DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS);
-	BIND_ENUM_CONSTANT(DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_MAX);
+	BIND_ENUM_CONSTANT(DEFAULT_element_TEXTURE_FILTER_NEAREST);
+	BIND_ENUM_CONSTANT(DEFAULT_element_TEXTURE_FILTER_LINEAR);
+	BIND_ENUM_CONSTANT(DEFAULT_element_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS);
+	BIND_ENUM_CONSTANT(DEFAULT_element_TEXTURE_FILTER_NEAREST_WITH_MIPMAPS);
+	BIND_ENUM_CONSTANT(DEFAULT_element_TEXTURE_FILTER_MAX);
 
-	BIND_ENUM_CONSTANT(DEFAULT_CANVAS_ITEM_TEXTURE_REPEAT_DISABLED);
-	BIND_ENUM_CONSTANT(DEFAULT_CANVAS_ITEM_TEXTURE_REPEAT_ENABLED);
-	BIND_ENUM_CONSTANT(DEFAULT_CANVAS_ITEM_TEXTURE_REPEAT_MIRROR);
-	BIND_ENUM_CONSTANT(DEFAULT_CANVAS_ITEM_TEXTURE_REPEAT_MAX);
+	BIND_ENUM_CONSTANT(DEFAULT_element_TEXTURE_REPEAT_DISABLED);
+	BIND_ENUM_CONSTANT(DEFAULT_element_TEXTURE_REPEAT_ENABLED);
+	BIND_ENUM_CONSTANT(DEFAULT_element_TEXTURE_REPEAT_MIRROR);
+	BIND_ENUM_CONSTANT(DEFAULT_element_TEXTURE_REPEAT_MAX);
 
 	BIND_ENUM_CONSTANT(SDF_OVERSIZE_100_PERCENT);
 	BIND_ENUM_CONSTANT(SDF_OVERSIZE_120_PERCENT);

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  canvas_item.cpp                                                       */
+/*  element.cpp                                                       */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,14 +28,14 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "canvas_item.h"
-#include "canvas_item.compat.inc"
+#include "element.h"
+#include "element.compat.inc"
 
 #include "scene/2d/canvas_group.h"
 #include "scene/main/canvas_layer.h"
 #include "scene/main/window.h"
 #include "scene/resources/atlas_texture.h"
-#include "scene/resources/canvas_item_material.h"
+#include "scene/resources/element_material.h"
 #include "scene/resources/font.h"
 #include "scene/resources/multimesh.h"
 #include "scene/resources/style_box.h"
@@ -45,7 +45,7 @@
 	ERR_FAIL_COND_MSG(!drawing, "Drawing is only allowed inside this node's `_draw()`, functions connected to its `draw` signal, or when it receives NOTIFICATION_DRAW.")
 
 #ifdef TOOLS_ENABLED
-bool CanvasItem::_edit_is_selected_on_click(const Point2 &p_point, double p_tolerance) const {
+bool Element::_edit_is_selected_on_click(const Point2 &p_point, double p_tolerance) const {
 	if (_edit_use_rect()) {
 		return _edit_get_rect().has_point(p_point);
 	} else {
@@ -53,17 +53,17 @@ bool CanvasItem::_edit_is_selected_on_click(const Point2 &p_point, double p_tole
 	}
 }
 
-Transform2D CanvasItem::_edit_get_transform() const {
+Transform2D Element::_edit_get_transform() const {
 	return Transform2D(_edit_get_rotation(), _edit_get_position() + _edit_get_pivot());
 }
 #endif
 
-bool CanvasItem::is_visible_in_tree() const {
+bool Element::is_visible_in_tree() const {
 	ERR_READ_THREAD_GUARD_V(false);
 	return visible && parent_visible_in_tree;
 }
 
-void CanvasItem::_propagate_visibility_changed(bool p_parent_visible_in_tree) {
+void Element::_propagate_visibility_changed(bool p_parent_visible_in_tree) {
 	parent_visible_in_tree = p_parent_visible_in_tree;
 	if (!visible) {
 		return;
@@ -72,7 +72,7 @@ void CanvasItem::_propagate_visibility_changed(bool p_parent_visible_in_tree) {
 	_handle_visibility_change(p_parent_visible_in_tree);
 }
 
-void CanvasItem::set_visible(bool p_visible) {
+void Element::set_visible(bool p_visible) {
 	ERR_MAIN_THREAD_GUARD;
 	if (visible == p_visible) {
 		return;
@@ -88,8 +88,8 @@ void CanvasItem::set_visible(bool p_visible) {
 	_handle_visibility_change(p_visible);
 }
 
-void CanvasItem::_handle_visibility_change(bool p_visible) {
-	RenderingServer::get_singleton()->canvas_item_set_visible(canvas_item, p_visible);
+void Element::_handle_visibility_change(bool p_visible) {
+	RenderingServer::get_singleton()->element_set_visible(element, p_visible);
 	notification(NOTIFICATION_VISIBILITY_CHANGED);
 
 	if (p_visible) {
@@ -100,7 +100,7 @@ void CanvasItem::_handle_visibility_change(bool p_visible) {
 
 	_block();
 	for (int i = 0; i < get_child_count(); i++) {
-		CanvasItem *c = Object::cast_to<CanvasItem>(get_child(i));
+		Element *c = Object::cast_to<Element>(get_child(i));
 
 		if (c) { // Should the top_levels stop propagation? I think so, but...
 			c->_propagate_visibility_changed(p_visible);
@@ -109,33 +109,33 @@ void CanvasItem::_handle_visibility_change(bool p_visible) {
 	_unblock();
 }
 
-void CanvasItem::show() {
+void Element::show() {
 	ERR_MAIN_THREAD_GUARD;
 	set_visible(true);
 }
 
-void CanvasItem::hide() {
+void Element::hide() {
 	ERR_MAIN_THREAD_GUARD;
 	set_visible(false);
 }
 
-bool CanvasItem::is_visible() const {
+bool Element::is_visible() const {
 	ERR_READ_THREAD_GUARD_V(false);
 	return visible;
 }
 
-CanvasItem *CanvasItem::current_item_drawn = nullptr;
-CanvasItem *CanvasItem::get_current_item_drawn() {
+Element *Element::current_item_drawn = nullptr;
+Element *Element::get_current_item_drawn() {
 	return current_item_drawn;
 }
 
-void CanvasItem::_redraw_callback() {
+void Element::_redraw_callback() {
 	if (!is_inside_tree()) {
 		pending_update = false;
 		return;
 	}
 
-	RenderingServer::get_singleton()->canvas_item_clear(get_canvas_item());
+	RenderingServer::get_singleton()->element_clear(get_element());
 	//todo updating = true - only allow drawing here
 	if (is_visible_in_tree()) {
 		drawing = true;
@@ -150,7 +150,7 @@ void CanvasItem::_redraw_callback() {
 	pending_update = false; // don't change to false until finished drawing (avoid recursive update)
 }
 
-Transform2D CanvasItem::get_global_transform_with_canvas() const {
+Transform2D Element::get_global_transform_with_canvas() const {
 	ERR_READ_THREAD_GUARD_V(Transform2D());
 	if (canvas_layer) {
 		return canvas_layer->get_final_transform() * get_global_transform();
@@ -161,18 +161,18 @@ Transform2D CanvasItem::get_global_transform_with_canvas() const {
 	}
 }
 
-Transform2D CanvasItem::get_screen_transform() const {
+Transform2D Element::get_screen_transform() const {
 	ERR_READ_THREAD_GUARD_V(Transform2D());
 	ERR_FAIL_COND_V(!is_inside_tree(), Transform2D());
 	return get_viewport()->get_popup_base_transform() * get_global_transform_with_canvas();
 }
 
-Transform2D CanvasItem::get_global_transform() const {
+Transform2D Element::get_global_transform() const {
 	ERR_READ_THREAD_GUARD_V(Transform2D());
 
 	if (_is_global_invalid()) {
 		// This code can enter multiple times from threads if dirty, this is expected.
-		const CanvasItem *pi = get_parent_item();
+		const Element *pi = get_parent_item();
 		Transform2D new_global;
 		if (pi) {
 			new_global = pi->get_global_transform() * get_transform();
@@ -187,7 +187,7 @@ Transform2D CanvasItem::get_global_transform() const {
 	return global_transform;
 }
 
-void CanvasItem::_set_global_invalid(bool p_invalid) const {
+void Element::_set_global_invalid(bool p_invalid) const {
 	if (is_group_processing()) {
 		if (p_invalid) {
 			global_invalid.mt.set();
@@ -199,21 +199,21 @@ void CanvasItem::_set_global_invalid(bool p_invalid) const {
 	}
 }
 
-void CanvasItem::_top_level_raise_self() {
+void Element::_top_level_raise_self() {
 	if (!is_inside_tree()) {
 		return;
 	}
 
 	if (canvas_layer) {
-		RenderingServer::get_singleton()->canvas_item_set_draw_index(canvas_item, canvas_layer->get_sort_index());
+		RenderingServer::get_singleton()->element_set_draw_index(element, canvas_layer->get_sort_index());
 	} else {
-		RenderingServer::get_singleton()->canvas_item_set_draw_index(canvas_item, get_viewport()->gui_get_canvas_sort_index());
+		RenderingServer::get_singleton()->element_set_draw_index(element, get_viewport()->gui_get_canvas_sort_index());
 	}
 }
 
-void CanvasItem::_enter_canvas() {
+void Element::_enter_canvas() {
 	// Resolves to nullptr if the node is top_level.
-	CanvasItem *parent_item = get_parent_item();
+	Element *parent_item = get_parent_item();
 
 	if (get_parent()) {
 		get_viewport()->canvas_parent_mark_dirty(get_parent());
@@ -221,8 +221,8 @@ void CanvasItem::_enter_canvas() {
 
 	if (parent_item) {
 		canvas_layer = parent_item->canvas_layer;
-		RenderingServer::get_singleton()->canvas_item_set_parent(canvas_item, parent_item->get_canvas_item());
-		RenderingServer::get_singleton()->canvas_item_set_visibility_layer(canvas_item, visibility_layer);
+		RenderingServer::get_singleton()->element_set_parent(element, parent_item->get_element());
+		RenderingServer::get_singleton()->element_set_visibility_layer(element, visibility_layer);
 	} else {
 		Node *n = this;
 
@@ -246,8 +246,8 @@ void CanvasItem::_enter_canvas() {
 			canvas = get_viewport()->find_world_2d()->get_canvas();
 		}
 
-		RenderingServer::get_singleton()->canvas_item_set_parent(canvas_item, canvas);
-		RenderingServer::get_singleton()->canvas_item_set_visibility_layer(canvas_item, visibility_layer);
+		RenderingServer::get_singleton()->element_set_parent(element, canvas);
+		RenderingServer::get_singleton()->element_set_visibility_layer(element, visibility_layer);
 
 		canvas_group = "_root_canvas" + itos(canvas.get_id());
 
@@ -265,9 +265,9 @@ void CanvasItem::_enter_canvas() {
 	notification(NOTIFICATION_ENTER_CANVAS);
 }
 
-void CanvasItem::_exit_canvas() {
+void Element::_exit_canvas() {
 	notification(NOTIFICATION_EXIT_CANVAS, true); //reverse the notification
-	RenderingServer::get_singleton()->canvas_item_set_parent(canvas_item, RID());
+	RenderingServer::get_singleton()->element_set_parent(element, RID());
 	canvas_layer = nullptr;
 	if (canvas_group != StringName()) {
 		remove_from_group(canvas_group);
@@ -275,7 +275,7 @@ void CanvasItem::_exit_canvas() {
 	}
 }
 
-void CanvasItem::_notification(int p_what) {
+void Element::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
 			ERR_MAIN_THREAD_GUARD;
@@ -283,7 +283,7 @@ void CanvasItem::_notification(int p_what) {
 
 			Node *parent = get_parent();
 			if (parent) {
-				CanvasItem *ci = Object::cast_to<CanvasItem>(parent);
+				Element *ci = Object::cast_to<Element>(parent);
 
 				if (ci) {
 					parent_visible_in_tree = ci->is_visible_in_tree();
@@ -309,7 +309,7 @@ void CanvasItem::_notification(int p_what) {
 
 						window = Object::cast_to<Window>(viewport);
 						if (window) {
-							window->connect(SceneStringName(visibility_changed), callable_mp(this, &CanvasItem::_window_visibility_changed));
+							window->connect(SceneStringName(visibility_changed), callable_mp(this, &Element::_window_visibility_changed));
 							parent_visible_in_tree = window->is_visible();
 						} else {
 							parent_visible_in_tree = true;
@@ -321,7 +321,7 @@ void CanvasItem::_notification(int p_what) {
 			_set_global_invalid(true);
 			_enter_canvas();
 
-			RenderingServer::get_singleton()->canvas_item_set_visible(canvas_item, is_visible_in_tree()); // The visibility of the parent may change.
+			RenderingServer::get_singleton()->element_set_visible(element, is_visible_in_tree()); // The visibility of the parent may change.
 			if (is_visible_in_tree()) {
 				notification(NOTIFICATION_VISIBILITY_CHANGED); // Considered invisible until entered.
 			}
@@ -359,11 +359,11 @@ void CanvasItem::_notification(int p_what) {
 			}
 			_exit_canvas();
 			if (C) {
-				Object::cast_to<CanvasItem>(get_parent())->children_items.erase(C);
+				Object::cast_to<Element>(get_parent())->children_items.erase(C);
 				C = nullptr;
 			}
 			if (window) {
-				window->disconnect(SceneStringName(visibility_changed), callable_mp(this, &CanvasItem::_window_visibility_changed));
+				window->disconnect(SceneStringName(visibility_changed), callable_mp(this, &Element::_window_visibility_changed));
 				window = nullptr;
 			}
 			_set_global_invalid(true);
@@ -376,7 +376,7 @@ void CanvasItem::_notification(int p_what) {
 
 		case NOTIFICATION_RESET_PHYSICS_INTERPOLATION: {
 			if (is_visible_in_tree() && is_physics_interpolated()) {
-				RenderingServer::get_singleton()->canvas_item_reset_physics_interpolation(canvas_item);
+				RenderingServer::get_singleton()->element_reset_physics_interpolation(element);
 			}
 		} break;
 
@@ -400,7 +400,7 @@ void CanvasItem::_notification(int p_what) {
 	}
 }
 
-void CanvasItem::update_draw_order() {
+void Element::update_draw_order() {
 	ERR_MAIN_THREAD_GUARD;
 
 	if (!is_inside_tree()) {
@@ -411,15 +411,15 @@ void CanvasItem::update_draw_order() {
 		get_tree()->call_group_flags(SceneTree::GROUP_CALL_UNIQUE | SceneTree::GROUP_CALL_DEFERRED, canvas_group, "_top_level_raise_self");
 	} else {
 		ERR_FAIL_NULL_MSG(get_parent_item(), "Moved child is in incorrect state (no canvas group, no canvas item parent).");
-		RenderingServer::get_singleton()->canvas_item_set_draw_index(canvas_item, get_index());
+		RenderingServer::get_singleton()->element_set_draw_index(element, get_index());
 	}
 }
 
-void CanvasItem::_window_visibility_changed() {
+void Element::_window_visibility_changed() {
 	_propagate_visibility_changed(window->is_visible());
 }
 
-void CanvasItem::queue_redraw() {
+void Element::queue_redraw() {
 	ERR_THREAD_GUARD; // Calling from thread is safe.
 	if (!is_inside_tree()) {
 		return;
@@ -430,10 +430,10 @@ void CanvasItem::queue_redraw() {
 
 	pending_update = true;
 
-	callable_mp(this, &CanvasItem::_redraw_callback).call_deferred();
+	callable_mp(this, &Element::_redraw_callback).call_deferred();
 }
 
-void CanvasItem::move_to_front() {
+void Element::move_to_front() {
 	ERR_MAIN_THREAD_GUARD;
 	if (!get_parent()) {
 		return;
@@ -441,25 +441,25 @@ void CanvasItem::move_to_front() {
 	get_parent()->move_child(this, -1);
 }
 
-void CanvasItem::set_modulate(const Color &p_modulate) {
+void Element::set_modulate(const Color &p_modulate) {
 	ERR_THREAD_GUARD;
 	if (modulate == p_modulate) {
 		return;
 	}
 
 	modulate = p_modulate;
-	RenderingServer::get_singleton()->canvas_item_set_modulate(canvas_item, modulate);
+	RenderingServer::get_singleton()->element_set_modulate(element, modulate);
 }
 
-Color CanvasItem::get_modulate() const {
+Color Element::get_modulate() const {
 	ERR_READ_THREAD_GUARD_V(Color());
 	return modulate;
 }
 
-Color CanvasItem::get_modulate_in_tree() const {
+Color Element::get_modulate_in_tree() const {
 	ERR_READ_THREAD_GUARD_V(Color());
 	Color final_modulate = modulate;
-	CanvasItem *parent_item = get_parent_item();
+	Element *parent_item = get_parent_item();
 	while (parent_item) {
 		final_modulate *= parent_item->get_modulate();
 		parent_item = parent_item->get_parent_item();
@@ -467,7 +467,7 @@ Color CanvasItem::get_modulate_in_tree() const {
 	return final_modulate;
 }
 
-void CanvasItem::set_as_top_level(bool p_top_level) {
+void Element::set_as_top_level(bool p_top_level) {
 	ERR_MAIN_THREAD_GUARD;
 	if (top_level == p_top_level) {
 		return;
@@ -487,70 +487,70 @@ void CanvasItem::set_as_top_level(bool p_top_level) {
 	_notify_transform();
 
 	if (get_viewport()) {
-		get_viewport()->canvas_item_top_level_changed();
+		get_viewport()->element_top_level_changed();
 	}
 }
 
-void CanvasItem::_top_level_changed() {
+void Element::_top_level_changed() {
 	// Inform children that top_level status has changed on a parent.
 	int children = get_child_count();
 	for (int i = 0; i < children; i++) {
-		CanvasItem *child = Object::cast_to<CanvasItem>(get_child(i));
+		Element *child = Object::cast_to<Element>(get_child(i));
 		if (child) {
 			child->_top_level_changed_on_parent();
 		}
 	}
 }
 
-void CanvasItem::_top_level_changed_on_parent() {
+void Element::_top_level_changed_on_parent() {
 	// Inform children that top_level status has changed on a parent.
 	_top_level_changed();
 }
 
-bool CanvasItem::is_set_as_top_level() const {
+bool Element::is_set_as_top_level() const {
 	return top_level;
 }
 
-CanvasItem *CanvasItem::get_parent_item() const {
+Element *Element::get_parent_item() const {
 	ERR_READ_THREAD_GUARD_V(nullptr);
 	if (top_level) {
 		return nullptr;
 	}
 
-	return Object::cast_to<CanvasItem>(get_parent());
+	return Object::cast_to<Element>(get_parent());
 }
 
-void CanvasItem::set_self_modulate(const Color &p_self_modulate) {
+void Element::set_self_modulate(const Color &p_self_modulate) {
 	ERR_THREAD_GUARD;
 	if (self_modulate == p_self_modulate) {
 		return;
 	}
 
 	self_modulate = p_self_modulate;
-	RenderingServer::get_singleton()->canvas_item_set_self_modulate(canvas_item, self_modulate);
+	RenderingServer::get_singleton()->element_set_self_modulate(element, self_modulate);
 }
 
-Color CanvasItem::get_self_modulate() const {
+Color Element::get_self_modulate() const {
 	ERR_READ_THREAD_GUARD_V(Color());
 	return self_modulate;
 }
 
-void CanvasItem::set_light_mask(int p_light_mask) {
+void Element::set_light_mask(int p_light_mask) {
 	ERR_THREAD_GUARD;
 	if (light_mask == p_light_mask) {
 		return;
 	}
 
 	light_mask = p_light_mask;
-	RS::get_singleton()->canvas_item_set_light_mask(canvas_item, p_light_mask);
+	RS::get_singleton()->element_set_light_mask(element, p_light_mask);
 }
 
-int CanvasItem::get_light_mask() const {
+int Element::get_light_mask() const {
 	ERR_READ_THREAD_GUARD_V(0);
 	return light_mask;
 }
 
-void CanvasItem::item_rect_changed(bool p_size_changed) {
+void Element::item_rect_changed(bool p_size_changed) {
 	ERR_MAIN_THREAD_GUARD;
 	if (p_size_changed) {
 		queue_redraw();
@@ -558,39 +558,39 @@ void CanvasItem::item_rect_changed(bool p_size_changed) {
 	emit_signal(SceneStringName(item_rect_changed));
 }
 
-void CanvasItem::set_z_index(int p_z) {
+void Element::set_z_index(int p_z) {
 	ERR_THREAD_GUARD;
-	ERR_FAIL_COND(p_z < RS::CANVAS_ITEM_Z_MIN);
-	ERR_FAIL_COND(p_z > RS::CANVAS_ITEM_Z_MAX);
+	ERR_FAIL_COND(p_z < RS::element_Z_MIN);
+	ERR_FAIL_COND(p_z > RS::element_Z_MAX);
 	z_index = p_z;
-	RS::get_singleton()->canvas_item_set_z_index(canvas_item, z_index);
+	RS::get_singleton()->element_set_z_index(element, z_index);
 	update_configuration_warnings();
 }
 
-void CanvasItem::set_z_as_relative(bool p_enabled) {
+void Element::set_z_as_relative(bool p_enabled) {
 	ERR_THREAD_GUARD;
 	if (z_relative == p_enabled) {
 		return;
 	}
 	z_relative = p_enabled;
-	RS::get_singleton()->canvas_item_set_z_as_relative_to_parent(canvas_item, p_enabled);
+	RS::get_singleton()->element_set_z_as_relative_to_parent(element, p_enabled);
 }
 
-bool CanvasItem::is_z_relative() const {
+bool Element::is_z_relative() const {
 	ERR_READ_THREAD_GUARD_V(false);
 	return z_relative;
 }
 
-int CanvasItem::get_z_index() const {
+int Element::get_z_index() const {
 	ERR_READ_THREAD_GUARD_V(0);
 	return z_index;
 }
 
-int CanvasItem::get_effective_z_index() const {
+int Element::get_effective_z_index() const {
 	ERR_READ_THREAD_GUARD_V(0);
 	int effective_z_index = z_index;
 	if (is_z_relative()) {
-		CanvasItem *p = get_parent_item();
+		Element *p = get_parent_item();
 		if (p) {
 			effective_z_index += p->get_effective_z_index();
 		}
@@ -598,18 +598,18 @@ int CanvasItem::get_effective_z_index() const {
 	return effective_z_index;
 }
 
-void CanvasItem::set_y_sort_enabled(bool p_enabled) {
+void Element::set_y_sort_enabled(bool p_enabled) {
 	ERR_THREAD_GUARD;
 	y_sort_enabled = p_enabled;
-	RS::get_singleton()->canvas_item_set_sort_children_by_y(canvas_item, y_sort_enabled);
+	RS::get_singleton()->element_set_sort_children_by_y(element, y_sort_enabled);
 }
 
-bool CanvasItem::is_y_sort_enabled() const {
+bool Element::is_y_sort_enabled() const {
 	ERR_READ_THREAD_GUARD_V(false);
 	return y_sort_enabled;
 }
 
-void CanvasItem::draw_dashed_line(const Point2 &p_from, const Point2 &p_to, const Color &p_color, real_t p_width, real_t p_dash, bool p_aligned, bool p_antialiased) {
+void Element::draw_dashed_line(const Point2 &p_from, const Point2 &p_to, const Color &p_color, real_t p_width, real_t p_dash, bool p_aligned, bool p_antialiased) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 	ERR_FAIL_COND(p_dash <= 0.0);
@@ -618,7 +618,7 @@ void CanvasItem::draw_dashed_line(const Point2 &p_from, const Point2 &p_to, cons
 	Vector2 step = p_dash * (p_to - p_from).normalized();
 
 	if (length < p_dash || step == Vector2()) {
-		RenderingServer::get_singleton()->canvas_item_add_line(canvas_item, p_from, p_to, p_color, p_width, p_antialiased);
+		RenderingServer::get_singleton()->element_add_line(element, p_from, p_to, p_color, p_width, p_antialiased);
 		return;
 	}
 
@@ -642,32 +642,32 @@ void CanvasItem::draw_dashed_line(const Point2 &p_from, const Point2 &p_to, cons
 
 	Vector<Color> colors = { p_color };
 
-	RenderingServer::get_singleton()->canvas_item_add_multiline(canvas_item, points, colors, p_width, p_antialiased);
+	RenderingServer::get_singleton()->element_add_multiline(element, points, colors, p_width, p_antialiased);
 }
 
-void CanvasItem::draw_line(const Point2 &p_from, const Point2 &p_to, const Color &p_color, real_t p_width, bool p_antialiased) {
+void Element::draw_line(const Point2 &p_from, const Point2 &p_to, const Color &p_color, real_t p_width, bool p_antialiased) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
-	RenderingServer::get_singleton()->canvas_item_add_line(canvas_item, p_from, p_to, p_color, p_width, p_antialiased);
+	RenderingServer::get_singleton()->element_add_line(element, p_from, p_to, p_color, p_width, p_antialiased);
 }
 
-void CanvasItem::draw_polyline(const Vector<Point2> &p_points, const Color &p_color, real_t p_width, bool p_antialiased) {
+void Element::draw_polyline(const Vector<Point2> &p_points, const Color &p_color, real_t p_width, bool p_antialiased) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
 	Vector<Color> colors = { p_color };
-	RenderingServer::get_singleton()->canvas_item_add_polyline(canvas_item, p_points, colors, p_width, p_antialiased);
+	RenderingServer::get_singleton()->element_add_polyline(element, p_points, colors, p_width, p_antialiased);
 }
 
-void CanvasItem::draw_polyline_colors(const Vector<Point2> &p_points, const Vector<Color> &p_colors, real_t p_width, bool p_antialiased) {
+void Element::draw_polyline_colors(const Vector<Point2> &p_points, const Vector<Color> &p_colors, real_t p_width, bool p_antialiased) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
-	RenderingServer::get_singleton()->canvas_item_add_polyline(canvas_item, p_points, p_colors, p_width, p_antialiased);
+	RenderingServer::get_singleton()->element_add_polyline(element, p_points, p_colors, p_width, p_antialiased);
 }
 
-void CanvasItem::draw_arc(const Vector2 &p_center, real_t p_radius, real_t p_start_angle, real_t p_end_angle, int p_point_count, const Color &p_color, real_t p_width, bool p_antialiased) {
+void Element::draw_arc(const Vector2 &p_center, real_t p_radius, real_t p_start_angle, real_t p_end_angle, int p_point_count, const Color &p_color, real_t p_width, bool p_antialiased) {
 	ERR_THREAD_GUARD;
 	Vector<Point2> points;
 	points.resize(p_point_count);
@@ -683,22 +683,22 @@ void CanvasItem::draw_arc(const Vector2 &p_center, real_t p_radius, real_t p_sta
 	draw_polyline(points, p_color, p_width, p_antialiased);
 }
 
-void CanvasItem::draw_multiline(const Vector<Point2> &p_points, const Color &p_color, real_t p_width, bool p_antialiased) {
+void Element::draw_multiline(const Vector<Point2> &p_points, const Color &p_color, real_t p_width, bool p_antialiased) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
 	Vector<Color> colors = { p_color };
-	RenderingServer::get_singleton()->canvas_item_add_multiline(canvas_item, p_points, colors, p_width, p_antialiased);
+	RenderingServer::get_singleton()->element_add_multiline(element, p_points, colors, p_width, p_antialiased);
 }
 
-void CanvasItem::draw_multiline_colors(const Vector<Point2> &p_points, const Vector<Color> &p_colors, real_t p_width, bool p_antialiased) {
+void Element::draw_multiline_colors(const Vector<Point2> &p_points, const Vector<Color> &p_colors, real_t p_width, bool p_antialiased) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
-	RenderingServer::get_singleton()->canvas_item_add_multiline(canvas_item, p_points, p_colors, p_width, p_antialiased);
+	RenderingServer::get_singleton()->element_add_multiline(element, p_points, p_colors, p_width, p_antialiased);
 }
 
-void CanvasItem::draw_rect(const Rect2 &p_rect, const Color &p_color, bool p_filled, real_t p_width, bool p_antialiased) {
+void Element::draw_rect(const Rect2 &p_rect, const Color &p_color, bool p_filled, real_t p_width, bool p_antialiased) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
@@ -709,9 +709,9 @@ void CanvasItem::draw_rect(const Rect2 &p_rect, const Color &p_color, bool p_fil
 			WARN_PRINT("The draw_rect() \"width\" argument has no effect when \"filled\" is \"true\".");
 		}
 
-		RenderingServer::get_singleton()->canvas_item_add_rect(canvas_item, rect, p_color, p_antialiased);
+		RenderingServer::get_singleton()->element_add_rect(element, rect, p_color, p_antialiased);
 	} else if (p_width >= rect.size.width || p_width >= rect.size.height) {
-		RenderingServer::get_singleton()->canvas_item_add_rect(canvas_item, rect.grow(0.5f * p_width), p_color, p_antialiased);
+		RenderingServer::get_singleton()->element_add_rect(element, rect.grow(0.5f * p_width), p_color, p_antialiased);
 	} else {
 		Vector<Vector2> points;
 		points.resize(5);
@@ -723,11 +723,11 @@ void CanvasItem::draw_rect(const Rect2 &p_rect, const Color &p_color, bool p_fil
 
 		Vector<Color> colors = { p_color };
 
-		RenderingServer::get_singleton()->canvas_item_add_polyline(canvas_item, points, colors, p_width, p_antialiased);
+		RenderingServer::get_singleton()->element_add_polyline(element, points, colors, p_width, p_antialiased);
 	}
 }
 
-void CanvasItem::draw_circle(const Point2 &p_pos, real_t p_radius, const Color &p_color, bool p_filled, real_t p_width, bool p_antialiased) {
+void Element::draw_circle(const Point2 &p_pos, real_t p_radius, const Color &p_color, bool p_filled, real_t p_width, bool p_antialiased) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
@@ -736,11 +736,11 @@ void CanvasItem::draw_circle(const Point2 &p_pos, real_t p_radius, const Color &
 			WARN_PRINT("The draw_circle() \"width\" argument has no effect when \"filled\" is \"true\".");
 		}
 
-		RenderingServer::get_singleton()->canvas_item_add_circle(canvas_item, p_pos, p_radius, p_color, p_antialiased);
+		RenderingServer::get_singleton()->element_add_circle(element, p_pos, p_radius, p_color, p_antialiased);
 	} else if (p_width >= 2.0 * p_radius) {
-		RenderingServer::get_singleton()->canvas_item_add_circle(canvas_item, p_pos, p_radius + 0.5 * p_width, p_color, p_antialiased);
+		RenderingServer::get_singleton()->element_add_circle(element, p_pos, p_radius + 0.5 * p_width, p_color, p_antialiased);
 	} else {
-		// Tessellation count is hardcoded. Keep in sync with the same variable in `RendererCanvasCull::canvas_item_add_circle()`.
+		// Tessellation count is hardcoded. Keep in sync with the same variable in `RendererCanvasCull::element_add_circle()`.
 		const int circle_segments = 64;
 
 		Vector<Vector2> points;
@@ -759,95 +759,95 @@ void CanvasItem::draw_circle(const Point2 &p_pos, real_t p_radius, const Color &
 
 		Vector<Color> colors = { p_color };
 
-		RenderingServer::get_singleton()->canvas_item_add_polyline(canvas_item, points, colors, p_width, p_antialiased);
+		RenderingServer::get_singleton()->element_add_polyline(element, points, colors, p_width, p_antialiased);
 	}
 }
 
-void CanvasItem::draw_texture(const Ref<Texture2D> &p_texture, const Point2 &p_pos, const Color &p_modulate) {
+void Element::draw_texture(const Ref<Texture2D> &p_texture, const Point2 &p_pos, const Color &p_modulate) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
 	ERR_FAIL_COND(p_texture.is_null());
 
-	p_texture->draw(canvas_item, p_pos, p_modulate, false);
+	p_texture->draw(element, p_pos, p_modulate, false);
 }
 
-void CanvasItem::draw_texture_rect(const Ref<Texture2D> &p_texture, const Rect2 &p_rect, bool p_tile, const Color &p_modulate, bool p_transpose) {
+void Element::draw_texture_rect(const Ref<Texture2D> &p_texture, const Rect2 &p_rect, bool p_tile, const Color &p_modulate, bool p_transpose) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
 	ERR_FAIL_COND(p_texture.is_null());
-	p_texture->draw_rect(canvas_item, p_rect, p_tile, p_modulate, p_transpose);
+	p_texture->draw_rect(element, p_rect, p_tile, p_modulate, p_transpose);
 }
 
-void CanvasItem::draw_texture_rect_region(const Ref<Texture2D> &p_texture, const Rect2 &p_rect, const Rect2 &p_src_rect, const Color &p_modulate, bool p_transpose, bool p_clip_uv) {
+void Element::draw_texture_rect_region(const Ref<Texture2D> &p_texture, const Rect2 &p_rect, const Rect2 &p_src_rect, const Color &p_modulate, bool p_transpose, bool p_clip_uv) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 	ERR_FAIL_COND(p_texture.is_null());
-	p_texture->draw_rect_region(canvas_item, p_rect, p_src_rect, p_modulate, p_transpose, p_clip_uv);
+	p_texture->draw_rect_region(element, p_rect, p_src_rect, p_modulate, p_transpose, p_clip_uv);
 }
 
-void CanvasItem::draw_msdf_texture_rect_region(const Ref<Texture2D> &p_texture, const Rect2 &p_rect, const Rect2 &p_src_rect, const Color &p_modulate, double p_outline, double p_pixel_range, double p_scale) {
+void Element::draw_msdf_texture_rect_region(const Ref<Texture2D> &p_texture, const Rect2 &p_rect, const Rect2 &p_src_rect, const Color &p_modulate, double p_outline, double p_pixel_range, double p_scale) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 	ERR_FAIL_COND(p_texture.is_null());
-	RenderingServer::get_singleton()->canvas_item_add_msdf_texture_rect_region(canvas_item, p_rect, p_texture->get_rid(), p_src_rect, p_modulate, p_outline, p_pixel_range, p_scale);
+	RenderingServer::get_singleton()->element_add_msdf_texture_rect_region(element, p_rect, p_texture->get_rid(), p_src_rect, p_modulate, p_outline, p_pixel_range, p_scale);
 }
 
-void CanvasItem::draw_lcd_texture_rect_region(const Ref<Texture2D> &p_texture, const Rect2 &p_rect, const Rect2 &p_src_rect, const Color &p_modulate) {
+void Element::draw_lcd_texture_rect_region(const Ref<Texture2D> &p_texture, const Rect2 &p_rect, const Rect2 &p_src_rect, const Color &p_modulate) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 	ERR_FAIL_COND(p_texture.is_null());
-	RenderingServer::get_singleton()->canvas_item_add_lcd_texture_rect_region(canvas_item, p_rect, p_texture->get_rid(), p_src_rect, p_modulate);
+	RenderingServer::get_singleton()->element_add_lcd_texture_rect_region(element, p_rect, p_texture->get_rid(), p_src_rect, p_modulate);
 }
 
-void CanvasItem::draw_style_box(const Ref<StyleBox> &p_style_box, const Rect2 &p_rect) {
+void Element::draw_style_box(const Ref<StyleBox> &p_style_box, const Rect2 &p_rect) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
 	ERR_FAIL_COND(p_style_box.is_null());
 
-	p_style_box->draw(canvas_item, p_rect);
+	p_style_box->draw(element, p_rect);
 }
 
-void CanvasItem::draw_primitive(const Vector<Point2> &p_points, const Vector<Color> &p_colors, const Vector<Point2> &p_uvs, Ref<Texture2D> p_texture) {
+void Element::draw_primitive(const Vector<Point2> &p_points, const Vector<Color> &p_colors, const Vector<Point2> &p_uvs, Ref<Texture2D> p_texture) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
 	RID rid = p_texture.is_valid() ? p_texture->get_rid() : RID();
-	RenderingServer::get_singleton()->canvas_item_add_primitive(canvas_item, p_points, p_colors, p_uvs, rid);
+	RenderingServer::get_singleton()->element_add_primitive(element, p_points, p_colors, p_uvs, rid);
 }
 
-void CanvasItem::draw_set_transform(const Point2 &p_offset, real_t p_rot, const Size2 &p_scale) {
+void Element::draw_set_transform(const Point2 &p_offset, real_t p_rot, const Size2 &p_scale) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
 	Transform2D xform(p_rot, p_offset);
 	xform.scale_basis(p_scale);
-	RenderingServer::get_singleton()->canvas_item_add_set_transform(canvas_item, xform);
+	RenderingServer::get_singleton()->element_add_set_transform(element, xform);
 }
 
-void CanvasItem::draw_set_transform_matrix(const Transform2D &p_matrix) {
+void Element::draw_set_transform_matrix(const Transform2D &p_matrix) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
-	RenderingServer::get_singleton()->canvas_item_add_set_transform(canvas_item, p_matrix);
+	RenderingServer::get_singleton()->element_add_set_transform(element, p_matrix);
 }
-void CanvasItem::draw_animation_slice(double p_animation_length, double p_slice_begin, double p_slice_end, double p_offset) {
+void Element::draw_animation_slice(double p_animation_length, double p_slice_begin, double p_slice_end, double p_offset) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
-	RenderingServer::get_singleton()->canvas_item_add_animation_slice(canvas_item, p_animation_length, p_slice_begin, p_slice_end, p_offset);
+	RenderingServer::get_singleton()->element_add_animation_slice(element, p_animation_length, p_slice_begin, p_slice_end, p_offset);
 }
 
-void CanvasItem::draw_end_animation() {
+void Element::draw_end_animation() {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
-	RenderingServer::get_singleton()->canvas_item_add_animation_slice(canvas_item, 1, 0, 2, 0);
+	RenderingServer::get_singleton()->element_add_animation_slice(element, 1, 0, 2, 0);
 }
 
-void CanvasItem::draw_polygon(const Vector<Point2> &p_points, const Vector<Color> &p_colors, const Vector<Point2> &p_uvs, Ref<Texture2D> p_texture) {
+void Element::draw_polygon(const Vector<Point2> &p_points, const Vector<Color> &p_colors, const Vector<Point2> &p_uvs, Ref<Texture2D> p_texture) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 
@@ -864,89 +864,89 @@ void CanvasItem::draw_polygon(const Vector<Point2> &p_points, const Vector<Color
 			p.x = Math::remap(p.x, 0, 1, remap_min.x, remap_max.x);
 			p.y = Math::remap(p.y, 0, 1, remap_min.y, remap_max.y);
 		}
-		RenderingServer::get_singleton()->canvas_item_add_polygon(canvas_item, p_points, p_colors, uvs, texture->get_rid());
+		RenderingServer::get_singleton()->element_add_polygon(element, p_points, p_colors, uvs, texture->get_rid());
 	} else {
 		RID texture_rid = p_texture.is_valid() ? p_texture->get_rid() : RID();
-		RenderingServer::get_singleton()->canvas_item_add_polygon(canvas_item, p_points, p_colors, p_uvs, texture_rid);
+		RenderingServer::get_singleton()->element_add_polygon(element, p_points, p_colors, p_uvs, texture_rid);
 	}
 }
 
-void CanvasItem::draw_colored_polygon(const Vector<Point2> &p_points, const Color &p_color, const Vector<Point2> &p_uvs, Ref<Texture2D> p_texture) {
+void Element::draw_colored_polygon(const Vector<Point2> &p_points, const Color &p_color, const Vector<Point2> &p_uvs, Ref<Texture2D> p_texture) {
 	draw_polygon(p_points, { p_color }, p_uvs, p_texture);
 }
 
-void CanvasItem::draw_mesh(const Ref<Mesh> &p_mesh, const Ref<Texture2D> &p_texture, const Transform2D &p_transform, const Color &p_modulate) {
+void Element::draw_mesh(const Ref<Mesh> &p_mesh, const Ref<Texture2D> &p_texture, const Transform2D &p_transform, const Color &p_modulate) {
 	ERR_THREAD_GUARD;
 	ERR_FAIL_COND(p_mesh.is_null());
 	RID texture_rid = p_texture.is_valid() ? p_texture->get_rid() : RID();
 
-	RenderingServer::get_singleton()->canvas_item_add_mesh(canvas_item, p_mesh->get_rid(), p_transform, p_modulate, texture_rid);
+	RenderingServer::get_singleton()->element_add_mesh(element, p_mesh->get_rid(), p_transform, p_modulate, texture_rid);
 }
 
-void CanvasItem::draw_multimesh(const Ref<MultiMesh> &p_multimesh, const Ref<Texture2D> &p_texture) {
+void Element::draw_multimesh(const Ref<MultiMesh> &p_multimesh, const Ref<Texture2D> &p_texture) {
 	ERR_THREAD_GUARD;
 	ERR_FAIL_COND(p_multimesh.is_null());
 	RID texture_rid = p_texture.is_valid() ? p_texture->get_rid() : RID();
-	RenderingServer::get_singleton()->canvas_item_add_multimesh(canvas_item, p_multimesh->get_rid(), texture_rid);
+	RenderingServer::get_singleton()->element_add_multimesh(element, p_multimesh->get_rid(), texture_rid);
 }
 
-void CanvasItem::draw_string(const Ref<Font> &p_font, const Point2 &p_pos, const String &p_text, HorizontalAlignment p_alignment, float p_width, int p_font_size, const Color &p_modulate, BitField<TextServer::JustificationFlag> p_jst_flags, TextServer::Direction p_direction, TextServer::Orientation p_orientation) const {
+void Element::draw_string(const Ref<Font> &p_font, const Point2 &p_pos, const String &p_text, HorizontalAlignment p_alignment, float p_width, int p_font_size, const Color &p_modulate, BitField<TextServer::JustificationFlag> p_jst_flags, TextServer::Direction p_direction, TextServer::Orientation p_orientation) const {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 	ERR_FAIL_COND(p_font.is_null());
 
-	p_font->draw_string(canvas_item, p_pos, p_text, p_alignment, p_width, p_font_size, p_modulate, p_jst_flags, p_direction, p_orientation);
+	p_font->draw_string(element, p_pos, p_text, p_alignment, p_width, p_font_size, p_modulate, p_jst_flags, p_direction, p_orientation);
 }
 
-void CanvasItem::draw_multiline_string(const Ref<Font> &p_font, const Point2 &p_pos, const String &p_text, HorizontalAlignment p_alignment, float p_width, int p_font_size, int p_max_lines, const Color &p_modulate, BitField<TextServer::LineBreakFlag> p_brk_flags, BitField<TextServer::JustificationFlag> p_jst_flags, TextServer::Direction p_direction, TextServer::Orientation p_orientation) const {
+void Element::draw_multiline_string(const Ref<Font> &p_font, const Point2 &p_pos, const String &p_text, HorizontalAlignment p_alignment, float p_width, int p_font_size, int p_max_lines, const Color &p_modulate, BitField<TextServer::LineBreakFlag> p_brk_flags, BitField<TextServer::JustificationFlag> p_jst_flags, TextServer::Direction p_direction, TextServer::Orientation p_orientation) const {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 	ERR_FAIL_COND(p_font.is_null());
 
-	p_font->draw_multiline_string(canvas_item, p_pos, p_text, p_alignment, p_width, p_font_size, p_max_lines, p_modulate, p_brk_flags, p_jst_flags, p_direction, p_orientation);
+	p_font->draw_multiline_string(element, p_pos, p_text, p_alignment, p_width, p_font_size, p_max_lines, p_modulate, p_brk_flags, p_jst_flags, p_direction, p_orientation);
 }
 
-void CanvasItem::draw_string_outline(const Ref<Font> &p_font, const Point2 &p_pos, const String &p_text, HorizontalAlignment p_alignment, float p_width, int p_font_size, int p_size, const Color &p_modulate, BitField<TextServer::JustificationFlag> p_jst_flags, TextServer::Direction p_direction, TextServer::Orientation p_orientation) const {
+void Element::draw_string_outline(const Ref<Font> &p_font, const Point2 &p_pos, const String &p_text, HorizontalAlignment p_alignment, float p_width, int p_font_size, int p_size, const Color &p_modulate, BitField<TextServer::JustificationFlag> p_jst_flags, TextServer::Direction p_direction, TextServer::Orientation p_orientation) const {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 	ERR_FAIL_COND(p_font.is_null());
 
-	p_font->draw_string_outline(canvas_item, p_pos, p_text, p_alignment, p_width, p_font_size, p_size, p_modulate, p_jst_flags, p_direction, p_orientation);
+	p_font->draw_string_outline(element, p_pos, p_text, p_alignment, p_width, p_font_size, p_size, p_modulate, p_jst_flags, p_direction, p_orientation);
 }
 
-void CanvasItem::draw_multiline_string_outline(const Ref<Font> &p_font, const Point2 &p_pos, const String &p_text, HorizontalAlignment p_alignment, float p_width, int p_font_size, int p_max_lines, int p_size, const Color &p_modulate, BitField<TextServer::LineBreakFlag> p_brk_flags, BitField<TextServer::JustificationFlag> p_jst_flags, TextServer::Direction p_direction, TextServer::Orientation p_orientation) const {
+void Element::draw_multiline_string_outline(const Ref<Font> &p_font, const Point2 &p_pos, const String &p_text, HorizontalAlignment p_alignment, float p_width, int p_font_size, int p_max_lines, int p_size, const Color &p_modulate, BitField<TextServer::LineBreakFlag> p_brk_flags, BitField<TextServer::JustificationFlag> p_jst_flags, TextServer::Direction p_direction, TextServer::Orientation p_orientation) const {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 	ERR_FAIL_COND(p_font.is_null());
 
-	p_font->draw_multiline_string_outline(canvas_item, p_pos, p_text, p_alignment, p_width, p_font_size, p_max_lines, p_size, p_modulate, p_brk_flags, p_jst_flags, p_direction, p_orientation);
+	p_font->draw_multiline_string_outline(element, p_pos, p_text, p_alignment, p_width, p_font_size, p_max_lines, p_size, p_modulate, p_brk_flags, p_jst_flags, p_direction, p_orientation);
 }
 
-void CanvasItem::draw_char(const Ref<Font> &p_font, const Point2 &p_pos, const String &p_char, int p_font_size, const Color &p_modulate) const {
-	ERR_THREAD_GUARD;
-	ERR_DRAW_GUARD;
-	ERR_FAIL_COND(p_char.length() != 1);
-	ERR_FAIL_COND(p_font.is_null());
-
-	p_font->draw_char(canvas_item, p_pos, p_char[0], p_font_size, p_modulate);
-}
-
-void CanvasItem::draw_char_outline(const Ref<Font> &p_font, const Point2 &p_pos, const String &p_char, int p_font_size, int p_size, const Color &p_modulate) const {
+void Element::draw_char(const Ref<Font> &p_font, const Point2 &p_pos, const String &p_char, int p_font_size, const Color &p_modulate) const {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
 	ERR_FAIL_COND(p_char.length() != 1);
 	ERR_FAIL_COND(p_font.is_null());
 
-	p_font->draw_char_outline(canvas_item, p_pos, p_char[0], p_font_size, p_size, p_modulate);
+	p_font->draw_char(element, p_pos, p_char[0], p_font_size, p_modulate);
 }
 
-void CanvasItem::_notify_transform_deferred() {
+void Element::draw_char_outline(const Ref<Font> &p_font, const Point2 &p_pos, const String &p_char, int p_font_size, int p_size, const Color &p_modulate) const {
+	ERR_THREAD_GUARD;
+	ERR_DRAW_GUARD;
+	ERR_FAIL_COND(p_char.length() != 1);
+	ERR_FAIL_COND(p_font.is_null());
+
+	p_font->draw_char_outline(element, p_pos, p_char[0], p_font_size, p_size, p_modulate);
+}
+
+void Element::_notify_transform_deferred() {
 	if (is_inside_tree() && notify_transform && !xform_change.in_list()) {
 		get_tree()->xform_change_list.add(&xform_change);
 	}
 }
 
-void CanvasItem::_notify_transform(CanvasItem *p_node) {
+void Element::_notify_transform(Element *p_node) {
 	/* This check exists to avoid re-propagating the transform
 	 * notification down the tree on dirty nodes. It provides
 	 * optimization by avoiding redundancy (nodes are dirty, will get the
@@ -966,13 +966,13 @@ void CanvasItem::_notify_transform(CanvasItem *p_node) {
 					get_tree()->xform_change_list.add(&p_node->xform_change);
 				} else {
 					// Should be rare, but still needs to be handled.
-					callable_mp(p_node, &CanvasItem::_notify_transform_deferred).call_deferred();
+					callable_mp(p_node, &Element::_notify_transform_deferred).call_deferred();
 				}
 			}
 		}
 	}
 
-	for (CanvasItem *ci : p_node->children_items) {
+	for (Element *ci : p_node->children_items) {
 		if (ci->top_level) {
 			continue;
 		}
@@ -980,17 +980,17 @@ void CanvasItem::_notify_transform(CanvasItem *p_node) {
 	}
 }
 
-void CanvasItem::_physics_interpolated_changed() {
-	RenderingServer::get_singleton()->canvas_item_set_interpolated(canvas_item, is_physics_interpolated());
+void Element::_physics_interpolated_changed() {
+	RenderingServer::get_singleton()->element_set_interpolated(element, is_physics_interpolated());
 }
 
-Rect2 CanvasItem::get_viewport_rect() const {
+Rect2 Element::get_viewport_rect() const {
 	ERR_READ_THREAD_GUARD_V(Rect2());
 	ERR_FAIL_COND_V(!is_inside_tree(), Rect2());
 	return get_viewport()->get_visible_rect();
 }
 
-RID CanvasItem::get_canvas() const {
+RID Element::get_canvas() const {
 	ERR_READ_THREAD_GUARD_V(RID());
 	ERR_FAIL_COND_V(!is_inside_tree(), RID());
 
@@ -1001,7 +1001,7 @@ RID CanvasItem::get_canvas() const {
 	}
 }
 
-ObjectID CanvasItem::get_canvas_layer_instance_id() const {
+ObjectID Element::get_canvas_layer_instance_id() const {
 	ERR_READ_THREAD_GUARD_V(ObjectID());
 	if (canvas_layer) {
 		return canvas_layer->get_instance_id();
@@ -1010,21 +1010,21 @@ ObjectID CanvasItem::get_canvas_layer_instance_id() const {
 	}
 }
 
-CanvasItem *CanvasItem::get_top_level() const {
+Element *Element::get_top_level() const {
 	ERR_READ_THREAD_GUARD_V(nullptr);
-	CanvasItem *ci = const_cast<CanvasItem *>(this);
-	while (!ci->top_level && Object::cast_to<CanvasItem>(ci->get_parent())) {
-		ci = Object::cast_to<CanvasItem>(ci->get_parent());
+	Element *ci = const_cast<Element *>(this);
+	while (!ci->top_level && Object::cast_to<Element>(ci->get_parent())) {
+		ci = Object::cast_to<Element>(ci->get_parent());
 	}
 
 	return ci;
 }
 
-Ref<World2D> CanvasItem::get_world_2d() const {
+Ref<World2D> Element::get_world_2d() const {
 	ERR_READ_THREAD_GUARD_V(Ref<World2D>());
 	ERR_FAIL_COND_V(!is_inside_tree(), Ref<World2D>());
 
-	CanvasItem *tl = get_top_level();
+	Element *tl = get_top_level();
 
 	if (tl->get_viewport()) {
 		return tl->get_viewport()->find_world_2d();
@@ -1033,64 +1033,64 @@ Ref<World2D> CanvasItem::get_world_2d() const {
 	}
 }
 
-RID CanvasItem::get_viewport_rid() const {
+RID Element::get_viewport_rid() const {
 	ERR_READ_THREAD_GUARD_V(RID());
 	ERR_FAIL_COND_V(!is_inside_tree(), RID());
 	return get_viewport()->get_viewport_rid();
 }
 
-void CanvasItem::set_block_transform_notify(bool p_enable) {
+void Element::set_block_transform_notify(bool p_enable) {
 	ERR_THREAD_GUARD;
 	block_transform_notify = p_enable;
 }
 
-bool CanvasItem::is_block_transform_notify_enabled() const {
+bool Element::is_block_transform_notify_enabled() const {
 	ERR_READ_THREAD_GUARD_V(false);
 	return block_transform_notify;
 }
 
-void CanvasItem::set_draw_behind_parent(bool p_enable) {
+void Element::set_draw_behind_parent(bool p_enable) {
 	ERR_THREAD_GUARD;
 	if (behind == p_enable) {
 		return;
 	}
 	behind = p_enable;
-	RenderingServer::get_singleton()->canvas_item_set_draw_behind_parent(canvas_item, behind);
+	RenderingServer::get_singleton()->element_set_draw_behind_parent(element, behind);
 }
 
-bool CanvasItem::is_draw_behind_parent_enabled() const {
+bool Element::is_draw_behind_parent_enabled() const {
 	ERR_READ_THREAD_GUARD_V(false);
 	return behind;
 }
 
-void CanvasItem::set_material(const Ref<Material> &p_material) {
+void Element::set_material(const Ref<Material> &p_material) {
 	ERR_THREAD_GUARD;
 	material = p_material;
 	RID rid;
 	if (material.is_valid()) {
 		rid = material->get_rid();
 	}
-	RS::get_singleton()->canvas_item_set_material(canvas_item, rid);
+	RS::get_singleton()->element_set_material(element, rid);
 	notify_property_list_changed(); //properties for material exposed
 }
 
-void CanvasItem::set_use_parent_material(bool p_use_parent_material) {
+void Element::set_use_parent_material(bool p_use_parent_material) {
 	ERR_THREAD_GUARD;
 	use_parent_material = p_use_parent_material;
-	RS::get_singleton()->canvas_item_set_use_parent_material(canvas_item, p_use_parent_material);
+	RS::get_singleton()->element_set_use_parent_material(element, p_use_parent_material);
 }
 
-bool CanvasItem::get_use_parent_material() const {
+bool Element::get_use_parent_material() const {
 	ERR_READ_THREAD_GUARD_V(false);
 	return use_parent_material;
 }
 
-Ref<Material> CanvasItem::get_material() const {
+Ref<Material> Element::get_material() const {
 	ERR_READ_THREAD_GUARD_V(Ref<Material>());
 	return material;
 }
 
-Vector2 CanvasItem::make_canvas_position_local(const Vector2 &screen_point) const {
+Vector2 Element::make_canvas_position_local(const Vector2 &screen_point) const {
 	ERR_READ_THREAD_GUARD_V(Vector2());
 	ERR_FAIL_COND_V(!is_inside_tree(), screen_point);
 
@@ -1099,7 +1099,7 @@ Vector2 CanvasItem::make_canvas_position_local(const Vector2 &screen_point) cons
 	return local_matrix.xform(screen_point);
 }
 
-Ref<InputEvent> CanvasItem::make_input_local(const Ref<InputEvent> &p_event) const {
+Ref<InputEvent> Element::make_input_local(const Ref<InputEvent> &p_event) const {
 	ERR_READ_THREAD_GUARD_V(Ref<InputEvent>());
 	ERR_FAIL_COND_V(p_event.is_null(), p_event);
 	ERR_FAIL_COND_V(!is_inside_tree(), p_event);
@@ -1107,20 +1107,20 @@ Ref<InputEvent> CanvasItem::make_input_local(const Ref<InputEvent> &p_event) con
 	return p_event->xformed_by((get_canvas_transform() * get_global_transform()).affine_inverse());
 }
 
-Vector2 CanvasItem::get_global_mouse_position() const {
+Vector2 Element::get_global_mouse_position() const {
 	ERR_READ_THREAD_GUARD_V(Vector2());
 	ERR_FAIL_NULL_V(get_viewport(), Vector2());
 	return get_canvas_transform().affine_inverse().xform(get_viewport()->get_mouse_position());
 }
 
-Vector2 CanvasItem::get_local_mouse_position() const {
+Vector2 Element::get_local_mouse_position() const {
 	ERR_READ_THREAD_GUARD_V(Vector2());
 	ERR_FAIL_NULL_V(get_viewport(), Vector2());
 
 	return get_global_transform().affine_inverse().xform(get_global_mouse_position());
 }
 
-void CanvasItem::force_update_transform() {
+void Element::force_update_transform() {
 	ERR_THREAD_GUARD;
 	ERR_FAIL_COND(!is_inside_tree());
 	if (!xform_change.in_list()) {
@@ -1132,143 +1132,143 @@ void CanvasItem::force_update_transform() {
 	notification(NOTIFICATION_TRANSFORM_CHANGED);
 }
 
-void CanvasItem::_validate_property(PropertyInfo &p_property) const {
+void Element::_validate_property(PropertyInfo &p_property) const {
 	if (hide_clip_children && p_property.name == "clip_children") {
 		p_property.usage = PROPERTY_USAGE_NONE;
 	}
 }
 
-void CanvasItem::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_top_level_raise_self"), &CanvasItem::_top_level_raise_self);
+void Element::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("_top_level_raise_self"), &Element::_top_level_raise_self);
 
 #ifdef TOOLS_ENABLED
-	ClassDB::bind_method(D_METHOD("_edit_set_state", "state"), &CanvasItem::_edit_set_state);
-	ClassDB::bind_method(D_METHOD("_edit_get_state"), &CanvasItem::_edit_get_state);
-	ClassDB::bind_method(D_METHOD("_edit_set_position", "position"), &CanvasItem::_edit_set_position);
-	ClassDB::bind_method(D_METHOD("_edit_get_position"), &CanvasItem::_edit_get_position);
-	ClassDB::bind_method(D_METHOD("_edit_set_scale", "scale"), &CanvasItem::_edit_set_scale);
-	ClassDB::bind_method(D_METHOD("_edit_get_scale"), &CanvasItem::_edit_get_scale);
-	ClassDB::bind_method(D_METHOD("_edit_set_rect", "rect"), &CanvasItem::_edit_set_rect);
-	ClassDB::bind_method(D_METHOD("_edit_get_rect"), &CanvasItem::_edit_get_rect);
-	ClassDB::bind_method(D_METHOD("_edit_use_rect"), &CanvasItem::_edit_use_rect);
-	ClassDB::bind_method(D_METHOD("_edit_set_rotation", "degrees"), &CanvasItem::_edit_set_rotation);
-	ClassDB::bind_method(D_METHOD("_edit_get_rotation"), &CanvasItem::_edit_get_rotation);
-	ClassDB::bind_method(D_METHOD("_edit_use_rotation"), &CanvasItem::_edit_use_rotation);
-	ClassDB::bind_method(D_METHOD("_edit_set_pivot", "pivot"), &CanvasItem::_edit_set_pivot);
-	ClassDB::bind_method(D_METHOD("_edit_get_pivot"), &CanvasItem::_edit_get_pivot);
-	ClassDB::bind_method(D_METHOD("_edit_use_pivot"), &CanvasItem::_edit_use_pivot);
-	ClassDB::bind_method(D_METHOD("_edit_get_transform"), &CanvasItem::_edit_get_transform);
+	ClassDB::bind_method(D_METHOD("_edit_set_state", "state"), &Element::_edit_set_state);
+	ClassDB::bind_method(D_METHOD("_edit_get_state"), &Element::_edit_get_state);
+	ClassDB::bind_method(D_METHOD("_edit_set_position", "position"), &Element::_edit_set_position);
+	ClassDB::bind_method(D_METHOD("_edit_get_position"), &Element::_edit_get_position);
+	ClassDB::bind_method(D_METHOD("_edit_set_scale", "scale"), &Element::_edit_set_scale);
+	ClassDB::bind_method(D_METHOD("_edit_get_scale"), &Element::_edit_get_scale);
+	ClassDB::bind_method(D_METHOD("_edit_set_rect", "rect"), &Element::_edit_set_rect);
+	ClassDB::bind_method(D_METHOD("_edit_get_rect"), &Element::_edit_get_rect);
+	ClassDB::bind_method(D_METHOD("_edit_use_rect"), &Element::_edit_use_rect);
+	ClassDB::bind_method(D_METHOD("_edit_set_rotation", "degrees"), &Element::_edit_set_rotation);
+	ClassDB::bind_method(D_METHOD("_edit_get_rotation"), &Element::_edit_get_rotation);
+	ClassDB::bind_method(D_METHOD("_edit_use_rotation"), &Element::_edit_use_rotation);
+	ClassDB::bind_method(D_METHOD("_edit_set_pivot", "pivot"), &Element::_edit_set_pivot);
+	ClassDB::bind_method(D_METHOD("_edit_get_pivot"), &Element::_edit_get_pivot);
+	ClassDB::bind_method(D_METHOD("_edit_use_pivot"), &Element::_edit_use_pivot);
+	ClassDB::bind_method(D_METHOD("_edit_get_transform"), &Element::_edit_get_transform);
 #endif
 
-	ClassDB::bind_method(D_METHOD("get_canvas_item"), &CanvasItem::get_canvas_item);
+	ClassDB::bind_method(D_METHOD("get_element"), &Element::get_element);
 
-	ClassDB::bind_method(D_METHOD("set_visible", "visible"), &CanvasItem::set_visible);
-	ClassDB::bind_method(D_METHOD("is_visible"), &CanvasItem::is_visible);
-	ClassDB::bind_method(D_METHOD("is_visible_in_tree"), &CanvasItem::is_visible_in_tree);
-	ClassDB::bind_method(D_METHOD("show"), &CanvasItem::show);
-	ClassDB::bind_method(D_METHOD("hide"), &CanvasItem::hide);
+	ClassDB::bind_method(D_METHOD("set_visible", "visible"), &Element::set_visible);
+	ClassDB::bind_method(D_METHOD("is_visible"), &Element::is_visible);
+	ClassDB::bind_method(D_METHOD("is_visible_in_tree"), &Element::is_visible_in_tree);
+	ClassDB::bind_method(D_METHOD("show"), &Element::show);
+	ClassDB::bind_method(D_METHOD("hide"), &Element::hide);
 
-	ClassDB::bind_method(D_METHOD("queue_redraw"), &CanvasItem::queue_redraw);
-	ClassDB::bind_method(D_METHOD("move_to_front"), &CanvasItem::move_to_front);
+	ClassDB::bind_method(D_METHOD("queue_redraw"), &Element::queue_redraw);
+	ClassDB::bind_method(D_METHOD("move_to_front"), &Element::move_to_front);
 
-	ClassDB::bind_method(D_METHOD("set_as_top_level", "enable"), &CanvasItem::set_as_top_level);
-	ClassDB::bind_method(D_METHOD("is_set_as_top_level"), &CanvasItem::is_set_as_top_level);
+	ClassDB::bind_method(D_METHOD("set_as_top_level", "enable"), &Element::set_as_top_level);
+	ClassDB::bind_method(D_METHOD("is_set_as_top_level"), &Element::is_set_as_top_level);
 
-	ClassDB::bind_method(D_METHOD("set_light_mask", "light_mask"), &CanvasItem::set_light_mask);
-	ClassDB::bind_method(D_METHOD("get_light_mask"), &CanvasItem::get_light_mask);
+	ClassDB::bind_method(D_METHOD("set_light_mask", "light_mask"), &Element::set_light_mask);
+	ClassDB::bind_method(D_METHOD("get_light_mask"), &Element::get_light_mask);
 
-	ClassDB::bind_method(D_METHOD("set_modulate", "modulate"), &CanvasItem::set_modulate);
-	ClassDB::bind_method(D_METHOD("get_modulate"), &CanvasItem::get_modulate);
+	ClassDB::bind_method(D_METHOD("set_modulate", "modulate"), &Element::set_modulate);
+	ClassDB::bind_method(D_METHOD("get_modulate"), &Element::get_modulate);
 
-	ClassDB::bind_method(D_METHOD("set_self_modulate", "self_modulate"), &CanvasItem::set_self_modulate);
-	ClassDB::bind_method(D_METHOD("get_self_modulate"), &CanvasItem::get_self_modulate);
+	ClassDB::bind_method(D_METHOD("set_self_modulate", "self_modulate"), &Element::set_self_modulate);
+	ClassDB::bind_method(D_METHOD("get_self_modulate"), &Element::get_self_modulate);
 
-	ClassDB::bind_method(D_METHOD("set_z_index", "z_index"), &CanvasItem::set_z_index);
-	ClassDB::bind_method(D_METHOD("get_z_index"), &CanvasItem::get_z_index);
+	ClassDB::bind_method(D_METHOD("set_z_index", "z_index"), &Element::set_z_index);
+	ClassDB::bind_method(D_METHOD("get_z_index"), &Element::get_z_index);
 
-	ClassDB::bind_method(D_METHOD("set_z_as_relative", "enable"), &CanvasItem::set_z_as_relative);
-	ClassDB::bind_method(D_METHOD("is_z_relative"), &CanvasItem::is_z_relative);
+	ClassDB::bind_method(D_METHOD("set_z_as_relative", "enable"), &Element::set_z_as_relative);
+	ClassDB::bind_method(D_METHOD("is_z_relative"), &Element::is_z_relative);
 
-	ClassDB::bind_method(D_METHOD("set_y_sort_enabled", "enabled"), &CanvasItem::set_y_sort_enabled);
-	ClassDB::bind_method(D_METHOD("is_y_sort_enabled"), &CanvasItem::is_y_sort_enabled);
+	ClassDB::bind_method(D_METHOD("set_y_sort_enabled", "enabled"), &Element::set_y_sort_enabled);
+	ClassDB::bind_method(D_METHOD("is_y_sort_enabled"), &Element::is_y_sort_enabled);
 
-	ClassDB::bind_method(D_METHOD("set_draw_behind_parent", "enable"), &CanvasItem::set_draw_behind_parent);
-	ClassDB::bind_method(D_METHOD("is_draw_behind_parent_enabled"), &CanvasItem::is_draw_behind_parent_enabled);
+	ClassDB::bind_method(D_METHOD("set_draw_behind_parent", "enable"), &Element::set_draw_behind_parent);
+	ClassDB::bind_method(D_METHOD("is_draw_behind_parent_enabled"), &Element::is_draw_behind_parent_enabled);
 
-	ClassDB::bind_method(D_METHOD("draw_line", "from", "to", "color", "width", "antialiased"), &CanvasItem::draw_line, DEFVAL(-1.0), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("draw_dashed_line", "from", "to", "color", "width", "dash", "aligned", "antialiased"), &CanvasItem::draw_dashed_line, DEFVAL(-1.0), DEFVAL(2.0), DEFVAL(true), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("draw_polyline", "points", "color", "width", "antialiased"), &CanvasItem::draw_polyline, DEFVAL(-1.0), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("draw_polyline_colors", "points", "colors", "width", "antialiased"), &CanvasItem::draw_polyline_colors, DEFVAL(-1.0), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("draw_arc", "center", "radius", "start_angle", "end_angle", "point_count", "color", "width", "antialiased"), &CanvasItem::draw_arc, DEFVAL(-1.0), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("draw_multiline", "points", "color", "width", "antialiased"), &CanvasItem::draw_multiline, DEFVAL(-1.0), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("draw_multiline_colors", "points", "colors", "width", "antialiased"), &CanvasItem::draw_multiline_colors, DEFVAL(-1.0), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("draw_rect", "rect", "color", "filled", "width", "antialiased"), &CanvasItem::draw_rect, DEFVAL(true), DEFVAL(-1.0), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("draw_circle", "position", "radius", "color", "filled", "width", "antialiased"), &CanvasItem::draw_circle, DEFVAL(true), DEFVAL(-1.0), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("draw_texture", "texture", "position", "modulate"), &CanvasItem::draw_texture, DEFVAL(Color(1, 1, 1, 1)));
-	ClassDB::bind_method(D_METHOD("draw_texture_rect", "texture", "rect", "tile", "modulate", "transpose"), &CanvasItem::draw_texture_rect, DEFVAL(Color(1, 1, 1, 1)), DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("draw_texture_rect_region", "texture", "rect", "src_rect", "modulate", "transpose", "clip_uv"), &CanvasItem::draw_texture_rect_region, DEFVAL(Color(1, 1, 1, 1)), DEFVAL(false), DEFVAL(true));
-	ClassDB::bind_method(D_METHOD("draw_msdf_texture_rect_region", "texture", "rect", "src_rect", "modulate", "outline", "pixel_range", "scale"), &CanvasItem::draw_msdf_texture_rect_region, DEFVAL(Color(1, 1, 1, 1)), DEFVAL(0.0), DEFVAL(4.0), DEFVAL(1.0));
-	ClassDB::bind_method(D_METHOD("draw_lcd_texture_rect_region", "texture", "rect", "src_rect", "modulate"), &CanvasItem::draw_lcd_texture_rect_region, DEFVAL(Color(1, 1, 1, 1)));
-	ClassDB::bind_method(D_METHOD("draw_style_box", "style_box", "rect"), &CanvasItem::draw_style_box);
-	ClassDB::bind_method(D_METHOD("draw_primitive", "points", "colors", "uvs", "texture"), &CanvasItem::draw_primitive, DEFVAL(Ref<Texture2D>()));
-	ClassDB::bind_method(D_METHOD("draw_polygon", "points", "colors", "uvs", "texture"), &CanvasItem::draw_polygon, DEFVAL(PackedVector2Array()), DEFVAL(Ref<Texture2D>()));
-	ClassDB::bind_method(D_METHOD("draw_colored_polygon", "points", "color", "uvs", "texture"), &CanvasItem::draw_colored_polygon, DEFVAL(PackedVector2Array()), DEFVAL(Ref<Texture2D>()));
-	ClassDB::bind_method(D_METHOD("draw_string", "font", "pos", "text", "alignment", "width", "font_size", "modulate", "justification_flags", "direction", "orientation"), &CanvasItem::draw_string, DEFVAL(HORIZONTAL_ALIGNMENT_LEFT), DEFVAL(-1), DEFVAL(Font::DEFAULT_FONT_SIZE), DEFVAL(Color(1.0, 1.0, 1.0)), DEFVAL(TextServer::JUSTIFICATION_KASHIDA | TextServer::JUSTIFICATION_WORD_BOUND), DEFVAL(TextServer::DIRECTION_AUTO), DEFVAL(TextServer::ORIENTATION_HORIZONTAL));
-	ClassDB::bind_method(D_METHOD("draw_multiline_string", "font", "pos", "text", "alignment", "width", "font_size", "max_lines", "modulate", "brk_flags", "justification_flags", "direction", "orientation"), &CanvasItem::draw_multiline_string, DEFVAL(HORIZONTAL_ALIGNMENT_LEFT), DEFVAL(-1), DEFVAL(Font::DEFAULT_FONT_SIZE), DEFVAL(-1), DEFVAL(Color(1.0, 1.0, 1.0)), DEFVAL(TextServer::BREAK_MANDATORY | TextServer::BREAK_WORD_BOUND), DEFVAL(TextServer::JUSTIFICATION_KASHIDA | TextServer::JUSTIFICATION_WORD_BOUND), DEFVAL(TextServer::DIRECTION_AUTO), DEFVAL(TextServer::ORIENTATION_HORIZONTAL));
-	ClassDB::bind_method(D_METHOD("draw_string_outline", "font", "pos", "text", "alignment", "width", "font_size", "size", "modulate", "justification_flags", "direction", "orientation"), &CanvasItem::draw_string_outline, DEFVAL(HORIZONTAL_ALIGNMENT_LEFT), DEFVAL(-1), DEFVAL(Font::DEFAULT_FONT_SIZE), DEFVAL(1), DEFVAL(Color(1.0, 1.0, 1.0)), DEFVAL(TextServer::JUSTIFICATION_KASHIDA | TextServer::JUSTIFICATION_WORD_BOUND), DEFVAL(TextServer::DIRECTION_AUTO), DEFVAL(TextServer::ORIENTATION_HORIZONTAL));
-	ClassDB::bind_method(D_METHOD("draw_multiline_string_outline", "font", "pos", "text", "alignment", "width", "font_size", "max_lines", "size", "modulate", "brk_flags", "justification_flags", "direction", "orientation"), &CanvasItem::draw_multiline_string_outline, DEFVAL(HORIZONTAL_ALIGNMENT_LEFT), DEFVAL(-1), DEFVAL(Font::DEFAULT_FONT_SIZE), DEFVAL(-1), DEFVAL(1), DEFVAL(Color(1.0, 1.0, 1.0)), DEFVAL(TextServer::BREAK_MANDATORY | TextServer::BREAK_WORD_BOUND), DEFVAL(TextServer::JUSTIFICATION_KASHIDA | TextServer::JUSTIFICATION_WORD_BOUND), DEFVAL(TextServer::DIRECTION_AUTO), DEFVAL(TextServer::ORIENTATION_HORIZONTAL));
-	ClassDB::bind_method(D_METHOD("draw_char", "font", "pos", "char", "font_size", "modulate"), &CanvasItem::draw_char, DEFVAL(Font::DEFAULT_FONT_SIZE), DEFVAL(Color(1.0, 1.0, 1.0)));
-	ClassDB::bind_method(D_METHOD("draw_char_outline", "font", "pos", "char", "font_size", "size", "modulate"), &CanvasItem::draw_char_outline, DEFVAL(Font::DEFAULT_FONT_SIZE), DEFVAL(-1), DEFVAL(Color(1.0, 1.0, 1.0)));
-	ClassDB::bind_method(D_METHOD("draw_mesh", "mesh", "texture", "transform", "modulate"), &CanvasItem::draw_mesh, DEFVAL(Transform2D()), DEFVAL(Color(1, 1, 1, 1)));
-	ClassDB::bind_method(D_METHOD("draw_multimesh", "multimesh", "texture"), &CanvasItem::draw_multimesh);
-	ClassDB::bind_method(D_METHOD("draw_set_transform", "position", "rotation", "scale"), &CanvasItem::draw_set_transform, DEFVAL(0.0), DEFVAL(Size2(1.0, 1.0)));
-	ClassDB::bind_method(D_METHOD("draw_set_transform_matrix", "xform"), &CanvasItem::draw_set_transform_matrix);
-	ClassDB::bind_method(D_METHOD("draw_animation_slice", "animation_length", "slice_begin", "slice_end", "offset"), &CanvasItem::draw_animation_slice, DEFVAL(0.0));
-	ClassDB::bind_method(D_METHOD("draw_end_animation"), &CanvasItem::draw_end_animation);
-	ClassDB::bind_method(D_METHOD("get_transform"), &CanvasItem::get_transform);
-	ClassDB::bind_method(D_METHOD("get_global_transform"), &CanvasItem::get_global_transform);
-	ClassDB::bind_method(D_METHOD("get_global_transform_with_canvas"), &CanvasItem::get_global_transform_with_canvas);
-	ClassDB::bind_method(D_METHOD("get_viewport_transform"), &CanvasItem::get_viewport_transform);
-	ClassDB::bind_method(D_METHOD("get_viewport_rect"), &CanvasItem::get_viewport_rect);
-	ClassDB::bind_method(D_METHOD("get_canvas_transform"), &CanvasItem::get_canvas_transform);
-	ClassDB::bind_method(D_METHOD("get_screen_transform"), &CanvasItem::get_screen_transform);
-	ClassDB::bind_method(D_METHOD("get_local_mouse_position"), &CanvasItem::get_local_mouse_position);
-	ClassDB::bind_method(D_METHOD("get_global_mouse_position"), &CanvasItem::get_global_mouse_position);
-	ClassDB::bind_method(D_METHOD("get_canvas"), &CanvasItem::get_canvas);
-	ClassDB::bind_method(D_METHOD("get_canvas_layer_node"), &CanvasItem::get_canvas_layer_node);
-	ClassDB::bind_method(D_METHOD("get_world_2d"), &CanvasItem::get_world_2d);
-	//ClassDB::bind_method(D_METHOD("get_viewport"),&CanvasItem::get_viewport);
+	ClassDB::bind_method(D_METHOD("draw_line", "from", "to", "color", "width", "antialiased"), &Element::draw_line, DEFVAL(-1.0), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("draw_dashed_line", "from", "to", "color", "width", "dash", "aligned", "antialiased"), &Element::draw_dashed_line, DEFVAL(-1.0), DEFVAL(2.0), DEFVAL(true), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("draw_polyline", "points", "color", "width", "antialiased"), &Element::draw_polyline, DEFVAL(-1.0), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("draw_polyline_colors", "points", "colors", "width", "antialiased"), &Element::draw_polyline_colors, DEFVAL(-1.0), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("draw_arc", "center", "radius", "start_angle", "end_angle", "point_count", "color", "width", "antialiased"), &Element::draw_arc, DEFVAL(-1.0), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("draw_multiline", "points", "color", "width", "antialiased"), &Element::draw_multiline, DEFVAL(-1.0), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("draw_multiline_colors", "points", "colors", "width", "antialiased"), &Element::draw_multiline_colors, DEFVAL(-1.0), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("draw_rect", "rect", "color", "filled", "width", "antialiased"), &Element::draw_rect, DEFVAL(true), DEFVAL(-1.0), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("draw_circle", "position", "radius", "color", "filled", "width", "antialiased"), &Element::draw_circle, DEFVAL(true), DEFVAL(-1.0), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("draw_texture", "texture", "position", "modulate"), &Element::draw_texture, DEFVAL(Color(1, 1, 1, 1)));
+	ClassDB::bind_method(D_METHOD("draw_texture_rect", "texture", "rect", "tile", "modulate", "transpose"), &Element::draw_texture_rect, DEFVAL(Color(1, 1, 1, 1)), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("draw_texture_rect_region", "texture", "rect", "src_rect", "modulate", "transpose", "clip_uv"), &Element::draw_texture_rect_region, DEFVAL(Color(1, 1, 1, 1)), DEFVAL(false), DEFVAL(true));
+	ClassDB::bind_method(D_METHOD("draw_msdf_texture_rect_region", "texture", "rect", "src_rect", "modulate", "outline", "pixel_range", "scale"), &Element::draw_msdf_texture_rect_region, DEFVAL(Color(1, 1, 1, 1)), DEFVAL(0.0), DEFVAL(4.0), DEFVAL(1.0));
+	ClassDB::bind_method(D_METHOD("draw_lcd_texture_rect_region", "texture", "rect", "src_rect", "modulate"), &Element::draw_lcd_texture_rect_region, DEFVAL(Color(1, 1, 1, 1)));
+	ClassDB::bind_method(D_METHOD("draw_style_box", "style_box", "rect"), &Element::draw_style_box);
+	ClassDB::bind_method(D_METHOD("draw_primitive", "points", "colors", "uvs", "texture"), &Element::draw_primitive, DEFVAL(Ref<Texture2D>()));
+	ClassDB::bind_method(D_METHOD("draw_polygon", "points", "colors", "uvs", "texture"), &Element::draw_polygon, DEFVAL(PackedVector2Array()), DEFVAL(Ref<Texture2D>()));
+	ClassDB::bind_method(D_METHOD("draw_colored_polygon", "points", "color", "uvs", "texture"), &Element::draw_colored_polygon, DEFVAL(PackedVector2Array()), DEFVAL(Ref<Texture2D>()));
+	ClassDB::bind_method(D_METHOD("draw_string", "font", "pos", "text", "alignment", "width", "font_size", "modulate", "justification_flags", "direction", "orientation"), &Element::draw_string, DEFVAL(HORIZONTAL_ALIGNMENT_LEFT), DEFVAL(-1), DEFVAL(Font::DEFAULT_FONT_SIZE), DEFVAL(Color(1.0, 1.0, 1.0)), DEFVAL(TextServer::JUSTIFICATION_KASHIDA | TextServer::JUSTIFICATION_WORD_BOUND), DEFVAL(TextServer::DIRECTION_AUTO), DEFVAL(TextServer::ORIENTATION_HORIZONTAL));
+	ClassDB::bind_method(D_METHOD("draw_multiline_string", "font", "pos", "text", "alignment", "width", "font_size", "max_lines", "modulate", "brk_flags", "justification_flags", "direction", "orientation"), &Element::draw_multiline_string, DEFVAL(HORIZONTAL_ALIGNMENT_LEFT), DEFVAL(-1), DEFVAL(Font::DEFAULT_FONT_SIZE), DEFVAL(-1), DEFVAL(Color(1.0, 1.0, 1.0)), DEFVAL(TextServer::BREAK_MANDATORY | TextServer::BREAK_WORD_BOUND), DEFVAL(TextServer::JUSTIFICATION_KASHIDA | TextServer::JUSTIFICATION_WORD_BOUND), DEFVAL(TextServer::DIRECTION_AUTO), DEFVAL(TextServer::ORIENTATION_HORIZONTAL));
+	ClassDB::bind_method(D_METHOD("draw_string_outline", "font", "pos", "text", "alignment", "width", "font_size", "size", "modulate", "justification_flags", "direction", "orientation"), &Element::draw_string_outline, DEFVAL(HORIZONTAL_ALIGNMENT_LEFT), DEFVAL(-1), DEFVAL(Font::DEFAULT_FONT_SIZE), DEFVAL(1), DEFVAL(Color(1.0, 1.0, 1.0)), DEFVAL(TextServer::JUSTIFICATION_KASHIDA | TextServer::JUSTIFICATION_WORD_BOUND), DEFVAL(TextServer::DIRECTION_AUTO), DEFVAL(TextServer::ORIENTATION_HORIZONTAL));
+	ClassDB::bind_method(D_METHOD("draw_multiline_string_outline", "font", "pos", "text", "alignment", "width", "font_size", "max_lines", "size", "modulate", "brk_flags", "justification_flags", "direction", "orientation"), &Element::draw_multiline_string_outline, DEFVAL(HORIZONTAL_ALIGNMENT_LEFT), DEFVAL(-1), DEFVAL(Font::DEFAULT_FONT_SIZE), DEFVAL(-1), DEFVAL(1), DEFVAL(Color(1.0, 1.0, 1.0)), DEFVAL(TextServer::BREAK_MANDATORY | TextServer::BREAK_WORD_BOUND), DEFVAL(TextServer::JUSTIFICATION_KASHIDA | TextServer::JUSTIFICATION_WORD_BOUND), DEFVAL(TextServer::DIRECTION_AUTO), DEFVAL(TextServer::ORIENTATION_HORIZONTAL));
+	ClassDB::bind_method(D_METHOD("draw_char", "font", "pos", "char", "font_size", "modulate"), &Element::draw_char, DEFVAL(Font::DEFAULT_FONT_SIZE), DEFVAL(Color(1.0, 1.0, 1.0)));
+	ClassDB::bind_method(D_METHOD("draw_char_outline", "font", "pos", "char", "font_size", "size", "modulate"), &Element::draw_char_outline, DEFVAL(Font::DEFAULT_FONT_SIZE), DEFVAL(-1), DEFVAL(Color(1.0, 1.0, 1.0)));
+	ClassDB::bind_method(D_METHOD("draw_mesh", "mesh", "texture", "transform", "modulate"), &Element::draw_mesh, DEFVAL(Transform2D()), DEFVAL(Color(1, 1, 1, 1)));
+	ClassDB::bind_method(D_METHOD("draw_multimesh", "multimesh", "texture"), &Element::draw_multimesh);
+	ClassDB::bind_method(D_METHOD("draw_set_transform", "position", "rotation", "scale"), &Element::draw_set_transform, DEFVAL(0.0), DEFVAL(Size2(1.0, 1.0)));
+	ClassDB::bind_method(D_METHOD("draw_set_transform_matrix", "xform"), &Element::draw_set_transform_matrix);
+	ClassDB::bind_method(D_METHOD("draw_animation_slice", "animation_length", "slice_begin", "slice_end", "offset"), &Element::draw_animation_slice, DEFVAL(0.0));
+	ClassDB::bind_method(D_METHOD("draw_end_animation"), &Element::draw_end_animation);
+	ClassDB::bind_method(D_METHOD("get_transform"), &Element::get_transform);
+	ClassDB::bind_method(D_METHOD("get_global_transform"), &Element::get_global_transform);
+	ClassDB::bind_method(D_METHOD("get_global_transform_with_canvas"), &Element::get_global_transform_with_canvas);
+	ClassDB::bind_method(D_METHOD("get_viewport_transform"), &Element::get_viewport_transform);
+	ClassDB::bind_method(D_METHOD("get_viewport_rect"), &Element::get_viewport_rect);
+	ClassDB::bind_method(D_METHOD("get_canvas_transform"), &Element::get_canvas_transform);
+	ClassDB::bind_method(D_METHOD("get_screen_transform"), &Element::get_screen_transform);
+	ClassDB::bind_method(D_METHOD("get_local_mouse_position"), &Element::get_local_mouse_position);
+	ClassDB::bind_method(D_METHOD("get_global_mouse_position"), &Element::get_global_mouse_position);
+	ClassDB::bind_method(D_METHOD("get_canvas"), &Element::get_canvas);
+	ClassDB::bind_method(D_METHOD("get_canvas_layer_node"), &Element::get_canvas_layer_node);
+	ClassDB::bind_method(D_METHOD("get_world_2d"), &Element::get_world_2d);
+	//ClassDB::bind_method(D_METHOD("get_viewport"),&Element::get_viewport);
 
-	ClassDB::bind_method(D_METHOD("set_material", "material"), &CanvasItem::set_material);
-	ClassDB::bind_method(D_METHOD("get_material"), &CanvasItem::get_material);
+	ClassDB::bind_method(D_METHOD("set_material", "material"), &Element::set_material);
+	ClassDB::bind_method(D_METHOD("get_material"), &Element::get_material);
 
-	ClassDB::bind_method(D_METHOD("set_use_parent_material", "enable"), &CanvasItem::set_use_parent_material);
-	ClassDB::bind_method(D_METHOD("get_use_parent_material"), &CanvasItem::get_use_parent_material);
+	ClassDB::bind_method(D_METHOD("set_use_parent_material", "enable"), &Element::set_use_parent_material);
+	ClassDB::bind_method(D_METHOD("get_use_parent_material"), &Element::get_use_parent_material);
 
-	ClassDB::bind_method(D_METHOD("set_notify_local_transform", "enable"), &CanvasItem::set_notify_local_transform);
-	ClassDB::bind_method(D_METHOD("is_local_transform_notification_enabled"), &CanvasItem::is_local_transform_notification_enabled);
+	ClassDB::bind_method(D_METHOD("set_notify_local_transform", "enable"), &Element::set_notify_local_transform);
+	ClassDB::bind_method(D_METHOD("is_local_transform_notification_enabled"), &Element::is_local_transform_notification_enabled);
 
-	ClassDB::bind_method(D_METHOD("set_notify_transform", "enable"), &CanvasItem::set_notify_transform);
-	ClassDB::bind_method(D_METHOD("is_transform_notification_enabled"), &CanvasItem::is_transform_notification_enabled);
+	ClassDB::bind_method(D_METHOD("set_notify_transform", "enable"), &Element::set_notify_transform);
+	ClassDB::bind_method(D_METHOD("is_transform_notification_enabled"), &Element::is_transform_notification_enabled);
 
-	ClassDB::bind_method(D_METHOD("force_update_transform"), &CanvasItem::force_update_transform);
+	ClassDB::bind_method(D_METHOD("force_update_transform"), &Element::force_update_transform);
 
-	ClassDB::bind_method(D_METHOD("make_canvas_position_local", "screen_point"), &CanvasItem::make_canvas_position_local);
-	ClassDB::bind_method(D_METHOD("make_input_local", "event"), &CanvasItem::make_input_local);
+	ClassDB::bind_method(D_METHOD("make_canvas_position_local", "screen_point"), &Element::make_canvas_position_local);
+	ClassDB::bind_method(D_METHOD("make_input_local", "event"), &Element::make_input_local);
 
-	ClassDB::bind_method(D_METHOD("set_visibility_layer", "layer"), &CanvasItem::set_visibility_layer);
-	ClassDB::bind_method(D_METHOD("get_visibility_layer"), &CanvasItem::get_visibility_layer);
-	ClassDB::bind_method(D_METHOD("set_visibility_layer_bit", "layer", "enabled"), &CanvasItem::set_visibility_layer_bit);
-	ClassDB::bind_method(D_METHOD("get_visibility_layer_bit", "layer"), &CanvasItem::get_visibility_layer_bit);
+	ClassDB::bind_method(D_METHOD("set_visibility_layer", "layer"), &Element::set_visibility_layer);
+	ClassDB::bind_method(D_METHOD("get_visibility_layer"), &Element::get_visibility_layer);
+	ClassDB::bind_method(D_METHOD("set_visibility_layer_bit", "layer", "enabled"), &Element::set_visibility_layer_bit);
+	ClassDB::bind_method(D_METHOD("get_visibility_layer_bit", "layer"), &Element::get_visibility_layer_bit);
 
-	ClassDB::bind_method(D_METHOD("set_texture_filter", "mode"), &CanvasItem::set_texture_filter);
-	ClassDB::bind_method(D_METHOD("get_texture_filter"), &CanvasItem::get_texture_filter);
+	ClassDB::bind_method(D_METHOD("set_texture_filter", "mode"), &Element::set_texture_filter);
+	ClassDB::bind_method(D_METHOD("get_texture_filter"), &Element::get_texture_filter);
 
-	ClassDB::bind_method(D_METHOD("set_texture_repeat", "mode"), &CanvasItem::set_texture_repeat);
-	ClassDB::bind_method(D_METHOD("get_texture_repeat"), &CanvasItem::get_texture_repeat);
+	ClassDB::bind_method(D_METHOD("set_texture_repeat", "mode"), &Element::set_texture_repeat);
+	ClassDB::bind_method(D_METHOD("get_texture_repeat"), &Element::get_texture_repeat);
 
-	ClassDB::bind_method(D_METHOD("set_clip_children_mode", "mode"), &CanvasItem::set_clip_children_mode);
-	ClassDB::bind_method(D_METHOD("get_clip_children_mode"), &CanvasItem::get_clip_children_mode);
+	ClassDB::bind_method(D_METHOD("set_clip_children_mode", "mode"), &Element::set_clip_children_mode);
+	ClassDB::bind_method(D_METHOD("get_clip_children_mode"), &Element::get_clip_children_mode);
 
 	GDVIRTUAL_BIND(_draw);
 
@@ -1283,7 +1283,7 @@ void CanvasItem::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "visibility_layer", PROPERTY_HINT_LAYERS_2D_RENDER), "set_visibility_layer", "get_visibility_layer");
 
 	ADD_GROUP("Ordering", "");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "z_index", PROPERTY_HINT_RANGE, itos(RS::CANVAS_ITEM_Z_MIN) + "," + itos(RS::CANVAS_ITEM_Z_MAX) + ",1"), "set_z_index", "get_z_index");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "z_index", PROPERTY_HINT_RANGE, itos(RS::element_Z_MIN) + "," + itos(RS::element_Z_MAX) + ",1"), "set_z_index", "get_z_index");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "z_as_relative"), "set_z_as_relative", "is_z_relative");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "y_sort_enabled"), "set_y_sort_enabled", "is_y_sort_enabled");
 
@@ -1292,7 +1292,7 @@ void CanvasItem::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_repeat", PROPERTY_HINT_ENUM, "Inherit,Disabled,Enabled,Mirror"), "set_texture_repeat", "get_texture_repeat");
 
 	ADD_GROUP("Material", "");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "material", PROPERTY_HINT_RESOURCE_TYPE, "CanvasItemMaterial,ShaderMaterial"), "set_material", "get_material");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "material", PROPERTY_HINT_RESOURCE_TYPE, "ElementMaterial,ShaderMaterial"), "set_material", "get_material");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "use_parent_material"), "set_use_parent_material", "get_use_parent_material");
 	// ADD_PROPERTY(PropertyInfo(Variant::BOOL,"transform/notify"),"set_transform_notify","is_transform_notify_enabled");
 
@@ -1330,20 +1330,20 @@ void CanvasItem::_bind_methods() {
 	BIND_ENUM_CONSTANT(CLIP_CHILDREN_MAX);
 }
 
-Transform2D CanvasItem::get_canvas_transform() const {
+Transform2D Element::get_canvas_transform() const {
 	ERR_READ_THREAD_GUARD_V(Transform2D());
 	ERR_FAIL_COND_V(!is_inside_tree(), Transform2D());
 
 	if (canvas_layer) {
 		return canvas_layer->get_final_transform();
-	} else if (Object::cast_to<CanvasItem>(get_parent())) {
-		return Object::cast_to<CanvasItem>(get_parent())->get_canvas_transform();
+	} else if (Object::cast_to<Element>(get_parent())) {
+		return Object::cast_to<Element>(get_parent())->get_canvas_transform();
 	} else {
 		return get_viewport()->get_canvas_transform();
 	}
 }
 
-Transform2D CanvasItem::get_viewport_transform() const {
+Transform2D Element::get_viewport_transform() const {
 	ERR_READ_THREAD_GUARD_V(Transform2D());
 	ERR_FAIL_COND_V(!is_inside_tree(), Transform2D());
 
@@ -1354,17 +1354,17 @@ Transform2D CanvasItem::get_viewport_transform() const {
 	}
 }
 
-void CanvasItem::set_notify_local_transform(bool p_enable) {
+void Element::set_notify_local_transform(bool p_enable) {
 	ERR_THREAD_GUARD;
 	notify_local_transform = p_enable;
 }
 
-bool CanvasItem::is_local_transform_notification_enabled() const {
+bool Element::is_local_transform_notification_enabled() const {
 	ERR_READ_THREAD_GUARD_V(false);
 	return notify_local_transform;
 }
 
-void CanvasItem::set_notify_transform(bool p_enable) {
+void Element::set_notify_transform(bool p_enable) {
 	ERR_THREAD_GUARD;
 	if (notify_transform == p_enable) {
 		return;
@@ -1378,12 +1378,12 @@ void CanvasItem::set_notify_transform(bool p_enable) {
 	}
 }
 
-bool CanvasItem::is_transform_notification_enabled() const {
+bool Element::is_transform_notification_enabled() const {
 	ERR_READ_THREAD_GUARD_V(false);
 	return notify_transform;
 }
 
-int CanvasItem::get_canvas_layer() const {
+int Element::get_canvas_layer() const {
 	ERR_READ_THREAD_GUARD_V(0);
 	if (canvas_layer) {
 		return canvas_layer->get_layer();
@@ -1392,23 +1392,23 @@ int CanvasItem::get_canvas_layer() const {
 	}
 }
 
-CanvasLayer *CanvasItem::get_canvas_layer_node() const {
+CanvasLayer *Element::get_canvas_layer_node() const {
 	ERR_READ_THREAD_GUARD_V(nullptr);
 	return canvas_layer;
 }
 
-void CanvasItem::set_visibility_layer(uint32_t p_visibility_layer) {
+void Element::set_visibility_layer(uint32_t p_visibility_layer) {
 	ERR_THREAD_GUARD;
 	visibility_layer = p_visibility_layer;
-	RenderingServer::get_singleton()->canvas_item_set_visibility_layer(canvas_item, p_visibility_layer);
+	RenderingServer::get_singleton()->element_set_visibility_layer(element, p_visibility_layer);
 }
 
-uint32_t CanvasItem::get_visibility_layer() const {
+uint32_t Element::get_visibility_layer() const {
 	ERR_READ_THREAD_GUARD_V(0);
 	return visibility_layer;
 }
 
-void CanvasItem::set_visibility_layer_bit(uint32_t p_visibility_layer, bool p_enable) {
+void Element::set_visibility_layer_bit(uint32_t p_visibility_layer, bool p_enable) {
 	ERR_THREAD_GUARD;
 	ERR_FAIL_UNSIGNED_INDEX(p_visibility_layer, 32);
 	if (p_enable) {
@@ -1418,35 +1418,35 @@ void CanvasItem::set_visibility_layer_bit(uint32_t p_visibility_layer, bool p_en
 	}
 }
 
-bool CanvasItem::get_visibility_layer_bit(uint32_t p_visibility_layer) const {
+bool Element::get_visibility_layer_bit(uint32_t p_visibility_layer) const {
 	ERR_READ_THREAD_GUARD_V(false);
 	ERR_FAIL_UNSIGNED_INDEX_V(p_visibility_layer, 32, false);
 	return (visibility_layer & (1 << p_visibility_layer));
 }
 
-void CanvasItem::_refresh_texture_filter_cache() const {
+void Element::_refresh_texture_filter_cache() const {
 	if (!is_inside_tree()) {
 		return;
 	}
 
 	if (texture_filter == TEXTURE_FILTER_PARENT_NODE) {
-		CanvasItem *parent_item = get_parent_item();
+		Element *parent_item = get_parent_item();
 		if (parent_item) {
 			texture_filter_cache = parent_item->texture_filter_cache;
 		} else {
-			texture_filter_cache = RS::CANVAS_ITEM_TEXTURE_FILTER_DEFAULT;
+			texture_filter_cache = RS::element_TEXTURE_FILTER_DEFAULT;
 		}
 	} else {
-		texture_filter_cache = RS::CanvasItemTextureFilter(texture_filter);
+		texture_filter_cache = RS::ElementTextureFilter(texture_filter);
 	}
 }
 
-void CanvasItem::_update_self_texture_filter(RS::CanvasItemTextureFilter p_texture_filter) {
-	RS::get_singleton()->canvas_item_set_default_texture_filter(get_canvas_item(), p_texture_filter);
+void Element::_update_self_texture_filter(RS::ElementTextureFilter p_texture_filter) {
+	RS::get_singleton()->element_set_default_texture_filter(get_element(), p_texture_filter);
 	queue_redraw();
 }
 
-void CanvasItem::_update_texture_filter_changed(bool p_propagate) {
+void Element::_update_texture_filter_changed(bool p_propagate) {
 	if (!is_inside_tree()) {
 		return;
 	}
@@ -1454,7 +1454,7 @@ void CanvasItem::_update_texture_filter_changed(bool p_propagate) {
 	_update_self_texture_filter(texture_filter_cache);
 
 	if (p_propagate) {
-		for (CanvasItem *E : children_items) {
+		for (Element *E : children_items) {
 			if (!E->top_level && E->texture_filter == TEXTURE_FILTER_PARENT_NODE) {
 				E->_update_texture_filter_changed(true);
 			}
@@ -1462,7 +1462,7 @@ void CanvasItem::_update_texture_filter_changed(bool p_propagate) {
 	}
 }
 
-void CanvasItem::set_texture_filter(TextureFilter p_texture_filter) {
+void Element::set_texture_filter(TextureFilter p_texture_filter) {
 	ERR_MAIN_THREAD_GUARD; // Goes down in the tree, so only main thread can set.
 	ERR_FAIL_INDEX(p_texture_filter, TEXTURE_FILTER_MAX);
 	if (texture_filter == p_texture_filter) {
@@ -1473,34 +1473,34 @@ void CanvasItem::set_texture_filter(TextureFilter p_texture_filter) {
 	notify_property_list_changed();
 }
 
-CanvasItem::TextureFilter CanvasItem::get_texture_filter() const {
+Element::TextureFilter Element::get_texture_filter() const {
 	ERR_READ_THREAD_GUARD_V(TEXTURE_FILTER_NEAREST);
 	return texture_filter;
 }
 
-void CanvasItem::_refresh_texture_repeat_cache() const {
+void Element::_refresh_texture_repeat_cache() const {
 	if (!is_inside_tree()) {
 		return;
 	}
 
 	if (texture_repeat == TEXTURE_REPEAT_PARENT_NODE) {
-		CanvasItem *parent_item = get_parent_item();
+		Element *parent_item = get_parent_item();
 		if (parent_item) {
 			texture_repeat_cache = parent_item->texture_repeat_cache;
 		} else {
-			texture_repeat_cache = RS::CANVAS_ITEM_TEXTURE_REPEAT_DEFAULT;
+			texture_repeat_cache = RS::element_TEXTURE_REPEAT_DEFAULT;
 		}
 	} else {
-		texture_repeat_cache = RS::CanvasItemTextureRepeat(texture_repeat);
+		texture_repeat_cache = RS::ElementTextureRepeat(texture_repeat);
 	}
 }
 
-void CanvasItem::_update_self_texture_repeat(RS::CanvasItemTextureRepeat p_texture_repeat) {
-	RS::get_singleton()->canvas_item_set_default_texture_repeat(get_canvas_item(), p_texture_repeat);
+void Element::_update_self_texture_repeat(RS::ElementTextureRepeat p_texture_repeat) {
+	RS::get_singleton()->element_set_default_texture_repeat(get_element(), p_texture_repeat);
 	queue_redraw();
 }
 
-void CanvasItem::_update_texture_repeat_changed(bool p_propagate) {
+void Element::_update_texture_repeat_changed(bool p_propagate) {
 	if (!is_inside_tree()) {
 		return;
 	}
@@ -1508,7 +1508,7 @@ void CanvasItem::_update_texture_repeat_changed(bool p_propagate) {
 	_update_self_texture_repeat(texture_repeat_cache);
 
 	if (p_propagate) {
-		for (CanvasItem *E : children_items) {
+		for (Element *E : children_items) {
 			if (!E->top_level && E->texture_repeat == TEXTURE_REPEAT_PARENT_NODE) {
 				E->_update_texture_repeat_changed(true);
 			}
@@ -1516,7 +1516,7 @@ void CanvasItem::_update_texture_repeat_changed(bool p_propagate) {
 	}
 }
 
-void CanvasItem::set_texture_repeat(TextureRepeat p_texture_repeat) {
+void Element::set_texture_repeat(TextureRepeat p_texture_repeat) {
 	ERR_MAIN_THREAD_GUARD; // Goes down in the tree, so only main thread can set.
 	ERR_FAIL_INDEX(p_texture_repeat, TEXTURE_REPEAT_MAX);
 	if (texture_repeat == p_texture_repeat) {
@@ -1527,7 +1527,7 @@ void CanvasItem::set_texture_repeat(TextureRepeat p_texture_repeat) {
 	notify_property_list_changed();
 }
 
-void CanvasItem::set_clip_children_mode(ClipChildrenMode p_clip_mode) {
+void Element::set_clip_children_mode(ClipChildrenMode p_clip_mode) {
 	ERR_THREAD_GUARD;
 	ERR_FAIL_COND(p_clip_mode >= CLIP_CHILDREN_MAX);
 
@@ -1541,38 +1541,38 @@ void CanvasItem::set_clip_children_mode(ClipChildrenMode p_clip_mode) {
 		return;
 	}
 
-	RS::get_singleton()->canvas_item_set_canvas_group_mode(get_canvas_item(), RS::CanvasGroupMode(clip_children_mode));
+	RS::get_singleton()->element_set_canvas_group_mode(get_element(), RS::CanvasGroupMode(clip_children_mode));
 }
-CanvasItem::ClipChildrenMode CanvasItem::get_clip_children_mode() const {
+Element::ClipChildrenMode Element::get_clip_children_mode() const {
 	ERR_READ_THREAD_GUARD_V(CLIP_CHILDREN_DISABLED);
 	return clip_children_mode;
 }
 
-CanvasItem::TextureRepeat CanvasItem::get_texture_repeat() const {
+Element::TextureRepeat Element::get_texture_repeat() const {
 	ERR_READ_THREAD_GUARD_V(TEXTURE_REPEAT_DISABLED);
 	return texture_repeat;
 }
 
-CanvasItem::TextureFilter CanvasItem::get_texture_filter_in_tree() const {
+Element::TextureFilter Element::get_texture_filter_in_tree() const {
 	ERR_READ_THREAD_GUARD_V(TEXTURE_FILTER_NEAREST);
 	_refresh_texture_filter_cache();
 	return (TextureFilter)texture_filter_cache;
 }
 
-CanvasItem::TextureRepeat CanvasItem::get_texture_repeat_in_tree() const {
+Element::TextureRepeat Element::get_texture_repeat_in_tree() const {
 	ERR_READ_THREAD_GUARD_V(TEXTURE_REPEAT_DISABLED);
 	_refresh_texture_repeat_cache();
 	return (TextureRepeat)texture_repeat_cache;
 }
 
-CanvasItem::CanvasItem() :
+Element::Element() :
 		xform_change(this) {
-	canvas_item = RenderingServer::get_singleton()->canvas_item_create();
+	element = RenderingServer::get_singleton()->element_create();
 }
 
-CanvasItem::~CanvasItem() {
+Element::~Element() {
 	ERR_FAIL_NULL(RenderingServer::get_singleton());
-	RenderingServer::get_singleton()->free(canvas_item);
+	RenderingServer::get_singleton()->free(element);
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -1647,27 +1647,27 @@ real_t CanvasTexture::get_specular_shininess() const {
 	return shininess;
 }
 
-void CanvasTexture::set_texture_filter(CanvasItem::TextureFilter p_filter) {
+void CanvasTexture::set_texture_filter(Element::TextureFilter p_filter) {
 	if (texture_filter == p_filter) {
 		return;
 	}
 	texture_filter = p_filter;
-	RS::get_singleton()->canvas_texture_set_texture_filter(canvas_texture, RS::CanvasItemTextureFilter(p_filter));
+	RS::get_singleton()->canvas_texture_set_texture_filter(canvas_texture, RS::ElementTextureFilter(p_filter));
 	emit_changed();
 }
-CanvasItem::TextureFilter CanvasTexture::get_texture_filter() const {
+Element::TextureFilter CanvasTexture::get_texture_filter() const {
 	return texture_filter;
 }
 
-void CanvasTexture::set_texture_repeat(CanvasItem::TextureRepeat p_repeat) {
+void CanvasTexture::set_texture_repeat(Element::TextureRepeat p_repeat) {
 	if (texture_repeat == p_repeat) {
 		return;
 	}
 	texture_repeat = p_repeat;
-	RS::get_singleton()->canvas_texture_set_texture_repeat(canvas_texture, RS::CanvasItemTextureRepeat(p_repeat));
+	RS::get_singleton()->canvas_texture_set_texture_repeat(canvas_texture, RS::ElementTextureRepeat(p_repeat));
 	emit_changed();
 }
-CanvasItem::TextureRepeat CanvasTexture::get_texture_repeat() const {
+Element::TextureRepeat CanvasTexture::get_texture_repeat() const {
 	return texture_repeat;
 }
 

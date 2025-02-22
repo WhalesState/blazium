@@ -136,7 +136,7 @@ void Node2D::_update_transform() {
 	transform.set_rotation_scale_and_skew(rotation, scale, skew);
 	transform.columns[2] = position;
 
-	RenderingServer::get_singleton()->canvas_item_set_transform(get_canvas_item(), transform);
+	RenderingServer::get_singleton()->element_set_transform(get_element(), transform);
 
 	_notify_transform();
 }
@@ -293,7 +293,7 @@ Point2 Node2D::get_global_position() const {
 
 void Node2D::set_global_position(const Point2 &p_pos) {
 	ERR_THREAD_GUARD;
-	CanvasItem *parent = get_parent_item();
+	Element *parent = get_parent_item();
 	if (parent) {
 		Transform2D inv = parent->get_global_transform().affine_inverse();
 		set_position(inv.xform(p_pos));
@@ -319,7 +319,7 @@ real_t Node2D::get_global_skew() const {
 
 void Node2D::set_global_rotation(const real_t p_radians) {
 	ERR_THREAD_GUARD;
-	CanvasItem *parent = get_parent_item();
+	Element *parent = get_parent_item();
 	if (parent) {
 		Transform2D parent_global_transform = parent->get_global_transform();
 		Transform2D new_transform = parent_global_transform * get_transform();
@@ -338,7 +338,7 @@ void Node2D::set_global_rotation_degrees(const real_t p_degrees) {
 
 void Node2D::set_global_skew(const real_t p_radians) {
 	ERR_THREAD_GUARD;
-	CanvasItem *parent = get_parent_item();
+	Element *parent = get_parent_item();
 	if (parent) {
 		Transform2D parent_global_transform = parent->get_global_transform();
 		Transform2D new_transform = parent_global_transform * get_transform();
@@ -357,7 +357,7 @@ Size2 Node2D::get_global_scale() const {
 
 void Node2D::set_global_scale(const Size2 &p_scale) {
 	ERR_THREAD_GUARD;
-	CanvasItem *parent = get_parent_item();
+	Element *parent = get_parent_item();
 	if (parent) {
 		Transform2D parent_global_transform = parent->get_global_transform();
 		Transform2D new_transform = parent_global_transform * get_transform();
@@ -374,14 +374,14 @@ void Node2D::set_transform(const Transform2D &p_transform) {
 	transform = p_transform;
 	_set_xform_dirty(true);
 
-	RenderingServer::get_singleton()->canvas_item_set_transform(get_canvas_item(), transform);
+	RenderingServer::get_singleton()->element_set_transform(get_element(), transform);
 
 	_notify_transform();
 }
 
 void Node2D::set_global_transform(const Transform2D &p_transform) {
 	ERR_THREAD_GUARD;
-	CanvasItem *parent = get_parent_item();
+	Element *parent = get_parent_item();
 	if (parent) {
 		set_transform(parent->get_global_transform().affine_inverse() * p_transform);
 	} else {

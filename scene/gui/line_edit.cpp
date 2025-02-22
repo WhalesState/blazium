@@ -831,7 +831,7 @@ void LineEdit::_notification(int p_what) {
 			width = size.width;
 			height = size.height;
 
-			RID ci = get_canvas_item();
+			RID ci = get_element();
 
 			Ref<StyleBox> style = theme_cache.normal;
 			if (!is_editable()) {
@@ -937,7 +937,7 @@ void LineEdit::_notification(int p_what) {
 					} else if (rect.position.x + rect.size.x > ofs_max) {
 						rect.size.x = ofs_max - rect.position.x;
 					}
-					RenderingServer::get_singleton()->canvas_item_add_rect(ci, rect, selection_color);
+					RenderingServer::get_singleton()->element_add_rect(ci, rect, selection_color);
 				}
 			}
 			const Glyph *glyphs = TS->shaped_text_get_glyphs(text_rid);
@@ -1015,34 +1015,34 @@ void LineEdit::_notification(int p_what) {
 							} break;
 						}
 
-						RenderingServer::get_singleton()->canvas_item_add_rect(ci, caret.l_caret, caret_color);
+						RenderingServer::get_singleton()->element_add_rect(ci, caret.l_caret, caret_color);
 					} else {
 						if (caret.l_caret != Rect2() && caret.l_dir == TextServer::DIRECTION_AUTO) {
 							// Draw extra marker on top of mid caret.
 							Rect2 trect = Rect2(caret.l_caret.position.x - 2.5 * caret_width, caret.l_caret.position.y, 6 * caret_width, caret_width);
 							trect.position += ofs;
-							RenderingServer::get_singleton()->canvas_item_add_rect(ci, trect, caret_color);
+							RenderingServer::get_singleton()->element_add_rect(ci, trect, caret_color);
 						} else if (caret.l_caret != Rect2() && caret.t_caret != Rect2() && caret.l_dir != caret.t_dir) {
 							// Draw extra direction marker on top of split caret.
 							float d = (caret.l_dir == TextServer::DIRECTION_LTR) ? 0.5 : -3;
 							Rect2 trect = Rect2(caret.l_caret.position.x + d * caret_width, caret.l_caret.position.y + caret.l_caret.size.y - caret_width, 3 * caret_width, caret_width);
 							trect.position += ofs;
-							RenderingServer::get_singleton()->canvas_item_add_rect(ci, trect, caret_color);
+							RenderingServer::get_singleton()->element_add_rect(ci, trect, caret_color);
 
 							d = (caret.t_dir == TextServer::DIRECTION_LTR) ? 0.5 : -3;
 							trect = Rect2(caret.t_caret.position.x + d * caret_width, caret.t_caret.position.y, 3 * caret_width, caret_width);
 							trect.position += ofs;
-							RenderingServer::get_singleton()->canvas_item_add_rect(ci, trect, caret_color);
+							RenderingServer::get_singleton()->element_add_rect(ci, trect, caret_color);
 						}
 
 						caret.l_caret.position += ofs;
 						caret.l_caret.size.x = caret_width;
-						RenderingServer::get_singleton()->canvas_item_add_rect(ci, caret.l_caret, caret_color);
+						RenderingServer::get_singleton()->element_add_rect(ci, caret.l_caret, caret_color);
 
 						caret.t_caret.position += ofs;
 						caret.t_caret.size.x = caret_width;
 
-						RenderingServer::get_singleton()->canvas_item_add_rect(ci, caret.t_caret, caret_color);
+						RenderingServer::get_singleton()->element_add_rect(ci, caret.t_caret, caret_color);
 					}
 				}
 				if (!ime_text.is_empty()) {
@@ -1061,7 +1061,7 @@ void LineEdit::_notification(int p_what) {
 								rect.size.x = ofs_max - rect.position.x;
 							}
 							rect.size.y = caret_width;
-							RenderingServer::get_singleton()->canvas_item_add_rect(ci, rect, caret_color);
+							RenderingServer::get_singleton()->element_add_rect(ci, rect, caret_color);
 						}
 					}
 					{
@@ -1080,7 +1080,7 @@ void LineEdit::_notification(int p_what) {
 									rect.size.x = ofs_max - rect.position.x;
 								}
 								rect.size.y = caret_width * 3;
-								RenderingServer::get_singleton()->canvas_item_add_rect(ci, rect, caret_color);
+								RenderingServer::get_singleton()->element_add_rect(ci, rect, caret_color);
 							}
 						}
 					}

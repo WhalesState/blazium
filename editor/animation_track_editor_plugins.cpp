@@ -326,7 +326,7 @@ void AnimationTrackEditAudio::draw_key(int p_index, float p_pixels_sec, int p_x,
 
 		Vector<Color> colors = { Color(0.75, 0.75, 0.75) };
 
-		RS::get_singleton()->canvas_item_add_multiline(get_canvas_item(), points, colors);
+		RS::get_singleton()->element_add_multiline(get_element(), points, colors);
 
 		if (p_selected) {
 			Color accent = get_theme_color(SNAME("accent_color"), EditorStringName(Editor));
@@ -691,7 +691,7 @@ void AnimationTrackEditSubAnim::draw_key(int p_index, float p_pixels_sec, int p_
 		}
 
 		if (points.size() > 2) {
-			RS::get_singleton()->canvas_item_add_multiline(get_canvas_item(), points, colors);
+			RS::get_singleton()->element_add_multiline(get_element(), points, colors);
 		}
 
 		int limit = to_x - from_x - 4;
@@ -934,7 +934,7 @@ void AnimationTrackEditTypeAudio::draw_key(int p_index, float p_pixels_sec, int 
 
 	Vector<Color> colors = { Color(0.75, 0.75, 0.75) };
 
-	RS::get_singleton()->canvas_item_add_multiline(get_canvas_item(), points, colors);
+	RS::get_singleton()->element_add_multiline(get_element(), points, colors);
 
 	Color cut_color = get_theme_color(SNAME("accent_color"), EditorStringName(Editor));
 	cut_color.a = 0.7;
@@ -1296,7 +1296,7 @@ void AnimationTrackEditTypeAnimation::draw_key(int p_index, float p_pixels_sec, 
 		}
 
 		if (points.size() > 2) {
-			RS::get_singleton()->canvas_item_add_multiline(get_canvas_item(), points, colors);
+			RS::get_singleton()->element_add_multiline(get_element(), points, colors);
 		}
 
 		int limit = to_x - from_x - 4;

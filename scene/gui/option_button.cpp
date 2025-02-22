@@ -91,7 +91,7 @@ void OptionButton::_notification(int p_what) {
 				return;
 			}
 
-			RID ci = get_canvas_item();
+			RID ci = get_element();
 			Color clr = Color(1, 1, 1);
 			if (theme_cache.modulate_arrow) {
 				switch (get_draw_mode()) {

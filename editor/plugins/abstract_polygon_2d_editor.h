@@ -36,7 +36,7 @@
 #include "scene/gui/box_container.h"
 
 class Button;
-class CanvasItemEditor;
+class ElementEditor;
 class ConfirmationDialog;
 
 class AbstractPolygon2DEditor : public HBoxContainer {
@@ -88,7 +88,7 @@ class AbstractPolygon2DEditor : public HBoxContainer {
 
 	bool _polygon_editing_enabled = false;
 
-	CanvasItemEditor *canvas_item_editor = nullptr;
+	ElementEditor *element_editor = nullptr;
 	Panel *panel = nullptr;
 	ConfirmationDialog *create_resource = nullptr;
 

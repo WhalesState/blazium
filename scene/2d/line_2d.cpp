@@ -300,8 +300,8 @@ void Line2D::_draw() {
 
 	lb.build();
 
-	RS::get_singleton()->canvas_item_add_triangle_array(
-			get_canvas_item(),
+	RS::get_singleton()->element_add_triangle_array(
+			get_element(),
 			lb.indices,
 			lb.vertices,
 			lb.colors,

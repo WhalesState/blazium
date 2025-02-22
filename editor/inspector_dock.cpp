@@ -543,7 +543,7 @@ void InspectorDock::update(Object *p_object) {
 	p->add_separator(TTR("Property Name Style"));
 	p->add_radio_check_item(vformat(TTR("Raw (e.g. \"%s\")"), "z_index"), PROPERTY_NAME_STYLE_RAW);
 	p->add_radio_check_item(vformat(TTR("Capitalized (e.g. \"%s\")"), "Z Index"), PROPERTY_NAME_STYLE_CAPITALIZED);
-	// TRANSLATORS: "Z Index" should match the existing translated CanvasItem property name in the current language you're working on.
+	// TRANSLATORS: "Z Index" should match the existing translated Element property name in the current language you're working on.
 	p->add_radio_check_item(TTR("Localized (e.g. \"Z Index\")"), PROPERTY_NAME_STYLE_LOCALIZED);
 
 	if (!EditorPropertyNameProcessor::is_localization_available()) {

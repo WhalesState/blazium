@@ -228,7 +228,7 @@ private:
 
 	void _flush_delete_queue();
 	// Optimization.
-	friend class CanvasItem;
+	friend class Element;
 	friend class Node3D;
 	friend class Viewport;
 

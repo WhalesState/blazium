@@ -208,7 +208,7 @@ static bool use_debug_profiler = false;
 static bool debug_collisions = false;
 static bool debug_paths = false;
 static bool debug_avoidance = false;
-static bool debug_canvas_item_redraw = false;
+static bool debug_element_redraw = false;
 #endif
 static int max_fps = -1;
 static int frame_delay = 0;
@@ -1346,7 +1346,7 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 		} else if (arg == "--debug-avoidance") {
 			debug_avoidance = true;
 		} else if (arg == "--debug-canvas-item-redraw") {
-			debug_canvas_item_redraw = true;
+			debug_element_redraw = true;
 		} else if (arg == "--debug-stringnames") {
 			StringName::set_debug_stringnames(true);
 #endif
@@ -3238,8 +3238,8 @@ int Main::start() {
 		if (debug_paths) {
 			sml->set_debug_paths_hint(true);
 		}
-		if (debug_canvas_item_redraw) {
-			RenderingServer::get_singleton()->canvas_item_set_debug_redraw(true);
+		if (debug_element_redraw) {
+			RenderingServer::get_singleton()->element_set_debug_redraw(true);
 		}
 #endif
 
@@ -3388,8 +3388,8 @@ int Main::start() {
 			String stretch_scale_mode = GLOBAL_GET("display/window/stretch/scale_mode");
 
 			Window::ContentScaleMode cs_sm = Window::CONTENT_SCALE_MODE_DISABLED;
-			if (stretch_mode == "canvas_items") {
-				cs_sm = Window::CONTENT_SCALE_MODE_CANVAS_ITEMS;
+			if (stretch_mode == "elements") {
+				cs_sm = Window::CONTENT_SCALE_MODE_elementS;
 			} else if (stretch_mode == "viewport") {
 				cs_sm = Window::CONTENT_SCALE_MODE_VIEWPORT;
 			}
@@ -3437,10 +3437,10 @@ int Main::start() {
 
 			int texture_filter = GLOBAL_GET("rendering/textures/canvas_textures/default_texture_filter");
 			int texture_repeat = GLOBAL_GET("rendering/textures/canvas_textures/default_texture_repeat");
-			sml->get_root()->set_default_canvas_item_texture_filter(
-					Viewport::DefaultCanvasItemTextureFilter(texture_filter));
-			sml->get_root()->set_default_canvas_item_texture_repeat(
-					Viewport::DefaultCanvasItemTextureRepeat(texture_repeat));
+			sml->get_root()->set_default_element_texture_filter(
+					Viewport::DefaultElementTextureFilter(texture_filter));
+			sml->get_root()->set_default_element_texture_repeat(
+					Viewport::DefaultElementTextureRepeat(texture_repeat));
 		}
 
 #ifdef TOOLS_ENABLED

@@ -70,10 +70,10 @@ void ParallaxLayer::_update_mirroring() {
 	ParallaxBackground *pb = Object::cast_to<ParallaxBackground>(get_parent());
 	if (pb) {
 		RID c = pb->get_canvas();
-		RID ci = get_canvas_item();
+		RID ci = get_element();
 		Point2 mirror_scale = mirroring * orig_scale;
 		RenderingServer::get_singleton()->canvas_set_item_mirroring(c, ci, mirror_scale);
-		RenderingServer::get_singleton()->canvas_item_set_interpolated(ci, false);
+		RenderingServer::get_singleton()->element_set_interpolated(ci, false);
 	}
 }
 

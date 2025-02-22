@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  canvas_item_editor_plugin.h                                           */
+/*  element_editor_plugin.h                                           */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef CANVAS_ITEM_EDITOR_PLUGIN_H
-#define CANVAS_ITEM_EDITOR_PLUGIN_H
+#ifndef element_EDITOR_PLUGIN_H
+#define element_EDITOR_PLUGIN_H
 
 #include "editor/plugins/editor_plugin.h"
 #include "editor/editor_interface.h"
@@ -38,7 +38,7 @@
 class AcceptDialog;
 class Button;
 class ButtonGroup;
-class CanvasItemEditorViewport;
+class ElementEditorViewport;
 class ConfirmationDialog;
 class EditorData;
 class EditorSelection;
@@ -53,8 +53,8 @@ class VScrollBar;
 class VSeparator;
 class VSplitContainer;
 
-class CanvasItemEditorSelectedItem : public Object {
-	GDCLASS(CanvasItemEditorSelectedItem, Object);
+class ElementEditorSelectedItem : public Object {
+	GDCLASS(ElementEditorSelectedItem, Object);
 
 public:
 	Transform2D prev_xform;
@@ -70,11 +70,11 @@ public:
 
 	Dictionary undo_state;
 
-	CanvasItemEditorSelectedItem() {}
+	ElementEditorSelectedItem() {}
 };
 
-class CanvasItemEditor : public VBoxContainer {
-	GDCLASS(CanvasItemEditor, VBoxContainer);
+class ElementEditor : public VBoxContainer {
+	GDCLASS(ElementEditor, VBoxContainer);
 
 public:
 	enum Tool {
@@ -189,7 +189,7 @@ private:
 		GRID_VISIBILITY_HIDE,
 	};
 
-	const String locked_transform_warning = TTRC("All selected CanvasItems are either invisible or locked in some way and can't be transformed.");
+	const String locked_transform_warning = TTRC("All selected Elements are either invisible or locked in some way and can't be transformed.");
 
 	bool selection_menu_additive_selection = false;
 
@@ -265,7 +265,7 @@ private:
 	MenuOption last_option;
 
 	struct _SelectResult {
-		CanvasItem *item = nullptr;
+		Element *item = nullptr;
 		real_t z_index = 0;
 		bool has_z = true;
 		_FORCE_INLINE_ bool operator<(const _SelectResult &p_rr) const {
@@ -361,7 +361,7 @@ private:
 	Point2 drag_from;
 	Point2 drag_to;
 	Point2 drag_rotation_center;
-	List<CanvasItem *> drag_selection;
+	List<Element *> drag_selection;
 	int dragged_guide_index = -1;
 	Point2 dragged_guide_pos;
 	bool is_hovering_h_guide = false;
@@ -388,19 +388,19 @@ private:
 
 	bool _is_node_locked(const Node *p_node) const;
 	bool _is_node_movable(const Node *p_node, bool p_popup_warning = false);
-	void _find_canvas_items_at_pos(const Point2 &p_pos, Node *p_node, Vector<_SelectResult> &r_items, const Transform2D &p_parent_xform = Transform2D(), const Transform2D &p_canvas_xform = Transform2D());
-	void _get_canvas_items_at_pos(const Point2 &p_pos, Vector<_SelectResult> &r_items, bool p_allow_locked = false);
+	void _find_elements_at_pos(const Point2 &p_pos, Node *p_node, Vector<_SelectResult> &r_items, const Transform2D &p_parent_xform = Transform2D(), const Transform2D &p_canvas_xform = Transform2D());
+	void _get_elements_at_pos(const Point2 &p_pos, Vector<_SelectResult> &r_items, bool p_allow_locked = false);
 
-	void _find_canvas_items_in_rect(const Rect2 &p_rect, Node *p_node, List<CanvasItem *> *r_items, const Transform2D &p_parent_xform = Transform2D(), const Transform2D &p_canvas_xform = Transform2D());
-	bool _select_click_on_item(CanvasItem *item, Point2 p_click_pos, bool p_append);
+	void _find_elements_in_rect(const Rect2 &p_rect, Node *p_node, List<Element *> *r_items, const Transform2D &p_parent_xform = Transform2D(), const Transform2D &p_canvas_xform = Transform2D());
+	bool _select_click_on_item(Element *item, Point2 p_click_pos, bool p_append);
 
 	ConfirmationDialog *snap_dialog = nullptr;
 
-	CanvasItem *ref_item = nullptr;
+	Element *ref_item = nullptr;
 
-	void _save_canvas_item_state(const List<CanvasItem *> &p_canvas_items, bool save_bones = false);
-	void _restore_canvas_item_state(const List<CanvasItem *> &p_canvas_items, bool restore_bones = false);
-	void _commit_canvas_item_state(const List<CanvasItem *> &p_canvas_items, const String &action_name, bool commit_bones = false);
+	void _save_element_state(const List<Element *> &p_elements, bool save_bones = false);
+	void _restore_element_state(const List<Element *> &p_elements, bool restore_bones = false);
+	void _commit_element_state(const List<Element *> &p_elements, const String &action_name, bool commit_bones = false);
 
 	Vector2 _anchor_to_position(const Control *p_control, Vector2 anchor);
 	Vector2 _position_to_anchor(const Control *p_control, Vector2 position);
@@ -433,8 +433,8 @@ private:
 	ThemePreviewMode theme_preview = THEME_PREVIEW_PROJECT;
 	void _switch_theme_preview(int p_mode);
 
-	List<CanvasItem *> _get_edited_canvas_items(bool p_retrieve_locked = false, bool p_remove_canvas_item_if_parent_in_selection = true, bool *r_has_locked_items = nullptr) const;
-	Rect2 _get_encompassing_rect_from_list(const List<CanvasItem *> &p_list);
+	List<Element *> _get_edited_elements(bool p_retrieve_locked = false, bool p_remove_element_if_parent_in_selection = true, bool *r_has_locked_items = nullptr) const;
+	Rect2 _get_encompassing_rect_from_list(const List<Element *> &p_list);
 	void _expand_encompassing_rect_using_children(Rect2 &r_rect, const Node *p_node, bool &r_first, const Transform2D &p_parent_xform = Transform2D(), const Transform2D &p_canvas_xform = Transform2D(), bool include_locked_nodes = true);
 	Rect2 _get_encompassing_rect(const Node *p_node);
 
@@ -508,7 +508,7 @@ private:
 			const Point2 p_value,
 			const Transform2D p_transform_to_snap,
 			Point2 &r_current_snap, SnapTarget (&r_current_snap_target)[2],
-			const SnapTarget p_snap_target, List<const CanvasItem *> p_exceptions,
+			const SnapTarget p_snap_target, List<const Element *> p_exceptions,
 			const Node *p_current);
 
 	VBoxContainer *controls_vb = nullptr;
@@ -530,14 +530,14 @@ private:
 
 	void _set_owner_for_node_and_children(Node *p_node, Node *p_owner);
 
-	friend class CanvasItemEditorPlugin;
+	friend class ElementEditorPlugin;
 
 protected:
 	void _notification(int p_what);
 
 	static void _bind_methods();
 
-	static CanvasItemEditor *singleton;
+	static ElementEditor *singleton;
 
 public:
 	enum SnapMode {
@@ -555,12 +555,12 @@ public:
 
 	String message;
 
-	Point2 snap_point(Point2 p_target, unsigned int p_modes = SNAP_DEFAULT, unsigned int p_forced_modes = 0, const CanvasItem *p_self_canvas_item = nullptr, const List<CanvasItem *> &p_other_nodes_exceptions = List<CanvasItem *>());
+	Point2 snap_point(Point2 p_target, unsigned int p_modes = SNAP_DEFAULT, unsigned int p_forced_modes = 0, const Element *p_self_element = nullptr, const List<Element *> &p_other_nodes_exceptions = List<Element *>());
 	real_t snap_angle(real_t p_target, real_t p_start = 0) const;
 
 	Transform2D get_canvas_transform() const { return transform; }
 
-	static CanvasItemEditor *get_singleton() { return singleton; }
+	static ElementEditor *get_singleton() { return singleton; }
 	Dictionary get_state() const;
 	void set_state(const Dictionary &p_state);
 	void clear();
@@ -585,7 +585,7 @@ public:
 	Tool get_current_tool() { return tool; }
 	void set_current_tool(Tool p_tool);
 
-	void edit(CanvasItem *p_canvas_item);
+	void edit(Element *p_element);
 
 	void focus_selection();
 	void center_at(const Point2 &p_pos);
@@ -596,13 +596,13 @@ public:
 
 	EditorSelection *editor_selection = nullptr;
 
-	CanvasItemEditor();
+	ElementEditor();
 };
 
-class CanvasItemEditorPlugin : public EditorPlugin {
-	GDCLASS(CanvasItemEditorPlugin, EditorPlugin);
+class ElementEditorPlugin : public EditorPlugin {
+	GDCLASS(ElementEditorPlugin, EditorPlugin);
 
-	CanvasItemEditor *canvas_item_editor = nullptr;
+	ElementEditor *element_editor = nullptr;
 
 protected:
 	void _notification(int p_what);
@@ -621,14 +621,14 @@ public:
 		return EditorInterface::get_singleton()->get_editor_theme()->get_icon("Designer", "EditorIcons");
 	}
 
-	CanvasItemEditor *get_canvas_item_editor() { return canvas_item_editor; }
+	ElementEditor *get_element_editor() { return element_editor; }
 
-	CanvasItemEditorPlugin();
-	~CanvasItemEditorPlugin();
+	ElementEditorPlugin();
+	~ElementEditorPlugin();
 };
 
-class CanvasItemEditorViewport : public Control {
-	GDCLASS(CanvasItemEditorViewport, Control);
+class ElementEditorViewport : public Control {
+	GDCLASS(ElementEditorViewport, Control);
 
 	// The type of node that will be created when dropping texture into the viewport.
 	String default_texture_node_type;
@@ -639,7 +639,7 @@ class CanvasItemEditorViewport : public Control {
 	Node *target_node = nullptr;
 	Point2 drop_pos;
 
-	CanvasItemEditor *canvas_item_editor = nullptr;
+	ElementEditor *element_editor = nullptr;
 	Control *preview_node = nullptr;
 	AcceptDialog *accept = nullptr;
 	AcceptDialog *texture_node_type_selector = nullptr;
@@ -671,8 +671,8 @@ public:
 	virtual bool can_drop_data(const Point2 &p_point, const Variant &p_data) const override;
 	virtual void drop_data(const Point2 &p_point, const Variant &p_data) override;
 
-	CanvasItemEditorViewport(CanvasItemEditor *p_canvas_item_editor);
-	~CanvasItemEditorViewport();
+	ElementEditorViewport(ElementEditor *p_element_editor);
+	~ElementEditorViewport();
 };
 
-#endif // CANVAS_ITEM_EDITOR_PLUGIN_H
+#endif // element_EDITOR_PLUGIN_H

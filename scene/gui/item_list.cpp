@@ -1059,9 +1059,9 @@ void ItemList::_notification(int p_what) {
 			bool rtl = is_layout_rtl();
 
 			if (has_focus()) {
-				RenderingServer::get_singleton()->canvas_item_add_clip_ignore(get_canvas_item(), true);
+				RenderingServer::get_singleton()->element_add_clip_ignore(get_element(), true);
 				draw_style_box(theme_cache.focus_style, Rect2(Point2(), size));
-				RenderingServer::get_singleton()->canvas_item_add_clip_ignore(get_canvas_item(), false);
+				RenderingServer::get_singleton()->element_add_clip_ignore(get_element(), false);
 			}
 
 			// Ensure_selected_visible needs to be checked before we draw the list.
@@ -1296,10 +1296,10 @@ void ItemList::_notification(int p_what) {
 						items.write[i].text_buf->set_width(text_w);
 
 						if (theme_cache.font_outline_size > 0 && theme_cache.font_outline_color.a > 0) {
-							items[i].text_buf->draw_outline(get_canvas_item(), text_ofs, theme_cache.font_outline_size, theme_cache.font_outline_color);
+							items[i].text_buf->draw_outline(get_element(), text_ofs, theme_cache.font_outline_size, theme_cache.font_outline_color);
 						}
 
-						items[i].text_buf->draw(get_canvas_item(), text_ofs, txt_modulate);
+						items[i].text_buf->draw(get_element(), text_ofs, txt_modulate);
 					} else {
 						if (fixed_column_width > 0) {
 							size2.x = MIN(size2.x, fixed_column_width);
@@ -1328,11 +1328,11 @@ void ItemList::_notification(int p_what) {
 						}
 
 						if (theme_cache.font_outline_size > 0 && theme_cache.font_outline_color.a > 0) {
-							items[i].text_buf->draw_outline(get_canvas_item(), text_ofs, theme_cache.font_outline_size, theme_cache.font_outline_color);
+							items[i].text_buf->draw_outline(get_element(), text_ofs, theme_cache.font_outline_size, theme_cache.font_outline_color);
 						}
 
 						if (width - text_ofs.x > 0) {
-							items[i].text_buf->draw(get_canvas_item(), text_ofs, txt_modulate);
+							items[i].text_buf->draw(get_element(), text_ofs, txt_modulate);
 						}
 					}
 				}

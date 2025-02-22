@@ -43,11 +43,11 @@ void StyleBoxPreview::_grid_preview_toggled(bool p_active) {
 
 void StyleBoxPreview::edit(const Ref<StyleBox> &p_stylebox) {
 	if (stylebox.is_valid()) {
-		stylebox->disconnect_changed(callable_mp((CanvasItem *)this, &CanvasItem::queue_redraw));
+		stylebox->disconnect_changed(callable_mp((Element *)this, &Element::queue_redraw));
 	}
 	stylebox = p_stylebox;
 	if (stylebox.is_valid()) {
-		stylebox->connect_changed(callable_mp((CanvasItem *)this, &CanvasItem::queue_redraw));
+		stylebox->connect_changed(callable_mp((Element *)this, &Element::queue_redraw));
 	}
 	Ref<StyleBoxTexture> sbt = stylebox;
 	grid_preview->set_visible(sbt.is_valid());
@@ -106,7 +106,7 @@ StyleBoxPreview::StyleBoxPreview() {
 	set_clip_contents(true);
 	set_custom_minimum_size(Size2(0, 150) * EDSCALE);
 	set_stretch_mode(TextureRect::STRETCH_TILE);
-	set_texture_repeat(CanvasItem::TEXTURE_REPEAT_ENABLED);
+	set_texture_repeat(Element::TEXTURE_REPEAT_ENABLED);
 	set_anchors_and_offsets_preset(PRESET_FULL_RECT);
 
 	grid_preview = memnew(Button);

@@ -228,7 +228,7 @@ void ScrollBar::gui_input(const Ref<InputEvent> &p_event) {
 void ScrollBar::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_DRAW: {
-			RID ci = get_canvas_item();
+			RID ci = get_element();
 
 			Ref<Texture2D> decr, incr;
 

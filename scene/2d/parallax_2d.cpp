@@ -131,8 +131,8 @@ void Parallax2D::_update_repeat() {
 		return;
 	}
 
-	RenderingServer::get_singleton()->canvas_set_item_repeat(get_canvas_item(), repeat_size, repeat_times);
-	RenderingServer::get_singleton()->canvas_item_set_interpolated(get_canvas_item(), false);
+	RenderingServer::get_singleton()->canvas_set_item_repeat(get_element(), repeat_size, repeat_times);
+	RenderingServer::get_singleton()->element_set_interpolated(get_element(), false);
 }
 
 void Parallax2D::set_scroll_scale(const Size2 &p_scale) {
