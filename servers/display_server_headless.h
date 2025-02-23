@@ -194,6 +194,8 @@ public:
 	void status_indicator_set_callback(IndicatorID p_id, const Callable &p_callback) override {}
 	void delete_status_indicator(IndicatorID p_id) override {}
 
+	void set_glass_effect(bool effectEnabled) override {}
+
 	DisplayServerHeadless() {
 		native_menu = memnew(NativeMenu);
 		Input::get_singleton()->set_event_dispatch_function(_dispatch_input_events);

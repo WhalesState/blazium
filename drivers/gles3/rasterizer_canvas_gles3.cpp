@@ -46,6 +46,10 @@
 #include "storage/particles_storage.h"
 #include "storage/texture_storage.h"
 
+#if defined(TOOLS_ENABLED)
+#include "editor/editor_settings.h"
+#endif
+
 void RasterizerCanvasGLES3::_update_transform_2d_to_mat4(const Transform2D &p_transform, float *p_mat4) {
 	p_mat4[0] = p_transform.columns[0][0];
 	p_mat4[1] = p_transform.columns[0][1];
@@ -2187,17 +2191,41 @@ void RasterizerCanvasGLES3::canvas_begin(RID p_to_render_target, bool p_to_backb
 		glBindTexture(GL_TEXTURE_2D, render_target->backbuffer);
 	}
 
-	if (render_target->is_transparent || p_to_backbuffer) {
-		state.transparent_render_target = true;
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	} else {
-		state.transparent_render_target = false;
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
-	}
+	#if defined(TOOLS_ENABLED)
+		if (bool(EDITOR_GET("interface/theme/glass_effect"))) {
+			state.transparent_render_target = false;
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
+		} else {
+			if (render_target->is_transparent || p_to_backbuffer) {
+				state.transparent_render_target = true;
+				glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+			} else {
+				state.transparent_render_target = false;
+				glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
+			}
+		}
+	#else
+		if (render_target->is_transparent || p_to_backbuffer) {
+			state.transparent_render_target = true;
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		} else {
+			state.transparent_render_target = false;
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
+		}
+	#endif
 
 	if (render_target && render_target->clear_requested) {
 		const Color &col = render_target->clear_color;
-		glClearColor(col.r, col.g, col.b, render_target->is_transparent ? col.a : 1.0f);
+
+		#if defined(TOOLS_ENABLED)
+			if (bool(EDITOR_GET("interface/theme/glass_effect"))) {
+				glClearColor(col.r, col.g, col.b, 0.8f);
+			} else {
+				glClearColor(col.r, col.g, col.b, render_target->is_transparent ? col.a : 1.0f);
+			}
+		#else
+			glClearColor(col.r, col.g, col.b, render_target->is_transparent ? col.a : 1.0f);
+		#endif
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		render_target->clear_requested = false;

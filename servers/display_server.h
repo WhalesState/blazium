@@ -583,6 +583,7 @@ public:
 	virtual void set_context(Context p_context);
 
 	virtual bool is_window_transparency_available() const { return false; }
+	virtual void set_glass_effect(bool effectEnabled) = 0;
 
 	void register_additional_output(Object *p_output);
 	void unregister_additional_output(Object *p_output);

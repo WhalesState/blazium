@@ -3464,6 +3464,47 @@ bool DisplayServerWindows::is_window_transparency_available() const {
 	return OS::get_singleton()->is_layered_allowed();
 }
 
+void DisplayServerWindows::set_glass_effect(bool effectEnabled) {
+
+	if (!effectEnabled)
+		return;
+
+	HWND mainWindowHandle = HWND(DisplayServer::get_singleton()->window_get_native_handle(DisplayServer::HandleType::WINDOW_HANDLE));
+	struct WindowCompositionAttributeData {
+		int Attribute;
+		intptr_t Data;
+		int SizeOfData;
+	};
+	enum AccentState {
+		ACCENT_DISABLED = 1,
+		ACCENT_ENABLE_GRADIENT = 0,
+		ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
+		ACCENT_ENABLE_BLURBEHIND = 3,
+		ACCENT_INVALID_STATE = 4
+	};
+	struct AccentPolicy {
+		AccentState AccentState;
+		int AccentFlags;
+		int GradientColor;
+		int AnimationId;
+	};
+	typedef int (*SetWindowCompositionAttributeFunc)(HWND, WindowCompositionAttributeData);
+	if (GetModuleHandleW(L"user32.dll")) {
+		SetWindowCompositionAttributeFunc SetWindowCompositionAttribute = (SetWindowCompositionAttributeFunc)GetProcAddress(GetModuleHandleW(L"user32.dll"), "SetWindowCompositionAttribute");
+		if (SetWindowCompositionAttribute) {
+			AccentPolicy accent;
+			accent.AccentState = AccentState::ACCENT_ENABLE_BLURBEHIND;
+			int accentStructSize = sizeof(accent);
+			WindowCompositionAttributeData data;
+			data.Attribute = 19 /* WCA_ACCENT_POLICY */;
+			data.SizeOfData = accentStructSize;
+			data.Data = (intptr_t)&accent;
+			SetWindowCompositionAttribute(mainWindowHandle, data);
+			SetLayeredWindowAttributes(mainWindowHandle, NULL, 60, LWA_ALPHA);
+		}
+	}
+}
+
 #define MI_WP_SIGNATURE 0xFF515700
 #define SIGNATURE_MASK 0xFFFFFF00
 // Keeping the name suggested by Microsoft, but this macro really answers:

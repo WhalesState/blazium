@@ -7425,6 +7425,9 @@ EditorNode::EditorNode() {
 	add_child(system_theme_timer);
 	system_theme_timer->set_owner(get_owner());
 	system_theme_timer->set_autostart(true);
+
+	// Apply Glass Effect
+	DisplayServer::get_singleton()->set_glass_effect(bool(EDITOR_GET("interface/theme/glass_effect")));
 }
 
 EditorNode::~EditorNode() {
