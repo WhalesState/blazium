@@ -123,7 +123,6 @@ class SceneTreeDock : public VBoxContainer {
 	VBoxContainer *favorite_node_shortcuts = nullptr;
 
 	Button *button_2d = nullptr;
-	Button *button_3d = nullptr;
 	Button *button_ui = nullptr;
 	Button *button_custom = nullptr;
 	Button *button_clipboard = nullptr;

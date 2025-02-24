@@ -50,7 +50,6 @@ void SceneCreateDialog::_notification(int p_what) {
 		case NOTIFICATION_THEME_CHANGED: {
 			select_node_button->set_icon(get_editor_theme_icon(SNAME("ClassList")));
 			node_type_2d->set_icon(get_editor_theme_icon(SNAME("Node2D")));
-			node_type_3d->set_icon(get_editor_theme_icon(SNAME("Node3D")));
 			node_type_gui->set_icon(get_editor_theme_icon(SNAME("Control")));
 			node_type_other->add_theme_icon_override(SNAME("icon"), get_editor_theme_icon(SNAME("Node")));
 		} break;
@@ -159,9 +158,6 @@ Node *SceneCreateDialog::create_scene_root() {
 		case ROOT_2D_SCENE:
 			root = memnew(Node2D);
 			break;
-		case ROOT_3D_SCENE:
-			root = memnew(Node3D);
-			break;
 		case ROOT_USER_INTERFACE: {
 			Control *gui_ctl = memnew(Control);
 			// Making the root control full rect by default is more useful for resizable UIs.
@@ -202,24 +198,18 @@ SceneCreateDialog::SceneCreateDialog() {
 
 		node_type_group.instantiate();
 
-		node_type_2d = memnew(CheckBox);
-		vb->add_child(node_type_2d);
-		node_type_2d->set_text(TTR("2D Scene"));
-		node_type_2d->set_button_group(node_type_group);
-		node_type_2d->set_meta(type_meta, ROOT_2D_SCENE);
-		node_type_2d->set_pressed(true);
-
-		node_type_3d = memnew(CheckBox);
-		vb->add_child(node_type_3d);
-		node_type_3d->set_text(TTR("3D Scene"));
-		node_type_3d->set_button_group(node_type_group);
-		node_type_3d->set_meta(type_meta, ROOT_3D_SCENE);
-
 		node_type_gui = memnew(CheckBox);
 		vb->add_child(node_type_gui);
 		node_type_gui->set_text(TTR("User Interface"));
 		node_type_gui->set_button_group(node_type_group);
 		node_type_gui->set_meta(type_meta, ROOT_USER_INTERFACE);
+
+		node_type_2d = memnew(CheckBox);
+		vb->add_child(node_type_2d);
+		node_type_2d->set_text(TTR("2D Stage"));
+		node_type_2d->set_button_group(node_type_group);
+		node_type_2d->set_meta(type_meta, ROOT_2D_SCENE);
+		node_type_2d->set_pressed(true);
 
 		HBoxContainer *hb = memnew(HBoxContainer);
 		vb->add_child(hb);

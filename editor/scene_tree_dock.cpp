@@ -1560,23 +1560,17 @@ void SceneTreeDock::_notification(int p_what) {
 			beginner_node_shortcuts = memnew(VBoxContainer);
 			node_shortcuts->add_child(beginner_node_shortcuts);
 
-			button_2d = memnew(Button);
-			beginner_node_shortcuts->add_child(button_2d);
-			button_2d->set_text(TTR("2D Scene"));
-			button_2d->set_icon(get_editor_theme_icon(SNAME("Node2D")));
-			button_2d->connect(SceneStringName(pressed), callable_mp(this, &SceneTreeDock::_tool_selected).bind(TOOL_CREATE_2D_SCENE, false));
-
-			button_3d = memnew(Button);
-			beginner_node_shortcuts->add_child(button_3d);
-			button_3d->set_text(TTR("3D Scene"));
-			button_3d->set_icon(get_editor_theme_icon(SNAME("Node3D")));
-			button_3d->connect(SceneStringName(pressed), callable_mp(this, &SceneTreeDock::_tool_selected).bind(TOOL_CREATE_3D_SCENE, false));
-
 			button_ui = memnew(Button);
 			beginner_node_shortcuts->add_child(button_ui);
 			button_ui->set_text(TTR("User Interface"));
 			button_ui->set_icon(get_editor_theme_icon(SNAME("Control")));
 			button_ui->connect(SceneStringName(pressed), callable_mp(this, &SceneTreeDock::_tool_selected).bind(TOOL_CREATE_USER_INTERFACE, false));
+
+			button_2d = memnew(Button);
+			beginner_node_shortcuts->add_child(button_2d);
+			button_2d->set_text(TTR("2D Stage"));
+			button_2d->set_icon(get_editor_theme_icon(SNAME("Node2D")));
+			button_2d->connect(SceneStringName(pressed), callable_mp(this, &SceneTreeDock::_tool_selected).bind(TOOL_CREATE_2D_SCENE, false));
 
 			favorite_node_shortcuts = memnew(VBoxContainer);
 			node_shortcuts->add_child(favorite_node_shortcuts);
@@ -1628,9 +1622,6 @@ void SceneTreeDock::_notification(int p_what) {
 			// These buttons are created on READY, because reasons...
 			if (button_2d) {
 				button_2d->set_icon(get_editor_theme_icon(SNAME("Node2D")));
-			}
-			if (button_3d) {
-				button_3d->set_icon(get_editor_theme_icon(SNAME("Node3D")));
 			}
 			if (button_ui) {
 				button_ui->set_icon(get_editor_theme_icon(SNAME("Control")));

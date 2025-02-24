@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-// For Glass Effect
-#include <AcrylicCompositor.h>
+// For D3D Glass Effect
+// #include <AcrylicCompositor.h>
 
 #include "display_server_windows.h"
 
@@ -3467,23 +3467,6 @@ bool DisplayServerWindows::is_window_transparency_available() const {
 	return OS::get_singleton()->is_layered_allowed();
 }
 
-// Glass Effect [Only Works With D3D12]
-//std::unique_ptr<AcrylicCompositor> compositor{ nullptr };
-//void DisplayServerWindows::set_glass_effect(bool effectEnabled) {
-//
-//	if (!effectEnabled) return;
-//
-//	HWND mainWindowHandle = HWND(DisplayServer::get_singleton()->window_get_native_handle(DisplayServer::HandleType::WINDOW_HANDLE));
-//	compositor.reset(new AcrylicCompositor(mainWindowHandle));
-//
-//	AcrylicCompositor::AcrylicEffectParameter param = {};
-//	param.blurAmount = 40;
-//	param.saturationAmount = 2;
-//	param.tintColor = D2D1::ColorF(0.0f, 0.0f, 0.0f, .30f);
-//	param.fallbackColor = D2D1::ColorF(0.10f, 0.10f, 0.10f, 1.0f);
-//	compositor->SetAcrylicEffect(mainWindowHandle, AcrylicCompositor::BACKDROP_SOURCE_HOSTBACKDROP, param);
-//}
-
 // Glass/Blur Effect
 void DisplayServerWindows::set_glass_effect(bool effectEnabled, bool advancedLayering) {
 	// Validate
@@ -3510,9 +3493,9 @@ void DisplayServerWindows::set_glass_effect(bool effectEnabled, bool advancedLay
 	};
 	struct AccentPolicy {
 		AccentState AccentState;
-		int AccentFlags;
-		int GradientColor;
-		int AnimationId;
+		int AccentFlags		= 0;
+		int GradientColor	= 0x01000000;
+		int AnimationId		= 0;
 	};
 	typedef int (*SetWindowCompositionAttributeFunc)(HWND, WindowCompositionAttributeData);
 	HMODULE user32Module = GetModuleHandleW(L"user32.dll");
@@ -3523,7 +3506,7 @@ void DisplayServerWindows::set_glass_effect(bool effectEnabled, bool advancedLay
 	// Apply Glass Effect
 	if (!advancedLayering) {
 		// Basic Blur
-		AccentPolicy accent;
+		AccentPolicy accent = { };
 		accent.AccentState = AccentState::ACCENT_ENABLE_BLURBEHIND;
 		int accentStructSize = sizeof(accent);
 		WindowCompositionAttributeData data;
@@ -3534,7 +3517,7 @@ void DisplayServerWindows::set_glass_effect(bool effectEnabled, bool advancedLay
 		SetLayeredWindowAttributes(mainWindowHandle, NULL, 60, LWA_ALPHA);
 	} else {
 		// Advanced Layering
-		AccentPolicy accent;
+		AccentPolicy accent = { };
 		accent.AccentState = AccentState::ACCENT_ENABLE_ACRYLICBLURBEHIND;
 		int accentStructSize = sizeof(accent);
 		WindowCompositionAttributeData data;
@@ -3542,9 +3525,28 @@ void DisplayServerWindows::set_glass_effect(bool effectEnabled, bool advancedLay
 		data.SizeOfData = accentStructSize;
 		data.Data = (intptr_t)&accent;
 		SetWindowCompositionAttribute(mainWindowHandle, data);
-		SetLayeredWindowAttributes(mainWindowHandle, NULL, 60, LWA_ALPHA);
 	}
+
+	// Invalidate Window
+	UpdateWindow(mainWindowHandle);
 }
+
+// Glass Effect [Only Works With D3D]
+//std::unique_ptr<AcrylicCompositor> compositor{ nullptr };
+//void DisplayServerWindows::set_glass_effect(bool effectEnabled) {
+//
+//	if (!effectEnabled) return;
+//
+//	HWND mainWindowHandle = HWND(DisplayServer::get_singleton()->window_get_native_handle(DisplayServer::HandleType::WINDOW_HANDLE));
+//	compositor.reset(new AcrylicCompositor(mainWindowHandle));
+//
+//	AcrylicCompositor::AcrylicEffectParameter param = {};
+//	param.blurAmount = 40;
+//	param.saturationAmount = 2;
+//	param.tintColor = D2D1::ColorF(0.0f, 0.0f, 0.0f, .30f);
+//	param.fallbackColor = D2D1::ColorF(0.10f, 0.10f, 0.10f, 1.0f);
+//	compositor->SetAcrylicEffect(mainWindowHandle, AcrylicCompositor::BACKDROP_SOURCE_HOSTBACKDROP, param);
+//}
 
 #define MI_WP_SIGNATURE 0xFF515700
 #define SIGNATURE_MASK 0xFFFFFF00
