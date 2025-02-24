@@ -3484,13 +3484,16 @@ bool DisplayServerWindows::is_window_transparency_available() const {
 //	compositor->SetAcrylicEffect(mainWindowHandle, AcrylicCompositor::BACKDROP_SOURCE_HOSTBACKDROP, param);
 //}
 
-// Classic
-void DisplayServerWindows::set_glass_effect(bool effectEnabled) {
-
+// Glass/Blur Effect
+void DisplayServerWindows::set_glass_effect(bool effectEnabled, bool advancedLayering) {
+	// Validate
 	if (!effectEnabled)
 		return;
 
+	// Get Main Window Handle
 	HWND mainWindowHandle = HWND(DisplayServer::get_singleton()->window_get_native_handle(DisplayServer::HandleType::WINDOW_HANDLE));
+
+	// Solve User32 and SetWindowCompositionAttribute
 	struct WindowCompositionAttributeData {
 		int Attribute;
 		intptr_t Data;
@@ -3501,7 +3504,9 @@ void DisplayServerWindows::set_glass_effect(bool effectEnabled) {
 		ACCENT_ENABLE_GRADIENT = 0,
 		ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
 		ACCENT_ENABLE_BLURBEHIND = 3,
-		ACCENT_INVALID_STATE = 4
+		ACCENT_ENABLE_ACRYLICBLURBEHIND = 4,
+		ACCENT_ENABLE_HOSTBACKDROP = 5,
+		ACCENT_INVALID_STATE = 6
 	};
 	struct AccentPolicy {
 		AccentState AccentState;
@@ -3510,19 +3515,34 @@ void DisplayServerWindows::set_glass_effect(bool effectEnabled) {
 		int AnimationId;
 	};
 	typedef int (*SetWindowCompositionAttributeFunc)(HWND, WindowCompositionAttributeData);
-	if (GetModuleHandleW(L"user32.dll")) {
-		SetWindowCompositionAttributeFunc SetWindowCompositionAttribute = (SetWindowCompositionAttributeFunc)GetProcAddress(GetModuleHandleW(L"user32.dll"), "SetWindowCompositionAttribute");
-		if (SetWindowCompositionAttribute) {
-			AccentPolicy accent;
-			accent.AccentState = AccentState::ACCENT_ENABLE_BLURBEHIND;
-			int accentStructSize = sizeof(accent);
-			WindowCompositionAttributeData data;
-			data.Attribute = 19 /* WCA_ACCENT_POLICY */;
-			data.SizeOfData = accentStructSize;
-			data.Data = (intptr_t)&accent;
-			SetWindowCompositionAttribute(mainWindowHandle, data);
-			SetLayeredWindowAttributes(mainWindowHandle, NULL, 60, LWA_ALPHA);
-		}
+	HMODULE user32Module = GetModuleHandleW(L"user32.dll");
+	if (!user32Module) return;
+	SetWindowCompositionAttributeFunc SetWindowCompositionAttribute = (SetWindowCompositionAttributeFunc)GetProcAddress(user32Module, "SetWindowCompositionAttribute");
+	if (!SetWindowCompositionAttribute) return;
+
+	// Apply Glass Effect
+	if (!advancedLayering) {
+		// Basic Blur
+		AccentPolicy accent;
+		accent.AccentState = AccentState::ACCENT_ENABLE_BLURBEHIND;
+		int accentStructSize = sizeof(accent);
+		WindowCompositionAttributeData data;
+		data.Attribute = 19 /* WCA_ACCENT_POLICY */;
+		data.SizeOfData = accentStructSize;
+		data.Data = (intptr_t)&accent;
+		SetWindowCompositionAttribute(mainWindowHandle, data);
+		SetLayeredWindowAttributes(mainWindowHandle, NULL, 60, LWA_ALPHA);
+	} else {
+		// Advanced Layering
+		AccentPolicy accent;
+		accent.AccentState = AccentState::ACCENT_ENABLE_ACRYLICBLURBEHIND;
+		int accentStructSize = sizeof(accent);
+		WindowCompositionAttributeData data;
+		data.Attribute = 19 /* WCA_ACCENT_POLICY */;
+		data.SizeOfData = accentStructSize;
+		data.Data = (intptr_t)&accent;
+		SetWindowCompositionAttribute(mainWindowHandle, data);
+		SetLayeredWindowAttributes(mainWindowHandle, NULL, 60, LWA_ALPHA);
 	}
 }
 
