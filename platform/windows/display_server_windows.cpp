@@ -28,6 +28,9 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+// For Glass Effect
+#include <AcrylicCompositor.h>
+
 #include "display_server_windows.h"
 
 #include "os_windows.h"
@@ -3464,6 +3467,24 @@ bool DisplayServerWindows::is_window_transparency_available() const {
 	return OS::get_singleton()->is_layered_allowed();
 }
 
+// Glass Effect [Only Works With D3D12]
+//std::unique_ptr<AcrylicCompositor> compositor{ nullptr };
+//void DisplayServerWindows::set_glass_effect(bool effectEnabled) {
+//
+//	if (!effectEnabled) return;
+//
+//	HWND mainWindowHandle = HWND(DisplayServer::get_singleton()->window_get_native_handle(DisplayServer::HandleType::WINDOW_HANDLE));
+//	compositor.reset(new AcrylicCompositor(mainWindowHandle));
+//
+//	AcrylicCompositor::AcrylicEffectParameter param = {};
+//	param.blurAmount = 40;
+//	param.saturationAmount = 2;
+//	param.tintColor = D2D1::ColorF(0.0f, 0.0f, 0.0f, .30f);
+//	param.fallbackColor = D2D1::ColorF(0.10f, 0.10f, 0.10f, 1.0f);
+//	compositor->SetAcrylicEffect(mainWindowHandle, AcrylicCompositor::BACKDROP_SOURCE_HOSTBACKDROP, param);
+//}
+
+// Classic
 void DisplayServerWindows::set_glass_effect(bool effectEnabled) {
 
 	if (!effectEnabled)

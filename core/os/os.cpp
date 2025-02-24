@@ -342,6 +342,7 @@ Dictionary OS::get_memory_info() const {
 }
 
 void OS::yield() {
+	std::this_thread::yield();
 }
 
 void OS::ensure_user_data_dir() {

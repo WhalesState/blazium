@@ -473,7 +473,9 @@ void EditorNode::_update_theme(bool p_skip_creation) {
 
 	// Update styles.
 	{
-		gui_base->add_theme_style_override(SceneStringName(panel), theme->get_stylebox(SNAME("Background"), EditorStringName(EditorStyles)));
+		auto themeBox = memnew(StyleBoxFlat());
+		themeBox->set_bg_color(Color(0, 0, 0, 0.5f));
+		gui_base->add_theme_style_override(SceneStringName(panel), themeBox);
 		main_vbox->set_anchors_and_offsets_preset(Control::PRESET_FULL_RECT, Control::PRESET_MODE_MINSIZE, theme->get_constant(SNAME("window_border_margin"), EditorStringName(Editor)));
 		main_vbox->add_theme_constant_override("separation", theme->get_constant(SNAME("top_bar_separation"), EditorStringName(Editor)));
 
@@ -7427,7 +7429,11 @@ EditorNode::EditorNode() {
 	system_theme_timer->set_autostart(true);
 
 	// Apply Glass Effect
-	DisplayServer::get_singleton()->set_glass_effect(bool(EDITOR_GET("interface/theme/glass_effect")));
+	if (bool(EDITOR_GET("interface/theme/glass_effect"))) {
+		OS::get_singleton()->yield();
+		w->set_transparent_background(true);
+		DisplayServer::get_singleton()->set_glass_effect(true);
+	}
 }
 
 EditorNode::~EditorNode() {
