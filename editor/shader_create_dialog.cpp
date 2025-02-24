@@ -31,16 +31,15 @@
 #include "shader_create_dialog.h"
 
 #include "core/config/project_settings.h"
+#include "core/string/string_builder.h"
 #include "editor/gui/editor_file_dialog.h"
 #include "editor/gui/editor_validation_panel.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/resources/shader_include.h"
-#include "scene/resources/visual_shader.h"
 #include "servers/rendering/shader_types.h"
 
 enum ShaderType {
 	SHADER_TYPE_TEXT,
-	SHADER_TYPE_VISUAL,
 	SHADER_TYPE_INC,
 	SHADER_TYPE_MAX,
 };
@@ -66,8 +65,8 @@ void ShaderCreateDialog::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_THEME_CHANGED: {
-			static const char *shader_types[3] = { "Shader", "VisualShader", "TextFile" };
-			for (int i = 0; i < 3; i++) {
+			static const char *shader_types[2] = { "Shader", "TextFile" };
+			for (int i = 0; i < 2; i++) {
 				Ref<Texture2D> icon = get_editor_theme_icon(shader_types[i]);
 				if (icon.is_valid()) {
 					type_menu->set_item_icon(i, icon);
@@ -168,7 +167,7 @@ void fragment() {
 //}
 )";
 						break;
-					case Shader::MODE_element:
+					case Shader::MODE_ELEMENT:
 						code += R"(
 void vertex() {
 	// Called for every vertex the material is visible on.
@@ -214,12 +213,6 @@ void fog() {
 				}
 			}
 			text_shader->set_code(code.as_string());
-		} break;
-		case SHADER_TYPE_VISUAL: {
-			Ref<VisualShader> visual_shader;
-			visual_shader.instantiate();
-			shader = visual_shader;
-			visual_shader->set_mode(Shader::Mode(current_mode));
 		} break;
 		case SHADER_TYPE_INC: {
 			Ref<ShaderInclude> include;
@@ -583,9 +576,6 @@ ShaderCreateDialog::ShaderCreateDialog() {
 			case SHADER_TYPE_TEXT:
 				type = "Shader";
 				default_type = i;
-				break;
-			case SHADER_TYPE_VISUAL:
-				type = "VisualShader";
 				break;
 			case SHADER_TYPE_INC:
 				type = "ShaderInclude";

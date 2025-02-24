@@ -231,7 +231,7 @@ RID ElementMaterial::get_shader_rid() const {
 }
 
 Shader::Mode ElementMaterial::get_shader_mode() const {
-	return Shader::MODE_element;
+	return Shader::MODE_ELEMENT;
 }
 
 void ElementMaterial::_bind_methods() {

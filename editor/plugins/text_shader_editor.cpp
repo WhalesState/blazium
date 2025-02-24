@@ -351,7 +351,7 @@ void ShaderTextEditor::_check_shader_mode() {
 	Shader::Mode mode;
 
 	if (type == "element") {
-		mode = Shader::MODE_element;
+		mode = Shader::MODE_ELEMENT;
 	} else if (type == "particles") {
 		mode = Shader::MODE_PARTICLES;
 	} else if (type == "sky") {

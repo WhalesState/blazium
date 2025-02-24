@@ -1648,21 +1648,6 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_constant("shadow_outline_size", "GraphFrameTitleLabel", 1 * EDSCALE);
 			p_theme->set_constant("line_spacing", "GraphFrameTitleLabel", 3 * EDSCALE);
 		}
-
-		// VisualShader reroute node.
-		{
-			Ref<StyleBox> vs_reroute_panel_style = make_empty_stylebox();
-			Ref<StyleBox> vs_reroute_titlebar_style = vs_reroute_panel_style->duplicate();
-			vs_reroute_titlebar_style->set_content_margin_all(16 * EDSCALE);
-			p_theme->set_stylebox(SceneStringName(panel), "VSRerouteNode", vs_reroute_panel_style);
-			p_theme->set_stylebox("panel_selected", "VSRerouteNode", vs_reroute_panel_style);
-			p_theme->set_stylebox("titlebar", "VSRerouteNode", vs_reroute_titlebar_style);
-			p_theme->set_stylebox("titlebar_selected", "VSRerouteNode", vs_reroute_titlebar_style);
-			p_theme->set_stylebox("slot", "VSRerouteNode", make_empty_stylebox());
-
-			p_theme->set_color("drag_background", "VSRerouteNode", p_config.dark_theme ? Color(0.19, 0.21, 0.24) : Color(0.8, 0.8, 0.8));
-			p_theme->set_color("selected_rim_color", "VSRerouteNode", p_config.dark_theme ? Color(1, 1, 1) : Color(0, 0, 0));
-		}
 	}
 
 	// ColorPicker and related nodes.
@@ -2311,9 +2296,6 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 			style_theme_preview_bg_tab->set_expand_margin(SIDE_BOTTOM, 2 * EDSCALE);
 			p_theme->set_stylebox("ThemeEditorPreviewBG", EditorStringName(EditorStyles), style_theme_preview_bg_tab);
 		}
-
-		// VisualShader editor.
-		p_theme->set_stylebox("label_style", "VShaderEditor", make_empty_stylebox(4, 6, 4, 6));
 
 		// StateMachine graph.
 		{

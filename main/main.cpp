@@ -3389,7 +3389,7 @@ int Main::start() {
 
 			Window::ContentScaleMode cs_sm = Window::CONTENT_SCALE_MODE_DISABLED;
 			if (stretch_mode == "elements") {
-				cs_sm = Window::CONTENT_SCALE_MODE_elementS;
+				cs_sm = Window::CONTENT_SCALE_MODE_ELEMENTS;
 			} else if (stretch_mode == "viewport") {
 				cs_sm = Window::CONTENT_SCALE_MODE_VIEWPORT;
 			}
