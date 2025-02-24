@@ -473,9 +473,14 @@ void EditorNode::_update_theme(bool p_skip_creation) {
 
 	// Update styles.
 	{
-		auto themeBox = memnew(StyleBoxFlat());
-		themeBox->set_bg_color(Color(0, 0, 0, 0.5f));
-		gui_base->add_theme_style_override(SceneStringName(panel), themeBox);
+		
+		auto backgroundStyleBox = Object::cast_to<StyleBoxFlat>(theme->get_stylebox(SNAME("Background"), EditorStringName(EditorStyles)).ptr());
+		if (bool(EDITOR_GET("interface/theme/glass_effect")) && backgroundStyleBox) {
+			auto originalColor = backgroundStyleBox->get_bg_color();
+			originalColor.a = float(EDITOR_GET("interface/theme/glass_base_opacity"));
+			backgroundStyleBox->set_bg_color(originalColor);
+		}
+		gui_base->add_theme_style_override(SceneStringName(panel), backgroundStyleBox);
 		main_vbox->set_anchors_and_offsets_preset(Control::PRESET_FULL_RECT, Control::PRESET_MODE_MINSIZE, theme->get_constant(SNAME("window_border_margin"), EditorStringName(Editor)));
 		main_vbox->add_theme_constant_override("separation", theme->get_constant(SNAME("top_bar_separation"), EditorStringName(Editor)));
 
