@@ -249,7 +249,6 @@ class String {
 	// Known-length copy.
 	void parse_latin1(const Span<char> &p_cstr);
 	void parse_utf32(const Span<char32_t> &p_cstr);
-	void parse_utf32(const char32_t &p_char);
 	void copy_from_unchecked(const char32_t *p_char, int p_length);
 
 	// NULL-terminated c string copy - automatically parse the string to find the length.
@@ -437,7 +436,7 @@ public:
 	static String num_uint64(uint64_t p_num, int base = 10, bool capitalize_hex = false);
 	static String chr(char32_t p_char) {
 		String string;
-		string.parse_utf32(p_char);
+		string.parse_utf32(Span(&p_char, 1));
 		return string;
 	}
 	static String md5(const uint8_t *p_md5);
