@@ -28,7 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#ifndef SPAN_H
+#define SPAN_H
 
 #include "core/typedefs.h"
 
@@ -60,3 +61,5 @@ public:
 		return _ptr[p_idx];
 	}
 };
+
+#endif // SPAN_H

@@ -28,7 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#ifndef TEST_SPAN_H
+#define TEST_SPAN_H
 
 #include "core/templates/span.h"
 
@@ -58,3 +59,5 @@ TEST_CASE("[Span] Constexpr Validators") {
 }
 
 } // namespace TestSpan
+
+#endif // TEST_SPAN_H
