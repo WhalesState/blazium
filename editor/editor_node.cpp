@@ -6717,8 +6717,8 @@ void EditorNode::_feature_profile_changed() {
 			editor_main_screen->set_button_enabled(EditorMainScreen::EDITOR_ASSETLIB, true);
 		}
 	}
+	// Make sure game window is disabled since we use EditorSettings for it to avoid breaking compatibility with 4.3.
 	if (!Engine::get_singleton()->is_recovery_mode_hint()) {
-		// Make sure game window is disabled since we use EditorSettings for it to avoid breaking compatibility with 4.3.
 		editor_main_screen->set_button_enabled(EditorMainScreen::EDITOR_GAME, EDITOR_GET("editors/game/embedded_game"));
 	}
 }
