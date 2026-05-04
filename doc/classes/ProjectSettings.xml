@@ -1089,13 +1089,13 @@
 		<member name="gui/theme/base_color" type="Color" setter="" getter="" default="Color(0.188, 0.188, 0.188, 1)">
 			The theme base color.
 		</member>
-		<member name="gui/theme/bg_contrast" type="float" setter="" getter="" default="0.2">
+		<member name="gui/theme/bg_contrast" type="float" setter="" getter="" default="-0.5">
 			The contrast of the background style color.
 		</member>
 		<member name="gui/theme/border_width" type="int" setter="" getter="" default="2">
 			The border width for some theme styles.
 		</member>
-		<member name="gui/theme/contrast" type="float" setter="" getter="" default="-0.6">
+		<member name="gui/theme/contrast" type="float" setter="" getter="" default="-0.2">
 			Changes the contrast of the theme styles.
 		</member>
 		<member name="gui/theme/corner_radius" type="int" setter="" getter="" default="6">
@@ -1161,7 +1161,7 @@
 		<member name="gui/theme/font_spacing_top" type="int" setter="" getter="" default="0">
 			Extra spacing at the top of the line in pixels.
 		</member>
-		<member name="gui/theme/hover_contrast" type="float" setter="" getter="" default="-0.2">
+		<member name="gui/theme/hover_contrast" type="float" setter="" getter="" default="0.1">
 			The contrast of the hover style color.
 		</member>
 		<member name="gui/theme/lcd_subpixel_layout" type="int" setter="" getter="" default="1">
@@ -1170,13 +1170,13 @@
 		<member name="gui/theme/margin" type="int" setter="" getter="" default="4">
 			The margin used to separate items, ie. separation.
 		</member>
-		<member name="gui/theme/normal_contrast" type="float" setter="" getter="" default="0.4">
+		<member name="gui/theme/normal_contrast" type="float" setter="" getter="" default="-0.4">
 			The contrast of the normal style color.
 		</member>
 		<member name="gui/theme/padding" type="int" setter="" getter="" default="4">
 			The padding of the theme items, ie. content margins.
 		</member>
-		<member name="gui/theme/pressed_contrast" type="float" setter="" getter="" default="0.6">
+		<member name="gui/theme/pressed_contrast" type="float" setter="" getter="" default="-0.6">
 			The contrast of the pressed style color.
 		</member>
 		<member name="gui/timers/button_shortcut_feedback_highlight_time" type="float" setter="" getter="" default="0.2">

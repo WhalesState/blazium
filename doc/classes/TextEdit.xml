@@ -1628,10 +1628,10 @@
 		<theme_item name="caret_background_color" data_type="color" type="Color" default="Color(0.875, 0.875, 0.875, 1)">
 			[Color] of the text behind the caret when using a block caret.
 		</theme_item>
-		<theme_item name="caret_color" data_type="color" type="Color" default="Color(0.875, 0.875, 0.875, 1)">
+		<theme_item name="caret_color" data_type="color" type="Color" default="Color(0.875, 0.875, 0.875, 0.6)">
 			[Color] of the caret. This can be set to a fully transparent color to hide the caret entirely.
 		</theme_item>
-		<theme_item name="current_line_color" data_type="color" type="Color" default="Color(0.16544, 0.16544, 0.16544, 1)">
+		<theme_item name="current_line_color" data_type="color" type="Color" default="Color(0.094, 0.094, 0.094, 1)">
 			Background [Color] of the line containing the caret.
 		</theme_item>
 		<theme_item name="font_color" data_type="color" type="Color" default="Color(0.875, 0.875, 0.875, 1)">
@@ -1655,10 +1655,10 @@
 		<theme_item name="search_result_color" data_type="color" type="Color" default="Color(0.226, 0.478, 0.921, 0.6)">
 			[Color] behind the text that matches the search query.
 		</theme_item>
-		<theme_item name="selection_color" data_type="color" type="Color" default="Color(0.12032, 0.12032, 0.12032, 1)">
+		<theme_item name="selection_color" data_type="color" type="Color" default="Color(0.226, 0.478, 0.921, 0.2)">
 			Sets the highlight [Color] of text selections.
 		</theme_item>
-		<theme_item name="word_highlighted_color" data_type="color" type="Color" default="Color(0.21056, 0.21056, 0.21056, 1)">
+		<theme_item name="word_highlighted_color" data_type="color" type="Color" default="Color(0.2692, 0.2692, 0.2692, 1)">
 			Sets the highlight [Color] of multiple occurrences. [member highlight_all_occurrences] has to be enabled.
 		</theme_item>
 		<theme_item name="caret_width" data_type="constant" type="int" default="1">

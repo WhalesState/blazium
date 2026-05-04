@@ -842,7 +842,7 @@
 		<theme_item name="font_shadow_color" data_type="color" type="Color" default="Color(0, 0, 0, 0)">
 			The color of the font's shadow.
 		</theme_item>
-		<theme_item name="selection_color" data_type="color" type="Color" default="Color(0.12032, 0.12032, 0.12032, 1)">
+		<theme_item name="selection_color" data_type="color" type="Color" default="Color(0.226, 0.478, 0.921, 0.2)">
 			The color of the selection box.
 		</theme_item>
 		<theme_item name="table_border" data_type="color" type="Color" default="Color(0, 0, 0, 0)">

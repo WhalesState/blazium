@@ -41,11 +41,11 @@ struct ThemeTemplate {
 
 	float scale = 1.f;
 
-	float contrast = -0.6f;
-	float bg_contrast = 0.2f;
-	float normal_contrast = 0.4f;
-	float hover_contrast = -0.2f;
-	float pressed_contrast = 0.6f;
+	float contrast = -0.2f;
+	float bg_contrast = -0.5f;
+	float normal_contrast = -0.4f;
+	float hover_contrast = 0.1f;
+	float pressed_contrast = -0.6f;
 
 	int margin = 4;
 	int padding = 4;

@@ -503,21 +503,22 @@ void update_theme_colors(const Ref<Theme> &p_theme, const Color &p_base_color, c
 	const Color base_color = p_base_color.clamp();
 	const Color accent_color = p_accent_color.clamp();
 
-	const Color mono_color = contrast_color(base_color, p_contrast);
-	const Color bg_color = base_color.lerp(mono_color, p_bg_contrast).clamp();
-	const Color style_normal_color = base_color.lerp(mono_color, p_normal_contrast).clamp();
-	const Color style_pressed_color = base_color.lerp(mono_color, p_pressed_contrast).clamp();
-	const Color style_hover_color = base_color.lerp(mono_color, p_hover_contrast).clamp();
+	const Color base_color_contrasted = contrast_color(base_color, p_contrast);
+	const Color bg_color = contrast_color(base_color, p_bg_contrast);
+	const Color style_normal_color = contrast_color(base_color, p_normal_contrast);
+	const Color style_pressed_color = contrast_color(base_color, p_pressed_contrast);
+	const Color style_hover_color = contrast_color(base_color, p_hover_contrast);
 	const Color style_disabled_color = Color(style_normal_color.r, style_normal_color.g, style_normal_color.b, 0.4);
 	const Color bg_color2 = Color(bg_color.r, bg_color.g, bg_color.b, 0.6);
 	const Color accent_color2 = Color(accent_color.r, accent_color.g, accent_color.b, 0.6);
+	const Color selection_color = Color(accent_color.r, accent_color.g, accent_color.b, 0.2);
 
-	panel_style->set_bg_color(base_color);
-	graph_panel_style->set_bg_color(base_color);
-	popup_panel_style->set_bg_color(base_color);
-	flat_tab_panel_style->set_bg_color(base_color);
-	flat_tab_selected_style->set_bg_color(base_color);
-	flat_foldable_panel_style->set_bg_color(base_color);
+	panel_style->set_bg_color(base_color_contrasted);
+	graph_panel_style->set_bg_color(base_color_contrasted);
+	popup_panel_style->set_bg_color(base_color_contrasted);
+	flat_tab_panel_style->set_bg_color(base_color_contrasted);
+	flat_tab_selected_style->set_bg_color(base_color_contrasted);
+	flat_foldable_panel_style->set_bg_color(base_color_contrasted);
 
 	foldable_panel_style->set_bg_color(bg_color);
 	tab_selected_style->set_bg_color(bg_color);
@@ -576,6 +577,11 @@ void update_theme_colors(const Ref<Theme> &p_theme, const Color &p_base_color, c
 	grabber_highlight_style->set_bg_color(accent_color2);
 	progress_fill_style->set_bg_color(accent_color2);
 
+	p_theme->set_color("selection_color", "LineEdit", selection_color);
+	p_theme->set_color("selection_color", "TextEdit", selection_color);
+	p_theme->set_color("selection_color", "CodeEdit", selection_color);
+	p_theme->set_color("selection_color", "RichTextLabel", selection_color);
+
 	embedded_unfocused_style->set_bg_color(style_normal_color);
 	tab_unselected_style->set_bg_color(style_normal_color);
 	button_normal_style->set_bg_color(style_normal_color);
@@ -602,10 +608,6 @@ void update_theme_colors(const Ref<Theme> &p_theme, const Color &p_base_color, c
 	graph_frame_title_selected_style->set_bg_color(style_pressed_color);
 	graph_title_selected_style->set_bg_color(style_pressed_color);
 	graph_panel_selected_style->set_bg_color(style_pressed_color);
-	p_theme->set_color("selection_color", "LineEdit", style_pressed_color);
-	p_theme->set_color("selection_color", "TextEdit", style_pressed_color);
-	p_theme->set_color("selection_color", "CodeEdit", style_pressed_color);
-	p_theme->set_color("selection_color", "RichTextLabel", style_pressed_color);
 
 	button_disabled_style->set_bg_color(style_disabled_color);
 	color_button_disabled_style->set_bg_color(style_disabled_color);
@@ -628,7 +630,7 @@ void update_theme_colors(const Ref<Theme> &p_theme, const Color &p_base_color, c
 	p_theme->set_color("pressed_color", "Colors", style_pressed_color);
 	p_theme->set_color("hover_color", "Colors", style_hover_color);
 	p_theme->set_color("disabled_color", "Colors", style_disabled_color);
-	p_theme->set_color("mono_color", "Colors", mono_color);
+	p_theme->set_color("mono_color", "Colors", is_dark_theme ? Color(1, 1, 1) : Color(0, 0, 0));
 }
 
 void update_font_color(const Ref<Theme> &p_theme, const Color &p_color) {
@@ -711,9 +713,6 @@ void update_font_color(const Ref<Theme> &p_theme, const Color &p_color) {
 	p_theme->set_color(SceneStringName(font_color), "GraphFrameTitleLabel", font_color);
 	p_theme->set_color(SceneStringName(font_color), "ItemList", font_color);
 	p_theme->set_color("icon_normal_color", "Button", font_color);
-	p_theme->set_color("caret_color", "LineEdit", font_color);
-	p_theme->set_color("caret_color", "TextEdit", font_color);
-	p_theme->set_color("caret_color", "CodeEdit", font_color);
 	p_theme->set_color("clear_button_color", "LineEdit", font_color);
 	p_theme->set_color("font_unselected_color", "TabContainer", font_color);
 	p_theme->set_color("font_unselected_color", "TabBar", font_color);
@@ -727,6 +726,9 @@ void update_font_color(const Ref<Theme> &p_theme, const Color &p_color) {
 	p_theme->set_color("arrow_normal_color", "FoldableContainer", font_color);
 	font_color.a = 0.6;
 	grabber_style->set_bg_color(font_color);
+	p_theme->set_color("caret_color", "LineEdit", font_color);
+	p_theme->set_color("caret_color", "TextEdit", font_color);
+	p_theme->set_color("caret_color", "CodeEdit", font_color);
 	p_theme->set_color("font_separator_color", "PopupMenu", font_color);
 	p_theme->set_color("font_accelerator_color", "PopupMenu", font_color);
 	p_theme->set_color("font_disabled_color", "PopupMenu", font_color);

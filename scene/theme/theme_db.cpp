@@ -843,11 +843,11 @@ ThemeDB::ThemeDB() {
 	GLOBAL_DEF_BASIC(PropertyInfo(Variant::COLOR, "gui/theme/custom_font_color", PROPERTY_HINT_COLOR_NO_ALPHA), Color(0.875, 0.875, 0.875));
 	font_color = _get_font_color();
 	font_outline_color = GLOBAL_DEF_BASIC(PropertyInfo(Variant::COLOR, "gui/theme/font_outline_color"), Color(0, 0, 0, 1));
-	contrast = GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "gui/theme/contrast", PROPERTY_HINT_RANGE, "-1.0, 1.0, 0.01"), -0.6);
-	normal_contrast = GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "gui/theme/normal_contrast", PROPERTY_HINT_RANGE, "-1.0, 1.0, 0.01"), 0.4);
-	hover_contrast = GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "gui/theme/hover_contrast", PROPERTY_HINT_RANGE, "-1.0, 1.0, 0.01"), -0.2);
-	pressed_contrast = GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "gui/theme/pressed_contrast", PROPERTY_HINT_RANGE, "-1.0, 1.0, 0.01"), 0.6);
-	bg_contrast = GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "gui/theme/bg_contrast", PROPERTY_HINT_RANGE, "-1.0, 1.0, 0.01"), 0.2);
+	contrast = GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "gui/theme/contrast", PROPERTY_HINT_RANGE, "-1.0, 1.0, 0.01"), -0.2);
+	normal_contrast = GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "gui/theme/normal_contrast", PROPERTY_HINT_RANGE, "-1.0, 1.0, 0.01"), -0.4);
+	hover_contrast = GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "gui/theme/hover_contrast", PROPERTY_HINT_RANGE, "-1.0, 1.0, 0.01"), 0.1);
+	pressed_contrast = GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "gui/theme/pressed_contrast", PROPERTY_HINT_RANGE, "-1.0, 1.0, 0.01"), -0.6);
+	bg_contrast = GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "gui/theme/bg_contrast", PROPERTY_HINT_RANGE, "-1.0, 1.0, 0.01"), -0.5);
 	margin = GLOBAL_DEF_BASIC(PropertyInfo(Variant::INT, "gui/theme/margin", PROPERTY_HINT_RANGE, "0, 32, 1"), 4);
 	padding = GLOBAL_DEF_BASIC(PropertyInfo(Variant::INT, "gui/theme/padding", PROPERTY_HINT_RANGE, "0, 32, 1"), 4);
 	border_width = GLOBAL_DEF_BASIC(PropertyInfo(Variant::INT, "gui/theme/border_width", PROPERTY_HINT_RANGE, "0, 32, 1"), 2);
